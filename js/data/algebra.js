@@ -694,6 +694,50 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         }
       ]
+    },    {
+      title: "Rates, Work & Mixtures",
+      formulas: [
+        {
+          id: "work-rates",
+          name: "Combined Work Rates",
+          latex: String.raw`\frac{1}{t_{\text{together}}} = \frac{1}{t_1} + \frac{1}{t_2} + \cdots`,
+          description: String.raw`Rates add, times don't: convert every worker/pipe/hose to jobs-per-hour, add, and invert at the end. Two workers taking $a$ and $b$ hours finish together in $\frac{ab}{a+b}$ hours.`,
+          example: String.raw`One pipe fills a pool in $4$ hours, another in $6$: together $\frac{1}{4} + \frac{1}{6} = \frac{5}{12}$ pool per hour, so $\frac{12}{5} = 2.4$ hours.`,
+          keywords: ["work rate", "together", "pipes fill", "jobs per hour", "combined time"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
+          id: "average-speed",
+          name: "Average Speed (Harmonic Mean Trap)",
+          latex: String.raw`v_{\text{avg}} = \frac{\text{total distance}}{\text{total time}}; \qquad \text{equal distances at } v_1, v_2: \; v_{\text{avg}} = \frac{2v_1v_2}{v_1+v_2}`,
+          description: String.raw`Average speed is never the plain average of speeds unless the times are equal. Over equal distances it is the harmonic mean — always closer to the slower speed. Compute total distance over total time and nothing can go wrong.`,
+          example: String.raw`Drive somewhere at $30$ mph and return at $60$ mph: average speed $\frac{2 \cdot 30 \cdot 60}{90} = 40$ mph, not $45$.`,
+          keywords: ["average speed", "harmonic mean", "round trip", "total distance over time"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
+          id: "relative-motion",
+          name: "Relative Motion",
+          latex: String.raw`\text{closing speed} = v_1 + v_2 \;(\text{toward}), \quad v_1 - v_2 \;(\text{chasing}); \qquad \text{current: } v_{\text{net}} = v_{\text{still}} \pm v_{\text{stream}}`,
+          description: String.raw`Work in the frame of one mover: gaps close at the sum (head-on) or difference (chase) of speeds, so time = gap ÷ closing speed. Rivers, moving walkways, and wind add or subtract a drift vector — for crossing problems, split the velocity into across-stream and along-stream components.`,
+          example: String.raw`Runner at $8$ m/s chasing one at $5$ m/s with a $60$ m head start: catches up in $\frac{60}{3} = 20$ seconds.`,
+          keywords: ["relative speed", "catch up", "head start", "river current", "upstream downstream", "closing speed"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "weighted-average",
+          name: "Weighted Averages & Mixtures",
+          latex: String.raw`\bar{x} = \frac{w_1x_1 + w_2x_2}{w_1 + w_2}; \qquad \text{mixing ratio } \frac{w_1}{w_2} = \frac{x_2 - \bar{x}}{\bar{x} - x_1}`,
+          description: String.raw`A mixture's concentration (or a combined class average) is the weight-weighted mean of the parts, and it always lies between them — the weights are inversely proportional to the distances (the "alligation" seesaw). Track the amount of pure substance before and after.`,
+          example: String.raw`Mixing $30\%$ acid with $70\%$ acid to get $45\%$: ratio $\frac{70 - 45}{45 - 30} = \frac{25}{15} = \frac{5}{3}$ — five parts weak to three parts strong.`,
+          keywords: ["weighted mean", "mixture", "concentration", "alligation", "class average"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        }
+      ]
     },
     {
       title: "Problem-Solving Methods",
@@ -761,51 +805,6 @@ window.MATH_SECTIONS.push({
           keywords: ["symmetric substitution", "sum and product", "x plus y xy", "collapse system", "s p", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        }
-      ]
-    },
-    {
-      title: "Rates, Work & Mixtures",
-      formulas: [
-        {
-          id: "work-rates",
-          name: "Combined Work Rates",
-          latex: String.raw`\frac{1}{t_{\text{together}}} = \frac{1}{t_1} + \frac{1}{t_2} + \cdots`,
-          description: String.raw`Rates add, times don't: convert every worker/pipe/hose to jobs-per-hour, add, and invert at the end. Two workers taking $a$ and $b$ hours finish together in $\frac{ab}{a+b}$ hours.`,
-          example: String.raw`One pipe fills a pool in $4$ hours, another in $6$: together $\frac{1}{4} + \frac{1}{6} = \frac{5}{12}$ pool per hour, so $\frac{12}{5} = 2.4$ hours.`,
-          keywords: ["work rate", "together", "pipes fill", "jobs per hour", "combined time"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "average-speed",
-          name: "Average Speed (Harmonic Mean Trap)",
-          latex: String.raw`v_{\text{avg}} = \frac{\text{total distance}}{\text{total time}}; \qquad \text{equal distances at } v_1, v_2: \; v_{\text{avg}} = \frac{2v_1v_2}{v_1+v_2}`,
-          description: String.raw`Average speed is never the plain average of speeds unless the times are equal. Over equal distances it is the harmonic mean — always closer to the slower speed. Compute total distance over total time and nothing can go wrong.`,
-          example: String.raw`Drive somewhere at $30$ mph and return at $60$ mph: average speed $\frac{2 \cdot 30 \cdot 60}{90} = 40$ mph, not $45$.`,
-          keywords: ["average speed", "harmonic mean", "round trip", "total distance over time"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "relative-motion",
-          name: "Relative Motion",
-          latex: String.raw`\text{closing speed} = v_1 + v_2 \;(\text{toward}), \quad v_1 - v_2 \;(\text{chasing}); \qquad \text{current: } v_{\text{net}} = v_{\text{still}} \pm v_{\text{stream}}`,
-          description: String.raw`Work in the frame of one mover: gaps close at the sum (head-on) or difference (chase) of speeds, so time = gap ÷ closing speed. Rivers, moving walkways, and wind add or subtract a drift vector — for crossing problems, split the velocity into across-stream and along-stream components.`,
-          example: String.raw`Runner at $8$ m/s chasing one at $5$ m/s with a $60$ m head start: catches up in $\frac{60}{3} = 20$ seconds.`,
-          keywords: ["relative speed", "catch up", "head start", "river current", "upstream downstream", "closing speed"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "weighted-average",
-          name: "Weighted Averages & Mixtures",
-          latex: String.raw`\bar{x} = \frac{w_1x_1 + w_2x_2}{w_1 + w_2}; \qquad \text{mixing ratio } \frac{w_1}{w_2} = \frac{x_2 - \bar{x}}{\bar{x} - x_1}`,
-          description: String.raw`A mixture's concentration (or a combined class average) is the weight-weighted mean of the parts, and it always lies between them — the weights are inversely proportional to the distances (the "alligation" seesaw). Track the amount of pure substance before and after.`,
-          example: String.raw`Mixing $30\%$ acid with $70\%$ acid to get $45\%$: ratio $\frac{70 - 45}{45 - 30} = \frac{25}{15} = \frac{5}{3}$ — five parts weak to three parts strong.`,
-          keywords: ["weighted mean", "mixture", "concentration", "alligation", "class average"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
         }
       ]
     }
