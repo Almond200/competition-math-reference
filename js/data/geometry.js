@@ -51,9 +51,9 @@ window.MATH_SECTIONS.push({
         {
           id: "polygon-angle-sums",
           name: "Polygon Angle Sums",
-          latex: String.raw`\text{Interior sum} = 180^\circ(n-2), \qquad \text{Exterior sum} = 360^\circ`,
-          description: String.raw`For an $n$-gon. Each interior angle of a regular $n$-gon is $\frac{180^\circ(n-2)}{n}$; each exterior angle is $\frac{360^\circ}{n}$.`,
-          keywords: ["interior angles", "exterior angles", "regular polygon", "n-gon"],
+          latex: String.raw`\text{Interior sum} = 180^\circ(n-2), \quad \text{Exterior sum} = 360^\circ, \quad \#\text{diagonals} = \tfrac{n(n-3)}{2}`,
+          description: String.raw`For an $n$-gon. Each interior angle of a regular $n$-gon is $\frac{180^\circ(n-2)}{n}$; each exterior angle is $\frac{360^\circ}{n}$. It also has $\frac{n(n-3)}{2}$ diagonals — each vertex joins the $n-3$ non-adjacent vertices, halved to undo double-counting.`,
+          keywords: ["interior angles", "exterior angles", "regular polygon", "n-gon", "number of diagonals", "diagonals"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
         },
@@ -133,8 +133,8 @@ window.MATH_SECTIONS.push({
         {
           id: "regular-polygon-area",
           name: "Regular Polygon Area",
-          latex: String.raw`A = \frac{1}{2} a p = \frac{1}{2} n s a`,
-          description: String.raw`With apothem $a$, perimeter $p$, side $s$, and $n$ sides. Also $A = \frac{1}{2}nR^2\sin\frac{360^\circ}{n}$ using circumradius $R$. Worth caching: regular octagon of side $s$ has area $2(1+\sqrt2)s^2$, and a regular dodecagon inscribed in radius $R$ has area exactly $3R^2$.`,
+          latex: String.raw`A = \tfrac{1}{2}ap = \tfrac{1}{2}nR^2\sin\tfrac{360^\circ}{n}, \qquad A_{\text{oct}} = 2(1+\sqrt2)\,s^2, \qquad A_{\text{dodec}} = 3R^2`,
+          description: String.raw`With apothem $a$, perimeter $p$, side $s$, circumradius $R$, and $n$ sides (so $p = ns$). The octagon's $2(1+\sqrt2)s^2$ and the dodecagon-in-radius-$R$ value of exactly $3R^2$ are the two special cases worth memorizing.`,
           keywords: ["apothem", "perimeter", "regular", "n-gon area", "octagon area", "dodecagon area"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -662,7 +662,6 @@ window.MATH_SECTIONS.push({
           name: "Tangent–Chord Angle (Alternate Segment)",
           latex: String.raw`\angle(\ell, TA) = \tfrac{1}{2}\,\overset{\frown}{TA} = \angle TBA`,
           description: String.raw`The angle between a tangent $\ell$ at $T$ and a chord $TA$ equals half the intercepted arc — hence equals the inscribed angle $\angle TBA$ in the alternate segment (the arc on the far side). Key corollary: the tangent to a triangle's circumcircle at a vertex makes an angle with each side equal to the triangle's opposite angle.`,
-          example: String.raw`A tangent at $T$ and chord $TA$ meet at $50^\circ$, so arc $TA = 100^\circ$; every inscribed angle $\angle TBA$ standing on that arc from the far side is also $50^\circ$.`,
           keywords: ["tangent chord angle", "alternate segment theorem", "tangent to circumcircle", "inscribed angle", "intercepted arc"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -672,7 +671,6 @@ window.MATH_SECTIONS.push({
           name: "Angle Between Two Tangents",
           latex: String.raw`\angle APB = 180^\circ - \angle AOB = \tfrac{1}{2}\left(\text{arc}_{\text{far}} - \text{arc}_{\text{near}}\right)`,
           description: String.raw`From an external point $P$ the two tangents touch at $A, B$: the angle between them and the central angle $\angle AOB$ are supplementary. The tangent lengths are equal ($PA = PB$) and each radius meets its tangent at a right angle, so $PAOB$ is a right kite and $OP$ bisects $\angle APB$.`,
-          example: String.raw`Two tangents from $P$ meet at $\angle P = 40^\circ$, so $\angle AOB = 140^\circ$: the minor arc $AB$ is $140^\circ$, the major arc $220^\circ$, and the outside rule checks $\frac{220^\circ - 140^\circ}{2} = 40^\circ$.`,
           keywords: ["two tangents", "external point", "angle between tangents", "supplementary central angle", "tangent kite", "circumscribed angle"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]

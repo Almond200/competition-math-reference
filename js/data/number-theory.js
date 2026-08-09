@@ -462,7 +462,6 @@ window.MATH_SECTIONS.push({
           name: "Thue's Lemma",
           latex: String.raw`\gcd(a,n)=1 \implies \exists\, x,y:\; x \equiv ay \pmod{n}, \;\; 0 < |x|, |y| \le \sqrt{n}`,
           description: String.raw`A pigeonhole guarantee of a "small" solution to a congruence: for any modulus $n$ and $a$ coprime to it, some $x \equiv ay \pmod n$ has both $|x|, |y| \le \sqrt{n}$. Its famous payoff is Fermat's two-squares theorem — if $a^2 \equiv -1 \pmod p$ then $x \equiv ay$ forces $x^2 + y^2 \equiv 0 \pmod p$, and the size bound pins $x^2 + y^2 = p$.`,
-          example: String.raw`For $p = 13$: since $5^2 \equiv -1 \pmod{13}$, take $a = 5$. The bound $|x|,|y| \le \sqrt{13} \approx 3.6$ with $x \equiv 5y$ is met by $y = 2,\ x \equiv 10 \equiv -3$: then $x^2 + y^2 = 9 + 4 = 13$.`,
           keywords: ["thue lemma", "pigeonhole congruence", "small solution", "two squares proof", "sum of two squares"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -637,7 +636,6 @@ window.MATH_SECTIONS.push({
           name: "Gaussian & Eisenstein Integers",
           latex: String.raw`N(a+bi) = a^2 + b^2, \qquad N(zw) = N(z)\,N(w)`,
           description: String.raw`The ring $\mathbb{Z}[i] = \{a+bi\}$ has unique factorization, units $\pm 1, \pm i$, and a multiplicative norm $N(a+bi) = a^2+b^2$. A rational prime $p$ splits into two conjugate Gaussian primes iff $p \equiv 1 \pmod 4$ (then $p = a^2+b^2$), stays inert iff $p \equiv 3 \pmod 4$, and ramifies at $p = 2 = -i(1+i)^2$. The Eisenstein integers $\mathbb{Z}[\omega]$, $\omega = e^{2\pi i/3}$, play the same role for $a^2+ab+b^2$, with norm $N(a+b\omega) = a^2 - ab + b^2$ and primes classified mod $3$.`,
-          example: String.raw`Norm-multiplicativity gives Brahmagupta–Fibonacci for free: $(a^2+b^2)(c^2+d^2) = N\big((a+bi)(c+di)\big) = (ac-bd)^2 + (ad+bc)^2$. And since $13 \equiv 1 \pmod 4$, it factors as $13 = (3+2i)(3-2i)$ — i.e. $13 = 3^2 + 2^2$.`,
           keywords: ["gaussian integers", "eisenstein integers", "quadratic field", "quadratic integer ring", "norm", "unique factorization", "sum of two squares", "z[i]", "split inert ramified"],
           importance: "low",
           level: ["AIME", "Olympiad"]

@@ -87,6 +87,20 @@
     touch: ["tangent", "tangency"]
   };
 
+  // Competition abbreviations → full phrase, so "PoP", "FTA", "CRT", ... resolve.
+  const ABBREV = {
+    pop: "power of a point",
+    fta: "fundamental theorem of algebra",
+    crt: "chinese remainder theorem",
+    lte: "lifting the exponent",
+    flt: "fermat little theorem",
+    rrt: "rational root theorem",
+    sfft: "simon favorite factoring trick",
+    amgm: "am gm inequality",
+    cs: "cauchy schwarz inequality",
+    pie: "inclusion exclusion"
+  };
+
   // Grammar words dropped from queries before scoring — they carry no signal
   // and would otherwise sink descriptive searches into "partial match" mode.
   const STOPWORDS = new Set([
@@ -345,25 +359,38 @@
     }
     if (score === 0 && tok.length >= 5) {
       // Typo tolerance: allow one edit ("stewert" still finds Stewart).
-      for (const w of entry.nameWords) if (editClose(w, tok)) { score += 8; break; }
-      if (score === 0) for (const w of entry.tagWords) if (editClose(w, tok)) { score += 6; break; }
+      for (const w of entry.nameWords) if (fuzzy(w, tok)) { score += 8; break; }
+      if (score === 0) for (const w of entry.tagWords) if (fuzzy(w, tok)) { score += 6; break; }
     }
     return score;
   }
 
-  // True when a and b are within one insertion, deletion, or substitution.
-  function editClose(a, b) {
-    const la = a.length, lb = b.length;
-    if (Math.abs(la - lb) > 1) return false;
-    let i = 0, j = 0, edits = 0;
-    while (i < la && j < lb) {
-      if (a[i] === b[j]) { i++; j++; continue; }
-      if (++edits > 1) return false;
-      if (la > lb) i++;
-      else if (lb > la) j++;
-      else { i++; j++; }
+  // Levenshtein distance with an early-exit cap (returns cap+1 once exceeded).
+  function levBounded(a, b, cap) {
+    const m = a.length, n = b.length;
+    if (Math.abs(m - n) > cap) return cap + 1;
+    let prev = []; for (let j = 0; j <= n; j++) prev[j] = j;
+    for (let i = 1; i <= m; i++) {
+      const cur = [i]; let best = i;
+      for (let j = 1; j <= n; j++) {
+        const c = a.charCodeAt(i - 1) === b.charCodeAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + c);
+        if (cur[j] < best) best = cur[j];
+      }
+      if (best > cap) return cap + 1;
+      prev = cur;
     }
-    return edits + (la - i) + (lb - j) <= 1;
+    return prev[n];
+  }
+
+  // Typo tolerance: same first 3 letters and a small edit distance that scales
+  // with length, so "stewert"→"stewart" and "bretschinder"→"bretschneider" match
+  // without pulling in unrelated words.
+  function fuzzy(a, b) {
+    if (a.length < 5 || b.length < 5) return false;
+    if (a.slice(0, 3) !== b.slice(0, 3)) return false;
+    const cap = Math.max(a.length, b.length) >= 10 ? 3 : 2;
+    return levBounded(a, b, cap) <= cap;
   }
 
   function expandToken(tok) {
@@ -407,9 +434,13 @@
   const IMP_RANK = { high: 0, medium: 1, low: 2 };
 
   function searchFormulas(rawQuery) {
-    const queryLower = rawQuery.trim().toLowerCase();
+    let raw = rawQuery.trim();
+    if (ABBREV[raw.toLowerCase()]) raw = ABBREV[raw.toLowerCase()];   // whole query is an abbreviation
+    const queryLower = raw.toLowerCase();
     let tokens = wordsOf(queryLower).filter(t => !STOPWORDS.has(t));
     if (!tokens.length) tokens = wordsOf(queryLower);
+    // expand any abbreviation that appears as its own token (mixed queries)
+    tokens = tokens.flatMap(t => ABBREV[t] ? wordsOf(ABBREV[t]).filter(w => !STOPWORDS.has(w)) : [t]);
     const mathForms = queryMathForms(rawQuery);
     if (!tokens.length && !mathForms) return { results: [], partial: false };
 
@@ -1184,6 +1215,25 @@
   // Top → smooth-scroll back to the top of the current page.
   const $top = document.getElementById("top-btn");
   if ($top) $top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+  // Light / dark theme toggle (persisted; default dark). The early inline script
+  // in index.html applies the saved choice before paint to avoid a flash.
+  const $theme = document.getElementById("theme-btn");
+  function syncThemeBtn() {
+    if (!$theme) return;
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    $theme.textContent = light ? "☀" : "☾";   // ☀ in light mode, ☾ in dark
+    $theme.title = light ? "Switch to dark theme" : "Switch to light theme";
+  }
+  if ($theme) {
+    syncThemeBtn();
+    $theme.addEventListener("click", () => {
+      const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) { /* ignore */ }
+      syncThemeBtn();
+    });
+  }
 
   // Random → a random formula's detail page.
   const $random = document.getElementById("random-btn");

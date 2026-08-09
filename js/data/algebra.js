@@ -38,6 +38,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "fundamental-theorem-algebra",
+          name: "Fundamental Theorem of Algebra",
+          latex: String.raw`\deg P = n \ge 1 \implies P(x) = a_n\prod_{k=1}^{n}(x - r_k), \quad r_k \in \mathbb{C}`,
+          description: String.raw`Every degree-$n$ polynomial with complex coefficients has exactly $n$ complex roots counted with multiplicity, so it factors completely into $n$ linear factors over $\mathbb{C}$. Corollaries: a polynomial of degree $\le n$ with $n+1$ roots is identically zero, any $n+1$ values determine it uniquely (interpolation), and a real polynomial splits into real linear and irreducible-quadratic factors — so odd degree forces a real root.`,
+          keywords: ["fundamental theorem of algebra", "fta", "complex roots", "n roots with multiplicity", "factors completely", "number of roots"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "factor-remainder-theorem",
           name: "Remainder & Factor Theorems",
           latex: String.raw`P(x) = (x - a)Q(x) + P(a)`,
@@ -256,7 +265,6 @@ window.MATH_SECTIONS.push({
           name: "Product of Pairwise Sums",
           latex: String.raw`(x+y)(y+z)(z+x) = (x+y+z)(xy+yz+zx) - xyz`,
           description: String.raw`The product of the three pairwise sums collapses onto the elementary symmetric polynomials: with $e_1 = x+y+z$, $e_2 = xy+yz+zx$, $e_3 = xyz$, it is exactly $e_1 e_2 - e_3$. Companion identity: $(x+y+z)^3 - x^3 - y^3 - z^3 = 3(x+y)(y+z)(z+x)$. Both convert a product of binomials into Vieta-ready symmetric-sum data, and back.`,
-          example: String.raw`For the roots $1, 2, 3$ of $t^3 - 6t^2 + 11t - 6$ we have $e_1 = 6, e_2 = 11, e_3 = 6$, so $(x+y)(y+z)(z+x) = 6\cdot 11 - 6 = 60$ — matching $(1+2)(2+3)(3+1) = 3\cdot 5\cdot 4 = 60$.`,
           keywords: ["pairwise sums", "elementary symmetric polynomials", "product of sums", "vieta", "x+y y+z z+x", "symmetric"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -266,7 +274,6 @@ window.MATH_SECTIONS.push({
           name: "Antisymmetric $(a-b)(b-c)(c-a)$ Factorizations",
           latex: String.raw`a^2(b-c) + b^2(c-a) + c^2(a-b) = -(a-b)(b-c)(c-a)`,
           description: String.raw`A cyclic sum that vanishes whenever two variables are equal must carry the factor $(a-b)(b-c)(c-a)$; the remaining degree fixes the rest. The degree-2 sum above is exactly $-(a-b)(b-c)(c-a)$, while the degree-3 sum $a^3(b-c) + b^3(c-a) + c^3(a-b) = -(a-b)(b-c)(c-a)(a+b+c)$.`,
-          example: String.raw`At $(a,b,c) = (1,2,3)$: $1(2-3) + 4(3-1) + 9(1-2) = -1 + 8 - 9 = -2$, and $-(1-2)(2-3)(3-1) = -(-1)(-1)(2) = -2$. ✓`,
           keywords: ["antisymmetric", "cyclic factorization", "a-b b-c c-a", "vanishing factor", "vandermonde", "symmetric"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -276,7 +283,6 @@ window.MATH_SECTIONS.push({
           name: "When $a+b+c=0$",
           latex: String.raw`a+b+c = 0 \implies a^3+b^3+c^3 = 3abc, \qquad a^2+b^2+c^2 = -2(ab+bc+ca)`,
           description: String.raw`The constraint collapses whole families of symmetric expressions. Also $a^4+b^4+c^4 = \tfrac{1}{2}(a^2+b^2+c^2)^2 = 2(ab+bc+ca)^2$, and the power sums chain: $\frac{a^5+b^5+c^5}{5} = \frac{a^3+b^3+c^3}{3}\cdot\frac{a^2+b^2+c^2}{2}$ and $\frac{a^7+b^7+c^7}{7} = \frac{a^5+b^5+c^5}{5}\cdot\frac{a^2+b^2+c^2}{2}$. All drop out of Newton's sums with $e_1 = 0$.`,
-          example: String.raw`Take $a=1, b=2, c=-3$: $a^3+b^3+c^3 = 1+8-27 = -18 = 3(1)(2)(-3) = 3abc$, and $a^2+b^2+c^2 = 14 = -2(2-6-3) = -2(ab+bc+ca)$.`,
           keywords: ["sum zero", "a+b+c=0", "a3+b3+c3=3abc", "power sums", "newton sums", "vanishing sum", "conditional identity"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -286,7 +292,6 @@ window.MATH_SECTIONS.push({
           name: "Powers of $x + 1/x$",
           latex: String.raw`x^2 + \tfrac{1}{x^2} = t^2 - 2, \qquad x^3 + \tfrac{1}{x^3} = t^3 - 3t \qquad (t = x + \tfrac{1}{x})`,
           description: String.raw`With $t = x + \frac{1}{x}$, every symmetric power $s_n = x^n + \frac{1}{x^n}$ is a polynomial in $t$ from the recurrence $s_n = t\,s_{n-1} - s_{n-2}$ (with $s_0 = 2,\; s_1 = t$): $s_2 = t^2 - 2$, $s_3 = t^3 - 3t$, $s_4 = t^4 - 4t^2 + 2$. The identical recurrence produces $2\cos n\theta$ from $2\cos\theta$ (Chebyshev) and $a^n + b^n$ whenever $ab = 1$.`,
-          example: String.raw`If $x + \frac{1}{x} = 3$: $x^2 + \frac{1}{x^2} = 9 - 2 = 7$, then $x^3 + \frac{1}{x^3} = 27 - 9 = 18$, and $x^4 + \frac{1}{x^4} = 3\cdot 18 - 7 = 47$.`,
           keywords: ["x plus 1 over x", "reciprocal power", "recurrence", "chebyshev", "x^n + 1/x^n", "symmetric power"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -465,7 +470,6 @@ window.MATH_SECTIONS.push({
           name: "Bernoulli's Inequality",
           latex: String.raw`(1+x)^n \ge 1 + nx \qquad (x \ge -1,\ n \ge 1)`,
           description: String.raw`A linear lower bound on a power, valid for real $x \ge -1$ and any real $n \ge 1$ (in particular all positive integers). For a fractional exponent $0 \le r \le 1$ it flips: $(1+x)^r \le 1 + rx$, which bounds roots from above (e.g. $\sqrt{1+x} \le 1 + \tfrac{x}{2}$). Equality only at $x = 0$ (or $n = 0, 1$). It is exactly the tangent line to $(1+x)^n$ at $x = 0$.`,
-          example: String.raw`$(1.02)^{10} \ge 1 + 10(0.02) = 1.2$ (true value $\approx 1.219$), and $\sqrt{1.2} = (1+0.2)^{1/2} \le 1 + \tfrac{1}{2}(0.2) = 1.1$ (true value $\approx 1.095$).`,
           keywords: ["bernoulli", "1+x to the n", "power bound", "linear bound", "tangent line inequality", "growth estimate", "compound"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -494,6 +498,15 @@ window.MATH_SECTIONS.push({
           latex: String.raw`(a_1, a_2, a_3) \succ (b_1, b_2, b_3) \implies \sum_{\text{sym}} x^{a_1} y^{a_2} z^{a_3} \;\ge\; \sum_{\text{sym}} x^{b_1} y^{b_2} z^{b_3}`,
           description: String.raw`For positive reals, where $\succ$ is majorization: $a_1 \ge b_1$, $a_1 + a_2 \ge b_1 + b_2$, equal total sums, both sorted decreasing. "More spread-out exponents win" — the rigorous version of bunching. E.g. $(2,0,0) \succ (1,1,0)$ gives $\sum_{\text{sym}} x^2 \ge \sum_{\text{sym}} xy$. Only valid for full symmetric sums (all $3! = 6$ permutation terms).`,
           keywords: ["muirhead", "majorization", "bunching", "symmetric sum", "exponents"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "maclaurin-inequality",
+          name: "Newton's & Maclaurin's Inequalities",
+          latex: String.raw`p_1 \ge \sqrt{p_2} \ge \sqrt[3]{p_3} \ge \cdots \ge \sqrt[n]{p_n}, \qquad p_k = \frac{e_k}{\binom{n}{k}}`,
+          description: String.raw`For nonnegative reals, average each elementary symmetric polynomial into $p_k = e_k / \binom{n}{k}$. Maclaurin's inequality chains them as above — a refinement of AM–GM, since $p_1 = \frac{\sum x_i}{n}$ is the AM and $\sqrt[n]{p_n} = \sqrt[n]{\prod x_i}$ is the GM. The local step is Newton's inequality $p_k^2 \ge p_{k-1}p_{k+1}$ (log-concavity of the $p_k$). Equality throughout iff all $x_i$ are equal.`,
+          keywords: ["maclaurin inequality", "newton inequality", "symmetric means", "refinement of am-gm", "elementary symmetric", "log-concave"],
           importance: "low",
           level: ["Olympiad"]
         }
@@ -778,6 +791,15 @@ window.MATH_SECTIONS.push({
           keywords: ["absolute value", "distance on number line", "split cases", "sqrt x squared", "modulus"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "median-minimizes-abs",
+          name: "Minimizing a Sum of $|x - a_i|$ (Median Trick)",
+          latex: String.raw`\sum_{i} |x - a_i| \text{ is minimized at } x = \operatorname{median}(a_1, \dots, a_n)`,
+          description: String.raw`To minimize the total distance $\sum_i |x - a_i|$, place $x$ at the median of the $a_i$ (with an even count, anywhere between the two middle values ties for the minimum). The weighted sum $\sum_i w_i\,|x - a_i|$ is minimized at the weighted median — the $a_i$ at which the running weight, added in sorted order, first reaches half of $\sum w_i$. By contrast, squared distances $\sum (x - a_i)^2$ are minimized at the mean.`,
+          keywords: ["median", "minimize sum of absolute values", "weighted median", "sum of distances", "minimize |x-a|", "L1 optimization"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },    {

@@ -30,6 +30,15 @@ Any symmetric function of the roots is expressible in the $e_k$ — power sums v
 ## On contests
 AIME's favorite polynomial tool. The root-transformation trick (build the polynomial whose roots are $r_i^2$ or $\frac{1}{r_i}$ or $r_i + 1$) converts scary questions into coefficient bookkeeping.`,
 
+"fundamental-theorem-algebra": String.raw`## Why it works
+The analytic core is that every non-constant complex polynomial has at least one root (provable via Liouville's theorem, a winding-number argument, or a minimum-modulus argument). Once you have one root $r$, divide out $(x - r)$ to drop the degree by one and repeat; after $n$ steps you have peeled off $n$ linear factors, $P(x) = a_n\prod (x - r_k)$, with exactly $n$ roots counted by multiplicity.
+
+## How to use it
+It is the license behind "a degree-$n$ polynomial has $n$ roots," which underwrites Vieta's formulas, partial fractions, and all root counting. Two corollaries do heavy lifting: a polynomial of degree $\le n$ that vanishes at $n+1$ points is identically zero (the standard way to prove a polynomial identity), and $n+1$ values pin a polynomial down uniquely (Lagrange interpolation). Over $\mathbb{R}$, pairing conjugate roots yields real linear and irreducible-quadratic factors — hence every odd-degree real polynomial has a real root.
+
+## On contests
+Usually invoked implicitly: knowing the exact root count sets up Vieta, and the "agree at enough points $\Rightarrow$ identical" corollary cracks many AIME polynomial and functional-equation problems. The conjugate-pairing consequence is a common parity/real-root argument.`,
+
 "factor-remainder-theorem": String.raw`## Why it works
 Divide $P(x)$ by $(x - a)$: the remainder has degree 0, i.e. a constant; evaluating both sides at $x = a$ shows that constant is $P(a)$.
 
@@ -769,7 +778,16 @@ Majorization means the exponent vector $(a)$ can be reached from $(b)$ by repeat
 Sort both exponent triples in decreasing order, then check the partial sums: $a_1 \ge b_1$, $a_1 + a_2 \ge b_1 + b_2$, $a_1 + a_2 + a_3 = b_1 + b_2 + b_3$. If all hold, $\sum_{\text{sym}}$ of the $a$-monomial dominates. Two standing warnings: it applies only to *full symmetric sums* — cyclic sums are not covered, so convert first and watch the factor of $2$ — and both sides must be homogeneous of the same degree (normalize the constraint, e.g. impose $xyz = 1$, to homogenize).
 
 ## On contests
-The rigorous stamp for "bunching" steps in olympiad solutions: $(3,0,0) \succ (2,1,0) \succ (1,1,1)$ handles most degree-3 comparisons in one line. Citing Muirhead by name is standard on olympiads; on anything below that level, writing out the two or three AM–GMs it encodes is safer and just as fast. Pairs constantly with Schur, which covers exactly the direction Muirhead cannot.`
+The rigorous stamp for "bunching" steps in olympiad solutions: $(3,0,0) \succ (2,1,0) \succ (1,1,1)$ handles most degree-3 comparisons in one line. Citing Muirhead by name is standard on olympiads; on anything below that level, writing out the two or three AM–GMs it encodes is safer and just as fast. Pairs constantly with Schur, which covers exactly the direction Muirhead cannot.`,
+
+"maclaurin-inequality": String.raw`## Why it works
+The engine is Newton's inequality $p_k^2 \ge p_{k-1}p_{k+1}$, where $p_k = e_k / \binom{n}{k}$ is the averaged $k$-th elementary symmetric polynomial. It says the sequence $p_k$ is log-concave, and it comes from the fact that $\prod_i (t + x_i)$ has all real roots — so do its derivatives (Rolle), and a real-rooted quadratic slice forces $p_k^2 \ge p_{k-1}p_{k+1}$. Chaining log-concavity and taking $k$-th roots yields Maclaurin's descending chain $p_1 \ge \sqrt{p_2} \ge \cdots \ge \sqrt[n]{p_n}$.
+
+## How to use it
+It sits between AM–GM and the heavier symmetric machinery: the two ends are exactly the AM and the GM, while the middle terms give sharper bounds when several elementary symmetric quantities appear together. In practice invoke one link — $p_1 \ge \sqrt{p_2}$ or $\sqrt{p_2} \ge \sqrt[3]{p_3}$ — to relate $\sum x_i$, $\sum x_i x_j$, and $\prod x_i$ more tightly than AM–GM allows.
+
+## On contests
+An olympiad-level refinement — rarely needed over AM–GM or Cauchy–Schwarz, but decisive on symmetric inequalities those cannot tighten. Newton's inequality also explains why a real-rooted polynomial has log-concave (hence unimodal) coefficients, a handy lemma in its own right.`
 
 });
 
@@ -805,6 +823,15 @@ Turn every absolute value into a distance or a case split. $|x - c| = d$ marks t
 
 ## On contests
 Constant on MATHCOUNTS and early AMC: distance interpretations, "sum of distances" setups, and piecewise equations. The frequent trap is forgetting a branch — $|x| > a$ has two rays, and $\sqrt{x^2}$ carries a sign — so name the cases explicitly.`,
+
+"median-minimizes-abs": String.raw`## Why it works
+Sweep $x$ from left to right: the slope of $f(x) = \sum w_i|x - a_i|$ is (total weight of the $a_i$ below $x$) minus (total weight above). It starts at $-\sum w_i$ and jumps up by $2w_i$ as $x$ passes each $a_i$, so $f$ is convex and piecewise-linear. Its minimum is where the slope turns from negative to nonnegative — exactly where the weight below first matches the weight above, i.e. the (weighted) median. In the unweighted even-count case the slope is $0$ across the whole middle interval, so every point there ties.
+
+## How to use it
+Never differentiate an absolute-value sum — find the median. Unweighted: sort and take the middle value (or anything between the two middle ones). Weighted: accumulate weights in sorted order until you first pass half the total; a coefficient $w_i$ (or a repeated point) simply counts as weight. The minimum value is then $\sum w_i\,|{\text{median}} - a_i|$, which pairs symmetric terms cleanly. Squared distances instead give the mean — the $L^1$ versus $L^2$ distinction.
+
+## On contests
+"Find $x$ minimizing $|x-1| + |x-2| + \cdots + |x-n|$" and its coefficient-weighted cousins are recurring AMC/AIME problems — instant once you spot the median. It also settles "minimize the total distance traveled to stops on a line" word problems.`,
 
 "weierstrass-substitution": String.raw`## Why it works
 Writing $t = \tan\frac{\theta}{2}$ and using the double-angle formulas expresses $\sin\theta = 2\sin\frac{\theta}{2}\cos\frac{\theta}{2}$ and $\cos\theta = \cos^2\frac{\theta}{2} - \sin^2\frac{\theta}{2}$ as rational functions of $t$ after dividing through by $\cos^2\frac{\theta}{2} = \frac{1}{1 + t^2}$. Every trig function of $\theta$ becomes rational in $t$.

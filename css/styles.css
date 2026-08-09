@@ -20,6 +20,34 @@
   --topbar-h: 130px;
 }
 
+/* Light theme — toggled via data-theme="light" on <html>. Everything is driven
+   by these variables, so only the palette changes. */
+:root[data-theme="light"] {
+  --bg: #f6f8fc;
+  --bg-panel: #eaeef7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef2fb;
+  --border: #d7deed;
+  --border-light: #c2cbe1;
+  --text: #1b2333;
+  --text-dim: #55607a;
+  --text-faint: #808aa3;
+  --accent: #2f66e0;
+  --accent-soft: rgba(47, 102, 224, 0.12);
+  --gold: #b7860b;
+  --level-mc: #1f9d63;
+  --level-10: #2f66e0;
+  --level-12: #7a4fe0;
+  --level-aime: #cf6a1e;
+  --level-oly: #d63f6e;
+}
+
+/* A few elements hardcode a dark translucent fill; re-tint them for light mode. */
+:root[data-theme="light"] .topbar { background: rgba(246, 248, 252, 0.9); }
+:root[data-theme="light"] .formula-display { background: rgba(20, 30, 55, 0.045); }
+:root[data-theme="light"] .card-extra { background: rgba(20, 30, 55, 0.03); }
+:root[data-theme="light"] .problem { background: rgba(20, 30, 55, 0.03); }
+
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; scrollbar-gutter: stable; }
