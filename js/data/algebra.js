@@ -631,11 +631,29 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12"]
         },
         {
+          id: "common-angle-values",
+          name: "Common Angle Values",
+          latex: String.raw`\begin{array}{c|ccccc} & 0^\circ & 30^\circ & 45^\circ & 60^\circ & 90^\circ \\ \hline \sin & 0 & \tfrac{1}{2} & \tfrac{\sqrt2}{2} & \tfrac{\sqrt3}{2} & 1 \\ \cos & 1 & \tfrac{\sqrt3}{2} & \tfrac{\sqrt2}{2} & \tfrac{1}{2} & 0 \\ \tan & 0 & \tfrac{\sqrt3}{3} & 1 & \sqrt3 & \text{—} \end{array}`,
+          description: String.raw`The first-quadrant staples. Radians: $30^\circ = \frac{\pi}{6},\ 45^\circ = \frac{\pi}{4},\ 60^\circ = \frac{\pi}{3},\ 90^\circ = \frac{\pi}{2}$; $\tan 90^\circ$ is undefined. For any other angle, use its reference angle and fix the sign by quadrant (ASTC — All, Sine, Tangent, Cosine positive in quadrants I–IV).`,
+          keywords: ["special angles", "sin cos tan table", "30 45 60 90", "unit circle values", "reference angle", "exact values", "astc"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "reduction-identities",
+          name: "Cofunction, Sign & Periodicity Identities",
+          latex: String.raw`\sin(90^\circ - \theta) = \cos\theta, \qquad \cos(90^\circ - \theta) = \sin\theta, \qquad \sin(-\theta) = -\sin\theta, \qquad \cos(-\theta) = \cos\theta, \qquad \sin(180^\circ - \theta) = \sin\theta, \qquad \cos(180^\circ - \theta) = -\cos\theta`,
+          description: String.raw`Cofunctions swap sin/cos across complementary angles (likewise tan/cot, sec/csc). $\sin$ and $\tan$ are odd, $\cos$ is even. Supplementary angles keep $\sin$ but flip $\cos$ (and $\tan$). Periods: $\sin, \cos$ repeat every $360^\circ$, $\tan$ every $180^\circ$ — so any angle reduces to a first-quadrant reference angle plus a sign.`,
+          keywords: ["cofunction", "negative angle", "odd even", "supplementary angle", "periodicity", "reference angle", "reduction identities"],
+          importance: "medium",
+          level: ["AMC10", "AMC12"]
+        },
+        {
           id: "angle-addition",
           name: "Angle Addition & Subtraction",
-          latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad a\sin\theta + b\cos\theta = \sqrt{a^2+b^2}\,\sin(\theta + \varphi)`,
-          description: String.raw`And $\tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}$. The source of double- and half-angle formulas.`,
-          keywords: ["sum formula", "sin a plus b", "tangent addition", "harmonic addition", "max of a sin plus b cos"],
+          latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad \cos(a \pm b) = \cos a \cos b \mp \sin a \sin b, \qquad \tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}`,
+          description: String.raw`The source of the double- and half-angle formulas. Also the harmonic form $a\sin\theta + b\cos\theta = \sqrt{a^2+b^2}\,\sin(\theta + \varphi)$ with $\tan\varphi = \frac{b}{a}$ — the amplitude and phase of a sum of sinusoids (its maximum is $\sqrt{a^2+b^2}$).`,
+          keywords: ["sum formula", "sin a plus b", "cos a plus b", "cosine addition", "tangent addition", "harmonic addition", "max of a sin plus b cos"],
           importance: "high",
           level: ["AMC12", "AIME"]
         },
@@ -660,16 +678,16 @@ window.MATH_SECTIONS.push({
         {
           id: "product-sum",
           name: "Product-to-Sum & Sum-to-Product",
-          latex: String.raw`\sin a \sin b = \tfrac{1}{2}[\cos(a-b) - \cos(a+b)], \quad \sin a + \sin b = 2\sin\tfrac{a+b}{2}\cos\tfrac{a-b}{2}`,
-          description: String.raw`The full families convert between products and sums — essential for telescoping trig sums and products on AIME.`,
-          keywords: ["product to sum", "sum to product", "telescoping trig"],
+          latex: String.raw`2\sin a\cos b = \sin(a+b) + \sin(a-b), \qquad 2\cos a\cos b = \cos(a+b) + \cos(a-b), \qquad 2\sin a\sin b = \cos(a-b) - \cos(a+b), \qquad \sin a + \sin b = 2\sin\tfrac{a+b}{2}\cos\tfrac{a-b}{2}, \qquad \sin a - \sin b = 2\cos\tfrac{a+b}{2}\sin\tfrac{a-b}{2}, \qquad \cos a + \cos b = 2\cos\tfrac{a+b}{2}\cos\tfrac{a-b}{2}, \qquad \cos a - \cos b = -2\sin\tfrac{a+b}{2}\sin\tfrac{a-b}{2}`,
+          description: String.raw`Product-to-sum (top three) turns products into sums — ideal for telescoping or integrating; sum-to-product (bottom four) factors sums, useful for proving a sum vanishes or simplifying. All follow from the angle-addition formulas by adding or subtracting them.`,
+          keywords: ["product to sum", "sum to product", "telescoping trig", "factor sines", "cos plus cos", "sin plus sin"],
           importance: "medium",
           level: ["AIME"]
         },
         {
           id: "special-trig-values",
           name: "Special Values Worth Memorizing",
-          latex: String.raw`\sin 15^\circ = \frac{\sqrt{6} - \sqrt{2}}{4}, \qquad \cos 36^\circ = \frac{1 + \sqrt{5}}{4}, \qquad \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \cos 36^\circ = \frac{1 + \sqrt{5}}{4}, \qquad \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \tan 15^\circ = 2 - \sqrt{3}`,
+          latex: String.raw`\sin 15^\circ = \frac{\sqrt{6} - \sqrt{2}}{4}, \qquad \cos 36^\circ = \frac{1 + \sqrt{5}}{4}, \qquad \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \tan 15^\circ = 2 - \sqrt{3}, \qquad \tan 75^\circ = 2 + \sqrt{3}`,
           description: String.raw`Note $\cos 36^\circ = \frac{\varphi}{2}$ and $\sin 18^\circ = \frac{\varphi - 1}{2}$ where $\varphi$ is the golden ratio. Also $\tan 15^\circ = 2 - \sqrt{3}$ and $\tan 75^\circ = 2 + \sqrt{3}$. Pentagon and 15-75-90 problems reduce to these.`,
           keywords: ["15 degrees", "18 degrees", "36 degrees", "golden ratio", "exact values"],
           importance: "high",

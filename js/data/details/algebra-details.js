@@ -417,6 +417,24 @@ The conversion hub: given one trig value, produce the others (watch quadrant sig
 ## On contests
 "Given $\sin\theta + \cos\theta = k$, find $\sin\theta\cos\theta$" — square and use the identity ($= \frac{k^2-1}{2}$): a permanent AMC favorite. Same squaring trick powers $\sin^3 + \cos^3$ and friends via factoring.`,
 
+"common-angle-values": String.raw`## Why it works
+The $45$-$45$-$90$ triangle (legs $1$, hypotenuse $\sqrt2$) and the $30$-$60$-$90$ triangle (sides $1, \sqrt3, 2$) give the values directly as opposite/hypotenuse and adjacent/hypotenuse. The $0^\circ$ and $90^\circ$ entries are the degenerate limits on the unit circle, where $\tan 90^\circ$ blows up (undefined).
+
+## How to use it
+Memorize the first quadrant once, then reach any angle by taking its reference angle to the $x$-axis and attaching the quadrant sign (ASTC). Know the radian conversions ($\frac{\pi}{6}, \frac{\pi}{4}, \frac{\pi}{3}$) cold — they are the default at AMC 12 / AIME level.
+
+## On contests
+Pure speed: these sit inside nearly every trig computation on the AMC, and the reference-angle-plus-sign routine handles $120^\circ, 135^\circ, 210^\circ$, and the rest without re-deriving anything.`,
+
+"reduction-identities": String.raw`## Why it works
+Everything is a unit-circle reflection. Reflecting across $y = x$ swaps coordinates, giving the cofunction pair $\sin(90^\circ - \theta) = \cos\theta$. Reflecting across the $x$-axis negates $y$ (so $\sin$ is odd) and fixes $x$ (so $\cos$ is even). Reflecting across the $y$-axis is the supplement $180^\circ - \theta$: $y$ stays, $x$ flips, so $\sin$ is preserved and $\cos$ negates.
+
+## How to use it
+Use them to collapse awkward angles to first-quadrant values before applying other identities. The cofunction rule is why the $\sin$ and $\cos$ graphs are shifts of each other; the odd/even rules drop signs inside functions; and remembering $\tan$ has period $180^\circ$ (not $360^\circ$) avoids a common off-by-a-period slip.
+
+## On contests
+Routine simplification on AMC/AIME, and the key to telescoping or symmetric trig sums where you must see that terms like $\sin\theta$ and $\sin(180^\circ - \theta)$ are equal.`,
+
 "angle-addition": String.raw`## Why it works
 Geometric proof via two stacked right triangles, or instantly from $e^{i(a+b)} = e^{ia}e^{ib}$ — expand and match real/imaginary parts.
 
