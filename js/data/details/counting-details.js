@@ -573,6 +573,24 @@ Split on the most constrained element: the largest value, the leading digit, whe
 ## On contests
 The single most-used counting technique at every level. MATHCOUNTS problems are often pure two-case splits; AMC problems reward finding the split that makes cases symmetric; AIME problems layer casework inside other techniques — the errors are almost always an overlap or a forgotten case, so the discipline of naming the cases explicitly is the whole game.`,
 
+"pigeonhole-principle": String.raw`## Why it works
+If $n$ objects go into $k$ boxes and $n > k$, some box holds two or more — because if every box held at most one, the total would be at most $k < n$. The generalized form is the same counting-by-averages argument: with $n$ objects in $k$ boxes, some box holds at least $\lceil n/k \rceil$, since the maximum is never below the average.
+
+## How to use it
+The whole difficulty is *inventing the boxes*. You control that design. Pick a feature that (a) has few possible values (the boxes) and (b) makes "two objects sharing a value" imply what you want. Classic box choices: remainders mod $m$ (two numbers with equal residue $\Rightarrow$ their difference is divisible by $m$); regions of a subdivided figure (two points in one region $\Rightarrow$ they are close); sum or subset (two subsets with equal sum). For "at least $r$" bounds, run it backward: to force some box to $r$, you need more than $k(r-1)$ objects.
+
+## On contests
+The signature of a pigeonhole problem is a guarantee — "prove there must exist," "show two of them," a specific number appearing as $k+1$. On AMC/AIME it shows up quietly inside divisibility and geometry existence problems; the art is always the choice of pigeons and holes, never the principle itself.`,
+
+"complementary-counting": String.raw`## Why it works
+Counting a set and counting its complement are the same problem: $|A| = |U| - |A^c|$. When the objects you *don't* want are fewer, or simply better-structured, than the ones you want, counting them and subtracting from the total is strictly easier — with no change to the answer.
+
+## How to use it
+Reach for it whenever the condition contains "at least one," "not all," or "at least two" — the negation ("none," "all," "at most one") is usually a single clean case instead of a messy union. Fix the universe $|U|$ first (often a plain power or factorial), count the forbidden configurations, subtract. It pairs naturally with inclusion–exclusion when the complement itself splits into overlapping conditions.
+
+## On contests
+A first-line AMC/AIME probability and counting tool: "probability that at least one ..." almost always means "$1 -$ probability of none." The one discipline is that the universe and the complement must be counted in the *same* model (ordered vs. unordered, with vs. without repetition) — mixing the two is the standard mistake.`,
+
 "bijection-method": String.raw`## Why it works
 A one-to-one correspondence pairs the two sets off perfectly, so they have the same size — even when one is a mess and the other is a textbook family. Counting the easy set *is* counting the hard set.
 

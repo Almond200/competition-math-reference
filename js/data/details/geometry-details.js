@@ -1193,6 +1193,15 @@ Use it to *transport* a volume you don't know onto one you do. An oblique prism 
 ## On contests
 Mostly a conceptual unlock: it justifies "the slant doesn't matter" so you can replace a leaning solid with an upright one, and it explains why the $\frac{1}{3}$ in a pyramid's volume is shape-independent. When a solid is defined by a moving or tilted cross-section, think slices.`,
 
+"barycentric-coordinates": String.raw`## Why it works
+Fix a reference triangle $ABC$. Every point in the plane is a unique affine combination $P = \alpha A + \beta B + \gamma C$ with $\alpha + \beta + \gamma = 1$; the weights are the signed area ratios $\alpha : \beta : \gamma = [PBC] : [PCA] : [PAB]$ (a vertex's weight is the area of the *opposite* sub-triangle). Because the coordinates are tied to the triangle's own areas, the objects that clutter a synthetic solution — cevians, named centers, ratios along sides — all become linear, so the geometry turns into ordinary linear algebra.
+
+## How to use it
+Memorize the standard centers: centroid $(1:1:1)$, incenter $(a:b:c)$, symmedian point $(a^2:b^2:c^2)$, circumcenter $(a^2 S_A : b^2 S_B : c^2 S_C)$ with $S_A = \tfrac{b^2+c^2-a^2}{2}$, orthocenter $(\tan A : \tan B : \tan C)$. A point dividing a cevian in a known ratio is read off instantly. Lines are $ux + vy + wz = 0$; three points are collinear (or three cevians concurrent) exactly when a $3\times 3$ determinant vanishes. Distances and circles need the displacement/EFG conventions, so barycentrics shine on incidence, ratio, and concurrency problems and are heavier for metric ones. Always normalize ($\alpha+\beta+\gamma=1$) before reading an actual point.
+
+## On contests
+An olympiad-level bludgeon: when a configuration is saturated with cevians, the centroid/incenter/orthocenter, and side-ratios, barycentric coordinates convert "find the intended synthetic insight" into a guaranteed (if computational) determinant. Rarely needed on AMC/AIME, where mass points — barycentrics' lightweight cousin for pure cevian ratios — usually suffice.`,
+
 "coordinate-bash": String.raw`## Why it works
 Any geometric relation — distance, area, collinearity, perpendicularity, "lies on a circle" — is an algebraic equation in coordinates. Once the figure is placed, deduction becomes computation that can't get stuck, at the cost of some algebra.
 
@@ -1231,7 +1240,52 @@ Complex multiplication is exactly "rotate and scale": $|wz| = |w||z|$ and $\arg(
 Place a convenient point at the origin, ideally a center of symmetry, and scale so a key length is $1$. Then: the vertices of a regular $n$-gon centered at the origin are $R\omega^k$ with $\omega = e^{2\pi i/n}$; the centroid of $a, b, c$ is $\frac{a+b+c}{3}$; $\frac{c - a}{b - a}$ encodes both the ratio $\frac{|ac|}{|ab|}$ and the angle at $a$ (real ⟺ collinear, purely imaginary ⟺ perpendicular); and $a + \omega b + \omega^2 c = 0$ with $\omega = e^{2\pi i/3}$ says $abc$ is equilateral. Conjugates handle reflections: reflecting across the real axis is $z \mapsto \bar z$.
 
 ## On contests
-The clean route through rotation-heavy configurations — Napoleon's theorem, squares erected on a quadrilateral's sides (van Aubel), and regular-polygon distance products, where the roots-of-unity factorization $\prod(x - \omega^k)$ does the work. Standard on olympiads and a slick alternative on hard AIME geometry; see also the rotation trick and spiral similarity cards for the synthetic versions of the same ideas.`
+The clean route through rotation-heavy configurations — Napoleon's theorem, squares erected on a quadrilateral's sides (van Aubel), and regular-polygon distance products, where the roots-of-unity factorization $\prod(x - \omega^k)$ does the work. Standard on olympiads and a slick alternative on hard AIME geometry; see also the rotation trick and spiral similarity cards for the synthetic versions of the same ideas.`,
+
+"affine-transformations": String.raw`## Why it works
+An affine map $v \mapsto Mv + t$ sends lines to lines and preserves ratios *along* each line, so midpoints, "divides in ratio $2{:}3$," and parallelism all survive. Its Jacobian $\det M$ is constant, so it scales *every* area by the same factor $|\det M|$ — which cancels in any ratio of areas. What it destroys matters just as much: angles, lengths, perpendicularity, and "a circle stays a circle" all change, so those quantities are off-limits.
+
+## How to use it
+Two moves cover almost everything. (1) *Ellipse → circle*: the scaling $(x, y) \mapsto (x, \tfrac{a}{b}y)$ turns $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ into a circle of radius $a$; solve the circle problem, then any affine-invariant answer (an area ratio, a midpoint, a tangency, a ratio of parallel chords) transfers back unchanged, while a bare area picks up the factor $\frac{a}{b}$. (2) *Triangle → equilateral*: a unique affine map sends any triangle to any other, so a question about ratios of areas inside a triangle can be solved on the equilateral one and read off by symmetry.
+
+## On contests
+A genuine AIME time-saver on ellipse problems and on "ratio of these two regions of a triangle," and a standard olympiad simplification ("WLOG the triangle is equilateral"). The one discipline is checking that the quantity asked for is affine-invariant — applied to an angle or an absolute length, the answer is simply wrong.`,
+
+"pole-polar": String.raw`## Why it works
+Fix a circle of radius $R$ about $O$. The polar of $P$ is the line of points $Q$ with $\vec{OP} \cdot \vec{OQ} = R^2$; for $P$ outside, that line is exactly the chord of contact through the two tangency points. The defining relation is symmetric in $P$ and $Q$ — La Hire's theorem: $P \in \operatorname{polar}(Q) \iff Q \in \operatorname{polar}(P)$. Because polarity swaps points with lines while preserving incidence, "collinear" and "concurrent" become dual statements, so proving one proves the other.
+
+## How to use it
+The trigger is tangents and secants from a common external point. Then: (1) the chord of contact is a polar you can name; (2) to show three points collinear, show each lies on the polar of one common point (La Hire); (3) a secant from $P$ meeting the circle at $X, Y$ and the polar at $Q$ is a harmonic range $(X, Y; P, Q) = -1$, i.e. $\frac{XP}{YP} = \frac{XQ}{YQ}$, pinning an unknown length with no angle chase. Harmonic ranges stay harmonic under projection, so the relation transports across the whole figure.
+
+## On contests
+Olympiad geometry, where a tangents-and-secants configuration that looks like a trig marathon collapses to two lines of projective bookkeeping. Rarely needed below the olympiad level, but decisive when the figure is built from poles, polars, and harmonic conjugates. Pairs naturally with the radical-axis and power-of-a-point ideas.`,
+
+"directed-angles": String.raw`## Why it works
+Measuring angles between *lines* (not rays) modulo $180^\circ$ makes the two workhorse facts unconditional: $\angle(PA, PB) = \angle(QA, QB)$ *iff* $A, B, P, Q$ are concyclic (or collinear), and $\angle(PA, PB) + \angle(PB, PC) = \angle(PA, PC)$ always. No case split for "$P$ inside vs. outside the circle" or "same vs. opposite arc" — the supplementary-angle ambiguity is precisely the $180^\circ$ you quotiented away.
+
+## How to use it
+Write every angle as $\angle(\ell_1, \ell_2)$, oriented consistently, and compute mod $180^\circ$. Concyclicity becomes one equation you can chain through several circles at once; tangency is the limiting case $\angle(\text{tangent}, \text{chord}) = \angle(\text{inscribed})$. Additivity makes long chases telescope. Mind the limits: directed angles detect collinearity and concyclicity but cannot compare lengths, orient a triangle, or split an angle from its explement — use them to *prove incidence*, then switch tools for anything metric.
+
+## On contests
+Pure olympiad hygiene: the standard way to write an angle chase so one argument covers every configuration a grader might draw, dodging the "what if the point is on the other side" trap. Not something you would cite on AMC/AIME, where numeric answers don't need it, but essential for airtight synthetic write-ups.`,
+
+"phantom-point": String.raw`## Why it works
+The point you want is often *over*-determined: the claim to prove ("$X$ lies on line $\ell$," "the circle passes through $X$") is one condition more than the construction needs. So rather than compute $X$ and verify the extra condition, *define* $X'$ by that condition and verify it satisfies the construction. Two loci that meet in at most two points (two circles, or a circle and a line) share at most two points, so identifying $X$ and $X'$ as "the second intersection beyond a known common point" forces $X = X'$.
+
+## How to use it
+Let $X'$ be the point defined *by the target property* — the second meeting of a circle and a line, a reflection, an intersection with $\ell$. Then prove $X'$ lies on whatever curves define the genuine $X$, usually a one-step angle, power-of-a-point, or similar-triangles check. Conclude $X = X'$ and the property is proved. It is the write-up dual of an auxiliary construction: add the point you wish existed, then show it is the one you already had.
+
+## On contests
+An olympiad technique for concurrency, collinearity, and "prove this circle passes through that point," especially when the honest intersection is algebraically hideous. It converts a hard incidence claim into an easy uniqueness argument. No role on short-answer contests, but a workhorse for synthetic olympiad solutions; see the auxiliary-lines card for its constructive cousin.`,
+
+"area-method": String.raw`## Why it works
+Two triangles sharing a base have areas in the ratio of their apex heights, and two sharing an apex have areas in the ratio of their bases — so a length ratio and an area ratio are interchangeable. Using *signed* areas keeps the identity valid for points on either side of a line, so the bookkeeping never breaks at a configuration boundary. Chaining these swaps expresses any ratio in the figure through areas, where shared bases and heights cancel on their own.
+
+## How to use it
+Pick the triangles that share the segments you care about, then trade each length ratio for the matching area ratio: $\frac{BD}{DC} = \frac{[ABD]}{[ACD]}$ for $D$ on $BC$, and a point $P$ on cevian $AD$ has $\frac{[PBC]}{[ABC]} = \frac{PD}{AD}$. To locate where two cevians cross, write both target ratios as areas and solve. It reproduces Ceva and Menelaus in a line or two, and unlike mass points it survives points *outside* the triangle and parallel-line setups, where no consistent masses exist.
+
+## On contests
+The reliable engine behind "in what ratio is this segment divided" on AMC 12 and AIME, and a clean substitute for mass points when the configuration spills outside the triangle. On olympiads it underlies affine-style area arguments. The cost is a little algebra; the payoff is a method that never gets stuck on which case you are in.`
 
 });
 

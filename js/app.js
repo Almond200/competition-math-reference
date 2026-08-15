@@ -259,6 +259,52 @@
     return best;
   }
 
+  // ---------- Topics (derived tags for filtering & bulk study-list building) ----------
+  // Every formula is auto-tagged with the topics its name / keywords / subsection
+  // match. Topics drive the clickable "#topic" chips and the topic dimension of the
+  // study-list builder, so "add everything about circles" is one action.
+  const TOPIC_RULES = [
+    // Geometry
+    { id: "triangles", label: "triangles", sec: ["geometry"], re: /triangl|cevian|incircle|incenter|circumcenter|centroid|orthocenter|median|altitude|angle bisector|law of (sines|cosines)|heron|stewart|ceva|menelaus|euler line|inradius|circumradius|exradi|similar|proportional|intercept|thales|midsegment/ },
+    { id: "circles", label: "circles", sec: ["geometry"], re: /circle|circular|circum|chord|arc|tangent|inscribed|cyclic|incircle|circumcircle|radical|power of a point|secant|ptolemy|inversion/ },
+    { id: "quadrilaterals", label: "quadrilaterals", sec: ["geometry"], re: /quadrilateral|trapezoid|parallelogram|rectangle|rhombus|brahmagupta|pitot|bretschneider|varignon|\bkite\b/ },
+    { id: "polygons", label: "polygons", sec: ["geometry"], re: /polygon|pentagon|hexagon|octagon|decagon|n-gon|apothem/ },
+    { id: "solid-geometry", label: "3D geometry", sec: ["geometry"], re: /sphere|\bcone\b|cylinder|tetrahedron|prism|pyramid|volume|surface area|dihedral|\bsolid\b|octahedron|\bcube\b|frustum|skew/ },
+    { id: "coordinate-geometry", label: "coordinates", sec: ["geometry"], re: /coordinate|shoelace|distance formula|\bslope\b|lattice|pick|section formula|vector|dot product|cross product|barycentric/ },
+    { id: "angles", label: "angles", sec: ["geometry"], re: /\bangle|inscribed|degree|bisector|directed/ },
+    // Algebra
+    { id: "polynomials", label: "polynomials", sec: ["algebra"], re: /polynomial|vieta|factor|quadratic|discriminant|remainder theorem|rational root|symmetric function|newton|conjugate root|descartes|palindrom/ },
+    { id: "sequences-series", label: "sequences & series", sec: ["algebra"], re: /sequence|series|arithmetic|geometric|telescop|recurrence|fibonacci|progression|summation|partial sum/ },
+    { id: "inequalities", label: "inequalities", sec: ["algebra"], re: /inequalit|am.?gm|cauchy|schwarz|jensen|rearrangement|bernoulli|muirhead|maclaurin|smoothing|tangent line trick|trivial inequality|power mean|normalization/ },
+    { id: "exponents-logs", label: "exponents & logs", sec: ["algebra"], re: /logarithm|\blog\b|exponent|power law/ },
+    { id: "complex-numbers", label: "complex numbers", sec: ["algebra"], re: /complex|imaginary|argand|de moivre|root of unity|roots of unity|conjugate|\bcis\b/ },
+    { id: "trigonometry", label: "trigonometry", re: /trig|sine|cosine|tangent ratio|angle addition|double angle|half angle|product.to.sum|sum.to.product|law of (sines|cosines)|\bsin\b|\bcos\b|\btan\b|pythagorean identity|common-angle/ },
+    { id: "radicals", label: "radicals", sec: ["algebra"], re: /radical|square root|denest|\bsurd\b|nested radical/ },
+    { id: "rates", label: "rates & work", sec: ["algebra"], re: /\brate\b|work rate|mixture|\bspeed\b|average speed/ },
+    { id: "functions", label: "functions", sec: ["algebra"], re: /functional equation|\bfunction\b|composition|involution/ },
+    // Number Theory
+    { id: "primes", label: "primes", sec: ["number-theory"], re: /prime|factoriz|sieve|valuation|legendre|factorial|wilson/ },
+    { id: "modular-arithmetic", label: "modular arithmetic", sec: ["number-theory"], re: /\bmod|congru|residue|fermat|euler|totient|\border\b|primitive root|chinese remainder|\bcrt\b|quadratic residue|lifting the exponent/ },
+    { id: "divisors", label: "divisors", sec: ["number-theory"], re: /divisor|totient|\btau\b|sigma|multiplicative|number of divisors|sum of divisors/ },
+    { id: "gcd", label: "gcd & divisibility", sec: ["number-theory"], re: /\bgcd\b|\blcm\b|divisib|bezout|euclid|coprime/ },
+    { id: "diophantine", label: "diophantine", sec: ["number-theory"], re: /diophantine|\bpell\b|pythagorean triple|frobenius|chicken mcnugget|sum of two squares|vieta jumping|\bcoin\b/ },
+    { id: "digits", label: "digits & bases", sec: ["number-theory"], re: /digit|\bbase\b|decimal|repunit|repeating/ },
+    // Counting
+    { id: "combinatorics", label: "combinatorics", sec: ["counting"], re: /combination|permutation|binomial|choose|factorial|arrangement|counting|hockey stick|vandermonde|multinomial|catalan/ },
+    { id: "probability", label: "probability", sec: ["counting"], re: /probab|expected|random|\bodds\b|variance|distribution|\bbayes\b/ },
+    { id: "expected-value", label: "expected value", sec: ["counting"], re: /expected value|expectation|linearity of expectation/ },
+    { id: "recursion", label: "recursion", re: /recursi|recurrence|fibonacci|catalan/ },
+    { id: "generating-functions", label: "generating functions", re: /generating function/ },
+    { id: "stars-bars", label: "stars & bars", sec: ["counting"], re: /stars and bars|distribut|partition|balls|boxes|composition/ },
+    { id: "pigeonhole", label: "pigeonhole", re: /pigeonhole|double counting|handshake/ },
+    { id: "graph-theory", label: "graphs", sec: ["counting"], re: /\bgraph|vertex|vertices|\bedge|euler.{0,3}formula|planar|region|\btree\b|degree sum/ }
+  ];
+  const TOPICS_BY_ID = {};
+  TOPIC_RULES.forEach(t => { TOPICS_BY_ID[t.id] = t; });
+  // "methods" is a virtual topic keyed off the card type, not a pattern.
+  const METHODS_TOPIC = { id: "methods", label: "methods" };
+  TOPICS_BY_ID.methods = METHODS_TOPIC;
+
   const ALL = [];
   const BY_ID = {};
   SECTIONS.forEach(section => {
@@ -273,15 +319,27 @@
         entry.latexWords = new Set(latexTokens(f.latex));
         entry.mathFrags = mathFragments(f.latex);
         entry.nameLower = f.name.toLowerCase();
+        const hay = (f.name + " " + f.keywords.join(" ") + " " + sub.title).toLowerCase();
+        entry.topics = TOPIC_RULES.filter(t =>
+          (!t.sec || t.sec.indexOf(section.id) !== -1) && t.re && t.re.test(hay));
+        if (f.type === "method") entry.topics = entry.topics.concat(METHODS_TOPIC);
         ALL.push(entry);
         BY_ID[f.id] = entry;
       });
     });
   });
+  function entriesForTopic(topicId) {
+    return ALL.filter(e => e.topics.some(t => t.id === topicId));
+  }
 
   function getRoute() {
-    const m = location.hash.match(/^#\/f\/([\w-]+)$/);
+    let m = location.hash.match(/^#\/f\/([\w-]+)$/);
     if (m && BY_ID[m[1]]) return { type: "formula", entry: BY_ID[m[1]] };
+    m = location.hash.match(/^#\/list\/([\w-]+)$/);
+    if (m && anyList(m[1])) return { type: "list", listId: m[1] };
+    if (/^#\/lists$/.test(location.hash)) return { type: "lists" };
+    m = location.hash.match(/^#\/topic\/([\w-]+)$/);
+    if (m && TOPICS_BY_ID[m[1]]) return { type: "topic", topicId: m[1] };
     return { type: "home" };
   }
 
@@ -293,17 +351,167 @@
     location.hash = "#/f/" + id;
   }
 
-  // ---------- Stars (bookmarks, persisted per-browser) ----------
-
-  let stars;
-  try { stars = new Set(JSON.parse(localStorage.getItem("mq-stars") || "[]")); }
-  catch (e) { stars = new Set(); }
-  function saveStars() {
-    try { localStorage.setItem("mq-stars", JSON.stringify([...stars])); } catch (e) {}
+  // ---------- Study lists (named collections, persisted per-browser) ----------
+  // One data structure holds every list; "starred" is a built-in list so the
+  // one-click star and the named study lists share the same storage. Older
+  // installs kept a bare "mq-stars" array — migrate it into the Starred list.
+  let lists;
+  function loadLists() {
+    try { lists = JSON.parse(localStorage.getItem("mq-lists") || "null"); } catch (e) { lists = null; }
+    if (!lists || !Array.isArray(lists.items)) {
+      let migrated = [];
+      try { migrated = JSON.parse(localStorage.getItem("mq-stars") || "[]"); } catch (e) { migrated = []; }
+      lists = { items: [{ id: "starred", name: "Starred", ids: migrated, builtin: true }] };
+      saveLists();
+    }
+    if (!lists.items.some(l => l.id === "starred")) {
+      lists.items.unshift({ id: "starred", name: "Starred", ids: [], builtin: true });
+    }
+    // Drop ids that no longer exist in the library (e.g. a renamed formula).
+    lists.items.forEach(l => { l.ids = l.ids.filter(id => BY_ID[id]); });
   }
+  function saveLists() { try { localStorage.setItem("mq-lists", JSON.stringify(lists)); } catch (e) {} }
+  function getList(id) { return lists.items.find(l => l.id === id); }
+  function inList(listId, fid) { const l = getList(listId); return !!l && l.ids.indexOf(fid) !== -1; }
+  function listCountFor(fid) { return lists.items.reduce((n, l) => n + (l.ids.indexOf(fid) !== -1 ? 1 : 0), 0); }
+  function toggleMembership(listId, fid) {
+    const l = getList(listId); if (!l) return;
+    const i = l.ids.indexOf(fid);
+    if (i === -1) l.ids.push(fid); else l.ids.splice(i, 1);
+    saveLists();
+  }
+  function addManyToList(listId, fids) {
+    const l = getList(listId); if (!l) return 0;
+    let n = 0;
+    fids.forEach(f => { if (BY_ID[f] && l.ids.indexOf(f) === -1) { l.ids.push(f); n++; } });
+    saveLists();
+    return n;
+  }
+  function createList(name) {
+    const id = "l_" + Math.random().toString(36).slice(2, 8);
+    lists.items.push({ id, name: (name || "").trim() || "Untitled list", ids: [] });
+    saveLists();
+    return id;
+  }
+  function renameList(id, name) { const l = getList(id); if (l && name.trim()) { l.name = name.trim(); saveLists(); } }
+  function deleteList(id) { const l = getList(id); if (l && !l.builtin) { lists.items = lists.items.filter(x => x.id !== id); saveLists(); } }
+
+  loadLists();
+
+  // Curated built-in study sets (read-only), sorted by subject for a tidy grid.
+  // Unknown ids are dropped so the data file can be edited without breaking the app.
+  const SUBJECT_ORDER = { "Geometry": 0, "Algebra": 1, "Number Theory": 2, "Counting": 3, "Methods": 4, "Mixed": 5 };
+  const BUILTIN_LISTS = (window.MATH_BUILTIN_LISTS || [])
+    .map((l, i) => ({ id: l.id, name: l.name, subject: l.subject, ids: (l.ids || []).filter(id => BY_ID[id]), builtinSet: true, _i: i }))
+    .filter(l => l.ids.length)
+    .sort((a, b) => ((SUBJECT_ORDER[a.subject] ?? 9) - (SUBJECT_ORDER[b.subject] ?? 9)) || a._i - b._i);
+  const BUILTIN_BY_ID = {};
+  BUILTIN_LISTS.forEach(l => { BUILTIN_BY_ID[l.id] = l; });
+  function anyList(id) { return getList(id) || BUILTIN_BY_ID[id]; }
+
   function starBtnHtml(id) {
-    const on = stars.has(id);
-    return `<button class="star-btn${on ? " starred" : ""}" data-star="${id}" title="Star for later">${on ? "★" : "☆"}</button>`;
+    const on = inList("starred", id);
+    return `<button class="star-btn${on ? " starred" : ""}" data-star="${id}" title="${on ? "Starred" : "Star for later"}">${on ? "★" : "☆"}</button>`;
+  }
+  // Add-to-list opener: a plain "+".
+  function addListBtnHtml(id) {
+    return `<button class="addlist-btn" data-addlist="${id}" title="Add to a study list" aria-label="Add to a study list">+</button>`;
+  }
+  function refreshAddListButtons() { /* the button is a static "+"; nothing to refresh */ }
+
+  // ---------- Add-to-list popover + toast ----------
+  let menuEl = null;
+  function closeListMenu() {
+    if (!menuEl) return;
+    menuEl.remove();
+    menuEl = null;
+    document.removeEventListener("mousedown", onDocDown, true);
+    document.removeEventListener("keydown", onMenuKey, true);
+  }
+  function onDocDown(e) {
+    if (menuEl && !menuEl.contains(e.target) && !e.target.closest("[data-addlist],[data-bulkadd]")) closeListMenu();
+  }
+  function onMenuKey(e) { if (e.key === "Escape") closeListMenu(); }
+
+  // Plain text glyphs, never emoji: gold star for the built-in Starred list, a
+  // small accent diamond for every other list.
+  function listGlyph(l) {
+    return l.id === "starred" ? `<span class="list-star">&#9733;</span>` : `<span class="list-ico">&#9670;</span>`;
+  }
+  // Add-to-list popover for one formula: membership checkboxes + create-new.
+  // (Bulk selections create their own new list instead of piling into an existing one.)
+  function openListMenu(anchor, fid) {
+    const wasOpen = menuEl && menuEl._anchor === anchor;
+    closeListMenu();
+    if (wasOpen) return;   // a second click on the same opener closes it
+    const rows = lists.items.map(l =>
+      `<li><label class="lm-row"><input type="checkbox" data-lm-toggle="${l.id}"${inList(l.id, fid) ? " checked" : ""}><span class="lm-emoji">${listGlyph(l)}</span><span class="lm-name">${escapeAttr(l.name)}</span></label></li>`
+    ).join("");
+    menuEl = document.createElement("div");
+    menuEl.className = "listmenu";
+    menuEl._anchor = anchor; menuEl._fid = fid;
+    menuEl.innerHTML = `
+      <div class="lm-title">Add to study list</div>
+      <ul class="lm-list">${rows}</ul>
+      <form class="lm-new"><input type="text" placeholder="New list name&hellip;" maxlength="40" autocomplete="off"><button type="submit">Create</button></form>`;
+    document.body.appendChild(menuEl);
+    positionMenu(menuEl, anchor);
+    menuEl.addEventListener("change", onMenuChange);
+    menuEl.addEventListener("submit", onMenuSubmit);
+    setTimeout(() => {
+      document.addEventListener("mousedown", onDocDown, true);
+      document.addEventListener("keydown", onMenuKey, true);
+    }, 0);
+  }
+  function positionMenu(el, anchor) {
+    const r = anchor.getBoundingClientRect();
+    const w = 244, vw = document.documentElement.clientWidth;
+    let left = r.left + window.scrollX;
+    if (left + w > window.scrollX + vw - 8) left = window.scrollX + vw - w - 8;
+    el.style.width = w + "px";
+    el.style.top = (r.bottom + window.scrollY + 6) + "px";
+    el.style.left = Math.max(8 + window.scrollX, left) + "px";
+  }
+  function syncStarButtons(fid) {
+    const on = inList("starred", fid);
+    document.querySelectorAll(`.star-btn[data-star="${fid}"]`).forEach(b => {
+      b.classList.toggle("starred", on); b.textContent = on ? "★" : "☆";
+      b.title = on ? "Starred" : "Star for later";
+    });
+  }
+  function onMenuChange(e) {
+    const cb = e.target.closest("[data-lm-toggle]");
+    if (!cb || !menuEl) return;
+    const fid = menuEl._fid;
+    toggleMembership(cb.dataset.lmToggle, fid);   // toggle = can never add twice
+    refreshAddListButtons(fid);
+    syncStarButtons(fid);
+  }
+  function onMenuSubmit(e) {
+    e.preventDefault();
+    if (!menuEl) return;
+    const inp = menuEl.querySelector(".lm-new input");
+    const name = inp ? inp.value.trim() : "";
+    if (!name) { if (inp) inp.focus(); return; }
+    const fid = menuEl._fid;
+    const id = createList(name);
+    const l = getList(id);
+    addManyToList(id, [fid]);
+    refreshAddListButtons(fid);
+    toast(`Created ${listGlyph(l)} ${escapeAttr(l.name)} &middot; added 1`);
+    closeListMenu();
+    const rt = getRoute();
+    if (rt.type === "list" || rt.type === "lists") render();
+  }
+
+  let toastTimer = null;
+  function toast(msg) {
+    let t = document.getElementById("mq-toast");
+    if (!t) { t = document.createElement("div"); t.id = "mq-toast"; t.className = "toast"; document.body.appendChild(t); }
+    t.innerHTML = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 1900);
   }
 
   // Entries whose formula line is hard to parse without the picture — these
@@ -624,13 +832,15 @@
     return lab ? `<span class="badge badge-imp-${f.importance}" title="${lab[1]}">${lab[0]}</span>` : "";
   }
 
-  function tagRowHtml(f, queryTokens) {
+  function tagRowHtml(f, queryTokens, topics) {
+    const tchips = (topics || []).map(t =>
+      `<span class="topic-chip" data-topic="${escapeAttr(t.id)}" title="Browse everything tagged &ldquo;${escapeAttr(t.label)}&rdquo;">${escapeAttr(t.label)}</span>`);
     const tags = f.keywords.slice(0, 6).map(k => {
       const hit = queryTokens && queryTokens.some(tok =>
         wordsOf(k).some(w => w === tok || (tok.length >= 3 && w.startsWith(tok))));
       return `<span class="tag${hit ? " tag-hit" : ""}" data-tag="${escapeAttr(k)}">${escapeAttr(k)}</span>`;
     });
-    return `<div class="tag-row">${tags.join("")}</div>`;
+    return `<div class="tag-row">${tchips.join("")}${tags.join("")}</div>`;
   }
 
   function cardHtml(entry, showCrumb, queryTokens) {
@@ -646,12 +856,13 @@
           ${crumb}
           <span class="badges">${badgeHtml(f)}</span>
           ${starBtnHtml(f.id)}
+          ${addListBtnHtml(f.id)}
           <button class="copy-btn" data-latex="${escapeAttr(f.latex)}" title="Copy LaTeX">copy tex</button>
         </div>
         <div class="formula-display" data-latex="${escapeAttr(f.latex)}"></div>
         <p class="card-desc">${f.description}</p>
         ${extraHtml(f)}
-        ${tagRowHtml(f, queryTokens)}
+        ${tagRowHtml(f, queryTokens, entry.topics)}
         <div class="more-hint">open full page &rsaquo;</div>
       </article>`;
   }
@@ -966,6 +1177,7 @@
           ${impBadgeHtml(f)}
           <span class="badges">${badgeHtml(f)}</span>
           ${starBtnHtml(f.id)}
+          ${addListBtnHtml(f.id)}
           <button class="copy-btn" data-latex="${escapeAttr(f.latex)}" title="Copy LaTeX">copy tex</button>
           ${asyBtn}
         </div>
@@ -983,7 +1195,7 @@
               ${related.map(r => `<a class="related-item" href="#/f/${r.formula.id}">${r.formula.name}</a>`).join("")}
             </div>
           </div>` : ""}
-        ${tagRowHtml(f, null)}
+        ${tagRowHtml(f, null, entry.topics)}
       </div>`;
     renderMath($content);
   }
@@ -991,6 +1203,9 @@
   function escapeAttr(s) {
     return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   }
+
+  // Ids of the formulas in the current list-style view (used for the empty check).
+  let shownIds = [];
 
   function renderSection(section) {
     const parts = [];
@@ -1000,14 +1215,13 @@
         <p>${section.blurb}</p>
       </div>`);
 
-    let shown = 0;
+    shownIds = [];
+    const subParts = [];
     section.subsections.forEach((sub, i) => {
-      const visible = sortEntries(
-        sub.formulas.filter(passesLevel).map(f => ({ formula: f, section, subsection: sub }))
-      );
+      const visible = sortEntries(sub.formulas.filter(passesLevel).map(f => BY_ID[f.id]));
       if (!visible.length) return;
-      shown += visible.length;
-      parts.push(`
+      visible.forEach(e => shownIds.push(e.formula.id));
+      subParts.push(`
         <div class="subsection" id="sub-${section.id}-${i}">
           <h3>${sub.title}</h3>
           <div class="cards">
@@ -1016,8 +1230,10 @@
         </div>`);
     });
 
-    if (!shown) {
+    if (!shownIds.length) {
       parts.push(`<div class="empty-state"><div class="big">&#8709;</div>No ${section.title} formulas match the selected level filters.</div>`);
+    } else {
+      parts.push(subParts.join(""));
     }
     $content.innerHTML = parts.join("");
     renderMath($content);
@@ -1033,6 +1249,7 @@
     const partialNote = partial
       ? ` <em>(no formula matched every keyword &mdash; showing closest matches)</em>`
       : "";
+    shownIds = sorted.map(e => e.formula.id);
     const parts = [];
     parts.push(`<p class="results-meta"><strong>${sorted.length}</strong> result${sorted.length === 1 ? "" : "s"} for &ldquo;<strong>${escapeAttr(state.query.trim())}</strong>&rdquo;${levelNote}${partialNote}</p>`);
     if (!sorted.length) {
@@ -1050,7 +1267,7 @@
   function renderStarred(section) {
     const entries = [];
     section.subsections.forEach(sub => sub.formulas.forEach(f => {
-      if (stars.has(f.id) && passesLevel(f)) entries.push(BY_ID[f.id]);
+      if (inList("starred", f.id) && passesLevel(f)) entries.push(BY_ID[f.id]);
     }));
     $content.innerHTML = `
       <div class="section-header">
@@ -1063,11 +1280,188 @@
     renderMath($content);
   }
 
+  // ---------- Topic view: every formula tagged with a topic, across sections ----------
+  function renderTopic(topicId) {
+    const topic = TOPICS_BY_ID[topicId];
+    const entries = entriesForTopic(topicId).filter(e => passesLevel(e.formula));
+    shownIds = entries.map(e => e.formula.id);
+    const parts = [`
+      <div class="section-header">
+        <a class="back-link" href="#/lists">&larr; Study lists</a>
+        <h2>${escapeAttr(topic.label)}</h2>
+        <p>Every formula tagged <strong>${escapeAttr(topic.label)}</strong>. To turn a topic into a study list, use the filter builder under Study Lists.</p>
+      </div>`];
+    if (!entries.length) {
+      parts.push(`<div class="empty-state"><div class="big">&#8709;</div>No formulas match this topic at the current level filter.</div>`);
+    } else {
+      parts.push(`<div class="cards">${entries.map(e => cardHtml(e, true, null)).join("")}</div>`);
+    }
+    $content.innerHTML = parts.join("");
+    renderMath($content);
+  }
+
+  // ---------- Lists overview: built-in sets + your lists + a filter builder ----------
+  function listPreview(l) {
+    return l.ids.slice(0, 3).map(id => BY_ID[id] && BY_ID[id].formula.name).filter(Boolean).join(", ");
+  }
+  function subjectClass(s) { return (s || "").toLowerCase().replace(/[^a-z]+/g, "-"); }
+
+  function listCardHtml(l) {
+    const preview = listPreview(l);
+    return `
+      <a class="list-card" href="#/list/${l.id}">
+        <div class="list-card-top">
+          <span class="list-emoji">${listGlyph(l)}</span>
+          <span class="list-name">${escapeAttr(l.name)}</span>
+          ${l.builtin ? `<span class="list-builtin">built-in</span>` : ""}
+        </div>
+        <div class="list-card-count">${l.ids.length} formula${l.ids.length === 1 ? "" : "s"}</div>
+        ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : `<div class="list-card-preview empty">Empty &mdash; add formulas with the &ldquo;+ list&rdquo; button.</div>`}
+      </a>`;
+  }
+  function builtinCardHtml(l) {
+    const preview = listPreview(l);
+    return `
+      <a class="list-card builtin-card" href="#/list/${l.id}">
+        <div class="list-card-top">
+          <span class="list-name">${escapeAttr(l.name)}</span>
+          <span class="list-subject sub-${subjectClass(l.subject)}">${escapeAttr(l.subject)}</span>
+        </div>
+        <div class="list-card-count">${l.ids.length} formulas</div>
+        ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : ""}
+      </a>`;
+  }
+  let builtinExpanded = false;
+  const BUILTIN_PREVIEW_N = 4;
+  function builtinGridInner() {
+    const shown = builtinExpanded ? BUILTIN_LISTS : BUILTIN_LISTS.slice(0, BUILTIN_PREVIEW_N);
+    return shown.map(builtinCardHtml).join("");
+  }
+  function builtinToggleLabel() {
+    return builtinExpanded ? "Show less" : ("Show all " + BUILTIN_LISTS.length + " &#9662;");
+  }
+
+  const IMP_OPTS = [["", "any importance"], ["high", "high"], ["medium", "medium"], ["low", "low"]];
+  // Topics available inside a section (empty = every topic). Cross-cutting topics
+  // (methods, trig, recursion…) show up wherever a formula in that section carries them.
+  function topicsInSection(secId) {
+    const all = TOPIC_RULES.concat(METHODS_TOPIC);
+    if (!secId) return all;
+    const present = {};
+    ALL.forEach(e => { if (e.section.id === secId) e.topics.forEach(t => { present[t.id] = 1; }); });
+    return all.filter(t => present[t.id]);
+  }
+  function topicOptionsHtml(secId, current) {
+    return `<option value="">any topic</option>` + topicsInSection(secId)
+      .map(t => `<option value="${t.id}"${t.id === current ? " selected" : ""}>${t.label}</option>`).join("");
+  }
+  function builderHtml() {
+    const secOpts = [`<option value="">any section</option>`]
+      .concat(SECTIONS.map(s => `<option value="${s.id}">${s.title}</option>`)).join("");
+    const impOpts = IMP_OPTS.map(o => `<option value="${o[0]}">${o[1]}</option>`).join("");
+    const lvlChips = LEVELS.map(l => `<button type="button" class="b-lvl-chip" data-blvl="${l}">${LEVEL_LABELS[l]}</button>`).join("");
+    const listOpts = `<option value="__new">&#43; new list&hellip;</option>` +
+      lists.items.map(l => `<option value="${l.id}">${escapeAttr(l.name)}</option>`).join("");
+    return `
+      <div class="builder">
+        <h3>Build a list from filters</h3>
+        <p class="builder-sub">Pick any combination &mdash; e.g. <em>Geometry &middot; low</em>, or topic <em>circles</em> &mdash; then add every match to a new or existing list.</p>
+        <div class="builder-row">
+          <select id="b-sec">${secOpts}</select>
+          <select id="b-topic">${topicOptionsHtml("", "")}</select>
+          <select id="b-imp">${impOpts}</select>
+        </div>
+        <div class="builder-row builder-levels">
+          <span class="builder-lbl">Levels</span>
+          ${lvlChips}
+        </div>
+        <div class="builder-row builder-act">
+          <span class="builder-count" id="b-count">&mdash;</span>
+          <label class="builder-into">Add to
+            <select id="b-list">${listOpts}</select>
+          </label>
+          <input id="b-newname" type="text" placeholder="New list name&hellip;" maxlength="40" autocomplete="off">
+          <button id="b-add" class="builder-add">Add matches</button>
+        </div>
+      </div>`;
+  }
+
+  function renderLists() {
+    shownIds = [];
+    const userCards = lists.items.map(listCardHtml).join("");
+    const moreBtn = BUILTIN_LISTS.length > BUILTIN_PREVIEW_N
+      ? `<button class="show-more-btn" id="builtin-toggle">${builtinToggleLabel()}</button>` : "";
+    $content.innerHTML = `
+      <div class="section-header">
+        <h2>Study Lists</h2>
+        <p>Curated study sets to learn a theme end to end, plus your own compilations. Add any formula to a list with the &ldquo;+ list&rdquo; button on its card.</p>
+      </div>
+
+      <section class="lists-section">
+        <h3 class="lists-subhead">Built-in study sets</h3>
+        <p class="lists-subnote">Ready-made, medium-length compilations &mdash; one focused theme each, labeled by subject.</p>
+        <div class="list-grid" id="builtin-grid">${builtinGridInner()}</div>
+        ${moreBtn}
+      </section>
+
+      <section class="lists-section">
+        <h3 class="lists-subhead">Your lists</h3>
+        <div class="lists-toolbar">
+          <form class="lists-new" id="lists-new-form">
+            <input type="text" id="lists-new-name" placeholder="Name a new list&hellip;" maxlength="40" autocomplete="off">
+            <button type="submit">Create list</button>
+          </form>
+        </div>
+        <div class="list-grid">${userCards}</div>
+        ${builderHtml()}
+      </section>`;
+    renderMath($content);
+    updateBuilderCount();
+  }
+
+  function renderListDetail(listId) {
+    const userL = getList(listId);
+    const l = userL || BUILTIN_BY_ID[listId];
+    if (!l) { location.hash = "#/lists"; return; }
+    const isBuiltin = !userL;
+    const entries = l.ids.map(id => BY_ID[id]).filter(Boolean);
+    shownIds = entries.map(e => e.formula.id);
+    const tools = isBuiltin ? "" : `
+      <div class="list-detail-tools">
+        ${l.builtin ? "" : `<button class="list-tool" data-list-rename="${l.id}">Rename</button>`}
+        ${entries.length ? `<button class="list-tool danger" data-list-clear="${l.id}">Clear</button>` : ""}
+        ${l.builtin ? "" : `<button class="list-tool danger" data-list-delete="${l.id}">Delete list</button>`}
+      </div>`;
+    const glyph = isBuiltin ? `<span class="list-ico">&#9670;</span>` : `<span class="list-emoji">${listGlyph(l)}</span>`;
+    $content.innerHTML = `
+      <div class="detail">
+        <a class="back-link" href="#/lists">&larr; All study lists</a>
+        <div class="list-detail-head">
+          <h2>${glyph} ${escapeAttr(l.name)}</h2>
+          <span class="list-detail-count">${entries.length} formula${entries.length === 1 ? "" : "s"}</span>
+          ${isBuiltin ? `<span class="list-subject sub-${subjectClass(l.subject)}">${escapeAttr(l.subject)}</span>` : ""}
+        </div>
+        ${isBuiltin ? `<p class="detail-crumb builtin-note">Built-in study set &mdash; hit &ldquo;+ list&rdquo; on any card to copy it into one of your own lists.</p>` : ""}
+        ${tools}
+        ${entries.length
+          ? `<div class="cards">${entries.map(e => cardHtml(e, true, null)).join("")}</div>`
+          : `<div class="empty-state"><div class="big">${glyph}</div>This list is empty. Open any formula and hit &ldquo;+ list&rdquo;, or use the builder in <a href="#/lists">Study Lists</a>.</div>`}
+      </div>`;
+    renderMath($content);
+  }
+
   function render() {
     const route = getRoute();
     const section = SECTIONS.find(s => s.id === state.activeSectionId) || SECTIONS[0];
+    closeListMenu();
     if (route.type === "formula") {
       renderDetail(route.entry);
+    } else if (route.type === "topic") {
+      renderTopic(route.topicId);
+    } else if (route.type === "lists") {
+      renderLists();
+    } else if (route.type === "list") {
+      renderListDetail(route.listId);
     } else if (state.starredOnly) {
       if (section) renderStarred(section);
     } else if (state.query.trim()) {
@@ -1117,8 +1511,9 @@
   }
 
   function updateNavActive() {
+    const onHome = getRoute().type === "home";
     $sidebar.querySelectorAll(".nav-section").forEach(el => {
-      const isActive = !state.query.trim() && !state.starredOnly && el.dataset.section === state.activeSectionId;
+      const isActive = onHome && !state.query.trim() && !state.starredOnly && el.dataset.section === state.activeSectionId;
       el.classList.toggle("open", isActive);
       el.querySelector(".nav-section-btn").classList.toggle("active", isActive);
     });
@@ -1212,6 +1607,16 @@
     window.scrollTo({ top: 0 });
   });
 
+  // Lists → the study-lists overview.
+  const $listsBtn = document.getElementById("lists-btn");
+  if ($listsBtn) $listsBtn.addEventListener("click", () => {
+    clearSearch();
+    clearStarredFilter();
+    if (getRoute().type === "lists") return;
+    if (location.hash === "#/lists") render(); else location.hash = "#/lists";
+    window.scrollTo({ top: 0 });
+  });
+
   // Top → smooth-scroll back to the top of the current page.
   const $top = document.getElementById("top-btn");
   if ($top) $top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
@@ -1286,15 +1691,13 @@
     const starBtn = e.target.closest(".star-btn");
     if (starBtn) {
       const id = starBtn.dataset.star;
-      if (stars.has(id)) stars.delete(id); else stars.add(id);
-      saveStars();
-      if (state.starredOnly) {
+      toggleMembership("starred", id);
+      const route = getRoute();
+      if (state.starredOnly || route.type === "list" || route.type === "lists") {
         render();
       } else {
-        document.querySelectorAll(`.star-btn[data-star="${id}"]`).forEach(b => {
-          b.classList.toggle("starred", stars.has(id));
-          b.textContent = stars.has(id) ? "★" : "☆";
-        });
+        syncStarButtons(id);
+        refreshAddListButtons(id);
       }
       return;
     }
@@ -1314,10 +1717,116 @@
       window.scrollTo({ top: 0 });
       return;
     }
+    const addlistBtn = e.target.closest(".addlist-btn");
+    if (addlistBtn) { openListMenu(addlistBtn, addlistBtn.dataset.addlist); return; }
+    const topicChip = e.target.closest(".topic-chip");
+    if (topicChip) { location.hash = "#/topic/" + topicChip.dataset.topic; window.scrollTo({ top: 0 }); return; }
+    const btoggle = e.target.closest("#builtin-toggle");
+    if (btoggle) {
+      builtinExpanded = !builtinExpanded;
+      const grid = document.getElementById("builtin-grid");
+      if (grid) { grid.innerHTML = builtinGridInner(); renderMath(grid); }
+      btoggle.innerHTML = builtinToggleLabel();
+      return;
+    }
+    const blvl = e.target.closest(".b-lvl-chip");
+    if (blvl) { blvl.classList.toggle("active"); updateBuilderCount(); return; }
+    const badd = e.target.closest("#b-add");
+    if (badd) { runBuilderAdd(); return; }
+    const rn = e.target.closest("[data-list-rename]");
+    if (rn) {
+      const l = getList(rn.dataset.listRename);
+      if (l) { const name = prompt("Rename list:", l.name); if (name && name.trim()) { renameList(l.id, name); render(); } }
+      return;
+    }
+    const del = e.target.closest("[data-list-delete]");
+    if (del) {
+      const l = getList(del.dataset.listDelete);
+      if (l && confirm(`Delete the list “${l.name}”? The formulas themselves are not affected.`)) { deleteList(l.id); location.hash = "#/lists"; }
+      return;
+    }
+    const clr = e.target.closest("[data-list-clear]");
+    if (clr) {
+      const l = getList(clr.dataset.listClear);
+      if (l && confirm(`Remove all ${l.ids.length} formulas from “${l.name}”?`)) { l.ids = []; saveLists(); render(); }
+      return;
+    }
     if (e.target.closest("a")) return; // let real links (related items, back link) navigate
     const card = e.target.closest(".card[data-id]");
     if (card) {
       openFormula(card.dataset.id);
+    }
+  });
+
+  // ---------- Bulk save (browsing / search / topic → a brand-new list) ----------
+  // ---------- Study-list builder (filters → a new or existing list) ----------
+  function builderMatchIds() {
+    const val = id => { const el = document.getElementById(id); return el ? el.value : ""; };
+    const sec = val("b-sec"), topic = val("b-topic"), imp = val("b-imp");
+    const levels = [].slice.call(document.querySelectorAll(".b-lvl-chip.active")).map(c => c.dataset.blvl);
+    return ALL.filter(e => {
+      const f = e.formula;
+      if (sec && e.section.id !== sec) return false;
+      if (topic && !e.topics.some(t => t.id === topic)) return false;
+      if (imp && f.importance !== imp) return false;
+      if (levels.length && !levels.some(l => f.level.indexOf(l) !== -1)) return false;
+      return true;
+    }).map(e => e.formula.id);
+  }
+  function updateBuilderCount() {
+    const el = document.getElementById("b-count");
+    if (!el) return;
+    const n = builderMatchIds().length;
+    el.textContent = n + " match" + (n === 1 ? "" : "es");
+    el.classList.toggle("none", n === 0);
+  }
+  function runBuilderAdd() {
+    const ids = builderMatchIds();
+    if (!ids.length) { toast("No formulas match those filters"); return; }
+    const sel = document.getElementById("b-list");
+    let listId = sel ? sel.value : "__new";
+    if (listId === "__new") {
+      const nn = document.getElementById("b-newname");
+      const name = nn ? nn.value.trim() : "";
+      if (!name) { if (nn) nn.focus(); toast("Name the new list first"); return; }
+      listId = createList(name);
+    }
+    const l = getList(listId);
+    if (!l) { toast("Pick a list to add to"); return; }
+    const n = addManyToList(listId, ids);   // dedup: already-present ids aren't re-added
+    const dup = ids.length - n;
+    toast(`Added ${n} to ${listGlyph(l)} ${escapeAttr(l.name)}${dup ? ` &middot; ${dup} already there` : ""}`);
+    location.hash = "#/list/" + listId;
+    window.scrollTo({ top: 0 });
+  }
+
+  $content.addEventListener("change", e => {
+    if (e.target.id === "b-sec") {
+      const topicSel = document.getElementById("b-topic");
+      if (topicSel) {
+        const cur = topicSel.value;
+        const stillValid = topicsInSection(e.target.value).some(t => t.id === cur);
+        topicSel.innerHTML = topicOptionsHtml(e.target.value, stillValid ? cur : "");
+      }
+      updateBuilderCount();
+      return;
+    }
+    if (e.target.id === "b-list") {
+      const nn = document.getElementById("b-newname");
+      if (nn) { const isNew = e.target.value === "__new"; nn.hidden = !isNew; if (isNew) nn.focus(); }
+      return;
+    }
+    if (e.target.closest("#b-topic, #b-imp")) updateBuilderCount();
+  });
+
+  $content.addEventListener("submit", e => {
+    const nf = e.target.closest("#lists-new-form");
+    if (nf) {
+      e.preventDefault();
+      const inp = document.getElementById("lists-new-name");
+      const name = inp ? inp.value.trim() : "";
+      if (!name) { if (inp) inp.focus(); return; }
+      location.hash = "#/list/" + createList(name);
     }
   });
 

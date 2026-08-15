@@ -355,13 +355,22 @@
   })()];
 
   DIAGRAMS["angle-bisector-length"] = [(() => {
-    const c = dist(A, B), b = dist(A, C), D = lerp(B, C, c / (b + c));
+    // Bisected angle at C (top), so the two sides meeting there are a and b —
+    // matching d² = ab − mn — and the opposite side AB is split into m, n.
+    const Cv = [180, 48], Av = [58, 272], Bv = [368, 272];
+    const b = dist(Cv, Av), a = dist(Cv, Bv);
+    const D = lerp(Av, Bv, b / (a + b));            // AD:DB = CA:CB = b:a
+    const cen = centroidOf(Av, Bv, Cv);
+    const vl = (p, s) => txt(add(away(p, cen, 16), [0, 4.5]), s, DIM, 13.5);
     return wrap(430, 330, [
-      ABC(), seg(A, D, ACC, 2.5), dot(D, ACC, 3.5),
-      angleArc(A, B, D, 24, GLD, true), angleArc(A, D, C, 24, GLD, true),
-      txt(add(mid(A, D), [14, 0]), "d", ACC, 14),
-      txt(add(mid(B, D), [0, 18]), "m", DIM, 12), txt(add(mid(D, C), [0, 18]), "n", DIM, 12),
-      cap(430, 330, "d² = ab − mn")
+      poly([Cv, Av, Bv], DIM, 2),
+      vl(Cv, "C"), vl(Av, "A"), vl(Bv, "B"),
+      seg(Cv, D, ACC, 2.5), dot(D, ACC, 3.5),
+      angleArc(Cv, Av, D, 24, GLD, true), angleArc(Cv, D, Bv, 24, GLD, true),
+      txt(add(mid(Cv, D), [14, 0]), "d", ACC, 14),
+      txt(add(mid(Av, D), [0, 18]), "m", DIM, 12), txt(add(mid(D, Bv), [0, 18]), "n", DIM, 12),
+      txt(add(mid(Cv, Av), [-15, -2]), "b", DIM, 12.5), txt(add(mid(Cv, Bv), [15, -2]), "a", DIM, 12.5),
+      cap(430, 330, "d² = ab − mn  (bisector of angle C)")
     ]);
   })()];
 
@@ -2069,6 +2078,109 @@
       txt(add(I, [-15, -9]), "I", GRN, 12.5),
       angleArc(I, C2, B2, 21, GRN), txt(add(I, [-30, 25]), "90°+A/2", GRN, 11),
       cap(460, 400, "from side BC: the circumcenter O subtends 2A (central angle), the incenter I subtends 90° + A/2")
+    ]);
+  })()];
+
+  DIAGRAMS["barycentric-coordinates"] = [(() => {
+    const A = [216, 62], B = [72, 300], C = [360, 300];
+    const P = [(2 * A[0] + 3 * B[0] + 5 * C[0]) / 10, (2 * A[1] + 3 * B[1] + 5 * C[1]) / 10];
+    const cen = centroidOf(A, B, C), GRNS = "rgba(76, 195, 138, 0.13)";
+    return wrap(440, 360, [
+      poly([P, B, C], DIM, 1.4, ACCS), poly([P, C, A], DIM, 1.4, GLDS), poly([P, A, B], DIM, 1.4, GRNS),
+      poly([A, B, C], DIM, 2),
+      seg(A, P, FNT, 1.2), seg(B, P, FNT, 1.2), seg(C, P, FNT, 1.2),
+      dot(P, DIM, 4), txt(add(P, [12, 4]), "P", DIM, 12.5),
+      txt(away(A, cen, 16), "A", DIM, 12.5), txt(away(B, cen, 16), "B", DIM, 12.5), txt(away(C, cen, 16), "C", DIM, 12.5),
+      txt(centroidOf(P, B, C), "[PBC]", ACC, 11), txt(centroidOf(P, C, A), "[PCA]", GLD, 11), txt(centroidOf(P, A, B), "[PAB]", GRN, 11),
+      cap(440, 360, "P = (α:β:γ) with α:β:γ = [PBC]:[PCA]:[PAB]")
+    ]);
+  })()];
+
+  DIAGRAMS["affine-transformations"] = [(() => {
+    // Left: an ellipse with an inscribed triangle. Right: the same triangle after
+    // a one-axis scale turns the ellipse into a circle — area ratios unchanged.
+    const Ec = [116, 158], erx = 84, ery = 48, Cc = [322, 150], R = 66;
+    const angs = [-90, 150, 30];
+    const ell = angs.map(a => [Ec[0] + erx * Math.cos(rad(a)), Ec[1] + ery * Math.sin(rad(a))]);
+    const cir = angs.map(a => [Cc[0] + R * Math.cos(rad(a)), Cc[1] + R * Math.sin(rad(a))]);
+    const ellipse = `<ellipse cx="${Ec[0]}" cy="${Ec[1]}" rx="${erx}" ry="${ery}" fill="none" stroke="${FNT}" stroke-width="1.5"/>`;
+    const arrow = seg([214, 152], [252, 152], DIM, 2) +
+      `<polyline points="246,147 252,152 246,157" fill="none" stroke="${DIM}" stroke-width="2"/>`;
+    return wrap(420, 300, [
+      ellipse, poly(ell, ACC, 1.8, ACCS),
+      circ(Cc, R, FNT, 1.5), poly(cir, GLD, 1.8, GLDS),
+      arrow, txt([233, 143], "scale", DIM, 11),
+      txt(add(Ec, [0, ery + 22]), "ellipse", DIM, 11.5),
+      txt(add(Cc, [0, R + 22]), "circle", DIM, 11.5),
+      cap(420, 300, "one-axis scale: ellipse → circle; ratios of areas are unchanged")
+    ]);
+  })()];
+
+  DIAGRAMS["pole-polar"] = [(() => {
+    const O = [168, 165], R = 92, P = [372, 150];
+    const [Ta, Tb] = tangentPoints(O, R, P);         // chord of contact = polar of P
+    const S = [150, 100];                            // interior aim → secant crosses twice
+    const [X, Y] = circleLineInts(O, R, P, S);
+    const Q = lineInt(P, S, Ta, Tb);
+    return wrap(430, 320, [
+      circ(O, R), dot(O, DIM, 3),
+      seg(P, Ta, DIM, 1.6), seg(P, Tb, DIM, 1.6),     // the two tangents
+      seg(Ta, Tb, ACC, 2.2),                          // polar (chord of contact)
+      seg(P, X, GLD, 1.8),                            // secant PXY
+      dot(Ta, ACC, 3.5), dot(Tb, ACC, 3.5), dot(P, DIM, 4),
+      dot(X, GLD, 3.5), dot(Y, GLD, 3.5), dot(Q, ACC, 4),
+      txt(add(Ta, [10, -6]), "A", ACC, 12.5), txt(add(Tb, [10, 12]), "B", ACC, 12.5),
+      txt(add(P, [12, 4]), "P", DIM, 13), txt(add(Q, [-2, -10]), "Q", ACC, 12),
+      txt(add(X, [-12, -2]), "X", GLD, 12), txt(add(Y, [-4, 16]), "Y", GLD, 12),
+      cap(430, 320, "polar of P = chord of contact AB;  (X, Y; P, Q) = −1")
+    ]);
+  })()];
+
+  DIAGRAMS["directed-angles"] = [(() => {
+    const O = [205, 168], R = 116;
+    const A = onC(O, R, 200), B = onC(O, R, 340);     // chord AB (upper arc)
+    const C = onC(O, R, 70), D = onC(O, R, 115);       // two viewpoints on the lower arc
+    return wrap(430, 330, [
+      circ(O, R),
+      seg(A, B, DIM, 1.4, "5 4"),
+      seg(C, A, ACC, 1.8), seg(C, B, ACC, 1.8),
+      seg(D, A, GLD, 1.8), seg(D, B, GLD, 1.8),
+      angleArc(C, A, B, 20, ACC), angleArc(D, A, B, 20, GLD),
+      dot(A, DIM, 3.5), dot(B, DIM, 3.5), dot(C, ACC, 3.5), dot(D, GLD, 3.5),
+      txt(add(away(A, O, 15), [0, 4]), "A", DIM, 12.5),
+      txt(add(away(B, O, 15), [0, 4]), "B", DIM, 12.5),
+      txt(add(away(C, O, 15), [0, 4]), "C", ACC, 12.5),
+      txt(add(away(D, O, 15), [0, 4]), "D", GLD, 12.5),
+      cap(430, 330, "∠(CA, CB) = ∠(DA, DB): one directed-angle test for every configuration")
+    ]);
+  })()];
+
+  DIAGRAMS["phantom-point"] = [(() => {
+    // Two circles meet in ≤ 2 points; if X and X' are both the second common point
+    // beyond the known K, they must coincide — the standard phantom-point closer.
+    const O1 = [162, 168], O2 = [300, 168], R = 100;
+    const d = dist(O1, O2), mx = (O1[0] + O2[0]) / 2;
+    const hy = Math.sqrt(Math.max(0, R * R - (d / 2) * (d / 2)));
+    const K = [mx, O1[1] - hy], X = [mx, O1[1] + hy];
+    return wrap(430, 330, [
+      circ(O1, R), circ(O2, R), dot(O1, DIM, 2.5), dot(O2, DIM, 2.5),
+      seg(O1, O2, FNT, 1.2, "4 4"),
+      dot(K, DIM, 3.5), dot(X, ACC, 5),
+      txt(add(K, [0, -10]), "K", DIM, 12.5),
+      txt(add(X, [14, 18]), "X = X′", ACC, 13),
+      cap(430, 330, "X and X′ are both the second intersection of the two circles ⇒ X = X′")
+    ]);
+  })()];
+
+  DIAGRAMS["area-method"] = [(() => {
+    const D = lerp(B, C, 0.62);
+    return wrap(430, 330, [
+      poly([A, B, D], ACC, 1.4, ACCS), poly([A, C, D], GLD, 1.4, GLDS),
+      ABC(), seg(A, D, DIM, 2), dot(D, DIM, 3.5),
+      txt(add(D, [12, -2]), "D", DIM, 12),
+      txt(centroidOf(A, B, D), "[ABD]", ACC, 11), txt(centroidOf(A, C, D), "[ACD]", GLD, 11),
+      txt(add(mid(B, D), [0, 19]), "BD", DIM, 11.5), txt(add(mid(D, C), [0, 19]), "DC", DIM, 11.5),
+      cap(430, 330, "[ABD] / [ACD] = BD / DC  (shared apex A)")
     ]);
   })()];
 

@@ -423,10 +423,10 @@ window.MATH_SECTIONS.push({
         {
           id: "chicken-mcnugget",
           name: "Chicken McNugget (Frobenius) Theorem",
-          latex: String.raw`\text{largest non-representable} = ab - a - b`,
-          description: String.raw`For coprime positive $a, b$: the largest integer not expressible as $ax + by$ with $x, y \ge 0$. Exactly $\frac{(a-1)(b-1)}{2}$ values are non-representable.`,
+          latex: String.raw`g(a,b) = ab - a - b, \qquad \#\{\text{non-representable}\} = \frac{(a-1)(b-1)}{2}`,
+          description: String.raw`For coprime positive $a, b$: the largest integer not expressible as $ax + by$ with $x, y \ge 0$ is $ab - a - b$. Sylvester's count: exactly $\frac{(a-1)(b-1)}{2}$ nonnegative integers are non-representable.`,
           example: String.raw`Stamps worth $5$ and $8$: the largest amount you cannot make is $5 \cdot 8 - 5 - 8 = 27$, and $\frac{4 \cdot 7}{2} = 14$ amounts are impossible in total ($1, 2, 3, 4, 6, 7, 9, 11, 12, 14, 17, 19, 22, 27$).`,
-          keywords: ["frobenius", "postage stamp", "non-representable", "coprime"],
+          keywords: ["frobenius", "sylvester", "sylvester formula", "coin problem", "postage stamp", "non-representable", "coprime"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },

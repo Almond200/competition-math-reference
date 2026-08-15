@@ -235,7 +235,7 @@ window.MATH_SECTIONS.push({
         {
           id: "exradii",
           name: "Excircles & Exradii",
-          latex: String.raw`r_a = \frac{A}{s - a} = s \tan\frac{A}{2}, \qquad \frac{1}{r} = \frac{1}{r_a} + \frac{1}{r_b} + \frac{1}{r_c}, \qquad r\, r_a r_b r_c = A^2, \qquad r_a = s\tan\frac{A}{2}`,
+          latex: String.raw`r_a = \frac{A}{s - a} = s \tan\frac{A}{2}, \qquad \frac{1}{r} = \frac{1}{r_a} + \frac{1}{r_b} + \frac{1}{r_c}, \qquad r\, r_a r_b r_c = A^2`,
           description: String.raw`The excircle opposite $A$ touches side $a$ and the extensions of the other two sides; its radius satisfies $A = r_a(s-a)$, mirroring $A = rs$. The tangent length from $A$ to its excircle is exactly $s$. Also $r_a = s\tan\frac{A}{2}$ while $r = (s-a)\tan\frac{A}{2}$.`,
           example: String.raw`The $13$-$14$-$15$ triangle ($A = 84$, $s = 21$): $r_a = \frac{84}{21-14} = 12$ for the excircle opposite the side of length $14$, versus inradius $r = 4$.`,
           keywords: ["excircle", "exradius", "exradius formula", "exradii", "s minus a", "escribed circle", "tangent length s", "ra"],
@@ -290,8 +290,8 @@ window.MATH_SECTIONS.push({
           id: "angle-bisector-length",
           name: "Length of an Angle Bisector",
           latex: String.raw`d^2 = ab - mn`,
-          description: String.raw`Where $a, b$ are the sides adjacent to the bisected angle and $m, n$ are the segments the bisector cuts the opposite side into.`,
-          example: String.raw`Continuing the $6$-$8$-$7$ example above: $d^2 = 6 \cdot 8 - 3 \cdot 4 = 36$, so the bisector from $A$ has length exactly $6$.`,
+          description: String.raw`The bisector of angle $C$ has length $d$, where $a, b$ are the two sides meeting at $C$ and $m, n$ are the segments it cuts the opposite side $AB$ into. (Equivalently $d^2 = ab\left[1 - \left(\tfrac{c}{a+b}\right)^2\right]$.)`,
+          example: String.raw`A triangle with sides $a = 6$, $b = 8$ around the bisected angle $C$ and opposite side $c = 7$: the bisector splits $c$ into $m = 3$, $n = 4$ (ratio $6:8$), so $d^2 = 6 \cdot 8 - 3 \cdot 4 = 36$ and the bisector has length exactly $6$.`,
           keywords: ["angle bisector length", "cevian", "segments"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -1347,6 +1347,16 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "barycentric-coordinates",
+          name: "Barycentric Coordinates",
+          type: "method",
+          latex: String.raw`P = \alpha A + \beta B + \gamma C, \quad \alpha + \beta + \gamma = 1, \quad (\alpha : \beta : \gamma) = [PBC] : [PCA] : [PAB]`,
+          description: String.raw`Write each point as a mass-weighted average of the triangle's vertices; the normalized weights are the signed sub-triangle area ratios. Standard centers are clean: centroid $(1:1:1)$, incenter $(a:b:c)$, circumcenter $\bigl(a^2(b^2+c^2-a^2):\cdots\bigr)$, orthocenter $(\tan A:\tan B:\tan C)$. Cevians and lines become linear equations, and collinearity/concurrence become $3\times 3$ determinants — a coordinate system tailored to the triangle, ideal when a configuration is drowning in ratios and named centers.`,
+          keywords: ["barycentric coordinates", "areal coordinates", "area ratios", "mass points", "incenter circumcenter coordinates", "homogeneous coordinates", "method"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "coordinate-bash",
           name: "Coordinate Bashing",
           type: "method",
@@ -1385,6 +1395,56 @@ window.MATH_SECTIONS.push({
           keywords: ["complex bash", "complex numbers geometry", "rotation by multiplication", "roots of unity polygon", "equilateral condition", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "affine-transformations",
+          name: "Affine Transformations",
+          type: "method",
+          latex: String.raw`\text{parallelism, midpoints, and area ratios are preserved} \qquad \text{ellipse} \xrightarrow{\text{scale}} \text{circle}, \;\; \text{triangle} \xrightarrow{\text{affine}} \text{equilateral}`,
+          description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths *along a line*, midpoints, and multiplies every area by the same constant — so *ratios* of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-*ratio* question cannot tell them apart. It does **not** preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities.`,
+          keywords: ["affine transformation", "shear", "scaling", "stretch", "ellipse to circle", "area ratio invariant", "map to equilateral", "wlog equilateral", "method"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "pole-polar",
+          name: "Pole, Polar & Harmonic Division",
+          type: "method",
+          latex: String.raw`\text{polar of } P = \text{chord of contact } AB \qquad (X, Y;\, P, Q) = -1`,
+          description: String.raw`The polar of a point $P$ with respect to a circle packages all of $P$'s tangent–secant data into one line: when $P$ is outside, its polar is the chord of contact $AB$ joining the two tangency points. Duality (La Hire): $P$ lies on the polar of $Q$ iff $Q$ lies on the polar of $P$ — so "these three points are collinear / these three lines concur" collapses to a one-line pole–polar statement. Every secant from $P$ meeting the circle at $X, Y$ and the polar at $Q$ yields the harmonic bundle $(X, Y; P, Q) = -1$, which is exactly what a tangents-and-secants figure produces, trivializing problems that would otherwise be pages of trig.`,
+          keywords: ["pole polar", "polar line", "chord of contact", "harmonic division", "harmonic conjugate", "cross ratio", "la hire", "projective geometry", "method"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "directed-angles",
+          name: "Directed Angles (mod 180°)",
+          type: "method",
+          latex: String.raw`\angle(\ell_1, \ell_2) \bmod 180^\circ \qquad A, B, C, D \text{ concyclic} \iff \angle(CA, CB) = \angle(DA, DB)`,
+          description: String.raw`A directed angle $\angle(\ell_1, \ell_2)$ is the rotation carrying line $\ell_1$ to line $\ell_2$, read modulo $180^\circ$ (lines, not rays). This single convention erases configuration dependence: the concyclic test is *always* $\angle(CA, CB) = \angle(DA, DB)$, with no separate "equal vs. supplementary" branches for which side of the chord a point lands on. An angle-chase that would otherwise need a fresh diagram for every configuration becomes one computation valid for all of them. Trade-off: directed angles prove collinearity and concyclicity but carry no length information and no absolute sign, so they finish incidence problems, not metric ones.`,
+          keywords: ["directed angles", "mod 180", "configuration independence", "concyclic test", "angle chasing", "supplementary cases", "method"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "phantom-point",
+          name: "Phantom Point Method",
+          type: "method",
+          latex: String.raw`\text{define } X' \text{ with the target property, then prove } X' = X`,
+          description: String.raw`To show a hard-to-pin point $X$ (a messy intersection) has some property — lies on a line, on a circle, at a tangency — reverse the construction: *define* a phantom point $X'$ that has the desired property by fiat, then prove $X' = X$. Coinciding two points is usually far easier than computing the ugly intersection directly. The standard closer: two circles (or a circle and a line) meet in at most two points, so if $X$ and $X'$ are both the second common point beyond a known one, they must be equal. It's the proof-writing twin of auxiliary constructions, aimed at concurrency, collinearity, and "prove the circle passes through this point."`,
+          keywords: ["phantom point", "ghost point", "prove points coincide", "second intersection", "concurrency", "reverse reconstruction", "method"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "area-method",
+          name: "The Area Method (Area Ratios)",
+          type: "method",
+          latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
+          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points *outside* the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
+          keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
         }
       ]
     }

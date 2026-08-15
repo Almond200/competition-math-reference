@@ -961,6 +961,16 @@ window.MATH_SECTIONS.push({
           keywords: ["normalization", "homogenize", "wlog scale", "set sum to 1", "degree of freedom", "homogeneous inequality", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "tangent-line-trick",
+          name: "Tangent Line Trick",
+          type: "method",
+          latex: String.raw`f(x) \ge f(a) + f'(a)(x - a) \quad (f \text{ convex}), \qquad a = \tfrac{s}{n}`,
+          description: String.raw`To prove a symmetric inequality $\sum f(x_i) \ge C$ under a constraint $\sum x_i = s$, bound $f$ below by its tangent line at the equality point $a = s/n$: for convex $f$, $f(x) \ge f(a) + f'(a)(x-a)$, and summing the linear right-hand sides collapses to a one-line bound. It works whenever equality holds at all-variables-equal; just verify the tangent bound holds across the domain (usually a $(x-a)^2 \ge 0$ factor).`,
+          keywords: ["tangent line trick", "sos", "convex", "symmetric inequality", "equality case", "linear bound", "method"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
         }
       ]
     }

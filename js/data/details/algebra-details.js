@@ -907,6 +907,15 @@ An expression is homogeneous of degree $d$ if replacing $(a, b, c)$ by $(ta, tb,
 Check homogeneity first (both sides the same degree, degree $0$ for a pure ratio). Then pick the normalization that simplifies the most: $a + b + c = 1$ for symmetric sums, $abc = 1$ for products or when the constraint is multiplicative, or a key length $= 1$ in geometry. Solve the constrained problem, and the general case follows by scaling back. The dual move is homogenizing: given a constraint like $a + b + c = 1$, multiply lower-degree terms by the appropriate power of $(a+b+c)$ to make every term the same degree, which is exactly what lets Muirhead and Schur (which require homogeneous symmetric sums) apply to a constrained inequality.
 
 ## On contests
-The standard opening move for olympiad inequalities — normalize, then apply AM–GM, Cauchy, or a bunching argument to the simpler form. On AIME it shows up as "assume the perimeter is $1$" or "set the circumradius to $1$" to strip a nuisance parameter before computing. Just confirm homogeneity before normalizing; on a non-homogeneous expression it is invalid.`
+The standard opening move for olympiad inequalities — normalize, then apply AM–GM, Cauchy, or a bunching argument to the simpler form. On AIME it shows up as "assume the perimeter is $1$" or "set the circumradius to $1$" to strip a nuisance parameter before computing. Just confirm homogeneity before normalizing; on a non-homogeneous expression it is invalid.`,
+
+"tangent-line-trick": String.raw`## Why it works
+A convex function lies above every one of its tangent lines: $f(x) \ge f(a) + f'(a)(x-a)$ for all $x$. Summing this over $x_1, \dots, x_n$ makes the right side $\sum f(a) + f'(a)\sum(x_i - a)$; if you take the tangent at the equality point $a = s/n$, the constraint $\sum x_i = s$ kills the linear term, leaving exactly the bound $\sum f(x_i) \ge n f(s/n)$ — with equality when all $x_i$ are equal.
+
+## How to use it
+Use it on $\sum f(x_i)$ with a fixed sum when you suspect equality at all-variables-equal. (1) Find $a = s/n$. (2) Write the tangent line $L(x) = f(a) + f'(a)(x-a)$. (3) Prove $f(x) \ge L(x)$ on the allowed range — the difference almost always factors as a perfect square times a nonnegative term, e.g. $\frac1x - (6 - 9x) = \frac{(3x-1)^2}{x}$. (4) Sum. If the tangent bound fails somewhere in the domain (common when variables can be large or the function isn't convex throughout), the trick doesn't apply and you fall back to SOS or Jensen.
+
+## On contests
+The go-to elementary weapon for symmetric-sum inequalities with a linear constraint, especially where Jensen would work but you want a self-contained proof. It reduces an olympiad inequality to a single-variable square check — clean enough to write out fully under time pressure.`
 
 });

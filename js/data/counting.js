@@ -629,6 +629,26 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
+          id: "pigeonhole-principle",
+          name: "Pigeonhole Principle",
+          type: "method",
+          latex: String.raw`n \text{ objects in } k \text{ boxes} \implies \text{some box holds} \ge \left\lceil \tfrac{n}{k} \right\rceil`,
+          description: String.raw`If $n$ objects go into $k$ boxes, some box holds at least $\lceil n/k \rceil$ (and some holds at most $\lfloor n/k \rfloor$). The whole difficulty is choosing the boxes: residues mod $m$, pairs summing to a target, sub-regions of a shape, or the averaging form ("some term is at least the mean"). Generalization: more than $km$ objects force some box to exceed $m$.`,
+          keywords: ["pigeonhole", "boxes", "at least one shared", "residues", "averaging argument", "dirichlet", "method"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "complementary-counting",
+          name: "Complementary Counting",
+          type: "method",
+          latex: String.raw`\#(\text{good}) = \#(\text{total}) - \#(\text{bad})`,
+          description: String.raw`When the objects you want are awkward to count directly but their complement is easy, count everything and subtract the unwanted. The signature trigger is "at least one" — count the "none" case instead. Pairs naturally with inclusion–exclusion when the bad set splits into overlapping conditions.`,
+          keywords: ["complementary counting", "total minus bad", "at least one", "subtract the complement", "method"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "constructive-counting",
           name: "Constructive Counting",
           type: "method",
