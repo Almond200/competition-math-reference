@@ -60,15 +60,28 @@
 
   // Difference of squares: a² minus a corner b² is an L-shape = (a − b)(a + b).
   DIAGRAMS["difference-of-squares"] = [(() => {
-    const x = 70, y = 55, a = 190, b = 75;
-    return wrap(460, 320, [
-      `<path d="M ${x} ${y} h ${a} v ${a - b} h ${-(a - b)} v ${b} h ${-b} Z" fill="${ACCS}" stroke="${ACC}" stroke-width="2"/>`,
-      rect(x + a - b, y + a - b, b, b, GLD, 1.6, "none"),
-      txt([x + a - b + b / 2, y + a - b + b / 2 + 4], "b²", GLD, 13),
-      txt([x + a / 2, y - 12], "a", DIM, 13), txt([x - 14, y + a / 2], "a", DIM, 13),
-      txt([x + a + 16, y + (a - b) / 2], "a − b", ACC, 12, "start"),
-      txt([x + (a - b) / 2, y + a + 18], "a − b", FNT, 11.5),
-      cap(460, 320, "remove a b² corner from an a² square: the blue L-shape has area a² − b², and cutting it once rearranges it into an (a + b) × (a − b) rectangle")
+    // Proof without words: an a×a square minus a b×b corner, cut into two
+    // rectangles that reassemble into an (a+b)×(a−b) rectangle.
+    const a = 140, b = 52, c = a - b;                 // c = a − b
+    const x = 40, y = 56;                             // left panel origin
+    const rx = 272, ry = y + (a - (a + b - c)) / 2 + 10; // right panel top (aligned band)
+    const T = ACCS, Bp = GLDS;                        // piece colors
+    return wrap(478, 260, [
+      // ---- left: a×a square with the b×b corner removed, split into T + B ----
+      rect(x, y, a, c, ACC, 1.6, T),                  // top piece  a × (a−b)
+      rect(x, y + c, c, b, GLD, 1.6, Bp),             // bottom piece (a−b) × b
+      rect(x + c, y + c, b, b, FNT, 1.3, "none"),     // removed b×b corner (empty)
+      seg([x + c, y + c], [x + c, y + c], FNT, 1),
+      txt([x + c + b / 2, y + c + b / 2 + 4], "b²", FNT, 12),
+      txt([x + a / 2, y - 10], "a", DIM, 13),
+      txt([x - 13, y + a / 2], "a", DIM, 13),
+      // ---- right: reassembled (a+b) × (a−b) rectangle ----
+      rect(rx, ry, a, c, ACC, 1.6, T),                // T stays
+      rect(rx + a, ry, b, c, GLD, 1.6, Bp),           // B rotated to the right
+      txt([rx + (a + b) / 2, ry + c + 20], "a + b", DIM, 13),
+      txt([rx + a + b + 15, ry + c / 2 + 4], "a − b", DIM, 12, "start"),
+      txt([(x + a + rx) / 2 - 4, y + a / 2 + 4], "=", DIM, 20),
+      cap(478, 260, "a² − b²: cut the b×b corner off an a×a square and rearrange the two pieces into an (a+b)×(a−b) rectangle")
     ]);
   })()];
 

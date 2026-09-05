@@ -84,7 +84,92 @@
     perpendicular: ["altitude", "normal"],
     intersect: ["intersection", "concurrent"],
     touching: ["tangent", "tangency"],
-    touch: ["tangent", "tangency"]
+    touch: ["tangent", "tangency"],
+    // recursion & sequences
+    recursion: ["recurrence", "recursive", "sequence"],
+    recursive: ["recurrence", "recursion"],
+    recurse: ["recurrence", "recursion"],
+    recurrence: ["recursion", "recursive", "sequence"],
+    iterate: ["recurrence", "sequence", "iteration"],
+    iterative: ["recurrence", "iteration"],
+    iteration: ["recurrence", "sequence"],
+    recursively: ["recurrence", "sequence"],
+    term: ["sequence", "series"],
+    nth: ["general", "term", "formula"],
+    closedform: ["recurrence", "explicit"],
+    fib: ["fibonacci", "recurrence"],
+    fibonacci: ["recurrence", "binet"],
+    // algebra
+    poly: ["polynomial"],
+    root: ["zero", "solution"],
+    roots: ["zeros", "solutions"],
+    solve: ["solution", "root"],
+    factorise: ["factor", "factorization"],
+    factorize: ["factor", "factorization"],
+    expand: ["expansion", "binomial"],
+    expansion: ["binomial", "expand"],
+    coefficient: ["coefficients", "binomial"],
+    log: ["logarithm"],
+    logarithm: ["log"],
+    exponent: ["power", "exponential"],
+    exponential: ["exponent", "power"],
+    power: ["exponent", "powers"],
+    inequalities: ["inequality"],
+    absolute: ["modulus", "absolutevalue"],
+    complex: ["imaginary", "argand"],
+    imaginary: ["complex"],
+    // trig
+    trig: ["trigonometry", "trigonometric"],
+    trigonometry: ["trig", "sine", "cosine", "tangent"],
+    sine: ["sin"],
+    cosine: ["cos"],
+    // geometry
+    pythag: ["pythagorean", "pythagoras"],
+    pythagoras: ["pythagorean"],
+    pythagorean: ["pythagoras", "hypotenuse"],
+    hypotenuse: ["right", "pythagorean"],
+    triangle: ["triangular"],
+    quadrilateral: ["quad", "cyclic"],
+    polygon: ["sides", "regular"],
+    hexagon: ["polygon", "regular"],
+    pentagon: ["polygon", "regular"],
+    diagonal: ["diagonals"],
+    circle: ["circular", "arc", "chord"],
+    arc: ["circle", "sector"],
+    sector: ["circle", "arc"],
+    reflect: ["reflection", "mirror"],
+    reflection: ["reflect", "mirror", "transformation"],
+    rotate: ["rotation", "transformation"],
+    rotation: ["rotate", "transformation"],
+    transformation: ["reflection", "rotation", "translation"],
+    coordinate: ["coordinates", "cartesian"],
+    coordinates: ["coordinate"],
+    vector: ["vectors", "dot", "cross"],
+    // number theory
+    modulo: ["modular", "mod", "congruence"],
+    congruence: ["modular", "mod"],
+    congruent: ["modular", "mod"],
+    prime: ["primes", "primality"],
+    primes: ["prime"],
+    coprime: ["relatively", "gcd", "totient"],
+    totient: ["euler", "phi", "coprime"],
+    phi: ["totient", "euler"],
+    residue: ["modular", "remainder"],
+    diophantine: ["integer", "solutions"],
+    // counting / probability
+    combinatorics: ["counting", "combination"],
+    permutations: ["permutation", "arrangement"],
+    combinations: ["combination", "binomial"],
+    factorial: ["permutation", "combination"],
+    expectation: ["expected", "value"],
+    probabilities: ["probability"],
+    // shapes of answers
+    area: ["areas"],
+    perimeter: ["circumference"],
+    circumference: ["perimeter", "circle"],
+    volume: ["solid"],
+    ratio: ["proportion", "proportional"],
+    proportion: ["ratio", "proportional"]
   };
 
   // Competition abbreviations → full phrase, so "PoP", "FTA", "CRT", ... resolve.
@@ -114,26 +199,69 @@
     "given", "relationship", "something", "thing"
   ]);
 
+  // Importance tiers, most-used first. Filtered per section via the settings popup.
+  const IMP_TIERS = ["high", "medium", "low", "lower", "lowest"];
+  const SECTION_IDS = SECTIONS.map(s => s.id);
+  // Each section carries its own rarity + level filter (persisted).
+  function loadSettings() {
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem("mq-settings") || "null"); } catch (e) {}
+    const sf = {};
+    SECTION_IDS.forEach(id => {
+      const stored = s && s.sections && s.sections[id];
+      let rr = (stored && Array.isArray(stored.rarities)) ? stored.rarities.filter(r => IMP_TIERS.indexOf(r) !== -1) : IMP_TIERS;
+      // Migration: settings saved before the "lowest" tier existed had all four old tiers — upgrade to all five.
+      if (rr.length === IMP_TIERS.length - 1 && rr.indexOf("lowest") === -1) rr = IMP_TIERS.slice();
+      if (!rr.length) rr = IMP_TIERS.slice();
+      const ll = (stored && Array.isArray(stored.levels)) ? stored.levels.filter(l => LEVELS.indexOf(l) !== -1) : [];
+      sf[id] = { rarities: new Set(rr), levels: new Set(ll) };
+    });
+    return { sectionFilters: sf };
+  }
+  function saveSettings() {
+    try {
+      const out = { sections: {} };
+      SECTION_IDS.forEach(id => {
+        out.sections[id] = { rarities: [...state.sectionFilters[id].rarities], levels: [...state.sectionFilters[id].levels] };
+      });
+      localStorage.setItem("mq-settings", JSON.stringify(out));
+    } catch (e) {}
+  }
+  const _loaded = loadSettings();
+
   const state = {
     query: "",
-    levels: new Set(),           // empty set = all levels
     starredOnly: false,          // ★ chip: show only starred within the active section
-    sort: "default",             // "Show" dropdown: default (all) | high | medium | low importance
-    activeSectionId: SECTIONS.length ? SECTIONS[0].id : null
+    sectionFilters: _loaded.sectionFilters,  // per-section { rarities:Set, levels:Set }
+    activeSectionId: SECTIONS.length ? SECTIONS[0].id : null,
+    adv: null                    // advanced search: { sections:Set, subs:Set, topics:Set, desc:string } or null
   };
+  function activeFilter() {
+    return state.sectionFilters[state.activeSectionId] || { rarities: new Set(IMP_TIERS), levels: new Set() };
+  }
 
   const $sidebar = document.getElementById("sidebar");
   const $content = document.getElementById("content");
   const $search = document.getElementById("search-input");
   const $levelFilters = document.getElementById("level-filters");
   const $sortSelect = document.getElementById("sort-select");
+  const $filtersRow = document.querySelector(".filters-row");
 
   // ---------- Search index ----------
+
+  // Collapse a doubled final consonant left behind by -ing/-ed stripping
+  // ("cutt"->"cut", "runn"->"run"), so gerunds/past tenses reach their root.
+  function deDouble(s) {
+    if (s.length > 2 && s[s.length - 1] === s[s.length - 2] && "bdglmnprt".indexOf(s[s.length - 1]) !== -1) return s.slice(0, -1);
+    return s;
+  }
 
   function normWord(w) {
     w = w.toLowerCase().replace(/[^a-z0-9]/g, "");
     if (w.length > 3 && w.endsWith("es")) w = w.slice(0, -2);
     else if (w.length > 3 && w.endsWith("s")) w = w.slice(0, -1);
+    else if (w.length > 5 && w.endsWith("ing")) w = deDouble(w.slice(0, -3));   // "cutting"->"cut", "counting"->"count"
+    else if (w.length > 4 && w.endsWith("ed")) w = deDouble(w.slice(0, -2));    // "solved"->"solv", "nested"->"nest"
     return w;
   }
 
@@ -305,12 +433,49 @@
   const METHODS_TOPIC = { id: "methods", label: "methods" };
   TOPICS_BY_ID.methods = METHODS_TOPIC;
 
+  // General concept tags added to cards that clearly involve them but didn't spell
+  // them out in keywords — so browsing a tag like "incenter" surfaces every card
+  // about it. Merged into keywords at build time, so search, the tag browser, and
+  // the on-card tag chips all pick them up.
+  const EXTRA_TAGS = {
+    "law-of-sines": ["circumcircle", "circumradius"],
+    "median-to-hypotenuse": ["circumcircle", "circumradius"],
+    "medial-triangle": ["nine-point circle", "centroid", "circumcircle"],
+    "orthic-triangle": ["nine-point circle", "circumradius"],
+    "excentral-triangle": ["circumcircle", "nine-point circle"],
+    "contact-triangle": ["incircle", "incenter", "concurrent"],
+    "symmedian-lemoine": ["circumcircle", "reflection"],
+    "center-distance-formulas": ["circumcenter", "circumcircle"],
+    "isogonal-conjugate": ["orthocenter", "circumcenter", "incenter"],
+    "altitude-bisector-angle": ["circumcenter", "orthocenter"],
+    "orthocentric-system": ["circumcenter"],
+    "nine-point-circle": ["orthocenter"],
+    "gergonne-nagel-points": ["incenter", "concurrent"],
+    "angle-bisector-theorem": ["incenter"],
+    "triangle-center-angles": ["angle bisector"],
+    "feuerbach-theorem": ["nine-point circle", "incircle"],
+    "tangent-facts": ["tangent line"],
+    "apollonius-circle": ["perpendicular bisector"],
+    "regular-polygon-area": ["circumradius"],
+    "centroid-division": ["midpoint"],
+    "section-formula": ["midpoint"],
+    "isotomic-conjugate": ["cevian"],
+    "pedal-triangle": ["circumcircle"],
+    "barycentric-coordinates": ["collinear", "concurrent"],
+    "coordinate-bash": ["collinear"],
+    "area-method": ["collinear"],
+    "complex-bash": ["collinear", "concurrent"],
+    "pole-polar": ["collinear"],
+    "directed-angles": ["concyclic", "collinear"]
+  };
+
   const ALL = [];
   const BY_ID = {};
   SECTIONS.forEach(section => {
     section.subsections.forEach(sub => {
       sub.formulas.forEach(f => {
         const entry = { formula: f, section, subsection: sub };
+        if (EXTRA_TAGS[f.id]) f.keywords = f.keywords.concat(EXTRA_TAGS[f.id].filter(k => f.keywords.indexOf(k) === -1));
         entry.nameWords = new Set(indexWordsOf(f.name));
         entry.tagWords = new Set(f.keywords.flatMap(indexWordsOf));
         entry.tagPhrases = f.keywords.map(k => k.toLowerCase());
@@ -338,6 +503,10 @@
     m = location.hash.match(/^#\/list\/([\w-]+)$/);
     if (m && anyList(m[1])) return { type: "list", listId: m[1] };
     if (/^#\/lists$/.test(location.hash)) return { type: "lists" };
+    m = location.hash.match(/^#\/problems(?:\/([a-z0-9-]+)\/(\d{4}))?$/);
+    if (m) return { type: "problems", fam: m[1] || null, year: m[2] ? +m[2] : null };
+    m = location.hash.match(/^#\/problem\/([\w-]+)$/);
+    if (m && PROBLEM_BY_SLUG[m[1]]) return { type: "problem", slug: m[1] };
     m = location.hash.match(/^#\/topic\/([\w-]+)$/);
     if (m && TOPICS_BY_ID[m[1]]) return { type: "topic", topicId: m[1] };
     return { type: "home" };
@@ -398,13 +567,13 @@
 
   loadLists();
 
-  // Curated built-in study sets (read-only), sorted by subject for a tidy grid.
-  // Unknown ids are dropped so the data file can be edited without breaking the app.
-  const SUBJECT_ORDER = { "Geometry": 0, "Algebra": 1, "Number Theory": 2, "Counting": 3, "Methods": 4, "Mixed": 5 };
+  // Curated built-in study sets (read-only). These are cross-cutting sets, so they
+  // keep the deliberate file order (contest tiers, then methods, then curiosities)
+  // rather than being grouped by subject. Unknown ids are dropped at load.
   const BUILTIN_LISTS = (window.MATH_BUILTIN_LISTS || [])
     .map((l, i) => ({ id: l.id, name: l.name, subject: l.subject, ids: (l.ids || []).filter(id => BY_ID[id]), builtinSet: true, _i: i }))
     .filter(l => l.ids.length)
-    .sort((a, b) => ((SUBJECT_ORDER[a.subject] ?? 9) - (SUBJECT_ORDER[b.subject] ?? 9)) || a._i - b._i);
+    .sort((a, b) => a._i - b._i);
   const BUILTIN_BY_ID = {};
   BUILTIN_LISTS.forEach(l => { BUILTIN_BY_ID[l.id] = l; });
   function anyList(id) { return getList(id) || BUILTIN_BY_ID[id]; }
@@ -528,7 +697,10 @@
     "skew-lines-distance", "circular-segment", "feuerbach-theorem", "nine-point-circle",
     "common-tangent-lengths", "angle-chord-secant", "centroid-division", "cevian-area-ratio",
     "midsegment-theorem", "euler-line-ratio", "euler-distance-theorem", "tangent-facts",
-    "law-of-sines", "circumradius-area", "angle-chasing"
+    "law-of-sines", "circumradius-area", "angle-chasing",
+    "pedal-triangle", "orthic-triangle", "medial-triangle", "contact-triangle", "isogonal-conjugate",
+    "pole-polar", "directed-angles", "complete-quadrilateral-miquel", "morleys-theorem", "pascals-theorem",
+    "equal-chords-arcs"
   ]);
 
   function stripHash() {
@@ -540,8 +712,11 @@
   }
 
   function passesLevel(f) {
-    const levelOk = state.levels.size === 0 || f.level.some(l => state.levels.has(l));
-    const impOk = state.sort === "default" || f.importance === state.sort;
+    const entry = BY_ID[f.id];
+    const sf = entry ? state.sectionFilters[entry.section.id] : null;
+    if (!sf) return true;
+    const levelOk = sf.levels.size === 0 || f.level.some(l => sf.levels.has(l));
+    const impOk = sf.rarities.has(f.importance);
     return levelOk && impOk;
   }
 
@@ -565,10 +740,20 @@
         for (const w of entry.descWords) if (w.startsWith(tok)) { score += 3; break; }
       }
     }
-    if (score === 0 && tok.length >= 5) {
-      // Typo tolerance: allow one edit ("stewert" still finds Stewart).
-      for (const w of entry.nameWords) if (fuzzy(w, tok)) { score += 8; break; }
-      if (score === 0) for (const w of entry.tagWords) if (fuzzy(w, tok)) { score += 6; break; }
+    if (score === 0 && tok.length >= 3) {
+      // Substring (contains) matching: "sphere" hits "insphere", "gon" hits
+      // "polygon", "cyclic" hits "cyclotomic" — looser than prefix, weighted lower.
+      for (const w of entry.nameWords) if (w.indexOf(tok) !== -1) { score += 8; break; }
+      if (score === 0) for (const w of entry.tagWords) if (w.indexOf(tok) !== -1) { score += 6; break; }
+      if (score === 0) for (const w of entry.ctxWords) if (w.indexOf(tok) !== -1) { score += 3; break; }
+      if (score === 0) for (const w of entry.descWords) if (w.indexOf(tok) !== -1) { score += 2; break; }
+    }
+    if (score === 0 && tok.length >= 4) {
+      // Typo tolerance: allow small edits ("stewert"→Stewart, "recurrance"→recurrence).
+      for (const w of entry.nameWords) if (fuzzy(w, tok)) { score += 9; break; }
+      if (score === 0) for (const w of entry.tagWords) if (fuzzy(w, tok)) { score += 7; break; }
+      if (score === 0) for (const w of entry.ctxWords) if (fuzzy(w, tok)) { score += 4; break; }
+      if (score === 0) for (const w of entry.descWords) if (fuzzy(w, tok)) { score += 2; break; }
     }
     return score;
   }
@@ -591,13 +776,16 @@
     return prev[n];
   }
 
-  // Typo tolerance: same first 3 letters and a small edit distance that scales
-  // with length, so "stewert"→"stewart" and "bretschinder"→"bretschneider" match
-  // without pulling in unrelated words.
+  // Typo tolerance: the first letter must agree and the edit budget scales with
+  // word length (short words get 1 edit, long words up to 3), so "stewert"→
+  // "stewart", "recurrance"→"recurrence", "triangel"→"triangle" and
+  // "bretschinder"→"bretschneider" all match without pulling in unrelated words.
   function fuzzy(a, b) {
-    if (a.length < 5 || b.length < 5) return false;
-    if (a.slice(0, 3) !== b.slice(0, 3)) return false;
-    const cap = Math.max(a.length, b.length) >= 10 ? 3 : 2;
+    if (a.length < 4 || b.length < 4) return false;
+    if (a[0] !== b[0]) return false;
+    const longest = Math.max(a.length, b.length);
+    if (longest < 8 && a.slice(0, 2) !== b.slice(0, 2)) return false;   // short words: share a 2-char prefix
+    const cap = longest >= 9 ? 3 : longest >= 6 ? 2 : 1;
     return levBounded(a, b, cap) <= cap;
   }
 
@@ -639,7 +827,7 @@
     return { total, matchedAll };
   }
 
-  const IMP_RANK = { high: 0, medium: 1, low: 2 };
+  const IMP_RANK = { high: 0, medium: 1, low: 2, lower: 3, lowest: 4 };
 
   function searchFormulas(rawQuery) {
     let raw = rawQuery.trim();
@@ -654,8 +842,9 @@
 
     const strict = [];
     const loose = [];
+    // A text search is global: it ignores the per-section level/importance
+    // filters, which are local to each of the four category pages, not to search.
     for (const entry of ALL) {
-      if (!passesLevel(entry.formula)) continue;
       const { total, matchedAll } = scoreEntry(entry, queryLower, tokens, mathForms);
       if (total <= 0) continue;
       (matchedAll ? strict : loose).push({ entry, score: total });
@@ -723,7 +912,7 @@
       }
     });
     if (window.renderMathInElement) {
-      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .related-item, .problem-q, .problem-sol").forEach(el => {
+      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box").forEach(el => {
         renderMathInElement(el, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
@@ -818,7 +1007,9 @@
   const IMPORTANCE_LABELS = {
     high: ["HIGH", "High importance — core: you could solve most problems at this level with these"],
     medium: ["MED", "Medium importance — builds on the core to greatly simplify or speed up solutions"],
-    low: ["LOW", "Low importance — rarely necessary; almost never the intended solution"]
+    low: ["LOW", "Low importance — rarely necessary, but does turn up sometimes"],
+    lower: ["LOWER", "Lower importance — almost never used on contests; here for reference"],
+    lowest: ["LOWEST", "Lowest importance — essentially never used; the lowest of the low, kept only for completeness"]
   };
 
   function badgeHtml(f) {
@@ -868,8 +1059,9 @@
   }
 
   // Cards preview only the diagram; examples and questions live on the detail
-  // page. Entries in CARD_DIAGRAM_IDS borrow their first detail diagram at a
-  // reduced size so the statement is parseable at a glance.
+  // page. Only cards in CARD_DIAGRAM_IDS — configuration-heavy figures where the
+  // picture is worth a glance — borrow their first detail diagram at a reduced
+  // size; formula-obvious cards stay text-only on the card face.
   function extraHtml(f) {
     const glance = CARD_DIAGRAM_IDS.has(f.id) ? ((window.MATH_DIAGRAMS || {})[f.id] || [])[0] : null;
     const dia = f.diagram || glance;
@@ -909,21 +1101,79 @@
     return "https://artofproblemsolving.com/wiki/index.php/" + slug;
   }
 
-  // Contest problems that use this formula. Each links out to its AoPS wiki
-  // page — the site teaches the idea, then hands you off to practice it there.
+  // ---------- Problem database (tags + link only) ----------
+  function problemSlug(ref) {
+    return ref.toLowerCase().replace(/,?\s*problem\s+/, "-").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
+  function refShort(ref) { return ref.replace(/,\s*Problem\s+/, " #"); }
+  function yearOf(ref) { const m = ref.match(/^(\d{4})/); return m ? +m[1] : 0; }
+  // Parse a ref into { year, cname (contest incl. A/B/I/II/season), fam (family), num }.
+  function parseRef(ref) {
+    const m = ref.match(/^(\d{4})\s+(.*?),\s*Problem\s+(\d+)$/);
+    if (!m) return { year: 0, cname: ref, fam: ref, num: 0 };
+    const year = +m[1], cname = m[2].trim(), num = +m[3];
+    const core = cname.replace(/^(Fall|Spring)\s+/i, "");
+    let fam, fm;
+    if (/AIME/i.test(core)) fam = "AIME";
+    else if ((fm = core.match(/AMC\s*(8|10|12)/i))) fam = "AMC " + fm[1];
+    else if (/Putnam/i.test(core)) fam = "Putnam";
+    else if (/HMMT/i.test(core)) fam = "HMMT";
+    else fam = core.replace(/\s*[AB]$|\s*I{1,3}$/, "").trim() || core;
+    return { year, cname, fam, num };
+  }
+  function famSlug(f) { return f.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+  // Types for a problem: manual `types` (topic ids) unioned with the topics carried
+  // by its tagged formulas, so type filtering works even before any manual tagging.
+  function problemTypes(entry) {
+    const seen = {}, out = [];
+    const push = t => { if (t && !seen[t.id]) { seen[t.id] = 1; out.push(t); } };
+    (entry.types || []).forEach(id => push(TOPICS_BY_ID[id]));
+    (entry.formulas || []).forEach(fid => { const e = BY_ID[fid]; if (e) e.topics.forEach(push); });
+    return out;
+  }
+  const PROBLEM_DB = (window.MATH_PROBLEM_DB || []).map(e => {
+    const formulas = (e.formulas || []).filter(fid => BY_ID[fid]);
+    const pr = parseRef(e.ref);
+    return {
+      ref: e.ref, slug: problemSlug(e.ref), url: aopsUrl(e.ref),
+      formulas, types: problemTypes(e), strategy: e.strategy || "",
+      year: pr.year, cname: pr.cname, fam: pr.fam, num: pr.num
+    };
+  }).filter(p => p.formulas.length);
+  const PROBLEM_BY_SLUG = {};
+  const PROBLEMS_BY_FORMULA = {};
+  PROBLEM_DB.forEach(p => {
+    PROBLEM_BY_SLUG[p.slug] = p;
+    p.formulas.forEach(fid => (PROBLEMS_BY_FORMULA[fid] = PROBLEMS_BY_FORMULA[fid] || []).push(p));
+  });
+  Object.keys(PROBLEMS_BY_FORMULA).forEach(fid => PROBLEMS_BY_FORMULA[fid].sort((a, b) => b.year - a.year || a.ref.localeCompare(b.ref)));
+
+  // Competition → year → problems tree for the Database sidebar navigator.
+  const DB_TREE = {};
+  PROBLEM_DB.forEach(p => { (DB_TREE[p.fam] = DB_TREE[p.fam] || {}); (DB_TREE[p.fam][p.year] = DB_TREE[p.fam][p.year] || []).push(p); });
+  const FAM_ORDER = ["AMC 8", "AMC 10", "AMC 12", "AIME", "Putnam", "HMMT"];
+  const FAMILIES = Object.keys(DB_TREE).sort((a, b) => {
+    const ia = FAM_ORDER.indexOf(a), ib = FAM_ORDER.indexOf(b);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+  });
+  const FAM_BY_SLUG = {}; FAMILIES.forEach(f => { FAM_BY_SLUG[famSlug(f)] = f; });
+  const famCount = f => Object.keys(DB_TREE[f]).reduce((n, y) => n + DB_TREE[f][y].length, 0);
+  const DEFAULT_FAM = FAMILIES.slice().sort((a, b) => famCount(b) - famCount(a))[0] || null;
+
+  // Contest problems that use this formula — newest first, each opening a Database
+  // detail view and linking out to its AoPS wiki page for the statement.
   function contestHtml(f) {
-    const refs = (window.MATH_CONTEST || {})[f.id] || [];
-    if (!refs.length) return "";
-    const items = refs.map(r => {
-      const url = aopsUrl(r);
-      return url
-        ? `<li><a class="ref-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">${r}<span class="ref-ext" aria-hidden="true">&#8599;</span></a></li>`
-        : `<li>${r}</li>`;
-    }).join("");
+    const probs = PROBLEMS_BY_FORMULA[f.id] || [];
+    if (!probs.length) return "";
+    const items = probs.map(p =>
+      `<li class="prob-row">
+         <a class="prob-open" href="#/problem/${p.slug}">${refShort(p.ref)}</a>
+         ${p.url ? `<a class="ref-ext-link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer" title="Open on AoPS">AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
+       </li>`).join("");
     return `
       <div class="practice contest-refs">
-        <h4>Practice problems</h4>
-        <ul class="ref-list">${items}</ul>
+        <h4>Practice problems <span class="practice-note">${probs.length}</span></h4>
+        <ul class="prob-list">${items}</ul>
       </div>`;
   }
 
@@ -1143,19 +1393,62 @@
     return scored.slice(0, max).map(r => r.other);
   }
 
+  // Pull a "## Key forms" (or legacy "## Key formulas") block out of a detail
+  // body so it can render as a dedicated blue-box list directly under the big
+  // formula box. Each item may carry a small explanation after " — ", shown on
+  // its own line beneath the formula. Returns { formsHtml, rest }.
+  function splitKeyForms(body) {
+    if (!body) return { formsHtml: "", rest: "" };
+    const blocks = body.split(/\n\s*\n/);
+    let formLines = null;
+    const rest = [];
+    for (const block of blocks) {
+      const lines = block.replace(/\s+$/, "").split("\n");
+      while (lines.length && !lines[0].trim()) lines.shift();
+      if (formLines === null && lines.length && /^##\s+key\s+form(s|ulas?)\s*$/i.test(lines[0].trim())) {
+        formLines = lines.slice(1);
+      } else {
+        rest.push(block);
+      }
+    }
+    if (formLines === null) return { formsHtml: "", rest: body };
+    const items = formLines.map(l => l.trim()).filter(l => l.startsWith("- ")).map(l => l.slice(2).trim());
+    if (!items.length) return { formsHtml: "", rest: body };
+    const li = items.map(it => {
+      const idx = it.indexOf(" — ");
+      return idx !== -1
+        ? `<li>${it.slice(0, idx)}<span class="kf-note">${it.slice(idx + 3)}</span></li>`
+        : `<li>${it}</li>`;
+    }).join("");
+    return {
+      formsHtml: `<div class="key-forms"><div class="kf-label">Key forms</div><ul class="detail-list">${li}</ul></div>`,
+      rest: rest.join("\n\n")
+    };
+  }
+
   // Details are plain text blocks separated by blank lines; a block may start
   // with a "## Heading" line — only that first line is the heading, the rest
   // of the block is an ordinary paragraph.
   function detailBodyHtml(body) {
-    return body.split(/\n\s*\n/).map(block => {
-      block = block.trim();
-      if (!block) return "";
-      if (block.startsWith("## ")) {
-        const nl = block.indexOf("\n");
-        if (nl === -1) return `<h4>${block.slice(3)}</h4>`;
-        return `<h4>${block.slice(3, nl).trim()}</h4><p>${block.slice(nl + 1).trim()}</p>`;
+    // Render the remaining lines of a block: an enumerated list when every line
+    // starts with "- ", otherwise a paragraph. Enables explicit formula lists.
+    const chunk = lines => {
+      const items = lines.map(l => l.trim()).filter(Boolean);
+      if (!items.length) return "";
+      if (items.every(l => l.startsWith("- "))) {
+        return `<ul class="detail-list">${items.map(l => `<li>${l.slice(2).trim()}</li>`).join("")}</ul>`;
       }
-      return `<p>${block}</p>`;
+      return `<p>${items.join(" ")}</p>`;
+    };
+    return body.split(/\n\s*\n/).map(block => {
+      const lines = block.replace(/\s+$/, "").split("\n");
+      while (lines.length && !lines[0].trim()) lines.shift();
+      if (!lines.length) return "";
+      let html = "";
+      if (lines[0].trim().startsWith("## ")) {
+        html += `<h4>${lines.shift().trim().slice(3).trim()}</h4>`;
+      }
+      return html + chunk(lines);
     }).join("");
   }
 
@@ -1163,6 +1456,7 @@
     const f = entry.formula;
     state.activeSectionId = entry.section.id;
     const body = (window.MATH_DETAILS || {})[f.id];
+    const { formsHtml, rest } = splitKeyForms(body);
     const related = relatedEntries(entry, 6);
     const hasDiagram = !!(f.diagram || ((window.MATH_DIAGRAMS || {})[f.id] || []).length);
     const asyBtn = entry.section.id === "geometry" && hasDiagram
@@ -1182,11 +1476,13 @@
           ${asyBtn}
         </div>
         <div class="formula-display detail-formula" data-latex="${escapeAttr(f.latex)}"></div>
+        ${formsHtml}
         <p class="card-desc detail-summary">${f.description}</p>
         ${f.diagram ? `<div class="diagram">${f.diagram}</div>` : ""}
         ${((window.MATH_DIAGRAMS || {})[f.id] || []).map(d => `<div class="diagram detail-diagram">${d}</div>`).join("")}
-        ${body ? `<div class="detail-body">${detailBodyHtml(body)}</div>` : ""}
+        ${rest && rest.trim() ? `<div class="detail-body">${detailBodyHtml(rest)}</div>` : ""}
         ${practiceHtml(f)}
+        ${(window.MATH_WIDGETS || {})[f.id] ? `<div class="interactive"><h4>Interactive</h4><div id="formula-widget"></div></div>` : ""}
         ${contestHtml(f)}
         ${related.length ? `
           <div class="related">
@@ -1198,6 +1494,41 @@
         ${tagRowHtml(f, null, entry.topics)}
       </div>`;
     renderMath($content);
+    var wdg = (window.MATH_WIDGETS || {})[f.id];
+    if (wdg) { try { wdg.mount(document.getElementById("formula-widget")); } catch (e) { if (window.console) console.warn("widget error:", f.id, e); } }
+    try { decorateNumberInputs(document.getElementById("formula-widget")); } catch (e) {}
+  }
+
+  // Replace the browser's default (light) number-input spinner with themed ▲▼ arrows
+  // that sit inside the field, so they match the dark UI instead of standing out.
+  function decorateNumberInputs(root) {
+    if (!root) return;
+    var inputs = root.querySelectorAll('input[type="number"]:not([data-stepped])');
+    for (var i = 0; i < inputs.length; i++) {
+      (function (inp) {
+        inp.setAttribute("data-stepped", "1");
+        var wrap = document.createElement("span");
+        wrap.className = "num-stepper";
+        inp.parentNode.insertBefore(wrap, inp);
+        wrap.appendChild(inp);
+        var btns = document.createElement("span");
+        btns.className = "num-btns";
+        btns.innerHTML = '<button type="button" tabindex="-1" aria-label="increase">▲</button><button type="button" tabindex="-1" aria-label="decrease">▼</button>';
+        wrap.appendChild(btns);
+        function step(dir) {
+          var st = parseFloat(inp.step) || 1, v = parseFloat(inp.value);
+          if (isNaN(v)) v = 0;
+          v = Math.round((v + dir * st) * 1e9) / 1e9;
+          if (inp.min !== "" && v < parseFloat(inp.min)) v = parseFloat(inp.min);
+          if (inp.max !== "" && v > parseFloat(inp.max)) v = parseFloat(inp.max);
+          inp.value = v;
+          inp.dispatchEvent(new Event("input", { bubbles: true }));
+          inp.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        btns.children[0].addEventListener("click", function () { step(1); });
+        btns.children[1].addEventListener("click", function () { step(-1); });
+      })(inputs[i]);
+    }
   }
 
   function escapeAttr(s) {
@@ -1243,9 +1574,7 @@
     const { results, partial } = searchFormulas(state.query);
     const sorted = sortEntries(results);
     const queryTokens = wordsOf(state.query.toLowerCase());
-    const levelNote = state.levels.size === 0
-      ? ""
-      : ` &middot; levels: <strong>${[...state.levels].map(l => LEVEL_LABELS[l]).join(", ")}</strong>`;
+    const levelNote = "";
     const partialNote = partial
       ? ` <em>(no formula matched every keyword &mdash; showing closest matches)</em>`
       : "";
@@ -1259,6 +1588,207 @@
     }
     $content.innerHTML = parts.join("");
     renderMath($content);
+  }
+
+  // ---------- Advanced search: browse by tag ----------
+  // A precise tag picker. Choose one or more tags and see every formula that carries
+  // them, ranked by how many of the chosen tags each one matches. It complements the
+  // main search bar (which handles free text) rather than duplicating it.
+
+  // Does this card carry the tag label `L` (a raw keyword or a topic label)?
+  function entryHasTag(entry, L) {
+    return entry.tagPhrases.indexOf(L) !== -1 ||
+      entry.topics.some(t => t.label === L) ||
+      entry.tagPhrases.some(p => p.indexOf(L) !== -1);
+  }
+
+  // Entries carrying at least one of the given tag labels, ranked by hit count
+  // (cards matching more of the chosen tags come first), then importance, then name.
+  function tagMatches(tags) {
+    const scored = [];
+    for (const entry of ALL) {
+      let hits = 0;
+      for (const L of tags) if (entryHasTag(entry, L)) hits++;
+      if (hits) scored.push({ entry, hits });
+    }
+    scored.sort((a, b) => b.hits - a.hits ||
+      IMP_RANK[a.entry.formula.importance] - IMP_RANK[b.entry.formula.importance] ||
+      a.entry.formula.name.localeCompare(b.entry.formula.name));
+    return scored;
+  }
+
+  function renderAdvancedResults() {
+    const adv = state.adv || {};
+    const tags = adv.tags ? [...adv.tags] : [];
+    shownIds = [];
+    const parts = [];
+    parts.push(`<p class="results-meta adv-meta"><strong>Tagged</strong> ${tags.length ? escapeAttr(tags.join(", ")) : "&mdash;"} <span class="adv-actions"><button class="adv-link" id="adv-edit">Edit tags</button><button class="adv-link" id="adv-clear">Clear</button></span></p>`);
+    if (!tags.length) {
+      parts.push(`<div class="empty-state"><div class="big">&#9906;</div>Pick one or more tags to see every formula that carries them.</div>`);
+    } else {
+      const scored = tagMatches(tags);
+      shownIds = scored.map(x => x.entry.formula.id);
+      if (!scored.length) {
+        parts.push(`<div class="empty-state"><div class="big">&#8709;</div>No formulas carry ${tags.length === 1 ? "that tag" : "those tags"}.</div>`);
+      } else {
+        parts.push(`<p class="results-hint"><strong>${scored.length}</strong> formula${scored.length === 1 ? "" : "s"}${tags.length > 1 ? " &mdash; the ones matching the most tags come first" : ""}.</p>`);
+        parts.push(`<div class="cards">${scored.map(x => cardHtml(x.entry, true, null)).join("")}</div>`);
+      }
+    }
+    $content.innerHTML = parts.join("");
+    renderMath($content);
+    const eb = document.getElementById("adv-edit"); if (eb) eb.addEventListener("click", openAdvanced);
+    const cb = document.getElementById("adv-clear"); if (cb) cb.addEventListener("click", () => { state.adv = null; render(); window.scrollTo({ top: 0 }); });
+  }
+
+  // Tag universe for the advanced-search tag picker: every keyword and topic label
+  // that appears on any card, weighted by the importance of the cards carrying it,
+  // so the most consequential tags surface first.
+  const TAG_W = { high: 5, medium: 4, low: 3, lower: 2, lowest: 1 };
+  let ALL_TAGS_CACHE = null;
+  function allTags() {
+    if (ALL_TAGS_CACHE) return ALL_TAGS_CACHE;
+    const m = new Map();
+    const add = (label, w, kind) => {
+      const key = String(label).toLowerCase().trim();
+      if (!key) return;
+      const e = m.get(key) || { label: key, weight: 0, kind: kind };
+      e.weight += w;
+      if (kind === "topic") e.kind = "topic";
+      m.set(key, e);
+    };
+    for (const entry of ALL) {
+      const w = TAG_W[entry.formula.importance] || 1;
+      entry.formula.keywords.forEach(k => add(k, w, "tag"));
+      entry.topics.forEach(t => add(t.label, w + 2, "topic"));
+    }
+    ALL_TAGS_CACHE = [...m.values()];
+    return ALL_TAGS_CACHE;
+  }
+  function suggestTags(q, selected, limit) {
+    q = (q || "").toLowerCase().trim();
+    const pool = allTags().filter(t => !selected.has(t.label));
+    let cand;
+    if (!q) {
+      cand = pool.slice();
+      cand.sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
+    } else {
+      cand = pool.filter(t => t.label.indexOf(q) !== -1);
+      cand.sort((a, b) =>
+        (a.label.startsWith(q) ? 0 : 1) - (b.label.startsWith(q) ? 0 : 1) ||
+        b.weight - a.weight || a.label.localeCompare(b.label));
+    }
+    return cand.slice(0, limit || 12);
+  }
+  const advTagChipHtml = t => `<button class="adv-tag-chip${t.kind === "topic" ? " adv-tag-topic" : ""}" data-adv-tag="${escapeAttr(t.label)}">${escapeAttr(t.label)}</button>`;
+  const advTagSelHtml = l => `<button class="filter-chip active adv-tag-sel" data-adv-tag-remove="${escapeAttr(l)}">${escapeAttr(l)} <span class="adv-tag-x">&times;</span></button>`;
+  // How many cards carry at least one of the currently-drafted tags.
+  function advTagCount() {
+    const tags = [...advDraft.tags];
+    if (!tags.length) return 0;
+    let n = 0;
+    for (const entry of ALL) { for (const L of tags) { if (entryHasTag(entry, L)) { n++; break; } } }
+    return n;
+  }
+  // Re-render the picker: selected chips, the (scroll-isolated) tag grid, and the
+  // apply button's live match count. No floating dropdown — the grid is the surface.
+  function refreshAdvTags() {
+    if (!advEl) return;
+    const inp = advEl.querySelector("#adv-tag-search");
+    const grid = advEl.querySelector("#adv-tag-grid");
+    const sel = advEl.querySelector("#adv-tag-selected");
+    const selWrap = advEl.querySelector("#adv-selected-wrap");
+    const label = advEl.querySelector("#adv-grid-label");
+    const q = inp ? inp.value.trim() : "";
+    if (sel) sel.innerHTML = advDraft.tags.size ? [...advDraft.tags].map(advTagSelHtml).join("") : "";
+    if (selWrap) selWrap.hidden = advDraft.tags.size === 0;
+    if (label) label.textContent = q ? "Matching tags" : "Popular tags";
+    if (grid) {
+      const opts = suggestTags(q, advDraft.tags, 160);
+      grid.innerHTML = opts.length ? opts.map(advTagChipHtml).join("") : `<div class="adv-tag-empty">No matching tags.</div>`;
+    }
+    const apply = advEl.querySelector("#adv-apply");
+    if (apply) {
+      const empty = advDraft.tags.size === 0;
+      apply.disabled = empty;
+      const n = advTagCount();
+      apply.textContent = empty ? "Select tags" : `Show ${n} formula${n === 1 ? "" : "s"}`;
+    }
+  }
+
+  // ---------- Advanced search modal ----------
+  let advEl = null;
+  let advDraft = null;
+  function onAdvKey(e) { if (e.key === "Escape") closeAdvanced(); }
+  function closeAdvanced() {
+    if (!advEl) return;
+    advEl.remove(); advEl = null;
+    document.removeEventListener("keydown", onAdvKey, true);
+  }
+  function openAdvanced() {
+    if (advEl) { closeAdvanced(); return; }
+    const src = state.adv || {};
+    advDraft = { tags: new Set(src.tags || []) };
+    advEl = document.createElement("div");
+    advEl.className = "modal-overlay";
+    advEl.innerHTML = `
+      <div class="modal adv-modal adv-tagmodal" role="dialog" aria-label="Browse formulas by tag">
+        <div class="modal-head">
+          <h3>Browse by tag</h3>
+          <button class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="adv-tagpick">
+          <input class="adv-tag-search" id="adv-tag-search" type="search" placeholder="Search tags&hellip; (e.g. &ldquo;circle&rdquo;, &ldquo;modular&rdquo;, &ldquo;recursion&rdquo;)" aria-label="Search tags" autocomplete="off">
+          <div class="adv-selected-wrap" id="adv-selected-wrap" hidden>
+            <div class="adv-pick-label">Selected</div>
+            <div class="adv-tag-selected" id="adv-tag-selected"></div>
+          </div>
+          <div class="adv-pick-label" id="adv-grid-label">Popular tags</div>
+          <div class="adv-tag-grid" id="adv-tag-grid"></div>
+        </div>
+        <div class="settings-actions adv-modal-actions">
+          <button class="settings-reset" id="adv-reset">Clear</button>
+          <button class="adv-apply" id="adv-apply" disabled>Select tags</button>
+        </div>
+      </div>`;
+    document.body.appendChild(advEl);
+    advEl.addEventListener("click", onAdvClick);
+    const tf = advEl.querySelector("#adv-tag-search");
+    if (tf) {
+      tf.addEventListener("input", refreshAdvTags);
+      tf.addEventListener("keydown", e => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        const first = suggestTags(tf.value, advDraft.tags, 1)[0];
+        if (first) { advDraft.tags.add(first.label); tf.value = ""; refreshAdvTags(); }
+      });
+    }
+    refreshAdvTags();
+    if (tf) setTimeout(() => tf.focus(), 0);
+    setTimeout(() => document.addEventListener("keydown", onAdvKey, true), 0);
+  }
+  function onAdvClick(e) {
+    if (e.target === advEl || e.target.closest(".modal-close")) { closeAdvanced(); return; }
+    const tagOpt = e.target.closest("[data-adv-tag]");
+    if (tagOpt) { advDraft.tags.add(tagOpt.dataset.advTag); refreshAdvTags(); return; }
+    const tagRem = e.target.closest("[data-adv-tag-remove]");
+    if (tagRem) { advDraft.tags.delete(tagRem.dataset.advTagRemove); refreshAdvTags(); return; }
+    if (e.target.closest("#adv-reset")) {
+      advDraft.tags.clear();
+      const ts = advEl.querySelector("#adv-tag-search"); if (ts) ts.value = "";
+      refreshAdvTags();
+      return;
+    }
+    if (e.target.closest("#adv-apply")) {
+      if (!advDraft.tags.size) return;
+      state.adv = { tags: advDraft.tags };
+      state.query = ""; $search.value = "";
+      state.starredOnly = false;
+      stripHash();
+      closeAdvanced();
+      render();
+      window.scrollTo({ top: 0 });
+    }
   }
 
   // The "★ Starred" filter chip narrows the currently selected section down
@@ -1331,77 +1861,20 @@
         ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : ""}
       </a>`;
   }
-  let builtinExpanded = false;
-  const BUILTIN_PREVIEW_N = 4;
-  function builtinGridInner() {
-    const shown = builtinExpanded ? BUILTIN_LISTS : BUILTIN_LISTS.slice(0, BUILTIN_PREVIEW_N);
-    return shown.map(builtinCardHtml).join("");
-  }
-  function builtinToggleLabel() {
-    return builtinExpanded ? "Show less" : ("Show all " + BUILTIN_LISTS.length + " &#9662;");
-  }
-
-  const IMP_OPTS = [["", "any importance"], ["high", "high"], ["medium", "medium"], ["low", "low"]];
-  // Topics available inside a section (empty = every topic). Cross-cutting topics
-  // (methods, trig, recursion…) show up wherever a formula in that section carries them.
-  function topicsInSection(secId) {
-    const all = TOPIC_RULES.concat(METHODS_TOPIC);
-    if (!secId) return all;
-    const present = {};
-    ALL.forEach(e => { if (e.section.id === secId) e.topics.forEach(t => { present[t.id] = 1; }); });
-    return all.filter(t => present[t.id]);
-  }
-  function topicOptionsHtml(secId, current) {
-    return `<option value="">any topic</option>` + topicsInSection(secId)
-      .map(t => `<option value="${t.id}"${t.id === current ? " selected" : ""}>${t.label}</option>`).join("");
-  }
-  function builderHtml() {
-    const secOpts = [`<option value="">any section</option>`]
-      .concat(SECTIONS.map(s => `<option value="${s.id}">${s.title}</option>`)).join("");
-    const impOpts = IMP_OPTS.map(o => `<option value="${o[0]}">${o[1]}</option>`).join("");
-    const lvlChips = LEVELS.map(l => `<button type="button" class="b-lvl-chip" data-blvl="${l}">${LEVEL_LABELS[l]}</button>`).join("");
-    const listOpts = `<option value="__new">&#43; new list&hellip;</option>` +
-      lists.items.map(l => `<option value="${l.id}">${escapeAttr(l.name)}</option>`).join("");
-    return `
-      <div class="builder">
-        <h3>Build a list from filters</h3>
-        <p class="builder-sub">Pick any combination &mdash; e.g. <em>Geometry &middot; low</em>, or topic <em>circles</em> &mdash; then add every match to a new or existing list.</p>
-        <div class="builder-row">
-          <select id="b-sec">${secOpts}</select>
-          <select id="b-topic">${topicOptionsHtml("", "")}</select>
-          <select id="b-imp">${impOpts}</select>
-        </div>
-        <div class="builder-row builder-levels">
-          <span class="builder-lbl">Levels</span>
-          ${lvlChips}
-        </div>
-        <div class="builder-row builder-act">
-          <span class="builder-count" id="b-count">&mdash;</span>
-          <label class="builder-into">Add to
-            <select id="b-list">${listOpts}</select>
-          </label>
-          <input id="b-newname" type="text" placeholder="New list name&hellip;" maxlength="40" autocomplete="off">
-          <button id="b-add" class="builder-add">Add matches</button>
-        </div>
-      </div>`;
-  }
-
   function renderLists() {
     shownIds = [];
     const userCards = lists.items.map(listCardHtml).join("");
-    const moreBtn = BUILTIN_LISTS.length > BUILTIN_PREVIEW_N
-      ? `<button class="show-more-btn" id="builtin-toggle">${builtinToggleLabel()}</button>` : "";
+    const curatedCards = BUILTIN_LISTS.map(builtinCardHtml).join("");
     $content.innerHTML = `
       <div class="section-header">
         <h2>Study Lists</h2>
-        <p>Curated study sets to learn a theme end to end, plus your own compilations. Add any formula to a list with the &ldquo;+ list&rdquo; button on its card.</p>
+        <p>A few cross-cutting curated sets, plus your own saved collections. Star any formula, or hit &ldquo;Save these results&rdquo; on a search to build a list in one click.</p>
       </div>
 
       <section class="lists-section">
-        <h3 class="lists-subhead">Built-in study sets</h3>
-        <p class="lists-subnote">Ready-made, medium-length compilations &mdash; one focused theme each, labeled by subject.</p>
-        <div class="list-grid" id="builtin-grid">${builtinGridInner()}</div>
-        ${moreBtn}
+        <h3 class="lists-subhead">Curated sets</h3>
+        <p class="lists-subnote">Cross-cutting collections you can&rsquo;t get by browsing one section &mdash; contest-tier essentials, ways of thinking, and surprising facts.</p>
+        <div class="list-grid" id="builtin-grid">${curatedCards}</div>
       </section>
 
       <section class="lists-section">
@@ -1413,10 +1886,8 @@
           </form>
         </div>
         <div class="list-grid">${userCards}</div>
-        ${builderHtml()}
       </section>`;
     renderMath($content);
-    updateBuilderCount();
   }
 
   function renderListDetail(listId) {
@@ -1450,6 +1921,128 @@
     renderMath($content);
   }
 
+  // ---------- Problem Database: competition/year navigator + per-problem detail ----------
+  let dbQuery = "";
+  let dbActiveFam = null, dbActiveYear = null;
+  function problemRowHtml(p, compact) {
+    const typeChips = p.types.slice(0, 4).map(t => `<span class="ptype-chip">${escapeAttr(t.label)}</span>`).join("");
+    const label = compact ? ("Problem " + p.num) : refShort(p.ref);
+    return `
+      <a class="prob-card" href="#/problem/${p.slug}">
+        <div class="prob-card-top">
+          <span class="prob-ref">${label}</span>
+          <span class="prob-formula-count">${p.formulas.length} formula${p.formulas.length === 1 ? "" : "s"}</span>
+        </div>
+        ${typeChips ? `<div class="ptype-row">${typeChips}</div>` : ""}
+        ${p.strategy ? `<div class="prob-strategy">${p.strategy}</div>` : ""}
+      </a>`;
+  }
+  function dbNavHtml(fam, year) {
+    const active = !dbQuery.trim();
+    return FAMILIES.map(f => {
+      const years = Object.keys(DB_TREE[f]).map(Number).sort((a, b) => b - a);
+      const open = active && f === fam;
+      const yearItems = years.map(y =>
+        `<a class="db-year${(open && y === year) ? " active" : ""}" href="#/problems/${famSlug(f)}/${y}">${y}<span class="db-count">${DB_TREE[f][y].length}</span></a>`).join("");
+      return `<div class="db-fam${open ? " open" : ""}">
+          <a class="db-fam-btn${(active && f === fam) ? " active" : ""}" href="#/problems/${famSlug(f)}/${years[0]}">${escapeAttr(f)}<span class="db-count">${famCount(f)}</span></a>
+          <div class="db-years">${yearItems}</div>
+        </div>`;
+    }).join("");
+  }
+  function dbMainHtml(fam, year) {
+    const q = dbQuery.trim().toLowerCase();
+    if (q) {
+      // Token search: every query word must match, in any order. Two token kinds:
+      //   - a pure number ("5", "2024") must equal a WHOLE number in the contest ref
+      //     (year or problem number), so "problem 5" hits #5 but not #15 or a stray
+      //     "5" in a strategy;
+      //   - any other word matches as a substring of the punctuation/space-stripped
+      //     haystack (ref + strategy + topic labels + formula names/keywords), so
+      //     "amc10a" matches "AMC 10A", and "ptolemy" / "power of a point" find
+      //     problems by the formulas they use.
+      const toks = q.split(/\s+/).filter(Boolean);
+      const strip = s => s.replace(/[^a-z0-9]+/g, "");
+      const matches = PROBLEM_DB.filter(p => {
+        const ref = p.ref.toLowerCase();
+        const collapsed = strip((ref + " " + (p.strategy || "") + " " +
+          p.types.map(t => t.label).join(" ") + " " +
+          p.formulas.map(fid => BY_ID[fid]
+            ? BY_ID[fid].formula.name + " " + (BY_ID[fid].formula.keywords || []).join(" ")
+            : "").join(" ")).toLowerCase());
+        return toks.every(t => {
+          if (/^\d+$/.test(t)) return new RegExp("(?:^|\\D)" + t + "(?:\\D|$)").test(ref);
+          const ct = strip(t);
+          return ct === "" || collapsed.indexOf(ct) !== -1;
+        });
+      }).sort((a, b) => b.year - a.year || a.cname.localeCompare(b.cname) || a.num - b.num);
+      return `<h2 class="db-main-title">Search &ldquo;${escapeAttr(dbQuery.trim())}&rdquo;</h2>
+        <p class="results-hint">${matches.length} problem${matches.length === 1 ? "" : "s"} across all competitions</p>
+        <div class="prob-grid">${matches.length ? matches.map(p => problemRowHtml(p, false)).join("") : `<div class="empty-state"><div class="big">&#8709;</div>No problems match.</div>`}</div>`;
+    }
+    if (!fam || !DB_TREE[fam] || !DB_TREE[fam][year]) return `<div class="empty-state"><div class="big">&#9906;</div>Pick a competition and year from the left.</div>`;
+    const groups = {};
+    DB_TREE[fam][year].forEach(p => { (groups[p.cname] = groups[p.cname] || []).push(p); });
+    const body = Object.keys(groups).sort().map(gn => {
+      const ps = groups[gn].sort((a, b) => a.num - b.num);
+      return `<div class="db-group"><h3 class="db-group-title">${escapeAttr(gn)}</h3><div class="prob-grid">${ps.map(p => problemRowHtml(p, true)).join("")}</div></div>`;
+    }).join("");
+    return `<h2 class="db-main-title">${escapeAttr(fam)} <span class="db-main-year">${year}</span></h2>${body}`;
+  }
+  function refreshDbMain() {
+    const main = $content.querySelector(".db-main");
+    if (main) { main.innerHTML = dbMainHtml(dbActiveFam, dbActiveYear); renderMath(main); }
+    const nav = $content.querySelector(".db-fam-list");
+    if (nav) nav.classList.toggle("searching", !!dbQuery.trim());
+  }
+  function renderProblems(route) {
+    shownIds = [];
+    let fam = route && route.fam && FAM_BY_SLUG[route.fam] ? FAM_BY_SLUG[route.fam] : null;
+    if (!fam) fam = DEFAULT_FAM;
+    let year = route && route.year && fam && DB_TREE[fam] && DB_TREE[fam][route.year] ? route.year : null;
+    if (!year && fam && DB_TREE[fam]) year = Math.max.apply(null, Object.keys(DB_TREE[fam]).map(Number));
+    dbActiveFam = fam; dbActiveYear = year;
+    $content.innerHTML = `
+      <div class="db-layout">
+        <aside class="db-nav">
+          <input id="db-q" class="db-search" type="search" placeholder="Search all problems&hellip;" value="${escapeAttr(dbQuery)}" autocomplete="off">
+          <div class="db-fam-list${dbQuery.trim() ? " searching" : ""}">${dbNavHtml(fam, year)}</div>
+        </aside>
+        <div class="db-main">${dbMainHtml(fam, year)}</div>
+      </div>`;
+    renderMath($content);
+    const q = document.getElementById("db-q");
+    if (q) q.addEventListener("input", () => { dbQuery = q.value; refreshDbMain(); });
+    const nav = $content.querySelector(".db-fam-list");
+    if (nav) nav.addEventListener("click", e => { if (e.target.closest("a")) dbQuery = ""; });
+  }
+  function renderProblemDetail(slug) {
+    const p = PROBLEM_BY_SLUG[slug];
+    if (!p) { location.hash = "#/problems"; return; }
+    shownIds = [];
+    const types = p.types.map(t => `<a class="ptype-chip" href="#/topic/${t.id}">${escapeAttr(t.label)}</a>`).join("");
+    const formulas = p.formulas.map(fid => {
+      const e = BY_ID[fid]; if (!e) return "";
+      return `<li><a class="strat-link" href="#/f/${fid}"><span class="strat-name">${e.formula.name}</span><span class="strat-crumb">${e.section.title} &rsaquo; ${e.subsection.title}</span></a></li>`;
+    }).join("");
+    $content.innerHTML = `
+      <div class="detail">
+        <a class="back-link" href="#/problems">&larr; All problems</a>
+        <div class="detail-head">
+          <h2 class="card-name">${refShort(p.ref)}</h2>
+        </div>
+        ${types ? `<div class="ptype-row">${types}</div>` : ""}
+        ${p.strategy ? `<div class="prob-strategy-box"><h4>Strategy</h4><p>${p.strategy}</p></div>` : ""}
+        <div class="prob-detail-section">
+          <h4>Formulas</h4>
+          <ul class="strat-list">${formulas || "<li class=\"strat-empty\">Not yet tagged.</li>"}</ul>
+        </div>
+        <p class="prob-note">The full statement and solution live on the Art of Problem Solving wiki.</p>
+        ${p.url ? `<a class="aops-btn" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">Open on AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
+      </div>`;
+    renderMath($content);
+  }
+
   function render() {
     const route = getRoute();
     const section = SECTIONS.find(s => s.id === state.activeSectionId) || SECTIONS[0];
@@ -1462,6 +2055,12 @@
       renderLists();
     } else if (route.type === "list") {
       renderListDetail(route.listId);
+    } else if (route.type === "problems") {
+      renderProblems(route);
+    } else if (route.type === "problem") {
+      renderProblemDetail(route.slug);
+    } else if (state.adv) {
+      renderAdvancedResults();
     } else if (state.starredOnly) {
       if (section) renderStarred(section);
     } else if (state.query.trim()) {
@@ -1469,7 +2068,23 @@
     } else {
       if (section) renderSection(section);
     }
+    // The level/importance filters are local to the four category pages, so hide
+    // them (and thereby "reset" their apparent effect) during search, advanced
+    // search, topic, list, and detail views — none of which they apply to.
+    const filtersApply = route.type === "home" && !state.query.trim() && !state.adv;
+    if ($filtersRow) $filtersRow.style.display = filtersApply ? "" : "none";
+    const filtersBtn = document.getElementById("settings-btn");
+    if (filtersBtn) filtersBtn.style.display = filtersApply ? "" : "none";
+    // The section sidebar is meaningless on the Database and Lists surfaces —
+    // drop it there and let the content run full width (desktop only; on mobile it
+    // stays the hamburger drawer).
+    const noSidebar = ["problems", "problem", "lists", "list"].indexOf(route.type) !== -1;
+    const $layout = document.querySelector(".layout");
+    if ($layout) $layout.classList.toggle("no-sidebar", noSidebar);
     updateNavActive();
+    syncFilterChips();
+    syncSortSelect();
+    updateGearActive();
   }
 
   // ---------- Sidebar ----------
@@ -1491,11 +2106,20 @@
     $sidebar.addEventListener("click", e => {
       const btn = e.target.closest(".nav-section-btn");
       const link = e.target.closest(".nav-sub-link");
+      // In the mobile drawer, the first tap on a section opens it (revealing its
+      // sub-subjects) and keeps the drawer up; tapping that same (already-open)
+      // section again takes you to its main page and closes the drawer. A
+      // sub-subject tap always jumps there and closes.
+      if (link) closeDrawer();
       if (btn) {
+        const secId = btn.dataset.section;
+        const onSection = getRoute().type === "home" && !state.query.trim() && !state.starredOnly;
+        const alreadyOpen = document.body.classList.contains("nav-open") && onSection && state.activeSectionId === secId;
+        if (alreadyOpen) { closeDrawer(); window.scrollTo({ top: 0 }); return; }
         clearSearch();
         clearStarredFilter();
         stripHash();
-        state.activeSectionId = btn.dataset.section;
+        state.activeSectionId = secId;
         render();
         window.scrollTo({ top: 0 });
       } else if (link) {
@@ -1522,6 +2146,7 @@
   function clearSearch() {
     state.query = "";
     $search.value = "";
+    state.adv = null;
   }
 
   function clearStarredFilter() {
@@ -1533,16 +2158,19 @@
   // ---------- Level filter chips (multi-select) + Starred chip ----------
 
   function syncFilterChips() {
+    if (!$levelFilters) return;
+    const lv = activeFilter().levels;
     $levelFilters.querySelectorAll(".level-chip").forEach(c => {
       const l = c.dataset.level;
-      const on = l === "All" ? (state.levels.size === 0 && !state.starredOnly)
+      const on = l === "All" ? (lv.size === 0 && !state.starredOnly)
         : l === "Starred" ? state.starredOnly
-        : state.levels.has(l);
+        : lv.has(l);
       c.classList.toggle("active", on);
     });
   }
 
   function buildLevelFilters() {
+    if (!$levelFilters) return;
     const chips = [`<button class="level-chip active" data-level="All">All Levels</button>`]
       .concat(LEVELS.map(l => `<button class="level-chip" data-level="${l}">${LEVEL_LABELS[l]}</button>`))
       .concat([`<button class="level-chip star-chip" data-level="Starred">&#9733; Starred</button>`]);
@@ -1552,15 +2180,17 @@
       const chip = e.target.closest(".level-chip");
       if (!chip) return;
       const level = chip.dataset.level;
+      const lv = activeFilter().levels;
       if (level === "All") {
-        state.levels.clear();
+        lv.clear();
         state.starredOnly = false;
       } else if (level === "Starred") {
         state.starredOnly = !state.starredOnly;
       } else {
-        if (state.levels.has(level)) state.levels.delete(level);
-        else state.levels.add(level);
+        if (lv.has(level)) lv.delete(level);
+        else lv.add(level);
       }
+      saveSettings();
       syncFilterChips();
       if (state.starredOnly || level === "Starred") stripHash();
       render();
@@ -1575,25 +2205,21 @@
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => {
       state.query = $search.value;
-      if (state.query.trim()) stripHash();
+      if (state.query.trim()) { state.adv = null; stripHash(); }
       render();
     }, 120);
   });
 
-  $sortSelect.addEventListener("change", () => {
-    state.sort = $sortSelect.value;
-    render();
-  });
-
-  // Enter in the search box jumps straight to the top hit's full page.
+  // Enter in the search box just commits the query and leaves the field (blurs);
+  // it stays on the results list rather than jumping into the top hit.
   $search.addEventListener("keydown", e => {
     if (e.key !== "Enter") return;
-    const q = $search.value.trim();
-    if (!q) return;
-    state.query = q;
-    const { results } = searchFormulas(q);
-    const sorted = sortEntries(results);
-    if (sorted.length) openFormula(sorted[0].formula.id);
+    e.preventDefault();
+    clearTimeout(searchTimer);
+    state.query = $search.value;
+    if (state.query.trim()) { state.adv = null; stripHash(); }
+    render();
+    $search.blur();
   });
 
   // Brand → back to the start (top of the first section).
@@ -1607,6 +2233,24 @@
     window.scrollTo({ top: 0 });
   });
 
+  // Mobile section drawer: the hamburger slides the sidebar in over a backdrop.
+  const $navToggle = document.getElementById("nav-toggle");
+  const $navBackdrop = document.getElementById("nav-backdrop");
+  function openDrawer() {
+    document.body.classList.add("nav-open");
+    if ($navBackdrop) $navBackdrop.hidden = false;
+  }
+  function closeDrawer() {
+    if (!document.body.classList.contains("nav-open")) return;
+    document.body.classList.remove("nav-open");
+    if ($navBackdrop) $navBackdrop.hidden = true;
+  }
+  if ($navToggle) $navToggle.addEventListener("click", () => {
+    if (document.body.classList.contains("nav-open")) closeDrawer(); else openDrawer();
+  });
+  if ($navBackdrop) $navBackdrop.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
   // Lists → the study-lists overview.
   const $listsBtn = document.getElementById("lists-btn");
   if ($listsBtn) $listsBtn.addEventListener("click", () => {
@@ -1617,9 +2261,15 @@
     window.scrollTo({ top: 0 });
   });
 
-  // Top → smooth-scroll back to the top of the current page.
-  const $top = document.getElementById("top-btn");
-  if ($top) $top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  // Database → the problem-database browse page.
+  const $dbBtn = document.getElementById("db-btn");
+  if ($dbBtn) $dbBtn.addEventListener("click", () => {
+    clearSearch();
+    clearStarredFilter();
+    if (getRoute().type === "problems") return;
+    if (location.hash === "#/problems") render(); else location.hash = "#/problems";
+    window.scrollTo({ top: 0 });
+  });
 
   // Light / dark theme toggle (persisted; default dark). The early inline script
   // in index.html applies the saved choice before paint to avoid a flash.
@@ -1640,13 +2290,126 @@
     });
   }
 
-  // Random → a random formula's detail page.
-  const $random = document.getElementById("random-btn");
-  if ($random) $random.addEventListener("click", () => {
-    const pick = ALL[Math.floor(Math.random() * ALL.length)];
-    openFormula(pick.formula.id);
-    window.scrollTo({ top: 0 });
+  // ---------- Settings / filters popup ----------
+  // Importance counts within the currently-active section (filters are per-section).
+  function impCounts() {
+    const c = { high: 0, medium: 0, low: 0, lower: 0, lowest: 0 };
+    ALL.forEach(e => { if (e.section.id === state.activeSectionId) c[e.formula.importance] = (c[e.formula.importance] || 0) + 1; });
+    return c;
+  }
+  function updateGearActive() {
+    const g = document.getElementById("settings-btn");
+    if (!g) return;
+    const af = activeFilter();
+    g.classList.toggle("has-filters", af.rarities.size < IMP_TIERS.length || af.levels.size > 0 || state.starredOnly);
+  }
+  // Keep the quick "Show" dropdown in step with the active section's rarity set:
+  // all tiers -> Curated; exactly one -> that tier; anything else -> Custom.
+  function syncSortSelect() {
+    if (!$sortSelect) return;
+    const rr = activeFilter().rarities;
+    $sortSelect.value = rr.size === IMP_TIERS.length ? "default"
+      : rr.size === 1 ? [...rr][0] : "custom";
+  }
+  let settingsEl = null;
+  function onSettingsKey(e) { if (e.key === "Escape") closeSettings(); }
+  function closeSettings() {
+    if (!settingsEl) return;
+    settingsEl.remove(); settingsEl = null;
+    document.removeEventListener("keydown", onSettingsKey, true);
+    updateGearActive();
+  }
+  function refreshSettingsControls() {
+    if (!settingsEl) return;
+    const af = activeFilter();
+    settingsEl.querySelectorAll("[data-rarity]").forEach(b => b.classList.toggle("active", af.rarities.has(b.dataset.rarity)));
+    settingsEl.querySelectorAll("#s-levels [data-level]").forEach(b => b.classList.toggle("active", af.levels.has(b.dataset.level)));
+    const sb = settingsEl.querySelector("#s-starred");
+    if (sb) sb.classList.toggle("active", state.starredOnly);
+  }
+  function afterFilterChange() {
+    saveSettings(); syncSortSelect(); syncFilterChips(); render(); refreshSettingsControls();
+  }
+  function openSettings() {
+    if (settingsEl) { closeSettings(); return; }
+    const counts = impCounts();
+    const af = activeFilter();
+    const sec = SECTIONS.find(s => s.id === state.activeSectionId) || SECTIONS[0];
+    const RLAB = { high: "High", medium: "Medium", low: "Low", lower: "Lower", lowest: "Lowest" };
+    const rarityChips = IMP_TIERS.map(t =>
+      `<button class="filter-chip${af.rarities.has(t) ? " active" : ""}" data-rarity="${t}">${RLAB[t]} <span class="fc-count">${counts[t]}</span></button>`).join("");
+    const levelChips = LEVELS.map(l =>
+      `<button class="filter-chip${af.levels.has(l) ? " active" : ""}" data-level="${l}">${LEVEL_LABELS[l]}</button>`).join("");
+    settingsEl = document.createElement("div");
+    settingsEl.className = "modal-overlay";
+    settingsEl.innerHTML = `
+      <div class="modal settings-modal" role="dialog" aria-label="Filters and settings">
+        <div class="modal-head">
+          <h3>Filters &amp; settings</h3>
+          <button class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="settings-body">
+          <div class="settings-group">
+            <div class="settings-group-title">View</div>
+            <div class="filter-chips"><button class="filter-chip${state.starredOnly ? " active" : ""}" id="s-starred">&#9733; Starred only</button></div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-group-title">Importance &mdash; ${escapeAttr(sec.title)}</div>
+            <div class="filter-chips" id="s-rarity">${rarityChips}</div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-group-title">Contest level &mdash; ${escapeAttr(sec.title)}</div>
+            <div class="filter-chips" id="s-levels">${levelChips}</div>
+            <p class="settings-hint">Filters apply to <strong>${escapeAttr(sec.title)}</strong> only &mdash; each section keeps its own. Select no level to show all.</p>
+          </div>
+          <div class="settings-actions"><button class="settings-reset" id="s-reset">Reset ${escapeAttr(sec.title)} filters</button></div>
+        </div>
+      </div>`;
+    document.body.appendChild(settingsEl);
+    settingsEl.addEventListener("click", onSettingsClick);
+    setTimeout(() => document.addEventListener("keydown", onSettingsKey, true), 0);
+  }
+  function onSettingsClick(e) {
+    if (e.target === settingsEl || e.target.closest(".modal-close")) { closeSettings(); return; }
+    const af = activeFilter();
+    if (e.target.closest("#s-starred")) {
+      state.starredOnly = !state.starredOnly;
+      stripHash();
+      afterFilterChange(); return;
+    }
+    const rc = e.target.closest("[data-rarity]");
+    if (rc) {
+      const t = rc.dataset.rarity;
+      if (af.rarities.has(t)) { if (af.rarities.size > 1) af.rarities.delete(t); }
+      else af.rarities.add(t);
+      afterFilterChange(); return;
+    }
+    const lc = e.target.closest("#s-levels [data-level]");
+    if (lc) {
+      const l = lc.dataset.level;
+      if (af.levels.has(l)) af.levels.delete(l); else { af.levels.add(l); state.starredOnly = false; }
+      afterFilterChange(); return;
+    }
+    if (e.target.closest("#s-reset")) {
+      af.rarities = new Set(IMP_TIERS); af.levels.clear();
+      state.starredOnly = false;
+      afterFilterChange(); return;
+    }
+  }
+  const $settings = document.getElementById("settings-btn");
+  if ($settings) $settings.addEventListener("click", openSettings);
+  const $adv = document.getElementById("adv-btn");
+  if ($adv) $adv.addEventListener("click", openAdvanced);
+
+  // Quick "Show" dropdown drives the active section's rarity set; "Custom…" opens the popup.
+  if ($sortSelect) $sortSelect.addEventListener("change", () => {
+    const v = $sortSelect.value;
+    if (v === "custom") { syncSortSelect(); openSettings(); return; }
+    activeFilter().rarities = v === "default" ? new Set(IMP_TIERS) : new Set([v]);
+    afterFilterChange();
   });
+  syncSortSelect();
+  updateGearActive();
 
   document.addEventListener("keydown", e => {
     if (e.key === "/" && document.activeElement !== $search) {
@@ -1721,18 +2484,6 @@
     if (addlistBtn) { openListMenu(addlistBtn, addlistBtn.dataset.addlist); return; }
     const topicChip = e.target.closest(".topic-chip");
     if (topicChip) { location.hash = "#/topic/" + topicChip.dataset.topic; window.scrollTo({ top: 0 }); return; }
-    const btoggle = e.target.closest("#builtin-toggle");
-    if (btoggle) {
-      builtinExpanded = !builtinExpanded;
-      const grid = document.getElementById("builtin-grid");
-      if (grid) { grid.innerHTML = builtinGridInner(); renderMath(grid); }
-      btoggle.innerHTML = builtinToggleLabel();
-      return;
-    }
-    const blvl = e.target.closest(".b-lvl-chip");
-    if (blvl) { blvl.classList.toggle("active"); updateBuilderCount(); return; }
-    const badd = e.target.closest("#b-add");
-    if (badd) { runBuilderAdd(); return; }
     const rn = e.target.closest("[data-list-rename]");
     if (rn) {
       const l = getList(rn.dataset.listRename);
@@ -1756,67 +2507,6 @@
     if (card) {
       openFormula(card.dataset.id);
     }
-  });
-
-  // ---------- Bulk save (browsing / search / topic → a brand-new list) ----------
-  // ---------- Study-list builder (filters → a new or existing list) ----------
-  function builderMatchIds() {
-    const val = id => { const el = document.getElementById(id); return el ? el.value : ""; };
-    const sec = val("b-sec"), topic = val("b-topic"), imp = val("b-imp");
-    const levels = [].slice.call(document.querySelectorAll(".b-lvl-chip.active")).map(c => c.dataset.blvl);
-    return ALL.filter(e => {
-      const f = e.formula;
-      if (sec && e.section.id !== sec) return false;
-      if (topic && !e.topics.some(t => t.id === topic)) return false;
-      if (imp && f.importance !== imp) return false;
-      if (levels.length && !levels.some(l => f.level.indexOf(l) !== -1)) return false;
-      return true;
-    }).map(e => e.formula.id);
-  }
-  function updateBuilderCount() {
-    const el = document.getElementById("b-count");
-    if (!el) return;
-    const n = builderMatchIds().length;
-    el.textContent = n + " match" + (n === 1 ? "" : "es");
-    el.classList.toggle("none", n === 0);
-  }
-  function runBuilderAdd() {
-    const ids = builderMatchIds();
-    if (!ids.length) { toast("No formulas match those filters"); return; }
-    const sel = document.getElementById("b-list");
-    let listId = sel ? sel.value : "__new";
-    if (listId === "__new") {
-      const nn = document.getElementById("b-newname");
-      const name = nn ? nn.value.trim() : "";
-      if (!name) { if (nn) nn.focus(); toast("Name the new list first"); return; }
-      listId = createList(name);
-    }
-    const l = getList(listId);
-    if (!l) { toast("Pick a list to add to"); return; }
-    const n = addManyToList(listId, ids);   // dedup: already-present ids aren't re-added
-    const dup = ids.length - n;
-    toast(`Added ${n} to ${listGlyph(l)} ${escapeAttr(l.name)}${dup ? ` &middot; ${dup} already there` : ""}`);
-    location.hash = "#/list/" + listId;
-    window.scrollTo({ top: 0 });
-  }
-
-  $content.addEventListener("change", e => {
-    if (e.target.id === "b-sec") {
-      const topicSel = document.getElementById("b-topic");
-      if (topicSel) {
-        const cur = topicSel.value;
-        const stillValid = topicsInSection(e.target.value).some(t => t.id === cur);
-        topicSel.innerHTML = topicOptionsHtml(e.target.value, stillValid ? cur : "");
-      }
-      updateBuilderCount();
-      return;
-    }
-    if (e.target.id === "b-list") {
-      const nn = document.getElementById("b-newname");
-      if (nn) { const isNew = e.target.value === "__new"; nn.hidden = !isNew; if (isNew) nn.focus(); }
-      return;
-    }
-    if (e.target.closest("#b-topic, #b-imp")) updateBuilderCount();
   });
 
   $content.addEventListener("submit", e => {

@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Competition Math Reference</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=38">
   <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open section menu" title="Browse sections">&#9776;</button>
       <button class="brand" id="brand-home" title="Back to the start">
         <span class="brand-sigma">&Sigma;</span>
         <div class="brand-text">
@@ -23,26 +24,16 @@
         <kbd class="search-kbd">/</kbd>
       </div>
       <div class="topbar-tools">
-        <button class="tool-btn" id="lists-btn" title="Your study lists">&#9733; Lists</button>
-        <button class="tool-btn" id="top-btn" title="Scroll back to the top">&#8593; Top</button>
-        <button class="tool-btn" id="random-btn" title="Jump to a random formula">&#8646; Random</button>
-        <button class="tool-btn" id="theme-btn" title="Switch to light theme" aria-label="Toggle light or dark theme">&#9790;</button>
-      </div>
-      <div class="filters-row">
-        <div class="level-filters" id="level-filters"></div>
-        <div class="sort-wrap">
-          <label for="sort-select">Show</label>
-          <select id="sort-select">
-            <option value="default">Curated (all)</option>
-            <option value="high">High importance</option>
-            <option value="medium">Medium importance</option>
-            <option value="low">Low importance</option>
-          </select>
-        </div>
+        <button class="tool-btn" id="settings-btn" title="Filter by contest level &amp; importance" aria-label="Filters"><span class="tb-icon">&#9881;</span><span class="tb-label">Filters</span></button>
+        <button class="tool-btn" id="adv-btn" title="Advanced search" aria-label="Advanced search"><span class="tb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></span><span class="tb-label">Advanced</span></button>
+        <button class="tool-btn" id="db-btn" title="Problem database" aria-label="Problem database"><span class="tb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path></svg></span><span class="tb-label">Database</span></button>
+        <button class="tool-btn" id="lists-btn" title="Your study lists"><span class="tb-icon">&#9733;</span><span class="tb-label">Lists</span></button>
+        <button class="tool-btn tool-btn-icon" id="theme-btn" title="Switch to light theme" aria-label="Toggle light or dark theme">&#9790;</button>
       </div>
     </div>
   </header>
 
+  <div class="nav-backdrop" id="nav-backdrop" hidden></div>
   <div class="layout">
     <nav class="sidebar" id="sidebar"></nav>
     <main class="content" id="content"></main>
@@ -50,20 +41,25 @@
 
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-  <script src="js/data/geometry.js?v=12"></script>
-  <script src="js/data/algebra.js?v=13"></script>
-  <script src="js/data/number-theory.js?v=10"></script>
-  <script src="js/data/counting.js?v=8"></script>
-  <script src="js/data/details/geometry-details.js?v=9"></script>
-  <script src="js/data/details/algebra-details.js?v=13"></script>
-  <script src="js/data/details/number-theory-details.js?v=8"></script>
-  <script src="js/data/details/counting-details.js?v=8"></script>
-  <script src="js/data/examples-supplement.js?v=14"></script>
-  <script src="js/data/built-in-lists.js?v=3"></script>
-  <script src="js/data/problems/geometry-problems.js?v=7"></script>
+  <script src="js/data/geometry.js?v=43"></script>
+  <script src="js/data/algebra.js?v=38"></script>
+  <script src="js/data/number-theory.js?v=28"></script>
+  <script src="js/data/counting.js?v=26"></script>
+  <script src="js/data/details/geometry-details.js?v=25"></script>
+  <script src="js/data/details/algebra-details.js?v=30"></script>
+  <script src="js/data/details/number-theory-details.js?v=20"></script>
+  <script src="js/data/details/counting-details.js?v=20"></script>
+  <script src="js/data/examples-supplement.js?v=41"></script>
+  <script src="js/data/built-in-lists.js?v=9"></script>
+  <script src="js/data/problems/geometry-problems.js?v=8"></script>
   <script src="js/data/problems/contest-problems.js?v=7"></script>
-  <script src="js/data/diagrams/geometry-diagrams.js?v=9"></script>
-  <script src="js/data/diagrams/general-diagrams.js?v=7"></script>
-  <script src="js/app.js?v=20"></script>
+  <script src="js/data/problems/extra-problems.js?v=3"></script>
+  <script src="js/data/problems/problem-db.js?v=32"></script>
+  <script src="js/data/diagrams/geometry-diagrams.js?v=30"></script>
+  <script src="js/data/diagrams/general-diagrams.js?v=8"></script>
+  <script src="js/recurrence-solver.js?v=1"></script>
+  <script src="js/geo-interactive.js?v=10"></script>
+  <script src="js/math-tools.js?v=7"></script>
+  <script src="js/app.js?v=50"></script>
 </body>
 </html>

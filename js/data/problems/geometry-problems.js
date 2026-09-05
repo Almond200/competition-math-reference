@@ -101,8 +101,8 @@ Object.assign(window.MATH_PROBLEMS, {
 
 "triangle-area-standard": [
   {
-    q: String.raw`A triangle has area $84$ and one side of length $14$. Find the altitude to that side.`,
-    s: String.raw`From $A = \frac{1}{2}bh$: $84 = \frac{1}{2} \cdot 14 \cdot h$, so $h = 12$. (This is the 13-14-15 triangle's altitude to its middle side — the altitude splits it into 5-12-13 and 9-12-15 right triangles.)`
+    q: String.raw`The area of a triangle is $90$, and two of its sides are $15$ and $20$. Find the sine of the included angle.`,
+    s: String.raw`Use $[\triangle] = \tfrac12 ab\sin C$: $90 = \tfrac12(15)(20)\sin C = 150\sin C$, so $\sin C = \tfrac{3}{5}$. Two triangles fit — the included angle can be acute or obtuse — and neither is right, since $\sin C \ne 1$.`
   }
 ],
 
@@ -136,8 +136,8 @@ Object.assign(window.MATH_PROBLEMS, {
 
 "right-triangle-inradius": [
   {
-    q: String.raw`Find the inradius and circumradius of a $5$-$12$-$13$ right triangle.`,
-    s: String.raw`Inradius: $r = \frac{a + b - c}{2} = \frac{5 + 12 - 13}{2} = 2$. Circumradius: the hypotenuse is a diameter (Thales), so $R = \frac{13}{2}$. Check via areas: $A = 30$, $s = 15$, and indeed $r = \frac{30}{15} = 2$.`
+    q: String.raw`A right triangle has inradius $3$ and hypotenuse $25$. Find its area and perimeter.`,
+    s: String.raw`For a right triangle $r=\frac{a+b-c}{2}$, so $a+b=2r+c=6+25=31$. Squaring, $a^2+b^2+2ab=961$; since $a^2+b^2=c^2=625$, we get $2ab=336$, so the area is $\tfrac12 ab=84$ and the perimeter is $a+b+c=31+25=56$. (It is the $7$-$24$-$25$ triangle.)`
   }
 ],
 
@@ -276,8 +276,8 @@ Object.assign(window.MATH_PROBLEMS, {
 
 "circle-basics": [
   {
-    q: String.raw`A sector of a circle with radius $12$ has area $24\pi$. Find its central angle and arc length.`,
-    s: String.raw`From $\frac{1}{2}r^2\theta = 24\pi$: $\frac{1}{2} \cdot 144 \cdot \theta = 24\pi$, so $\theta = \frac{\pi}{3}$ (that is, $60^\circ$). The arc length is $r\theta = 12 \cdot \frac{\pi}{3} = 4\pi$.`
+    q: String.raw`A circular arc has length $6\pi$, and the sector it bounds has area $27\pi$. Find the radius and central angle.`,
+    s: String.raw`Arc $r\theta=6\pi$ and sector $\tfrac12 r^2\theta=27\pi$. Dividing the second by the first, $\tfrac{r}{2}=\tfrac{27\pi}{6\pi}=\tfrac92$, so $r=9$; then $\theta=\tfrac{6\pi}{9}=\tfrac{2\pi}{3}$ ($120^\circ$).`
   }
 ],
 
@@ -364,8 +364,8 @@ Object.assign(window.MATH_PROBLEMS, {
 
 "brahmaguptas-formula": [
   {
-    q: String.raw`A cyclic quadrilateral has sides $4$, $5$, $6$, $7$. Find its area.`,
-    s: String.raw`The semiperimeter is $s = \frac{4+5+6+7}{2} = 11$. Brahmagupta: $A = \sqrt{(11-4)(11-5)(11-6)(11-7)} = \sqrt{7 \cdot 6 \cdot 5 \cdot 4} = \sqrt{840} = 2\sqrt{210}$. Any non-cyclic quadrilateral with these sides would have strictly smaller area.`
+    q: String.raw`A cyclic quadrilateral has sides $7$, $15$, $20$, $24$. Find its area.`,
+    s: String.raw`Semiperimeter $s=\frac{7+15+20+24}{2}=33$. Brahmagupta: $A=\sqrt{(33-7)(33-15)(33-20)(33-24)}=\sqrt{26\cdot18\cdot13\cdot9}=\sqrt{54756}=234$ — a clean integer area.`
   }
 ],
 
@@ -476,8 +476,8 @@ Object.assign(window.MATH_PROBLEMS, {
 
 "sphere-formulas": [
   {
-    q: String.raw`A sphere has volume $36\pi$. Find its surface area.`,
-    s: String.raw`From $\frac{4}{3}\pi r^3 = 36\pi$: $r^3 = 27$, so $r = 3$. Then $SA = 4\pi r^2 = 36\pi$ — numerically equal to the volume, a coincidence that happens only at $r = 3$.`
+    q: String.raw`A cylinder is circumscribed about a sphere of radius $5$ (the sphere touches the curved wall and both bases). Find the ratio of the sphere's volume to the cylinder's, and of their surface areas.`,
+    s: String.raw`The cylinder has radius $5$ and height $10$. Volumes: sphere $\tfrac43\pi(125)=\tfrac{500\pi}{3}$, cylinder $\pi(25)(10)=250\pi$, ratio $\tfrac23$. Surface areas: sphere $4\pi(25)=100\pi$, cylinder $2\pi(25)+2\pi(5)(10)=150\pi$, ratio $\tfrac23$. Both ratios are exactly $\tfrac23$ — Archimedes' theorem.`
   }
 ],
 

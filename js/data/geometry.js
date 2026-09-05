@@ -40,6 +40,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
+          id: "median-to-hypotenuse",
+          name: "Median to the Hypotenuse",
+          latex: String.raw`\text{right }\triangle:\quad m_{\text{hyp}} = \tfrac12\,\text{hyp} = R`,
+          description: String.raw`In a right triangle the median from the right angle to the hypotenuse is exactly half the hypotenuse. Equivalently, the midpoint of the hypotenuse is equidistant from all three vertices — it is the circumcenter, the hypotenuse is a diameter of the circumcircle, and $R = \tfrac{c}{2}$ (Thales). The converse holds too: if a triangle's median to a side equals half that side, the angle opposite is right.`,
+          keywords: ["median to hypotenuse", "half the hypotenuse", "right triangle median", "midpoint of hypotenuse equidistant", "circumcenter is hypotenuse midpoint", "hypotenuse is a diameter", "thales", "R = c/2", "converse right angle"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
           id: "triangle-inequality",
           name: "Triangle Inequality",
           latex: String.raw`|a - b| < c < a + b`,
@@ -49,13 +58,14 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
-          id: "polygon-angle-sums",
-          name: "Polygon Angle Sums",
-          latex: String.raw`\text{Interior sum} = 180^\circ(n-2), \quad \text{Exterior sum} = 360^\circ, \quad \#\text{diagonals} = \tfrac{n(n-3)}{2}`,
-          description: String.raw`For an $n$-gon. Each interior angle of a regular $n$-gon is $\frac{180^\circ(n-2)}{n}$; each exterior angle is $\frac{360^\circ}{n}$. It also has $\frac{n(n-3)}{2}$ diagonals — each vertex joins the $n-3$ non-adjacent vertices, halved to undo double-counting.`,
-          keywords: ["interior angles", "exterior angles", "regular polygon", "n-gon", "number of diagonals", "diagonals"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
+          id: "integer-triangles-perimeter",
+          name: "Counting Integer-Sided Triangles by Perimeter",
+          latex: String.raw`\#\{a\le b\le c,\ a+b+c=n,\ a+b>c\} = \begin{cases}\operatorname{round}\!\left(\dfrac{n^2}{48}\right) & n\text{ even}\\[4pt] \operatorname{round}\!\left(\dfrac{(n+3)^2}{48}\right) & n\text{ odd}\end{cases}`,
+          description: String.raw`The number of noncongruent triangles with positive integer sides and perimeter $n$ (Alcuin's sequence), rounded to the nearest integer. It comes from counting triples $a\le b\le c$ with $a+b+c=n$ subject to the triangle inequality $a+b>c$ (equivalently $c\lt n/2$): fix the longest side $c$, count the valid $(a,b)$, and sum. Requiring all sides distinct or a particular shape adjusts the count the same way.`,
+          example: String.raw`$n=12$: $\operatorname{round}\!\left(\tfrac{144}{48}\right)=3$ — namely $(2,5,5),\ (3,4,5),\ (4,4,4)$.`,
+          keywords: ["integer sided triangles", "count triangles", "perimeter", "triangle inequality counting", "alcuin sequence", "how many triangles", "noncongruent triangles"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "similar-figures-ratios",
@@ -103,6 +113,67 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "clock-angle",
+          name: "Clock Angle Formula",
+          latex: String.raw`\theta = \left| 30H - 5.5M \right|^\circ`,
+          description: String.raw`Angle between the hands at $H$ hours $M$ minutes (take $360^\circ - \theta$ if over $180^\circ$). The minute hand moves $6^\circ$ per minute; the hour hand $0.5^\circ$ per minute.`,
+          example: String.raw`At 3:15, $\theta = |90 - 82.5| = 7.5^\circ$ — the hands are not aligned even though both point near the 3.`,
+          keywords: ["clock hands", "angle between hands", "time", "angle between clock hands", "hour and minute hand angle", "clock hands problem"],
+          importance: "medium",
+          level: ["MATHCOUNTS"]
+        }
+      ]
+    },
+    {
+      title: "Polygons & Quadrilaterals",
+      formulas: [
+        {
+          id: "polygon-angle-sums",
+          name: "Polygon Angle Sums",
+          latex: String.raw`\text{Interior sum} = 180^\circ(n-2), \quad \text{Exterior sum} = 360^\circ, \quad \#\text{diagonals} = \tfrac{n(n-3)}{2}`,
+          description: String.raw`For an $n$-gon. Each interior angle of a regular $n$-gon is $\frac{180^\circ(n-2)}{n}$; each exterior angle is $\frac{360^\circ}{n}$. It also has $\frac{n(n-3)}{2}$ diagonals — each vertex joins the $n-3$ non-adjacent vertices, halved to undo double-counting.`,
+          keywords: ["interior angles", "exterior angles", "regular polygon", "n-gon", "number of diagonals", "diagonals"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
+          id: "regular-polygon-area",
+          name: "Regular Polygon Area",
+          latex: String.raw`A = \tfrac{1}{2}ap = \tfrac{1}{2}nR^2\sin\tfrac{360^\circ}{n}, \qquad A_{\text{oct}} = 2(1+\sqrt2)\,s^2, \qquad A_{\text{dodec}} = 3R^2`,
+          description: String.raw`With apothem $a$, perimeter $p$, side $s$, circumradius $R$, and $n$ sides (so $p = ns$). The octagon's $2(1+\sqrt2)s^2$ and the dodecagon-in-radius-$R$ value of exactly $3R^2$ are the two special cases worth memorizing.`,
+          keywords: ["apothem", "perimeter", "regular", "n-gon area", "octagon area", "dodecagon area"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "regular-hexagon-area",
+          name: "Regular Hexagon of Side $s$",
+          latex: String.raw`A = \frac{3s^2\sqrt{3}}{2}`,
+          description: String.raw`Exactly six equilateral triangles. Long diagonal $= 2s$, short diagonal $= s\sqrt{3}$.`,
+          keywords: ["hexagon", "six equilateral triangles", "diagonals", "regular hexagon area", "area of a hexagon", "hexagon apothem"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "regular-dodecagon",
+          name: "Regular Dodecagon of Side $s$",
+          latex: String.raw`A = 3(2+\sqrt{3})\,s^2 = 6s^2 + 3\sqrt{3}\,s^2, \qquad A = 3R^2 \;\;(\text{circumradius } R)`,
+          description: String.raw`The regular 12-gon dissects cleanly into 6 squares and 12 equilateral triangles, all of side $s$: at every $150^\circ$ interior angle a square ($90^\circ$) and a triangle ($60^\circ$) fit exactly, so $A = 6s^2 + 12\cdot\frac{\sqrt{3}}{4}s^2 = 3(2+\sqrt{3})s^2$. Inscribed in a circle of radius $R$ the area is exactly $3R^2$ (from $\tfrac12 nR^2\sin\tfrac{360^\circ}{n}$ with $n=12$), which is what makes dodecagon-in-a-circle problems so clean. Interior angle $150^\circ$; circumradius $R = \tfrac{s}{2}(\sqrt{6}+\sqrt{2})$.`,
+          keywords: ["dodecagon", "regular dodecagon", "12-gon", "twelve-gon", "twelve sides", "six squares twelve triangles", "dodecagon area", "3R^2", "dodecagon dissection", "split dodecagon", "150 degrees"],
+          importance: "low",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "ngon-vertex-distance-product",
+          name: "Product of Distances to n-gon Vertices",
+          latex: String.raw`\prod_{k=1}^{n} PV_k = 2R^n\left|\sin\tfrac{n\theta}{2}\right| \;\le\; 2R^n`,
+          description: String.raw`Let $P$ lie on the circumcircle (radius $R$) of a regular $n$-gon, at angular position $\theta$ measured from one vertex. Putting the vertices at $R\zeta^k$ with $\zeta = e^{2\pi i/n}$ and using $\prod_k (z - \zeta^k) = z^n - 1$, the product of the distances from $P$ to all $n$ vertices is $R^n\,|z^n - 1| = 2R^n\left|\sin\tfrac{n\theta}{2}\right|$. It therefore reaches its maximum $2R^n$ exactly when $P$ is the midpoint of an arc between two adjacent vertices (there $\tfrac{n\theta}{2}$ is an odd multiple of $\tfrac{\pi}{2}$), and it is $0$ when $P$ is a vertex. This is a different statement from the product of distances between one fixed vertex and the other $n-1$ vertices, which is always $nR^{n-1}$.`,
+          example: String.raw`Square ($n = 4$, $R = 1$): at an arc midpoint the four distances multiply to $2R^4 = 2$; at a vertex the product is $0$.`,
+          keywords: ["product of distances", "regular polygon", "n-gon vertices", "circumcircle", "arc midpoint", "roots of unity", "maximize product", "point on circle", "chord products"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "trapezoid-parallelogram-areas",
           name: "Quadrilateral Areas",
           latex: String.raw`A_{\text{trap}} = \frac{(b_1+b_2)h}{2}, \quad A_{\text{par}} = bh, \quad A_{\text{rhomb/kite}} = \frac{d_1 d_2}{2}`,
@@ -126,28 +197,9 @@ window.MATH_SECTIONS.push({
           latex: String.raw`A = \frac{1}{2} d_1 d_2 \sin\theta`,
           description: String.raw`For any quadrilateral with diagonals $d_1, d_2$ meeting at angle $\theta$. Perpendicular diagonals give the familiar $\frac{1}{2}d_1 d_2$; also $A \le \frac{1}{2} d_1 d_2$ always.`,
           example: String.raw`Diagonals $8$ and $10$ crossing at $30^\circ$: $A = \frac{1}{2} \cdot 8 \cdot 10 \cdot \frac{1}{2} = 20$.`,
-          keywords: ["diagonals angle", "quadrilateral area", "sine"],
+          keywords: ["diagonals angle", "quadrilateral area", "sine", "area from diagonals", "half d1 d2 sine", "kite and rhombus area"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "regular-polygon-area",
-          name: "Regular Polygon Area",
-          latex: String.raw`A = \tfrac{1}{2}ap = \tfrac{1}{2}nR^2\sin\tfrac{360^\circ}{n}, \qquad A_{\text{oct}} = 2(1+\sqrt2)\,s^2, \qquad A_{\text{dodec}} = 3R^2`,
-          description: String.raw`With apothem $a$, perimeter $p$, side $s$, circumradius $R$, and $n$ sides (so $p = ns$). The octagon's $2(1+\sqrt2)s^2$ and the dodecagon-in-radius-$R$ value of exactly $3R^2$ are the two special cases worth memorizing.`,
-          keywords: ["apothem", "perimeter", "regular", "n-gon area", "octagon area", "dodecagon area"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "clock-angle",
-          name: "Clock Angle Formula",
-          latex: String.raw`\theta = \left| 30H - 5.5M \right|^\circ`,
-          description: String.raw`Angle between the hands at $H$ hours $M$ minutes (take $360^\circ - \theta$ if over $180^\circ$). The minute hand moves $6^\circ$ per minute; the hour hand $0.5^\circ$ per minute.`,
-          example: String.raw`At 3:15, $\theta = |90 - 82.5| = 7.5^\circ$ — the hands are not aligned even though both point near the 3.`,
-          keywords: ["clock hands", "angle between hands", "time"],
-          importance: "medium",
-          level: ["MATHCOUNTS"]
         }
       ]
     },
@@ -173,10 +225,19 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "max-rectangle-in-triangle",
+          name: "Largest Rectangle in a Triangle",
+          latex: String.raw`A_{\text{rect}}^{\max} = \tfrac{1}{2}\,[\triangle]`,
+          description: String.raw`The largest rectangle inscribed in a triangle with one side on a chosen base has area exactly half the triangle's. Its top edge lies on the midline (half the height), so its width is half that base and its height half the altitude: $\frac{b}{2}\cdot\frac{h}{2}=\frac{bh}{4}=\frac12[\triangle]$. The one-half ratio is the same whichever side you build it on.`,
+          keywords: ["inscribed rectangle", "largest rectangle in a triangle", "maximum area rectangle", "half the area", "rectangle in triangle", "midline rectangle", "optimization"],
+          importance: "low",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "herons-formula",
           name: "Heron's Formula",
           latex: String.raw`A = \sqrt{s(s-a)(s-b)(s-c)}`,
-          description: String.raw`Area from three sides, with semiperimeter $s = \frac{a+b+c}{2}$.`,
+          description: String.raw`Area from the three sides alone — the SSS area formula — with semiperimeter $s = \frac{a+b+c}{2}$. Keep the factored form $\sqrt{s(s-a)(s-b)(s-c)}$ rather than expanding; it is the 2D case of the Cayley–Menger determinant.`,
           example: String.raw`The famous $13$-$14$-$15$ triangle: $s = 21$, so $A = \sqrt{21 \cdot 8 \cdot 7 \cdot 6} = \sqrt{7056} = 84$. (Its altitudes are then $\frac{2 \cdot 84}{13}, 12, \frac{2 \cdot 84}{15}$.)`,
           keywords: ["three sides", "semiperimeter", "SSS", "area"],
           importance: "high",
@@ -190,6 +251,15 @@ window.MATH_SECTIONS.push({
           example: String.raw`For the $13$-$14$-$15$ triangle, $A = 84$ and $s = 21$, so $r = \frac{84}{21} = 4$.`,
           keywords: ["inradius", "incircle", "semiperimeter", "inscribed circle", "area"],
           importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "incenter-area-split",
+          name: "Incenter Splits the Area by the Sides",
+          latex: String.raw`[BIC] : [CIA] : [AIB] = a : b : c, \qquad [BIC] = \frac{a}{a+b+c}\,[ABC]`,
+          description: String.raw`Join the incenter $I$ to the vertices and $\triangle ABC$ splits into $\triangle BIC,\ \triangle CIA,\ \triangle AIB$, each of height $r$ on its side — so their areas are in ratio $a : b : c$, and each is that side's fraction of the perimeter, $[BIC] = \frac{a}{a+b+c}[ABC]$. Summing them recovers $[ABC] = rs$, and the same weights give the incenter's barycentric coordinates $(a : b : c)$.`,
+          keywords: ["incenter area split", "join incenter to vertices", "three triangles proportional to sides", "areas a : b : c", "side fraction of perimeter", "area equals rs", "incenter barycentric a b c", "BIC CIA AIB"],
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -223,6 +293,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "incircle-excircle-touch",
+          name: "Incircle & Excircle Touch Points",
+          latex: String.raw`\text{on } BC:\ X_{\text{in}} = s - b \text{ from } B,\ \ X_{A} = s - c \text{ from } B,\ \ X_{\text{in}}X_{A} = |b - c|`,
+          description: String.raw`On side $BC$ the incircle touches at distance $s - b$ from $B$ (so $s - c$ from $C$), while the $A$-excircle touches at $s - c$ from $B$. The two contact points are therefore mirror images across the midpoint $M$ of $BC$, and the gap between them is $|b - c|$ — so $M$ is exactly the midpoint of the incircle and $A$-excircle touch points. A fast way to place both contact points, and the reason they coincide precisely when $b = c$.`,
+          keywords: ["incircle excircle touch points", "symmetric about midpoint of BC", "distance b minus c apart", "contact point s - b", "excircle tangent point s - c", "midpoint of contact points", "touch point reflection"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "shared-angle-area-ratio",
           name: "Shared-Angle Area Ratio",
           latex: String.raw`\frac{[AXY]}{[ABC]} = \frac{AX \cdot AY}{AB \cdot AC}`,
@@ -233,14 +312,50 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "same-base-area-ratio",
+          name: "Same-Base Area Ratio (Diagonal Split)",
+          latex: String.raw`AC \cap BD = P \implies \frac{[ABD]}{[CBD]} = \frac{AP}{PC}`,
+          description: String.raw`Two triangles on a common base have areas in the ratio of their apexes' distances to that base. So $\triangle ABD$ and $\triangle CBD$ share base $BD$, and when segment $AC$ crosses $BD$ at $P$, that height ratio is read straight off as $AP : PC$ — giving $\frac{[ABD]}{[CBD]} = \frac{AP}{PC}$. This converts a length ratio along a diagonal into an area ratio and back, and is the engine behind the area method, mass points, and "in what ratio does the diagonal cut it?" questions.`,
+          keywords: ["same base area ratio", "triangles common base", "diagonal splits area", "area ratio ap pc", "shared base", "ratio of heights", "diagonals intersection area", "diagonal split"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "exradii",
           name: "Excircles & Exradii",
-          latex: String.raw`r_a = \frac{A}{s - a} = s \tan\frac{A}{2}, \qquad \frac{1}{r} = \frac{1}{r_a} + \frac{1}{r_b} + \frac{1}{r_c}, \qquad r\, r_a r_b r_c = A^2`,
-          description: String.raw`The excircle opposite $A$ touches side $a$ and the extensions of the other two sides; its radius satisfies $A = r_a(s-a)$, mirroring $A = rs$. The tangent length from $A$ to its excircle is exactly $s$. Also $r_a = s\tan\frac{A}{2}$ while $r = (s-a)\tan\frac{A}{2}$.`,
+          latex: String.raw`r_a = \frac{A}{s - a} = s \tan\tfrac{A}{2}, \qquad \frac{1}{r} = \frac{1}{r_a} + \frac{1}{r_b} + \frac{1}{r_c}, \qquad r\, r_a r_b r_c = A^2, \qquad r_a = 4R\sin\tfrac A2\cos\tfrac B2\cos\tfrac C2`,
+          description: String.raw`The excircle opposite $A$ touches side $a$ and the extensions of the other two sides; its radius satisfies $A = r_a(s-a)$, mirroring $A = rs$. The tangent length from $A$ to its excircle is exactly $s$. Also $r_a = s\tan\frac{A}{2}$ while $r = (s-a)\tan\frac{A}{2}$, and the three exradii sum to $r_a + r_b + r_c = 4R + r$.`,
           example: String.raw`The $13$-$14$-$15$ triangle ($A = 84$, $s = 21$): $r_a = \frac{84}{21-14} = 12$ for the excircle opposite the side of length $14$, versus inradius $r = 4$.`,
-          keywords: ["excircle", "exradius", "exradius formula", "exradii", "s minus a", "escribed circle", "tangent length s", "ra"],
+          keywords: ["excircle", "exradius", "exradius formula", "exradii", "s minus a", "escribed circle", "tangent length s", "ra", "r_a + r_b + r_c = 4R + r", "sum of exradii"],
           importance: "medium",
           level: ["AIME"]
+        },
+        {
+          id: "triangle-half-angle-identities",
+          name: "Triangle Half-Angle, R, r & s Identities",
+          latex: String.raw`\sin\tfrac A2\sin\tfrac B2\sin\tfrac C2 = \frac{r}{4R}, \qquad \cos\tfrac A2\cos\tfrac B2\cos\tfrac C2 = \frac{s}{4R}`,
+          description: String.raw`The metric identities tying a triangle's angles to its inradius $r$, circumradius $R$, and semiperimeter $s$. The two half-angle products $\sin\frac A2\sin\frac B2\sin\frac C2 = \frac{r}{4R}$ and $\cos\frac A2\cos\frac B2\cos\frac C2 = \frac{s}{4R}$ are the workhorses; from them $\sin A + \sin B + \sin C = \frac sR = 4\cos\frac A2\cos\frac B2\cos\frac C2$, $\cos A + \cos B + \cos C = 1 + \frac rR$. Companions: $[ABC] = 2R^2\sin A\sin B\sin C$, $r_a + r_b + r_c = 4R + r$, and the side-to-angle bridge $\sin\frac A2 = \sqrt{\frac{(s-b)(s-c)}{bc}}$, $\cos\frac A2 = \sqrt{\frac{s(s-a)}{bc}}$. Together they turn any "given $R$, $r$, $s$" configuration into algebra.`,
+          keywords: ["half angle triangle", "sin half product r/4R", "cos half product s/4R", "r = 4R sin", "s = 4R cos", "sin A + sin B + sin C = s/R", "cos A + cos B + cos C = 1 + r/R", "area 2R^2 sin", "exradii sum 4R+r", "sin half angle sides", "inradius circumradius identities"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "triangle-sin2-sum-ratio",
+          name: "Triangle Sine-Sum Ratio (2r/R)",
+          latex: String.raw`\dfrac{\sin 2A+\sin 2B+\sin 2C}{\sin A+\sin B+\sin C} = \dfrac{2r}{R}`,
+          description: String.raw`In any triangle this ratio collapses to $\frac{2r}{R}$: the numerator is $\sin 2A+\sin 2B+\sin 2C = 4\sin A\sin B\sin C$ and the denominator is $\sin A+\sin B+\sin C = 4\cos\frac A2\cos\frac B2\cos\frac C2$, so the quotient equals $8\sin\frac A2\sin\frac B2\sin\frac C2 = 8\cdot\frac{r}{4R} = \frac{2r}{R}$.`,
+          keywords: ["sin2A sum over sinA sum", "2r/R ratio", "double angle sine sum", "triangle sine sum ratio", "4 sin A sin B sin C"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "half-angle-tangent-identity",
+          name: "Half-Angle Tangent Identity",
+          latex: String.raw`\tan\tfrac A2\tan\tfrac B2 + \tan\tfrac B2\tan\tfrac C2 + \tan\tfrac C2\tan\tfrac A2 = 1`,
+          description: String.raw`For any triangle the three half-angle tangent products sum to $1$. It follows from $\frac A2+\frac B2+\frac C2 = 90^\circ$, so $\tan\frac{A+B}{2}=\cot\frac C2$; clearing denominators gives the symmetric relation. Since $\tan\frac A2 = \frac{r}{s-a}$, it is a clean way to eliminate angles in $(r,s)$ problems.`,
+          keywords: ["half angle tangent identity", "tan half products sum to 1", "sum of tan half angles", "triangle tangent identity", "tan(A/2)tan(B/2)"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         }
       ]
     },
@@ -292,9 +407,38 @@ window.MATH_SECTIONS.push({
           latex: String.raw`d^2 = ab - mn`,
           description: String.raw`The bisector of angle $C$ has length $d$, where $a, b$ are the two sides meeting at $C$ and $m, n$ are the segments it cuts the opposite side $AB$ into. (Equivalently $d^2 = ab\left[1 - \left(\tfrac{c}{a+b}\right)^2\right]$.)`,
           example: String.raw`A triangle with sides $a = 6$, $b = 8$ around the bisected angle $C$ and opposite side $c = 7$: the bisector splits $c$ into $m = 3$, $n = 4$ (ratio $6:8$), so $d^2 = 6 \cdot 8 - 3 \cdot 4 = 36$ and the bisector has length exactly $6$.`,
-          keywords: ["angle bisector length", "cevian", "segments"],
+          keywords: ["angle bisector length", "cevian", "segments", "length of an angle bisector", "angle bisector cevian length", "bisector length formula"],
           importance: "medium",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "angle-bisector-circumcircle",
+          name: "Angle Bisector Extended to the Circumcircle",
+          latex: String.raw`AB\cdot AC = AL\cdot AD,\qquad LB\cdot LC = LA\cdot LD,\qquad DB = DC`,
+          description: String.raw`Extend the bisector of $\angle A$ until it meets the circumcircle again at $D$. Then $D$ is the midpoint of arc $BC$ not containing $A$, so $DB=DC$ (and $D$ is the center of the circle through $B$, $C$, the incenter, and the $A$-excenter — the incenter–excenter lemma). Two length relations finish most configurations: because $\triangle ABL\sim\triangle ADC$ (the bisected angle at $A$ is shared and $\angle ABL=\angle ADC$ subtend arc $AC$), $AB\cdot AC = AL\cdot AD$, so $AD=\dfrac{bc}{AL}$; and Power of the Point $L$ on chord $BC$ gives $LB\cdot LC = LA\cdot LD$. Pair these with the bisector length $AL=\sqrt{bc\left[1-\left(\tfrac{a}{b+c}\right)^2\right]}$ to recover the whole extended chord.`,
+          example: String.raw`With $AB=4$, $AC=6$, and bisector foot $L$ on $BC$ at distance $AL=3$: $AD=\dfrac{4\cdot 6}{3}=8$, so $LD=AD-AL=5$; check Power of a Point, $LB\cdot LC = LA\cdot LD = 3\cdot 5 = 15$.`,
+          keywords: ["angle bisector extended", "circumcircle", "arc midpoint", "DB = DC", "power of a point", "bc = AL AD", "incenter excenter", "extended bisector length", "bisector meets circle"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "altitude-bisector-angle",
+          name: "Altitude, Bisector & Circumdiameter",
+          latex: String.raw`\angle(\text{altitude}, \text{bisector}) = \dfrac{|B - C|}{2}, \qquad \text{$A$-altitude and } AO \text{ are isogonal}`,
+          description: String.raw`From a vertex, the altitude and the line to the circumcenter $O$ are reflections across the angle bisector — they are isogonal. So the $A$-bisector bisects the angle between the $A$-altitude and $AO$, and the angle between the altitude and the bisector is exactly $\dfrac{|B - C|}{2}$. It is also why the orthocenter and circumcenter are isogonal conjugates.`,
+          keywords: ["altitude and bisector angle", "|B - C| / 2", "altitude circumdiameter isogonal", "altitude AO reflection over bisector", "angle between altitude and angle bisector", "O H isogonal conjugates"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "perp-to-angle-bisector",
+          name: "Perpendicular to an Angle Bisector (Reflect & Double)",
+          type: "method",
+          latex: String.raw`BP = c\sin\tfrac A2, \quad B' = \text{reflection of } B \text{ over the } A\text{-bisector} \in \overline{AC},\ AB' = c; \qquad PM = \tfrac{|b-c|}{2} \parallel AC`,
+          description: String.raw`The bisector of angle $A$ is a mirror that swaps ray $AB$ with ray $AC$. So the standard move — drop a perpendicular from $B$ to the bisector and extend it to double its length — reflects $B$ across the bisector: the foot $P$ is the midpoint, and the far end $B'$ lands on line $AC$ with $AB' = AB = c$. Consequences you can read off: the perpendicular length is $BP = c\sin\frac A2$ (so $BB' = 2c\sin\frac A2$), and $B'C = |b - c|$. Joining $P$ to the midpoint $M$ of $BC$ makes a midline of $\triangle BB'C$, so $PM \parallel AC$ with $PM = \frac{|b-c|}{2}$ — the quick way to locate that foot and get lengths in any angle-bisector configuration.`,
+          keywords: ["perpendicular to angle bisector", "reflect over bisector", "double the perpendicular", "foot of perpendicular to bisector", "c sin A/2", "b minus c over 2", "midline b-c", "auxiliary construction", "angle bisector mirror", "drop perpendicular and extend"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "stewarts-theorem",
@@ -302,7 +446,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`a(d^2 + mn) = b^2 m + c^2 n`,
           description: String.raw`For a cevian of length $d$ dividing side $a$ into segments $m$ (adjacent to $c$) and $n$ (adjacent to $b$). Mnemonic: "a man and his dad put a bomb in the sink" — $man + dad = bmb + cnc$.`,
           example: String.raw`Triangle with $b = 7$, $c = 5$, and side $a = 6$ split into $m = 2$ (next to $c$), $n = 4$: $6(d^2 + 8) = 49 \cdot 2 + 25 \cdot 4 = 198$, so $d^2 = 25$ and the cevian is $5$.`,
-          keywords: ["cevian length", "stewart", "man dad bomb sink"],
+          keywords: ["cevian length", "stewart", "man dad bomb sink", "stewarts theorem", "cevian length formula", "a man and his dad put a bomb in the sink"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -310,9 +454,9 @@ window.MATH_SECTIONS.push({
           id: "cevas-theorem",
           name: "Ceva's Theorem",
           latex: String.raw`\frac{AF}{FB} \cdot \frac{BD}{DC} \cdot \frac{CE}{EA} = 1`,
-          description: String.raw`Cevians $AD$, $BE$, $CF$ are concurrent if and only if this product equals $1$.`,
+          description: String.raw`Cevians $AD$, $BE$, $CF$ are concurrent if and only if this product of the three side ratios equals $1$. The trig form uses ratios of the sines of the split angles; with directed ratios it is the sibling of Menelaus, whose product is $-1$ for collinearity instead.`,
           example: String.raw`Medians: each ratio is $\frac{1}{1}$, so the product is $1$ — confirming the medians meet at a point (the centroid). If instead $\frac{AF}{FB} = \frac{1}{2}$ and $\frac{BD}{DC} = \frac{3}{1}$, concurrency forces $\frac{CE}{EA} = \frac{2}{3}$.`,
-          keywords: ["concurrent", "cevians", "product of ratios"],
+          keywords: ["concurrent", "cevians", "product of ratios", "cevas theorem", "cevian concurrency", "trig form of ceva"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -321,7 +465,7 @@ window.MATH_SECTIONS.push({
           name: "Menelaus' Theorem",
           latex: String.raw`\frac{AF}{FB} \cdot \frac{BD}{DC} \cdot \frac{CE}{EA} = -1`,
           description: String.raw`A transversal line meets lines $BC$, $CA$, $AB$ at $D$, $E$, $F$ (using directed segments; use $=1$ with unsigned lengths). The collinearity partner to Ceva.`,
-          keywords: ["transversal", "collinear", "directed segments"],
+          keywords: ["transversal", "collinear", "directed segments", "menelaus theorem", "transversal ratio product", "collinearity test"],
           importance: "medium",
           level: ["AIME"]
         },
@@ -331,7 +475,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`b^2 + c^2 = 2\left(m_a^2 + \left(\frac{a}{2}\right)^2\right), \qquad m_a^2 + m_b^2 + m_c^2 = \frac{3}{4}(a^2 + b^2 + c^2), \qquad m_a = \frac{1}{2}\sqrt{2b^2 + 2c^2 - a^2}`,
           description: String.raw`Stewart's Theorem specialized to the median $m_a$ drawn to side $a$. Equivalently $m_a = \frac{1}{2}\sqrt{2b^2 + 2c^2 - a^2}$.`,
           example: String.raw`Sides $b = 5$, $c = 7$, and $a = 8$: $25 + 49 = 2(m_a^2 + 16)$, so $m_a^2 = 21$ and the median to the side of length $8$ is $\sqrt{21}$.`,
-          keywords: ["median length", "apollonius", "stewart special case"],
+          keywords: ["median length", "apollonius", "stewart special case", "apollonius theorem", "length of a median", "median length formula"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -341,7 +485,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`[ABC] = \frac{4}{3}\,[\text{triangle with sides } m_a, m_b, m_c]`,
           description: String.raw`The three medians of any triangle themselves form a valid triangle, and the original triangle's area is $\frac{4}{3}$ of the median triangle's. So: given three medians, build their triangle, use Heron, scale.`,
           example: String.raw`Medians $9, 12, 15$ form a right triangle of area $54$, so the original triangle has area $\frac{4}{3} \cdot 54 = 72$.`,
-          keywords: ["medians form triangle", "area from medians", "four thirds"],
+          keywords: ["medians form triangle", "area from medians", "four thirds", "triangle formed by the medians", "area of the median triangle", "three quarters area"],
           importance: "low",
           level: ["AMC12", "AIME"]
         },
@@ -381,7 +525,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`For any interior point $P$: the distances to the vertices total at least twice the perpendicular distances to the sides, with equality only for the center of an equilateral triangle. A sharp, memorable bound linking the two natural distance triples.`,
           example: String.raw`Center of an equilateral triangle with circumradius $R$: vertex distances sum to $3R$ and side distances sum to $3 \cdot \frac{R}{2}$ — exactly double, confirming the equality case.`,
           keywords: ["erdos mordell", "interior point", "distance inequality", "vertices versus sides"],
-          importance: "low",
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -400,19 +544,109 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\frac{a - b}{a + b} = \frac{\tan\frac{A-B}{2}}{\tan\frac{A+B}{2}}`,
           description: String.raw`Relates the sum and difference of two sides to the half-sum and half-difference of their opposite angles (note $\frac{A+B}{2} = 90^\circ - \frac{C}{2}$). Derived from the law of sines plus sum-to-product. Occasionally the fastest route when a problem gives $a \pm b$ and angle information.`,
           example: String.raw`A $30$-$60$-$90$ triangle with $a = 2$ (opposite $90^\circ$) and $b = 1$ (opposite $30^\circ$): LHS $= \frac{1}{3}$; RHS $= \frac{\tan 30^\circ}{\tan 60^\circ} = \frac{1/\sqrt3}{\sqrt3} = \frac{1}{3}$. ✓`,
-          keywords: ["law of tangents", "sum and difference of sides", "half angles"],
-          importance: "low",
+          keywords: ["law of tangents", "sum and difference of sides", "half angles", "law of tangents", "tangent rule for triangles", "tangent half angle side rule"],
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
           id: "napoleons-theorem",
           name: "Napoleon's Theorem",
-          latex: String.raw`\text{centers of equilateral triangles erected on the sides form an equilateral triangle}`,
+          latex: String.raw`\text{equilateral triangles on the sides} \Rightarrow \text{their centers form an equilateral triangle}`,
           description: String.raw`Erect equilateral triangles outward (or all inward) on the sides of any triangle: their centers always form an equilateral triangle. The outer Napoleon triangle has area $\frac{\sqrt3}{24}(a^2+b^2+c^2) + \frac{[ABC]}{2}$; outer minus inner area equals $[ABC]$.`,
           example: String.raw`Check on an equilateral triangle of side $s$: the formula gives $\frac{\sqrt3}{24} \cdot 3s^2 + \frac{1}{2}\cdot\frac{\sqrt3}{4}s^2 = \frac{\sqrt3}{8}s^2 + \frac{\sqrt3}{8}s^2 = \frac{\sqrt3}{4}s^2$ — the Napoleon triangle is congruent to the original. ✓`,
           keywords: ["napoleon", "equilateral centers", "erected triangles", "outer inner"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "projection-formula",
+          name: "Projection Formula",
+          latex: String.raw`a = b\cos C + c\cos B, \qquad b = c\cos A + a\cos C, \qquad c = a\cos B + b\cos A`,
+          description: String.raw`Each side is the sum of the projections of the other two onto it — drop the altitude from a vertex and read off the two pieces of the opposite side. Cheap and often overlooked, it sits right next to the Law of Cosines (adding the three, or eliminating cosines, recovers it) and instantly relates a side to the adjacent angles.`,
+          keywords: ["projection formula", "a = b cos C + c cos B", "side as projections", "foot of altitude", "law of cosines neighbor"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "mollweides-formula",
+          name: "Mollweide's Formula",
+          latex: String.raw`\frac{a+b}{c} = \frac{\cos\frac{A-B}{2}}{\sin\frac{C}{2}}, \qquad \frac{a-b}{c} = \frac{\sin\frac{A-B}{2}}{\cos\frac{C}{2}}`,
+          description: String.raw`A pair of triangle identities using all three sides and all three angles at once — which makes them the standard check on a solved triangle (an error in any part breaks the equation). Dividing the two recovers the Law of Tangents; they follow from the Law of Sines plus sum-to-product.`,
+          keywords: ["mollweide formula", "check triangle solution", "a plus b over c", "law of tangents", "all sides and angles"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "morleys-theorem",
+          name: "Morley's Trisector Theorem",
+          latex: String.raw`\text{adjacent angle-trisectors meet in an equilateral triangle}`,
+          description: String.raw`Trisect all three angles of any triangle; the intersection points of adjacent trisectors always form an equilateral triangle — the Morley triangle. A famously surprising result (angle trisection rarely behaves), proved cleanly by working backward from an equilateral triangle with trigonometric angle-chasing. Beautiful, but essentially never a problem-solving tool.`,
+          keywords: ["morley theorem", "angle trisectors", "morley triangle", "equilateral from trisectors", "surprising"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "isogonal-conjugate",
+          name: "Isogonal Conjugate",
+          latex: String.raw`\angle(AP,\text{bis }A) = \angle(\text{bis }A, AP^*) \text{ at each vertex} \;\Rightarrow\; AP^*, BP^*, CP^* \text{ concur at } P^*`,
+          description: String.raw`Reflect the cevians $AP, BP, CP$ across the respective angle bisectors; the three reflected lines always concur, at the isogonal conjugate $P^*$. The classic pairs: circumcenter $O \leftrightarrow$ orthocenter $H$, centroid $G \leftrightarrow$ symmedian (Lemoine) point $K$, the incenter is its own conjugate, and the Fermat points $\leftrightarrow$ the isodynamic points. $P$ and $P^*$ share a common pedal circle. This is core machinery for advanced triangle configurations — recognizing an isogonal pair collapses many concurrency/collinearity problems.`,
+          keywords: ["isogonal conjugate", "reflect cevian over bisector", "O and H conjugate", "symmedian point", "incenter self conjugate", "isodynamic", "common pedal circle"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "isotomic-conjugate",
+          name: "Isotomic Conjugate",
+          latex: String.raw`\text{reflect each cevian foot over the side's midpoint} \Rightarrow \text{new cevians concur}`,
+          description: String.raw`The isotomic conjugate reflects each cevian's foot on a side over that side's midpoint; the three new cevians concur at $P^*$. The centroid is its own isotomic conjugate, and the Gergonne and Nagel points form an isotomic pair. It pairs with isogonal conjugation to generate the standard "conjugate" identities among triangle centers, and (via barycentrics) has the clean coordinate form $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.`,
+          keywords: ["isotomic conjugate", "reflect foot over midpoint", "centroid self conjugate", "gergonne nagel pair", "barycentric reciprocal", "triangle center"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "pedal-triangle",
+          name: "Pedal Triangle & Its Area",
+          latex: String.raw`[\text{pedal of }P] = \frac{\lvert R^2 - OP^2\rvert}{4R^2}\,[ABC]`,
+          description: String.raw`Drop perpendiculars from a point $P$ to the three sides; their feet form the pedal triangle of $P$. Its area is $\frac{|R^2 - OP^2|}{4R^2}[ABC]$, so it collapses to a line exactly when $OP = R$ — $P$ on the circumcircle — which is precisely the Simson line (the degenerate pedal triangle). The pedal triangle of the incenter is the contact triangle, and the general area formula is the unifying statement behind Simson, the medial triangle ($P=O$), and orthocentric pedal facts.`,
+          keywords: ["pedal triangle", "feet of perpendiculars", "pedal area formula", "simson line degenerate", "R^2 minus OP^2", "contact triangle", "orthic triangle"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "orthic-triangle",
+          name: "Orthic Triangle",
+          latex: String.raw`\text{sides } a\cos A,\, b\cos B,\, c\cos C; \quad \text{perimeter} = a\cos A + b\cos B + c\cos C = \frac{2[ABC]}{R} = 4R\sin A\sin B\sin C; \quad [\text{orthic}] = 2\cos A\cos B\cos C\,[ABC]`,
+          description: String.raw`The orthic triangle is formed by the three altitude feet (the pedal triangle of the orthocenter $H$). Acute-case structure: angles $\pi-2A, \pi-2B, \pi-2C$; sides $a\cos A, b\cos B, c\cos C$; inscribed in the nine-point circle (circumradius $R/2$); $H$ is its incenter, so the altitudes of $ABC$ bisect its angles; each side is antiparallel to the corresponding side of $ABC$; and it is the least-perimeter inscribed triangle (Fagnano). Two identities worth memorizing: its perimeter $a\cos A + b\cos B + c\cos C = \frac{2[ABC]}{R} = 4R\sin A\sin B\sin C$ — because $a\cos A = R\sin 2A$ and $\sin 2A+\sin 2B+\sin 2C = 4\sin A\sin B\sin C$ — and its area $= 2\cos A\cos B\cos C\,[ABC]$. Also handy: reflecting $H$ across any side lands on the circumcircle. (For an obtuse triangle $H$ is an excenter of the orthic triangle instead.)`,
+          keywords: ["orthic triangle", "feet of altitudes", "pedal of orthocenter", "fagnano problem", "minimum perimeter inscribed triangle", "nine point circle", "antiparallel sides", "H is incenter of orthic", "angles pi - 2A", "orthic perimeter", "a cos A + b cos B + c cos C", "2[ABC]/R", "4R sin A sin B sin C", "orthic area 2 cos A cos B cos C", "reflection of orthocenter on circumcircle"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "medial-triangle",
+          name: "Medial Triangle",
+          latex: String.raw`\triangle_{\text{med}} \sim \triangle ABC \ \big(\text{ratio } \tfrac12\big), \quad [\triangle_{\text{med}}] = \tfrac14 [ABC], \quad \text{perimeter} = s = \tfrac{a+b+c}{2}`,
+          description: String.raw`Joining the side midpoints gives the medial triangle: similar to $ABC$ with ratio $\frac12$ — quarter the area, half the perimeter ($= s$), sides parallel to $ABC$'s — splitting $ABC$ into four congruent triangles. The homothety at the centroid $G$ with ratio $-\frac12$ maps $ABC$ onto it (they share $G$). Its circumcircle is the nine-point circle (so its circumcenter is the nine-point center $N$), its incircle is the Spieker circle centered at the Spieker point (the incenter of the medial triangle = the centroid of $ABC$'s perimeter), and its orthocenter is the circumcenter $O$ of $ABC$ — so the medial triangle's own Euler-line facts translate straight back into $ABC$'s centers.`,
+          keywords: ["medial triangle", "midpoint triangle", "midpoints of sides", "similar ratio one half", "quarter area", "half perimeter", "four congruent triangles", "homothety centroid -1/2", "spieker circle", "spieker point", "nine point circle", "orthocenter is O"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "contact-triangle",
+          name: "Contact (Intouch) Triangle",
+          latex: String.raw`\text{tangent lengths } s-a,\, s-b,\, s-c; \quad \text{angles } \tfrac{\pi}{2}-\tfrac A2; \quad [\text{contact}] = \frac{r}{2R}\,[ABC]`,
+          description: String.raw`The contact (intouch) triangle has the three incircle tangency points as vertices; the tangent length from each vertex of $ABC$ is $s-a, s-b, s-c$. It is inscribed in the incircle (so its circumradius is $r$), its angles are $\frac{\pi}{2}-\frac A2$, and its area is $\frac{r}{2R}[ABC]$. The segments from each vertex of $ABC$ to the opposite contact point concur at the Gergonne point. Its sibling, the extouch triangle (where the excircles touch the sides, with tangent lengths $s-a$ measured the other way), has its cevians concurrent at the Nagel point.`,
+          keywords: ["contact triangle", "intouch triangle", "incircle touch points", "tangent lengths s minus a", "gergonne point", "extouch triangle", "nagel point", "inscribed in incircle", "contact triangle area", "angles pi/2 - A/2"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "excentral-triangle",
+          name: "Excentral Triangle",
+          latex: String.raw`\text{vertices } I_A, I_B, I_C; \quad I = \text{its orthocenter}, \ \triangle ABC = \text{its orthic triangle}; \quad \text{sides } 4R\cos\tfrac A2,\ R_{\text{ex}} = 2R, \ [\text{excentral}] = \frac{2R}{r}[ABC]`,
+          description: String.raw`The excentral triangle has the three excenters as vertices. The incenter $I$ of $ABC$ is its orthocenter, and $ABC$ is exactly its orthic triangle (the altitude feet of $I_AI_BI_C$ are $A, B, C$). Its angles are $\frac{\pi}{2}-\frac A2$, its sides are $4R\cos\frac A2, 4R\cos\frac B2, 4R\cos\frac C2$, its circumradius is $2R$, and its area is $\frac{2R}{r}[ABC]$. Best of all, the nine-point circle of the excentral triangle is the circumcircle of $ABC$ — so $A, B, C$ and the arc midpoints all lie on it. Recognizing this collapses a tangle of incenter/excenter conditions into a single orthocentric configuration.`,
+          keywords: ["excentral triangle", "three excenters", "incenter is orthocenter", "ABC is orthic triangle", "circumradius 2R", "excenter configuration", "arc midpoints", "excentral sides 4R cos", "excentral area 2R/r"],
+          importance: "low",
+          level: ["Olympiad"]
         }
       ]
     },
@@ -424,7 +658,7 @@ window.MATH_SECTIONS.push({
           name: "The Euler Line",
           latex: String.raw`HG = 2\,GO`,
           description: String.raw`The orthocenter $H$, centroid $G$, and circumcenter $O$ are collinear (the Euler line), with the centroid one-third of the way from $O$ to $H$. Also $\vec{OH} = \vec{OA} + \vec{OB} + \vec{OC}$.`,
-          keywords: ["orthocenter", "centroid", "circumcenter", "collinear", "euler line"],
+          keywords: ["orthocenter", "centroid", "circumcenter", "collinear", "euler line", "HG : GO = 2 : 1", "HG = 2 GO", "nine-point center lies on euler line"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -443,7 +677,7 @@ window.MATH_SECTIONS.push({
           name: "The Nine-Point Circle",
           latex: String.raw`R_9 = \frac{R}{2}`,
           description: String.raw`Passes through the 3 side midpoints, 3 feet of the altitudes, and 3 midpoints from the orthocenter to each vertex. Its center is the midpoint of segment $OH$ on the Euler line.`,
-          keywords: ["nine point", "midpoints", "altitude feet", "half circumradius", "euler line"],
+          keywords: ["nine point", "midpoints", "altitude feet", "half circumradius", "euler line", "nine-point center = midpoint of OH", "radius R/2", "passes through midpoints of AH BH CH"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -452,14 +686,14 @@ window.MATH_SECTIONS.push({
           name: "Carnot's Theorem",
           latex: String.raw`d_1 + d_2 + d_3 = R + r`,
           description: String.raw`The signed perpendicular distances from the circumcenter to the three sides sum to $R + r$ (negative if the circumcenter is on the far side of a side, i.e. obtuse triangles).`,
-          keywords: ["circumcenter distances", "R plus r", "signed distances"],
-          importance: "low",
+          keywords: ["circumcenter distances", "R plus r", "signed distances", "carnot theorem", "signed distances from circumcenter", "sum of distances to sides"],
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
           id: "simson-line",
           name: "The Simson Line",
-          latex: String.raw`P \in \text{circumcircle} \iff \text{feet of perpendiculars are collinear}`,
+          latex: String.raw`P \in \text{circumcircle} \iff \text{the three perpendicular feet are collinear}`,
           description: String.raw`Drop perpendiculars from a point $P$ on the circumcircle of $\triangle ABC$ to the three (extended) sides — the three feet are always collinear.`,
           keywords: ["circumcircle point", "perpendicular feet", "collinear", "simson"],
           importance: "low",
@@ -471,14 +705,14 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\cot \omega = \cot A + \cot B + \cot C`,
           description: String.raw`The angle $\omega$ at which cevians from each vertex to the Brocard point meet the sides. Also $\csc^2\omega = \csc^2 A + \csc^2 B + \csc^2 C$, and always $\omega \le 30^\circ$.`,
           example: String.raw`Equilateral triangle: $\cot\omega = 3\cot 60^\circ = \sqrt{3}$, so $\omega = 30^\circ$ — the maximum possible Brocard angle.`,
-          keywords: ["brocard point", "cotangent sum", "special angle"],
-          importance: "low",
+          keywords: ["brocard point", "cotangent sum", "special angle", "brocard angle", "brocard point", "cotangent of the brocard angle"],
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
           id: "symmedian-lemoine",
           name: "Symmedians & the Lemoine Point",
-          latex: String.raw`\text{symmedian} = \text{median reflected over the angle bisector}; \qquad BD : DC = c^2 : b^2`,
+          latex: String.raw`\text{symmedian} = \text{median reflected over the bisector};\ \ BD:DC = c^2 : b^2`,
           description: String.raw`The symmedian from $A$ cuts $BC$ in the ratio of the squares of the adjacent sides (the median's $1:1$, twisted by the reflection). All three symmedians meet at the Lemoine point, which minimizes the sum of squared distances to the sides. The tangent-intersection construction: tangents to the circumcircle at $B$ and $C$ meet on the $A$-symmedian.`,
           example: String.raw`In a triangle with $AB = c = 6$ and $AC = b = 4$, the symmedian from $A$ meets $BC$ dividing it as $BD:DC = 36:16 = 9:4$ — versus the median's $1:1$ and the bisector's $6:4$.`,
           keywords: ["symmedian", "lemoine point", "squares of sides", "tangent intersection", "reflected median"],
@@ -491,7 +725,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`M = \text{arc midpoint of } BC \implies MB = MC = MI = MI_A`,
           description: String.raw`The midpoint $M$ of arc $BC$ (not containing $A$) is equidistant from $B$, $C$, the incenter $I$, and the $A$-excenter $I_A$ — so $B, C, I, I_A$ lie on a circle centered at $M$. Proof: angle chase shows $\angle MBI = \angle MIB = \frac{A+B}{2}$. Also $AI = \frac{r}{\sin(A/2)}$ and $A$, $I$, $M$ are collinear (the bisector passes through the arc midpoint).`,
           example: String.raw`Equilateral triangle with circumradius $R$: the arc midpoint $M$ is the antipode of $A$, the chords $MB$ and $MC$ span $60^\circ$ arcs so $MB = MC = R$, and $MI$ is the distance from $M$ to the center — also $R$. All equal. ✓`,
-          keywords: ["incenter excenter", "fact 5", "arc midpoint", "equidistant", "bisector through arc midpoint"],
+          keywords: ["incenter excenter", "fact 5", "arc midpoint", "equidistant", "bisector through arc midpoint", "AI = r / sin(A/2)", "distance from incenter to vertex", "B C I I_A concyclic"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -501,7 +735,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`AH = 2R\cos A, \qquad \text{reflections of } H \text{ over } BC \text{ and over } M_{BC} \text{ lie on } \odot(ABC)`,
           description: String.raw`The reflection of the orthocenter over any side lands on the circumcircle (so $\odot(HBC)$ is the mirror image of $\odot(ABC)$, same radius); the reflection over a side's midpoint is the antipode of the opposite vertex. Distances: $AH = 2R\cos A$, and the distance from the circumcenter to side $a$ is $\frac{AH}{2} = R\cos A$.`,
           example: String.raw`Right triangle at $A$: $\cos A = 0$ gives $AH = 0$ — the orthocenter is $A$ itself. ✓ For an equilateral triangle, $AH = 2R\cos 60^\circ = R$: the orthocenter coincides with the center.`,
-          keywords: ["orthocenter", "reflection over side", "2R cos A", "antipode", "circumcircle image"],
+          keywords: ["orthocenter", "reflection over side", "2R cos A", "antipode", "circumcircle image", "distance from circumcenter to side", "R cos A", "AH = 2R cos A", "reflection of H over midpoint is antipode"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -521,7 +755,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`OH^2 = 9R^2 - (a^2+b^2+c^2), \qquad OG^2 = R^2 - \tfrac{1}{9}(a^2+b^2+c^2), \qquad R^2 - OI^2 = 2Rr`,
           description: String.raw`The Euler-line distances in side/radius terms: $OH$ from the vector identity $\vec{OH} = \vec{OA}+\vec{OB}+\vec{OC}$, and $OG = \frac{OH}{3}$. The last is the power of the incenter with respect to the circumcircle (equivalent to Euler's $OI^2 = R(R-2r)$). Also $OH^2 = R^2(1 - 8\cos A\cos B\cos C)$.`,
           example: String.raw`The $13$-$14$-$15$ triangle ($R = \frac{65}{8}$, $\sum a^2 = 590$): $OH^2 = 9 \cdot \frac{4225}{64} - 590 = \frac{38025 - 37760}{64} = \frac{265}{64}$, so $OH = \frac{\sqrt{265}}{8}$.`,
-          keywords: ["OH distance", "OG distance", "euler line length", "power of incenter", "center distances"],
+          keywords: ["OH distance", "OG distance", "euler line length", "power of incenter", "center distances", "OH^2 = 9R^2 - (a^2+b^2+c^2)", "OH^2 = R^2(1 - 8 cos A cos B cos C)", "OI^2 = R^2 - 2Rr", "OG in terms of side lengths", "distance orthocenter circumcenter"],
           importance: "low",
           level: ["AIME", "Olympiad"]
         },
@@ -532,7 +766,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`The nine-point circle is internally tangent to the incircle and externally tangent to all three excircles — the distances between centers are exactly the radius differences/sums. The tangency point with the incircle (the Feuerbach point) is a named point of the triangle.`,
           example: String.raw`$R = 10$, $r = 3$: the nine-point center sits exactly $\frac{10}{2} - 3 = 2$ away from the incenter — tangency, not coincidence.`,
           keywords: ["feuerbach", "nine point tangent incircle", "R/2 minus r", "tangent excircles"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -541,18 +775,36 @@ window.MATH_SECTIONS.push({
           latex: String.raw`PA^2 + PB^2 + PC^2 = 3\,PG^2 + \frac{a^2 + b^2 + c^2}{3}`,
           description: String.raw`For any point $P$ and centroid $G$: the sum of squared distances to the vertices splits into a point-dependent part ($3PG^2$) and a triangle constant ($\sum GA^2 = \frac{1}{3}\sum a^2$). Immediate corollary: the centroid minimizes $PA^2 + PB^2 + PC^2$.`,
           example: String.raw`Equilateral triangle of side $s$, $P$ at a vertex: LHS $= 0 + s^2 + s^2 = 2s^2$; RHS $= 3 \cdot \frac{s^2}{3} + \frac{3s^2}{3} = 2s^2$. ✓`,
-          keywords: ["sum of squared distances", "centroid minimizes", "leibniz", "point mass"],
-          importance: "low",
+          keywords: ["sum of squared distances", "centroid minimizes", "leibniz", "point mass", "GA^2 + GB^2 + GC^2 = (a^2+b^2+c^2)/3", "squared distances from centroid to vertices"],
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
           id: "triangle-center-angles",
           name: "Angles at the Triangle Centers",
-          latex: String.raw`\angle BOC = 2A, \qquad \angle BIC = 90^\circ + \tfrac{A}{2}, \qquad \angle BHC = 180^\circ - A`,
-          description: String.raw`Looking at side $BC$ from each center: the circumcenter $O$ sees the central angle $2A$ (double the inscribed $\angle A$); the incenter $I$ sees $90^\circ + \tfrac{A}{2}$ (from the half-angle bisectors); the orthocenter $H$ sees $180^\circ - A$. All three follow from a one-line angle chase and turn up constantly in configuration problems.`,
-          keywords: ["angle BIC", "angle BOC", "angle BHC", "incenter angle", "circumcenter central angle", "orthocenter angle", "90 plus half A"],
+          latex: String.raw`\angle BOC = 2A, \quad \angle BIC = 90^\circ + \tfrac{A}{2}, \quad \angle BI_AC = 90^\circ - \tfrac{A}{2}, \quad \angle BHC = 180^\circ - A`,
+          description: String.raw`Looking at side $BC$ from each center: the circumcenter $O$ sees the central angle $2A$ (double the inscribed $\angle A$); the incenter $I$ sees $90^\circ + \tfrac{A}{2}$ (from the half-angle bisectors); the $A$-excenter $I_A$ sees $90^\circ - \tfrac{A}{2}$ (the incenter's supplement); and the orthocenter $H$ sees $180^\circ - A$. Each follows from a one-line angle chase and turns up constantly in configuration problems.`,
+          keywords: ["angle BIC", "angle BOC", "angle BHC", "angle B I_A C", "incenter angle", "excenter angle 90 - A/2", "circumcenter central angle", "orthocenter angle", "90 plus half A"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "orthocentric-system",
+          name: "Orthocentric System",
+          latex: String.raw`\{A,B,C,H\}:\ \text{each is the orthocenter of the other three}`,
+          description: String.raw`A triangle together with its orthocenter, $\{A, B, C, H\}$, forms an orthocentric system: any one of the four points is the orthocenter of the triangle on the other three, so $H$ and the vertices play interchangeable roles. All four triangles $ABC$, $HBC$, $HCA$, $HAB$ share a single common nine-point circle, and their four circumcircles are congruent — each has radius $R$, because $\odot(HBC)$ is exactly the reflection of $\odot(ABC)$ across $BC$. (Their four circumcenters form a second orthocentric system, congruent to the first.)`,
+          keywords: ["orthocentric system", "orthocenter of the other three", "four points orthocentric", "shared nine-point circle", "congruent circumcircles radius R", "reflection of circumcircle over side", "H and vertices symmetric"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "gergonne-nagel-points",
+          name: "Gergonne & Nagel Points",
+          latex: String.raw`\text{Gergonne (incircle touches) and Nagel (excircle touches): the cevians concur}`,
+          description: String.raw`Two more triangle centers from concurrent cevians. The Gergonne point is where the cevians to the incircle's touch points meet (concurrency by Ceva, since the incircle tangent lengths pair up). The Nagel point uses the points where the excircles touch the sides — there $BX' = s-c$, $CX' = s-b$ — and the cevians again concur; the Nagel point, centroid, and incenter are collinear on the Nagel line with $NG : GI$ related as $2:1$. Companions to the Lemoine, Fermat, and Brocard points.`,
+          keywords: ["gergonne point", "nagel point", "incircle touch cevians", "excircle touch points", "nagel line", "triangle center concurrency"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         }
       ]
     },
@@ -613,6 +865,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "equal-chords-arcs",
+          name: "Equal Chords, Arcs & Distances",
+          latex: String.raw`\text{equal chords} \iff \text{equal arcs} \iff \text{equidistant from the center}`,
+          description: String.raw`In one circle (or two congruent circles) these three conditions are all equivalent: two chords have equal length, they cut off equal arcs, and they lie at equal distance from the center. Two workhorse consequences: the perpendicular from the center to a chord bisects both the chord and its arc, and of two unequal chords the longer one lies closer to the center — so the diameter, at distance $0$, is the longest chord.`,
+          keywords: ["equal chords", "equal arcs", "equidistant from center", "congruent chords", "chord distance from center", "perpendicular from center bisects chord", "longer chord closer to center", "diameter longest chord"],
+          importance: "medium",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
           id: "inscribed-angle-theorem",
           name: "Inscribed Angle Theorem",
           latex: String.raw`\angle \text{inscribed} = \frac{1}{2} \angle \text{central} = \frac{1}{2}\,\text{arc}`,
@@ -653,7 +914,7 @@ window.MATH_SECTIONS.push({
           name: "Tangent Line Facts",
           latex: String.raw`OT \perp \ell, \qquad PA = PB`,
           description: String.raw`A tangent is perpendicular to the radius at the point of tangency, and the two tangent segments from an external point are equal. Tangent-chord angle equals half the intercepted arc.`,
-          keywords: ["tangent perpendicular radius", "equal tangents", "tangent chord angle"],
+          keywords: ["tangent perpendicular radius", "equal tangents", "tangent chord angle", "tangent to a circle", "radius perpendicular to tangent", "two equal tangents"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
@@ -661,8 +922,8 @@ window.MATH_SECTIONS.push({
           id: "tangent-chord-angle",
           name: "Tangent–Chord Angle (Alternate Segment)",
           latex: String.raw`\angle(\ell, TA) = \tfrac{1}{2}\,\overset{\frown}{TA} = \angle TBA`,
-          description: String.raw`The angle between a tangent $\ell$ at $T$ and a chord $TA$ equals half the intercepted arc — hence equals the inscribed angle $\angle TBA$ in the alternate segment (the arc on the far side). Key corollary: the tangent to a triangle's circumcircle at a vertex makes an angle with each side equal to the triangle's opposite angle.`,
-          keywords: ["tangent chord angle", "alternate segment theorem", "tangent to circumcircle", "inscribed angle", "intercepted arc"],
+          description: String.raw`The angle between a tangent $\ell$ at $T$ and a chord $TA$ equals half the intercepted arc — hence equals the inscribed angle $\angle TBA$ in the alternate segment (the arc on the far side). Key corollary: the tangent to a triangle's circumcircle at a vertex makes an angle with each side equal to the triangle's opposite angle — equivalently, that tangent is antiparallel to the opposite side (a fast concyclicity and angle-chasing tool).`,
+          keywords: ["tangent chord angle", "alternate segment theorem", "tangent to circumcircle", "inscribed angle", "intercepted arc", "tangent antiparallel to opposite side", "tangent at a vertex"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -699,8 +960,8 @@ window.MATH_SECTIONS.push({
           name: "Casey's Theorem",
           latex: String.raw`t_{12}t_{34} + t_{14}t_{23} = t_{13}t_{24}`,
           description: String.raw`Generalized Ptolemy: for four circles tangent to a fifth circle (all internally or all externally), where $t_{ij}$ is the external tangent length between circles $i, j$. Points count as radius-0 circles.`,
-          keywords: ["generalized ptolemy", "tangent circles", "tangent lengths"],
-          importance: "low",
+          keywords: ["generalized ptolemy", "tangent circles", "tangent lengths", "casey theorem", "generalized ptolemy", "tangent lengths between circles"],
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -708,8 +969,8 @@ window.MATH_SECTIONS.push({
           name: "The Butterfly Theorem",
           latex: String.raw`MX = MY`,
           description: String.raw`Let $M$ be the midpoint of chord $PQ$. Draw chords $AB$ and $CD$ through $M$; then $AD$ and $BC$ cut $PQ$ at points $X, Y$ equidistant from $M$.`,
-          keywords: ["chord midpoint", "butterfly", "symmetric intersections"],
-          importance: "low",
+          keywords: ["chord midpoint", "butterfly", "symmetric intersections", "butterfly theorem", "midpoint of a chord", "butterfly configuration circle"],
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -723,6 +984,16 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "common-chord-length",
+          name: "Common Chord of Two Circles",
+          latex: String.raw`\text{chord} = 2\sqrt{R^2 - d_1^{\,2}},\qquad d_1 = \frac{d^2 + R^2 - r^2}{2d}`,
+          description: String.raw`Two circles of radii $R$ and $r$ whose centers are a distance $d$ apart (with $|R-r|\lt d\lt R+r$, so they cross) share a common chord that lies on the radical axis, perpendicular to the line of centers. Its distance from the $R$-center is $d_1=\dfrac{d^2+R^2-r^2}{2d}$ — drop a perpendicular to the chord and equate the two right-triangle expressions for the half-chord — so the full common chord has length $2\sqrt{R^2-d_1^{\,2}}$. Measuring from the other center gives the same value with $d_2=d-d_1$.`,
+          example: String.raw`Equal circles $R=r=5$ with centers $d=6$ apart: $d_1=\dfrac{36+25-25}{12}=3$, so the chord $=2\sqrt{25-9}=8$.`,
+          keywords: ["common chord", "two intersecting circles", "radical axis", "chord length", "circle intersection", "length of common chord"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "miquels-theorem",
           name: "Miquel's Theorem",
           latex: String.raw`\odot(AEF), \; \odot(BFD), \; \odot(CDE) \text{ meet at one point}`,
@@ -731,6 +1002,33 @@ window.MATH_SECTIONS.push({
           keywords: ["miquel point", "three circles", "concurrent circles", "points on sides"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "apollonius-circle",
+          name: "Apollonius Circle",
+          latex: String.raw`\{\, P : PA / PB = k \,\} \text{ is a circle} \quad (k \ne 1), \qquad \text{diameter endpoints divide } AB \text{ internally and externally in ratio } k`,
+          description: String.raw`The locus of points whose distances to two fixed points $A, B$ have a constant ratio $k \ne 1$ is a circle — the Apollonius circle. Its diameter runs between the two points that cut $AB$ in the ratio $k$: one inside the segment, one outside. (When $k = 1$ the locus degenerates to the perpendicular bisector.) Distinct from Apollonius's Theorem (the median-length relation) despite the shared name. It's the standard model for "$PA = k\cdot PB$" constraints and the isogonal/symmedian circle configurations.`,
+          keywords: ["apollonius circle", "locus constant ratio", "distance ratio", "PA/PB constant", "internal external division", "isodynamic"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "reims-theorem",
+          name: "Reim's Theorem",
+          latex: String.raw`A, B, C, D \text{ concyclic} \iff AB \parallel CD \text{ (chords cut by two circles through } P, Q)`,
+          description: String.raw`Two circles meet at $P$ and $Q$. A line through $P$ hits them again at $A$ (first circle) and $C$ (second); a line through $Q$ hits them at $B$ and $D$. Then $AB \parallel CD$ — and conversely, a parallelism forces the four outer points to be concyclic. It is the go-to lemma for converting "these lines are parallel" into "these points are concyclic" (and back) in angle-chasing, and pairs naturally with directed angles.`,
+          keywords: ["reim theorem", "reims theorem", "two circles parallel chords", "concyclic from parallel", "antiparallel", "angle chasing lemma"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "mixtilinear-incircle",
+          name: "Mixtilinear Incircle",
+          latex: String.raw`\text{tangent to } AB, AC \text{ and the circumcircle at } T;\ \ T, I, \text{arc-midpoint collinear}`,
+          description: String.raw`The $A$-mixtilinear incircle is tangent to sides $AB$, $AC$ and internally tangent to the circumcircle at a point $T$. Key facts: the incenter $I$ is the midpoint of the chord where the mixtilinear circle touches $AB$ and $AC$; the tangency point $T$, the incenter $I$, and the midpoint of arc $BAC$ are collinear; and $T$ maps the incircle to the circumcircle under the homothety at $T$. A recurring configuration in modern olympiad geometry.`,
+          keywords: ["mixtilinear incircle", "tangent to two sides and circumcircle", "tangency point collinear incenter", "arc midpoint", "olympiad configuration", "homothety incircle circumcircle"],
+          importance: "low",
+          level: ["Olympiad"]
         }
       ]
     },
@@ -771,7 +1069,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`A = \sqrt{(s-a)(s-b)(s-c)(s-d)}`,
           description: String.raw`Area of a cyclic quadrilateral with semiperimeter $s$. Heron's formula is the degenerate case $d = 0$.`,
           example: String.raw`Cyclic quadrilateral with sides $2, 2, 3, 3$: $s = 5$, so $A = \sqrt{3 \cdot 3 \cdot 2 \cdot 2} = 6$.`,
-          keywords: ["cyclic quadrilateral area", "semiperimeter", "brahmagupta"],
+          keywords: ["cyclic quadrilateral area", "semiperimeter", "brahmagupta", "brahmagupta formula", "cyclic quadrilateral area", "area from four sides"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -780,7 +1078,7 @@ window.MATH_SECTIONS.push({
           name: "Pitot's Theorem",
           latex: String.raw`AB + CD = BC + AD`,
           description: String.raw`A quadrilateral is tangential (has an inscribed circle) if and only if the sums of opposite sides are equal.`,
-          keywords: ["tangential", "inscribed circle", "opposite sides equal"],
+          keywords: ["tangential", "inscribed circle", "opposite sides equal", "pitot theorem", "tangential quadrilateral", "sums of opposite sides equal"],
           importance: "medium",
           level: ["AIME"]
         },
@@ -789,7 +1087,7 @@ window.MATH_SECTIONS.push({
           name: "Ptolemy's Inequality",
           latex: String.raw`AB \cdot CD + BC \cdot DA \ge AC \cdot BD`,
           description: String.raw`Holds for any four points in the plane; equality iff $ABCD$ is cyclic in that order (reducing to Ptolemy's Theorem).`,
-          keywords: ["four points", "inequality", "equality cyclic"],
+          keywords: ["four points", "inequality", "equality cyclic", "ptolemy inequality", "ptolemys inequality", "noncyclic quadrilateral bound"],
           importance: "low",
           level: ["AIME", "Olympiad"]
         },
@@ -800,7 +1098,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`If $P$ lies on arc $BC$ of the circumcircle of equilateral $\triangle ABC$, the distance to the far vertex equals the sum of the distances to the near two — a classic AIME shortcut.`,
           example: String.raw`Apply Ptolemy to cyclic quadrilateral $ABPC$ with $AB = BC = CA = s$: $\; PA \cdot s = PB \cdot s + PC \cdot s$, and dividing by $s$ gives the result.`,
           keywords: ["equilateral", "circumcircle point", "distance sum", "pompeiu"],
-          importance: "low",
+          importance: "lowest",
           level: ["AIME"]
         },
         {
@@ -808,8 +1106,8 @@ window.MATH_SECTIONS.push({
           name: "Bretschneider's Formula",
           latex: String.raw`A = \sqrt{(s-a)(s-b)(s-c)(s-d) - abcd \cos^2\left(\frac{A+C}{2}\right)}`,
           description: String.raw`Area of any convex quadrilateral, using opposite angles $A, C$. When cyclic, $A + C = 180^\circ$ kills the last term, recovering Brahmagupta.`,
-          keywords: ["general quadrilateral area", "bretschneider", "brahmagupta generalization"],
-          importance: "low",
+          keywords: ["general quadrilateral area", "bretschneider", "brahmagupta generalization", "bretschneider formula", "general quadrilateral area", "brahmagupta generalization"],
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -826,8 +1124,8 @@ window.MATH_SECTIONS.push({
           name: "Euler's Quadrilateral Theorem",
           latex: String.raw`a^2 + b^2 + c^2 + d^2 = p^2 + q^2 + 4m^2`,
           description: String.raw`For any convex quadrilateral with diagonals $p, q$ and $m$ the distance between the midpoints of the diagonals. $m = 0$ gives the parallelogram law.`,
-          keywords: ["parallelogram law", "diagonal midpoints", "generalization"],
-          importance: "low",
+          keywords: ["parallelogram law", "diagonal midpoints", "generalization", "euler quadrilateral theorem", "diagonals and midpoint segment", "parallelogram law for quadrilaterals"],
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -847,18 +1145,27 @@ window.MATH_SECTIONS.push({
           description: String.raw`With $K$ the area (from Brahmagupta): the circumradius of a cyclic quadrilateral in terms of its four sides alone. The three paired products are the same ones appearing in Ptolemy ($ac + bd = pq$) and the diagonal-length formulas.`,
           example: String.raw`Unit square: each product is $2$, so $R = \frac{\sqrt{8}}{4 \cdot 1} = \frac{\sqrt2}{2}$ — the known circumradius. ✓`,
           keywords: ["circumradius cyclic quadrilateral", "parameshvara", "four sides", "brahmagupta companion"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
           id: "van-aubel",
           name: "Van Aubel's Theorem",
-          latex: String.raw`\text{squares outward on the sides: the segments joining opposite centers are equal and } \perp`,
+          latex: String.raw`\text{squares on the sides: segments joining opposite centers are equal and } \perp`,
           description: String.raw`Erect a square outward on each side of any quadrilateral (even non-convex): the two segments connecting centers of opposite squares have equal length and are perpendicular. Proved neatly with complex numbers — each center is a $90^\circ$-rotation average of its side's endpoints.`,
           example: String.raw`For a square, the four erected-square centers form a larger square, and the two connecting segments are its diagonals — equal and perpendicular, as promised.`,
           keywords: ["van aubel", "squares on sides", "equal perpendicular segments", "quadrilateral squares"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "newtons-line",
+          name: "Newton–Gauss Line",
+          latex: String.raw`\text{the midpoints of a quadrilateral's diagonals are collinear (Newton–Gauss line)}`,
+          description: String.raw`In a complete quadrilateral, the midpoints of its three diagonals are collinear — the Newton–Gauss line. The classical special case (Newton's line): in a quadrilateral with an inscribed circle, the incenter also lies on the line through the midpoints of the two diagonals. A tidy collinearity that appears in quadrilateral configuration problems.`,
+          keywords: ["newton line", "newton gauss line", "diagonal midpoints collinear", "complete quadrilateral", "tangential incenter midpoints"],
+          importance: "lowest",
+          level: ["Olympiad"]
         }
       ]
     },
@@ -928,16 +1235,16 @@ window.MATH_SECTIONS.push({
   <text x="190" y="292" fill="var(--accent)" font-size="13">I = 3 interior</text>
 </svg>`,
           keywords: ["lattice points", "grid", "interior", "boundary", "gcd"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "point-line-distance",
           name: "Point-to-Line Distance",
           latex: String.raw`d = \frac{|Ax_0 + By_0 + C|}{\sqrt{A^2 + B^2}}`,
-          description: String.raw`Distance from $(x_0, y_0)$ to the line $Ax + By + C = 0$.`,
+          description: String.raw`Distance from $(x_0, y_0)$ to the line $Ax + By + C = 0$ — put the line in that form first. Keeping the sign (dropping the absolute value) tells you which side of the line the point is on, which is how you test whether two points are separated by a line.`,
           example: String.raw`Distance from $(3, 1)$ to $3x + 4y - 25 = 0$: $\frac{|9 + 4 - 25|}{5} = \frac{12}{5}$.`,
-          keywords: ["distance to line", "perpendicular distance", "foot"],
+          keywords: ["distance to line", "perpendicular distance", "foot", "point to line distance", "distance from a point to a line", "which side of a line"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -946,7 +1253,7 @@ window.MATH_SECTIONS.push({
           name: "Equation of a Circle",
           latex: String.raw`(x - h)^2 + (y - k)^2 = r^2`,
           description: String.raw`Center $(h, k)$, radius $r$. Complete the square on $x^2 + y^2 + Dx + Ey + F = 0$ to read off center $\left(-\frac{D}{2}, -\frac{E}{2}\right)$.`,
-          keywords: ["circle equation", "center radius", "complete the square"],
+          keywords: ["circle equation", "center radius", "complete the square", "equation of a circle", "standard form of a circle", "find center and radius"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
         },
@@ -1010,6 +1317,47 @@ window.MATH_SECTIONS.push({
       ]
     },
     {
+      title: "Combinatorial & Convex Geometry",
+      formulas: [
+        {
+          id: "convex-position",
+          name: "Points in Convex Position",
+          latex: String.raw`\text{any 5 points in general position contain 4 in convex position}`,
+          description: String.raw`The convex hull is the smallest convex polygon enclosing a point set; points are "in convex position" if they're all hull vertices. The Erdős–Szekeres (Happy Ending) theorem: for each $n$ there's a least number $\mathrm{ES}(n)$ of points in general position guaranteeing a convex $n$-gon — $\mathrm{ES}(4) = 5$, $\mathrm{ES}(5) = 9$, and $\mathrm{ES}(n) = 2^{n-2}+1$ is conjectured. The pigeonhole proof classifies points by the hull structure.`,
+          keywords: ["convex position", "convex hull", "happy ending problem", "erdos szekeres geometric", "convex polygon points", "general position"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "sylvester-gallai",
+          name: "Sylvester–Gallai Theorem",
+          latex: String.raw`\text{finite points, not all collinear} \Rightarrow \text{some line hits exactly two}`,
+          description: String.raw`Any finite set of points that isn't entirely on one line has an "ordinary line" — one containing exactly two of the points. The slick proof takes the closest point–line pair and shows a third point on the line would give a closer pair, a contradiction (the extremal principle in action). A famous existence result; its dual concerns arrangements of lines.`,
+          keywords: ["sylvester gallai", "ordinary line", "not all collinear", "two points line", "extremal principle geometry"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "hellys-theorem",
+          name: "Helly's Theorem",
+          latex: String.raw`\text{convex sets in } \mathbb{R}^d:\ \text{every } d{+}1 \text{ intersect} \Rightarrow \text{all intersect}\quad(\text{plane: every } 3 \Rightarrow \text{all})`,
+          description: String.raw`For a finite family of convex sets in the plane, if every three have a common point then all of them do (in $\mathbb{R}^d$, replace three by $d+1$). It reduces a global intersection question to checking small subfamilies — the standard tool for "a single point/line meets all of these" problems and piercing arguments. Convexity is essential.`,
+          keywords: ["helly theorem", "convex sets intersection", "every three intersect", "common point", "piercing", "d plus one"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "minkowski-lattice",
+          name: "Minkowski's Lattice Point Theorem",
+          latex: String.raw`\text{centrally symmetric convex, area} > 4 \Rightarrow \text{contains a nonzero lattice point}`,
+          description: String.raw`A convex region symmetric about the origin with area exceeding $4$ must contain a lattice point other than the origin (volume $> 2^d$ in $d$ dimensions). The proof tiles the plane by the integer lattice and applies pigeonhole to overlaps. The geometry-of-numbers bridge to number theory — it proves the two-squares theorem and bounds for Diophantine approximation.`,
+          keywords: ["minkowski lattice theorem", "geometry of numbers", "centrally symmetric convex", "lattice point", "area greater than 4", "two squares proof"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        }
+      ]
+    },
+    {
       title: "Solid Geometry (3D)",
       formulas: [
         {
@@ -1041,6 +1389,16 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
+          id: "descartes-sphere-theorem",
+          name: "Soddy–Gosset Theorem (3D Descartes)",
+          latex: String.raw`(k_1 + k_2 + k_3 + k_4 + k_5)^2 = 3\left(k_1^2 + k_2^2 + k_3^2 + k_4^2 + k_5^2\right)`,
+          description: String.raw`The three-dimensional analogue of the Descartes Circle Theorem: five mutually tangent spheres with curvatures $k_i = 1/r_i$ satisfy $\left(\sum k_i\right)^2 = 3\sum k_i^2$. The sign conventions match the 2D case — a sphere that encloses the others contributes a negative curvature, and a flat plane counts as $0$. Given four mutually tangent spheres, solving the quadratic for the fifth gives the two "filling" spheres $k_5 = \tfrac12\left(\sum_{i=1}^{4} k_i\right) \pm \tfrac{\sqrt3}{2}\sqrt{\left(\sum_{i=1}^{4} k_i\right)^2 - 2\sum_{i=1}^{4} k_i^2}$. In general the Soddy–Gosset theorem in $n$ dimensions reads $\left(\sum_{i=1}^{n+2} k_i\right)^2 = n\sum k_i^2$ — the circle theorem is the $n = 2$ case, this is $n = 3$.`,
+          example: String.raw`Four mutually tangent unit spheres ($k = 1$, so $\sum k_i = 4$ and $\sum k_i^2 = 4$): the sphere in the central gap has $k_5 = 2 + \sqrt6$ (radius $\tfrac{1}{2+\sqrt6} \approx 0.225$), while the sphere enclosing all four has $k_5 = 2 - \sqrt6 < 0$.`,
+          keywords: ["soddy", "gosset", "five spheres", "3d descartes", "descartes sphere", "sphere curvature", "kissing spheres", "mutually tangent spheres", "bend", "apollonian"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "cone-formulas",
           name: "Cone Surface Area",
           latex: String.raw`SA = \pi r \ell + \pi r^2, \qquad \ell = \sqrt{r^2 + h^2}`,
@@ -1054,7 +1412,7 @@ window.MATH_SECTIONS.push({
           name: "Volume of a Frustum",
           latex: String.raw`V = \frac{1}{3}h\left(A_1 + A_2 + \sqrt{A_1 A_2}\right)`,
           description: String.raw`A truncated pyramid or cone with parallel base areas $A_1, A_2$ and height $h$ between them.`,
-          keywords: ["frustum", "truncated cone", "truncated pyramid"],
+          keywords: ["frustum", "truncated cone", "truncated pyramid", "frustum volume formula", "truncated cone volume", "truncated pyramid volume"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -1066,6 +1424,17 @@ window.MATH_SECTIONS.push({
           keywords: ["box", "diagonal", "3d distance", "cube"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
+          id: "surface-shortest-path",
+          name: "Shortest Path on a Surface (Unfold the Net)",
+          type: "method",
+          latex: String.raw`\text{box } a\le b\le c,\ \text{opposite corners}:\quad \min = \sqrt{(a+b)^2 + c^2}`,
+          description: String.raw`A path forced to stay on a solid's surface is straightened by unfolding (developing) the surface into a plane — the shortest surface path becomes a straight segment, measured with the distance formula. A box unfolds several ways, so try each pairing and keep the smallest: for opposite corners of an $a\le b\le c$ box the minimum is $\sqrt{(a+b)^2+c^2}$. A cylinder unrolls into a rectangle (a helix becomes a straight line) and a cone into a circular sector. It is the 3D cousin of reflecting to straighten a wall-bouncing path.`,
+          example: String.raw`A $1\times 2\times 3$ box, corner to opposite corner across the faces: the three unfoldings give $\sqrt{(1+2)^2+3^2}=\sqrt{18}=3\sqrt2$, $\sqrt{(1+3)^2+2^2}=\sqrt{20}$, and $\sqrt{(2+3)^2+1^2}=\sqrt{26}$; the shortest is $3\sqrt2\approx4.24$ (the through-space diagonal $\sqrt{14}$ is not allowed on the surface).`,
+          keywords: ["shortest path surface", "unfold", "net", "spider and fly", "ant on a box", "geodesic", "develop surface", "cylinder unroll", "cone sector", "shortest route on a box", "method"],
+          importance: "medium",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
           id: "cross-product-area",
@@ -1084,7 +1453,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`3D Pythagorean Theorem for a right-corner tetrahedron (like a sliced cube corner): the squared area of the "hypotenuse face" equals the sum of the squared areas of the three right-angle faces.`,
           example: String.raw`Slice the corner of a unit cube through the three neighbors of a vertex: the three right-angle faces each have area $\frac{1}{2}$, so $A_0^2 = 3 \cdot \frac{1}{4}$ and the equilateral cut face has area $\frac{\sqrt{3}}{2}$. ✓`,
           keywords: ["tetrahedron", "right corner", "face areas", "3d pythagorean"],
-          importance: "low",
+          importance: "lowest",
           level: ["AIME"]
         },
         {
@@ -1092,9 +1461,18 @@ window.MATH_SECTIONS.push({
           name: "Regular Tetrahedron of Side $s$",
           latex: String.raw`h = \frac{s\sqrt{6}}{3}, \qquad V = \frac{s^3\sqrt{2}}{12}, \qquad SA = s^2\sqrt{3}`,
           description: String.raw`Also worth caching: circumradius $R = \frac{s\sqrt{6}}{4}$, inradius $r = \frac{s\sqrt{6}}{12}$ (so $R = 3r$), and dihedral angle $\arccos\frac{1}{3} \approx 70.5^\circ$. A regular octahedron of side $s$ has volume $\frac{s^3\sqrt{2}}{3}$ — exactly four such tetrahedra.`,
-          keywords: ["tetrahedron", "octahedron", "platonic", "volume", "height", "circumradius", "dihedral angle"],
+          keywords: ["tetrahedron", "octahedron", "platonic", "volume", "height", "circumradius", "dihedral angle", "inradius", "R = 3r", "octahedron volume", "dihedral arccos 1/3"],
           importance: "medium",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "regular-octahedron",
+          name: "Regular Octahedron of Side $s$",
+          latex: String.raw`V = \frac{s^3\sqrt{2}}{3}, \qquad SA = 2s^2\sqrt{3}, \qquad R = \frac{s\sqrt{2}}{2}, \quad r = \frac{s\sqrt{6}}{6}`,
+          description: String.raw`Eight equilateral faces. The standard split: a horizontal cut through the four equatorial vertices gives two identical square pyramids with base side $s$ and height $\frac{s}{\sqrt{2}}$, so $V = 2\cdot\frac13 s^2\cdot\frac{s}{\sqrt{2}} = \frac{s^3\sqrt{2}}{3}$. It is the dual of the cube — its 6 vertices sit at the centers of a cube's faces — and its volume is exactly four regular tetrahedra of the same edge.`,
+          keywords: ["octahedron", "regular octahedron", "eight faces", "two square pyramids", "split octahedron", "dual of cube", "platonic solid", "octahedron volume", "octahedron surface area"],
+          importance: "low",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "cayley-menger",
@@ -1102,7 +1480,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`288\,V^2 = \begin{vmatrix} 0 & 1 & 1 & 1 & 1 \\ 1 & 0 & a^2 & b^2 & c^2 \\ 1 & a^2 & 0 & d^2 & e^2 \\ 1 & b^2 & d^2 & 0 & f^2 \\ 1 & c^2 & e^2 & f^2 & 0 \end{vmatrix}`,
           description: String.raw`The 3D Heron's Formula: the volume of any tetrahedron from its six edge lengths alone, no coordinates needed. Here $a,b,c$ are the edges from one vertex and $d,e,f$ the opposite edges. (The $2\times2$ Heron analogue $16[\triangle]^2$ is the same determinant one size down.)`,
           keywords: ["cayley menger", "volume from edge lengths", "tetrahedron volume", "3d heron", "determinant", "six edges"],
-          importance: "low",
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1156,11 +1534,20 @@ window.MATH_SECTIONS.push({
         {
           id: "cavalieris-principle",
           name: "Cavalieri's Principle",
-          latex: String.raw`\text{equal cross-sectional areas at every height} \implies \text{equal volumes}`,
+          latex: String.raw`\text{equal cross-sections at every height} \Rightarrow \text{equal volumes}`,
           description: String.raw`Two solids that every horizontal plane slices into cross-sections of equal area have the same volume — whatever their shapes. This is why an oblique prism or cylinder keeps $V = Bh$ (shear it upright, no slice changes), and it delivers the sphere's volume by comparing it to a cylinder with a cone removed.`,
           keywords: ["cavalieri", "cross section", "equal slices equal volume", "oblique prism", "shear"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "pappus-centroid",
+          name: "Pappus's Centroid Theorems",
+          latex: String.raw`V = 2\pi d \cdot A, \qquad S = 2\pi d \cdot L, \qquad \text{torus: } V = 2\pi^2 R r^2, \; S = 4\pi^2 R r`,
+          description: String.raw`Revolve a plane region about an external axis in its plane: the solid's volume is the area $A$ times the distance the region's centroid travels, $2\pi d$. Revolve a plane curve instead and its surface area is the arc length $L$ times $2\pi d$. So the whole problem reduces to finding a centroid. For a torus (revolve a disk of radius $r$ whose center is $R$ from the axis) this gives $V = 2\pi R \cdot \pi r^2 = 2\pi^2 R r^2$ and $S = 2\pi R \cdot 2\pi r = 4\pi^2 R r$ instantly.`,
+          keywords: ["pappus", "centroid theorem", "solid of revolution", "volume of revolution", "surface of revolution", "torus volume", "torus surface"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "solid-tactics",
@@ -1183,15 +1570,6 @@ window.MATH_SECTIONS.push({
           latex: String.raw`h = \frac{s\sqrt{3}}{2}, \quad A = \frac{s^2\sqrt{3}}{4}, \quad R = \frac{s\sqrt{3}}{3}, \quad r = \frac{s\sqrt{3}}{6}`,
           description: String.raw`Height, area, circumradius, inradius. Note $R = 2r$, the extreme case of Euler's inequality.`,
           keywords: ["equilateral", "height", "area", "circumradius", "inradius", "inscribed in circle"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "regular-hexagon-area",
-          name: "Regular Hexagon of Side $s$",
-          latex: String.raw`A = \frac{3s^2\sqrt{3}}{2}`,
-          description: String.raw`Exactly six equilateral triangles. Long diagonal $= 2s$, short diagonal $= s\sqrt{3}$.`,
-          keywords: ["hexagon", "six equilateral triangles", "diagonals"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
@@ -1219,8 +1597,8 @@ window.MATH_SECTIONS.push({
           latex: String.raw`x = \frac{ah}{a + h}`,
           description: String.raw`Side of the square sitting on the base $a$ of a triangle with height $h$ to that base. Proof: the small triangle above the square is similar to the whole, $\frac{h - x}{h} = \frac{x}{a}$.`,
           example: String.raw`Base $6$, height $3$: $x = \frac{18}{9} = 2$. If the triangle is right with legs on the axes, the same similar-triangles setup handles a square in the corner.`,
-          keywords: ["square in triangle", "inscribed square", "similar triangles"],
-          importance: "low",
+          keywords: ["square in triangle", "inscribed square", "similar triangles", "square inscribed in a triangle", "largest inscribed square", "square inside a triangle"],
+          importance: "lower",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
@@ -1235,13 +1613,73 @@ window.MATH_SECTIONS.push({
       ]
     },
     {
+      title: "Projective Geometry & Inversion",
+      formulas: [
+        {
+          id: "brianchon-theorem",
+          name: "Brianchon's Theorem",
+          latex: String.raw`\text{hexagon tangent to a conic} \implies AD,\; BE,\; CF \text{ concur}`,
+          description: String.raw`The projective dual of Pascal's theorem: if a hexagon $ABCDEF$ is circumscribed about a conic (every side tangent to it), its three main diagonals $AD$, $BE$, $CF$ pass through one point. Pascal turns "six points on a conic" into a collinearity; Brianchon turns "six tangent lines" into a concurrency — the identical statement with points and lines swapped. Letting tangency points merge degenerates it into concurrency facts for circumscribed pentagons and quadrilaterals, and it yields the Gergonne point from a triangle's incircle.`,
+          keywords: ["brianchon", "tangent hexagon", "dual of pascal", "diagonals concurrent", "circumscribed conic", "projective", "gergonne point"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "desargues-theorem",
+          name: "Desargues's Theorem",
+          latex: String.raw`\text{perspective from a point} \iff \text{perspective from a line}`,
+          description: String.raw`Triangles $ABC$ and $A'B'C'$ are perspective from a point when $AA'$, $BB'$, $CC'$ concur, and perspective from a line when the three points $AB\cap A'B'$, $BC\cap B'C'$, $CA\cap C'A'$ are collinear (the axis of perspectivity). Desargues: either condition implies the other. It trades a concurrency for a collinearity and back — the two things projective problems keep asking for — and its converse proves concurrency by producing the axis.`,
+          keywords: ["desargues", "perspective from point", "perspective from line", "axis of perspectivity", "concurrency", "collinearity", "projective duality", "two triangles"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "cross-ratio",
+          name: "Cross-Ratio",
+          latex: String.raw`(A, B; C, D) = \frac{AC}{BC} \Big/ \frac{AD}{BD} = \frac{AC \cdot BD}{BC \cdot AD}`,
+          description: String.raw`The cross-ratio of four collinear points is the single number preserved by every projection and perspectivity — the fundamental invariant of projective geometry. It is also unchanged when the four points are replaced by four concurrent lines (angular cross-ratio), is preserved by inversion, and is the same for four concyclic points seen from any fifth point of the circle. Since projection destroys lengths and angles but never the cross-ratio, chasing points through several projections reduces to holding one quantity fixed. The value $-1$ is the harmonic case.`,
+          keywords: ["cross ratio", "projective invariant", "four collinear points", "preserved by projection", "anharmonic ratio", "pencil of lines", "concyclic cross ratio"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "harmonic-bundle",
+          name: "Harmonic Bundles & Conjugates",
+          latex: String.raw`(A, B; C, D) = -1 \iff \frac{AC}{CB} = \frac{AD}{DB}\;\text{(one internal, one external)}`,
+          description: String.raw`A harmonic bundle is the cross-ratio $-1$ case: $C$ and $D$ are harmonic conjugates with respect to $A, B$, dividing $AB$ internally and externally in the same ratio. They are everywhere in olympiad configs: two tangents and any secant from an external point cut a harmonic bundle with the polar; the internal and external bisectors from a vertex meet the opposite side at harmonic conjugates; a complete quadrilateral induces harmonic bundles on its diagonals. Midpoint criterion: if $M$ is the midpoint of $AB$ then $(A,B;C,D) = -1 \iff MA^2 = MC\cdot MD$.`,
+          keywords: ["harmonic bundle", "harmonic conjugate", "cross ratio -1", "harmonic division", "internal external bisector", "polar", "complete quadrilateral", "harmonic range"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "complete-quadrilateral-miquel",
+          name: "Miquel Point of a Complete Quadrilateral",
+          latex: String.raw`\text{the 4 triangles of a complete quadrilateral share one circumcircle point } M`,
+          description: String.raw`Four lines in general position form a complete quadrilateral: six intersection points and four triangles (take the lines three at a time). The circumcircles of those four triangles all pass through one point $M$ — the Miquel point. Two facts make it powerful: $M$ is the center of the spiral similarity carrying one pair of opposite sides onto another, so it is usually the hidden center a configuration is built around; and the four triangles' circumcenters, together with $M$, lie on one common circle. (Separately, the midpoints of the three diagonals are collinear on the Newton–Gauss line.) Rarely needed, but decisive the moment a problem gives four lines and asks about concyclicity or a spiral similarity. This is the four-line cousin of the triangle Miquel theorem (points chosen on the sides of a single triangle).`,
+          keywords: ["complete quadrilateral", "miquel point", "four circumcircles", "spiral similarity center", "four lines", "newton gauss line", "concyclic circumcenters", "miquel"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "inversion-properties",
+          name: "Circle Inversion",
+          type: "method",
+          latex: String.raw`OP \cdot OP^* = r^2, \qquad P^*Q^* = \frac{r^2 \cdot PQ}{OP \cdot OQ}`,
+          description: String.raw`Inversion centered at $O$ with radius $r$ sends $P$ to $P^*$ on ray $OP$ with $OP\cdot OP^* = r^2$. Its rulebook: lines through $O$ map to themselves; lines not through $O$ map to circles through $O$ (and back); circles not through $O$ map to circles; it is conformal (preserving angles, and hence tangency) and swaps a circle's inside and outside. Distances scale by $P^*Q^* = \frac{r^2\,PQ}{OP\cdot OQ}$, the basis of "inversion distance" computations. Centering $O$ at a busy point where many circles and lines meet collapses tangency and concyclicity into straight-line problems; inverting at a point of tangency even turns a chain of mutually tangent circles into a row of parallel lines (the Steiner-chain trick). Drag the point in the interactive tool below to watch it happen.`,
+          keywords: ["inversion properties", "inverse point", "op op* = r^2", "line to circle", "conformal", "inversion distance formula", "circle preserving", "inversive geometry", "inversion"],
+          importance: "low",
+          level: ["Olympiad"]
+        }
+      ]
+    },
+    {
       title: "Problem-Solving Methods",
       formulas: [
         {
           id: "angle-chasing",
           name: "Angle Chasing",
           type: "method",
-          latex: String.raw`\text{label an unknown angle } \theta \text{, then propagate: } \triangle\text{-sum } 180^\circ, \text{ isosceles pairs, parallels, cyclic quads}`,
+          latex: String.raw`\text{label an angle } \theta, \text{ then propagate it through the figure}`,
           description: String.raw`The default first attack on any figure. Assign $\theta$ to one unknown angle and push it through the four propagators — triangle sums, base angles of isosceles triangles (equal sides $\Rightarrow$ equal angles), parallel-line angle pairs, and inscribed-angle/cyclic-quad relations — until the target angle is expressed in $\theta$ and solved.`,
           keywords: ["angle chasing", "label angles", "theta", "propagate", "first attack", "base angles", "method"],
           importance: "high",
@@ -1306,7 +1744,7 @@ window.MATH_SECTIONS.push({
           id: "cross-section-method",
           name: "3D Tangency via Cross-Sections",
           type: "method",
-          latex: String.raw`\text{slice through the axis of symmetry} \implies \text{2D circles and lines}`,
+          latex: String.raw`\text{slice through the axis of symmetry} \Rightarrow \text{2D circles and lines}`,
           description: String.raw`Spheres, cylinders, cones, and tori that are tangent to each other become tangent circles and lines in the plane through their common axis of symmetry. Solve the 2D picture (center distances = sums/differences of radii, similar triangles), then rotate back.`,
           example: String.raw`(2024 AIME II #8) A torus (tube radius $3$, center-circle radius $6$) rests inside a sphere of radius $11$: in the axial cross-section the tube center sits at distance $11 - 3 = 8$ from the sphere's center, so by similar triangles the tangency circle has radius $6 \cdot \frac{11}{8} = \frac{33}{4}$; resting outside gives $6 \cdot \frac{11}{14} = \frac{33}{7}$. The difference is $\frac{99}{28}$, answer $127$.`,
           keywords: ["cross section", "torus", "sphere tangent", "axial slice", "3d to 2d", "method"],
@@ -1314,21 +1752,10 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
-          id: "circle-inversion",
-          name: "Circle Inversion",
-          type: "method",
-          latex: String.raw`P \mapsto P' \text{ on ray } OP \text{ with } OP \cdot OP' = R^2`,
-          description: String.raw`Inversion about a circle centered at $O$: lines through $O$ stay put; lines missing $O$ become circles through $O$ (and vice versa); circles missing $O$ map to circles; tangency is preserved. Invert at a point common to many circles and the tangled configuration untangles into lines. Distances transform by $P'Q' = \frac{R^2 \cdot PQ}{OP \cdot OQ}$.`,
-          example: String.raw`Two circles tangent at $O$ plus a chain of circles tangent to both: inverting at $O$ sends the two circles to parallel lines, and the chain becomes equal circles stacked between them — the Steiner-chain picture that instantly resolves "chain of tangent circles" problems.`,
-          keywords: ["inversion", "invert at tangency", "circles to lines", "tangent chains", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
           id: "homothety-monge",
           name: "Homothety & Monge's Theorem",
           type: "method",
-          latex: String.raw`X \mapsto P + k(X - P); \qquad \text{three external similitude centers are collinear}`,
+          latex: String.raw`X \mapsto P + k(X-P);\ \ \text{three external similitude centers are collinear}`,
           description: String.raw`A homothety (dilation) about $P$ with ratio $k$ scales every figure by $k$ and maps each circle to a circle; two circles always admit an external (and usually internal) center of similitude where their common tangents cross. Monge: for three circles, the three external centers are collinear. Homothety centered at a tangency point is the standard move for tangent-circle configurations.`,
           example: String.raw`Circles of radii $2$ and $6$ with centers $8$ apart: the external similitude center sits on the center line at distance $4$ before the small center (dividing externally in ratio $2:6$), and both external tangents pass through it.`,
           keywords: ["homothety", "dilation", "similitude center", "monge", "external tangents", "method"],
@@ -1360,7 +1787,7 @@ window.MATH_SECTIONS.push({
           id: "coordinate-bash",
           name: "Coordinate Bashing",
           type: "method",
-          latex: String.raw`\text{place the figure on axes} \to \text{write the points} \to \text{distance / shoelace / slopes finish it}`,
+          latex: String.raw`\text{put the figure on axes, then finish with distance / shoelace / slopes}`,
           description: String.raw`When a synthetic attack stalls, drop the figure onto coordinates chosen to erase the algebra: a right angle at the origin, a side along the $x$-axis, a center or midpoint at the origin for symmetry. Then lengths, areas, collinearity, perpendicularity, and circle conditions all become computation — trading cleverness for reliability.`,
           keywords: ["coordinate bash", "place on axes", "analytic geometry", "brute force geometry", "smart origin", "method"],
           importance: "high",
@@ -1370,7 +1797,7 @@ window.MATH_SECTIONS.push({
           id: "auxiliary-lines",
           name: "Auxiliary Lines & Constructions",
           type: "method",
-          latex: String.raw`\text{add the right segment: altitude, parallel, radius to a tangency, or a reflected copy}`,
+          latex: String.raw`\text{add the right segment: altitude, parallel, radius, or a reflected copy}`,
           description: String.raw`The decisive move in synthetic geometry is often a line not yet drawn. The standard repertoire: drop a perpendicular (height, distance), translate a diagonal to fuse two lengths, extend a cevian to meet a parallel (spawning similar triangles), join the center to a point of tangency (right angle), or reflect/rotate a point to straighten a bent path.`,
           keywords: ["auxiliary line", "construction", "drop perpendicular", "extend cevian", "add radius", "method"],
           importance: "medium",
@@ -1380,7 +1807,7 @@ window.MATH_SECTIONS.push({
           id: "trig-bash",
           name: "Trig Bashing",
           type: "method",
-          latex: String.raw`\text{name one angle } \theta \to \text{Law of Sines / Cosines} \to \text{one trig equation in } \theta`,
+          latex: String.raw`\text{name an angle } \theta \to \text{Law of Sines / Cosines} \to \text{solve for } \theta`,
           description: String.raw`When a figure resists synthetic attack but is rich in angles, assign a variable to one angle (or one side), then push everything through $\frac{a}{\sin A} = 2R$, $c^2 = a^2 + b^2 - 2ab\cos C$, and $[ABC] = \frac{1}{2}ab\sin C$ until a single equation in $\theta$ remains. Sum-to-product and the triangle-angle identities finish it.`,
           keywords: ["trig bash", "law of sines bash", "assign an angle", "trigonometric identity solve", "angle variable", "method"],
           importance: "medium",
@@ -1401,7 +1828,7 @@ window.MATH_SECTIONS.push({
           name: "Affine Transformations",
           type: "method",
           latex: String.raw`\text{parallelism, midpoints, and area ratios are preserved} \qquad \text{ellipse} \xrightarrow{\text{scale}} \text{circle}, \;\; \text{triangle} \xrightarrow{\text{affine}} \text{equilateral}`,
-          description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths *along a line*, midpoints, and multiplies every area by the same constant — so *ratios* of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-*ratio* question cannot tell them apart. It does **not** preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities.`,
+          description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths along a line, midpoints, and multiplies every area by the same constant — so ratios of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-ratio question cannot tell them apart. It does not preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities.`,
           keywords: ["affine transformation", "shear", "scaling", "stretch", "ellipse to circle", "area ratio invariant", "map to equilateral", "wlog equilateral", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -1421,7 +1848,7 @@ window.MATH_SECTIONS.push({
           name: "Directed Angles (mod 180°)",
           type: "method",
           latex: String.raw`\angle(\ell_1, \ell_2) \bmod 180^\circ \qquad A, B, C, D \text{ concyclic} \iff \angle(CA, CB) = \angle(DA, DB)`,
-          description: String.raw`A directed angle $\angle(\ell_1, \ell_2)$ is the rotation carrying line $\ell_1$ to line $\ell_2$, read modulo $180^\circ$ (lines, not rays). This single convention erases configuration dependence: the concyclic test is *always* $\angle(CA, CB) = \angle(DA, DB)$, with no separate "equal vs. supplementary" branches for which side of the chord a point lands on. An angle-chase that would otherwise need a fresh diagram for every configuration becomes one computation valid for all of them. Trade-off: directed angles prove collinearity and concyclicity but carry no length information and no absolute sign, so they finish incidence problems, not metric ones.`,
+          description: String.raw`A directed angle $\angle(\ell_1, \ell_2)$ is the rotation carrying line $\ell_1$ to line $\ell_2$, read modulo $180^\circ$ (lines, not rays). This single convention erases configuration dependence: the concyclic test is always $\angle(CA, CB) = \angle(DA, DB)$, with no separate "equal vs. supplementary" branches for which side of the chord a point lands on. An angle-chase that would otherwise need a fresh diagram for every configuration becomes one computation valid for all of them. Trade-off: directed angles prove collinearity and concyclicity but carry no length information and no absolute sign, so they finish incidence problems, not metric ones.`,
           keywords: ["directed angles", "mod 180", "configuration independence", "concyclic test", "angle chasing", "supplementary cases", "method"],
           importance: "low",
           level: ["Olympiad"]
@@ -1430,8 +1857,8 @@ window.MATH_SECTIONS.push({
           id: "phantom-point",
           name: "Phantom Point Method",
           type: "method",
-          latex: String.raw`\text{define } X' \text{ with the target property, then prove } X' = X`,
-          description: String.raw`To show a hard-to-pin point $X$ (a messy intersection) has some property — lies on a line, on a circle, at a tangency — reverse the construction: *define* a phantom point $X'$ that has the desired property by fiat, then prove $X' = X$. Coinciding two points is usually far easier than computing the ugly intersection directly. The standard closer: two circles (or a circle and a line) meet in at most two points, so if $X$ and $X'$ are both the second common point beyond a known one, they must be equal. It's the proof-writing twin of auxiliary constructions, aimed at concurrency, collinearity, and "prove the circle passes through this point."`,
+          latex: String.raw`\text{define } X' \text{ with the wanted property, then prove } X' = X`,
+          description: String.raw`To show a hard-to-pin point $X$ (a messy intersection) has some property — lies on a line, on a circle, at a tangency — reverse the construction: define a phantom point $X'$ that has the desired property by fiat, then prove $X' = X$. Coinciding two points is usually far easier than computing the ugly intersection directly. The standard closer: two circles (or a circle and a line) meet in at most two points, so if $X$ and $X'$ are both the second common point beyond a known one, they must be equal. It's the proof-writing twin of auxiliary constructions, aimed at concurrency, collinearity, and "prove the circle passes through this point."`,
           keywords: ["phantom point", "ghost point", "prove points coincide", "second intersection", "concurrency", "reverse reconstruction", "method"],
           importance: "low",
           level: ["Olympiad"]
@@ -1441,7 +1868,7 @@ window.MATH_SECTIONS.push({
           name: "The Area Method (Area Ratios)",
           type: "method",
           latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
-          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points *outside* the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
+          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
           keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]

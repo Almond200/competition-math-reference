@@ -67,6 +67,7 @@
   // ---------- svg builders ----------
   const FNT = "var(--text-faint)", DIM = "var(--text-dim)", ACC = "var(--accent)",
         GLD = "var(--gold)", GRN = "var(--level-mc)",
+        PUR = "var(--level-12)", ORG = "var(--level-aime)", PNK = "var(--level-oly)",
         ACCS = "rgba(91,140,255,0.13)", GLDS = "rgba(245,196,81,0.13)";
   const r1 = x => Math.round(x * 10) / 10;
   const pf = p => `${r1(p[0])},${r1(p[1])}`;
@@ -145,15 +146,18 @@
   })()];
 
   DIAGRAMS["altitude-hypotenuse"] = [(() => {
-    const b = [60, 250], c = [340, 250], cen = mid(b, c), r = 140;
-    const a = onC(cen, r, -115), h = foot(a, b, c);
+    const B = [60, 250], C = [340, 250], cen = mid(B, C), r = 140;
+    const A = onC(cen, r, -115), H = foot(A, B, C);
     return wrap(420, 300, [
-      poly([a, b, c], DIM, 2), seg(a, h, ACC, 2, "5 4"),
-      rightAngle(a, b, c, 12), rightAngle(h, c, a, 10, ACC),
-      dot(h, ACC, 3.5),
-      txt(add(mid(b, h), [0, 18]), "p", GLD), txt(add(mid(h, c), [0, 18]), "q", GLD),
-      txt(add(mid(a, h), [12, 0]), "h", ACC),
-      cap(420, 300, "h² = pq,  a² = pc,  b² = qc")
+      seg(A, B, GRN, 2.2), seg(A, C, ORG, 2.2),          // legs a, b
+      seg(B, H, GLD, 2.6), seg(H, C, PUR, 2.6),          // hypotenuse pieces p, q
+      seg(A, H, ACC, 2, "5 4"),                          // altitude h
+      rightAngle(A, B, C, 12), rightAngle(H, C, A, 10, ACC),
+      dot(H, ACC, 3.5),
+      txt(add(mid(B, H), [0, 18]), "p", GLD, 13), txt(add(mid(H, C), [0, 18]), "q", PUR, 13),
+      txt(add(mid(A, H), [12, 0]), "h", ACC),
+      txt(add(mid(A, B), [-14, -2]), "a", GRN, 12.5), txt(add(mid(A, C), [14, -2]), "b", ORG, 12.5),
+      cap(420, 300, "h² = pq,  a² = pc,  b² = qc   (hypotenuse c = p + q; leg a sits over p, leg b over q)")
     ]);
   })()];
 
@@ -288,10 +292,13 @@
   DIAGRAMS["circumradius-area"] = [(() => {
     const O = circumcenterOf(A, B, C), R = dist(O, A);
     return wrap(430, 395, [
-      circ(O, R, FNT, 1.5), ABC(), dot(O, GLD, 4), txt(add(O, [0, 20]), "O", GLD),
+      circ(O, R, FNT, 1.5),
+      seg(B, C, GRN, 2.2), seg(C, A, ORG, 2.2), seg(A, B, PNK, 2.2),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      dot(O, GLD, 4), txt(add(O, [0, 20]), "O", GLD),
       seg(O, A, GLD, 2, "5 4"), txt(add(mid(O, A), [12, 0]), "R", GLD),
-      txt(add(mid(B, C), [0, 18]), "a", ACC), txt(add(mid(C, A), [16, -4]), "b", ACC), txt(add(mid(A, B), [-16, -4]), "c", ACC),
-      cap(430, 395, "A = abc / 4R")
+      txt(add(mid(B, C), [0, 18]), "a", GRN), txt(add(mid(C, A), [16, -4]), "b", ORG), txt(add(mid(A, B), [-16, -4]), "c", PNK),
+      cap(430, 395, "A = abc / 4R  —  the three sides and the circumradius R, each colored to match")
     ]);
   })()];
 
@@ -338,19 +345,25 @@
   })()];
 
   DIAGRAMS["law-of-cosines"] = [(() => wrap(430, 320, [
-    ABC(), angleArc(C, B, A, 26, GLD), txt(add(C, [-34, -12]), "C", GLD),
-    txt(add(mid(B, C), [0, 20]), "a"), txt(add(mid(C, A), [16, -2]), "b"),
+    seg(B, C, GRN, 2.4), seg(C, A, ORG, 2.4), seg(A, B, ACC, 2.4),
+    vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+    angleArc(C, B, A, 26, GLD, true),
+    txt(add(mid(B, C), [0, 20]), "a", GRN, 13), txt(add(mid(C, A), [16, -2]), "b", ORG, 13),
     txt(add(mid(A, B), [-14, -4]), "c", ACC, 14),
-    cap(430, 320, "c² = a² + b² − 2ab cos C")
+    cap(430, 320, "c² = a² + b² − 2ab cos C  —  side c (blue) is opposite the marked angle C")
   ]))()];
 
   DIAGRAMS["angle-bisector-theorem"] = [(() => {
     const c = dist(A, B), b = dist(A, C), D = lerp(B, C, c / (b + c));
     return wrap(430, 330, [
-      ABC(), seg(A, D, ACC, 2), dot(D, ACC, 3.5), txt(add(D, [0, 20]), "D", ACC),
-      angleArc(A, B, D, 24, GLD, true), angleArc(A, D, C, 24, GLD, true),
-      txt(add(mid(B, D), [0, 18]), "BD", GLD, 11.5), txt(add(mid(D, C), [0, 18]), "DC", GLD, 11.5),
-      cap(430, 330, "AB / AC = BD / DC")
+      seg(A, B, ACC, 2.2), seg(A, C, ORG, 2.2),           // sides c, b
+      seg(B, D, GLD, 2.4), seg(D, C, PUR, 2.4),           // split pieces BD, DC
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      seg(A, D, GRN, 2.4), dot(D, GRN, 3.5), txt(add(D, [0, 20]), "D", GRN),
+      angleArc(A, B, D, 24, DIM, true), angleArc(A, D, C, 24, DIM, true),
+      txt(add(mid(B, D), [0, 18]), "BD", GLD, 11.5), txt(add(mid(D, C), [0, 18]), "DC", PUR, 11.5),
+      txt(add(mid(A, B), [-14, -2]), "c", ACC, 12), txt(add(mid(A, C), [15, -2]), "b", ORG, 12),
+      cap(430, 330, "AB / AC = BD / DC  (bisector from A; BD and DC are colored to match the ratio)")
     ]);
   })()];
 
@@ -363,25 +376,29 @@
     const cen = centroidOf(Av, Bv, Cv);
     const vl = (p, s) => txt(add(away(p, cen, 16), [0, 4.5]), s, DIM, 13.5);
     return wrap(430, 330, [
-      poly([Cv, Av, Bv], DIM, 2),
+      seg(Cv, Av, ORG, 2.2), seg(Cv, Bv, GRN, 2.2),      // sides b, a (meeting at C)
+      seg(Av, D, GLD, 2.2), seg(D, Bv, PUR, 2.2),         // base pieces m, n
+      seg(Cv, D, ACC, 2.5), dot(D, ACC, 3.5),             // bisector d
       vl(Cv, "C"), vl(Av, "A"), vl(Bv, "B"),
-      seg(Cv, D, ACC, 2.5), dot(D, ACC, 3.5),
-      angleArc(Cv, Av, D, 24, GLD, true), angleArc(Cv, D, Bv, 24, GLD, true),
+      angleArc(Cv, Av, D, 24, DIM, true), angleArc(Cv, D, Bv, 24, DIM, true),
       txt(add(mid(Cv, D), [14, 0]), "d", ACC, 14),
-      txt(add(mid(Av, D), [0, 18]), "m", DIM, 12), txt(add(mid(D, Bv), [0, 18]), "n", DIM, 12),
-      txt(add(mid(Cv, Av), [-15, -2]), "b", DIM, 12.5), txt(add(mid(Cv, Bv), [15, -2]), "a", DIM, 12.5),
-      cap(430, 330, "d² = ab − mn  (bisector of angle C)")
+      txt(add(mid(Av, D), [0, 18]), "m", GLD, 12), txt(add(mid(D, Bv), [0, 18]), "n", PUR, 12),
+      txt(add(mid(Cv, Av), [-15, -2]), "b", ORG, 12.5), txt(add(mid(Cv, Bv), [15, -2]), "a", GRN, 12.5),
+      cap(430, 330, "d² = ab − mn  (bisector of angle C; sides a, b meet at C, and m, n split AB)")
     ]);
   })()];
 
   DIAGRAMS["stewarts-theorem"] = [(() => {
     const D = lerp(B, C, 0.58);
     return wrap(430, 330, [
-      ABC(), seg(A, D, ACC, 2), dot(D, ACC, 3.5),
+      seg(A, B, GRN, 2.4), seg(A, C, ORG, 2.4),         // sides c, b
+      seg(B, D, GLD, 2.4), seg(D, C, PUR, 2.4),         // base pieces m, n
+      seg(A, D, ACC, 2.4), dot(D, ACC, 3.5),            // cevian d
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
       txt(add(mid(A, D), [13, 0]), "d", ACC, 14),
-      txt(add(mid(B, D), [0, 18]), "m", GLD), txt(add(mid(D, C), [0, 18]), "n", GLD),
-      txt(add(mid(A, B), [-14, -4]), "c"), txt(add(mid(A, C), [16, -2]), "b"),
-      cap(430, 330, "a(d² + mn) = b²m + c²n")
+      txt(add(mid(B, D), [0, 18]), "m", GLD, 13), txt(add(mid(D, C), [0, 18]), "n", PUR, 13),
+      txt(add(mid(A, B), [-14, -4]), "c", GRN, 13), txt(add(mid(A, C), [16, -2]), "b", ORG, 13),
+      cap(430, 330, "a(d² + mn) = b²m + c²n  —  each length is colored to match its label (a = m + n is the base)")
     ]);
   })()];
 
@@ -411,14 +428,17 @@
   DIAGRAMS["apollonius-theorem"] = [(() => {
     const M = mid(B, C);
     const t1 = mid(B, M), t2 = mid(M, C), d = mul(norm(sub(C, B)), 1);
-    const tick = p => seg(add(p, mul(perp(d), 6)), add(p, mul(perp(d), -6)), GLD, 2);
+    const tick = p => seg(add(p, mul(perp(d), 6)), add(p, mul(perp(d), -6)), PUR, 2);
     return wrap(430, 330, [
-      ABC(), seg(A, M, ACC, 2), dot(M, ACC, 3.5), txt(add(M, [0, 20]), "M"),
-      seg(B, mid(C, A), FNT, 1.4, "5 4"), seg(C, mid(A, B), FNT, 1.4, "5 4"),
+      seg(C, A, ORG, 2.2), seg(A, B, PNK, 2.2),
+      seg(B, M, GRN, 2.2), seg(M, C, GRN, 2.2),                 // side a, halved at M
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      seg(A, M, ACC, 2.4), dot(M, ACC, 3.5), txt(add(M, [0, 20]), "M", ACC, 12),
       tick(t1), tick(t2),
       txt(add(mid(A, M), [16, 0]), "mₐ", ACC),
-      txt(add(lerp(B, mid(C, A), 0.42), [0, -8]), "m_b", FNT, 11), txt(add(lerp(C, mid(A, B), 0.42), [4, 14]), "m_c", FNT, 11),
-      cap(430, 330, "b² + c² = 2(mₐ² + (a/2)²); summing all three: mₐ² + m_b² + m_c² = ¾(a² + b² + c²)")
+      txt(add(mid(B, M), [0, -8]), "a/2", GRN, 10.5), txt(add(mid(M, C), [0, -8]), "a/2", GRN, 10.5),
+      txt(add(mid(C, A), [12, -2]), "b", ORG, 11.5), txt(add(mid(A, B), [-12, -2]), "c", PNK, 11.5),
+      cap(430, 330, "b² + c² = 2(mₐ² + (a/2)²)  —  the median mₐ to side a, whose halves are tick-marked")
     ]);
   })()];
 
@@ -681,11 +701,11 @@
     const T1 = add(c1, mul(n, r1c)), T2 = add(c2, mul(n, r2c));
     return wrap(430, 330, [
       circ(c1, r1c, FNT, 1.5), circ(c2, r2c, FNT, 1.5),
-      dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, FNT, 1.4, "5 4"),
-      txt(add(mid(c1, c2), [0, 16]), "d"),
-      seg(T1, T2, ACC, 2.2), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
-      seg(c1, T1, GLD, 1.6), seg(c2, T2, GLD, 1.6),
-      txt(add(mid(c1, T1), [-12, 0]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 0]), "r₂", GLD, 12),
+      dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, ORG, 1.6, "5 4"),
+      txt(add(mid(c1, c2), [0, 16]), "d", ORG),
+      seg(T1, T2, ACC, 2.4), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
+      seg(c1, T1, GLD, 1.8), seg(c2, T2, PUR, 1.8),
+      txt(add(mid(c1, T1), [-12, 0]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 0]), "r₂", PUR, 12),
       txt(add(mid(T1, T2), [0, -10]), "t", ACC),
       cap(430, 330, "t² = d² − (r₂ − r₁)²  (external tangent)")
     ]);
@@ -698,11 +718,11 @@
     const T1 = add(c1, mul(n, r1c)), T2 = sub(c2, mul(n, r2c));
     return wrap(440, 320, [
       circ(c1, r1c, FNT, 1.5), circ(c2, r2c, FNT, 1.5),
-      dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, FNT, 1.4, "5 4"),
-      txt(add(mid(c1, c2), [30, 14]), "d"),
-      seg(T1, T2, ACC, 2.2), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
-      seg(c1, T1, GLD, 1.6), seg(c2, T2, GLD, 1.6),
-      txt(add(mid(c1, T1), [-12, -2]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 2]), "r₂", GLD, 12),
+      dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, ORG, 1.6, "5 4"),
+      txt(add(mid(c1, c2), [30, 14]), "d", ORG),
+      seg(T1, T2, ACC, 2.4), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
+      seg(c1, T1, GLD, 1.8), seg(c2, T2, PUR, 1.8),
+      txt(add(mid(c1, T1), [-12, -2]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 2]), "r₂", PUR, 12),
       txt(add(mid(T1, T2), [-16, -6]), "t", ACC),
       cap(440, 320, "t² = d² − (r₁ + r₂)²  (internal tangent — it crosses the center line, so the radii add)")
     ]);
@@ -772,12 +792,14 @@
   ])];
 
   DIAGRAMS["ptolemys-theorem"] = [wrap(430, 340, [
-    circ(QCEN, QR, FNT, 1.5), poly([QA, QB, QC2, QD], DIM, 2), quadLabels(),
-    seg(QA, QC2, ACC, 1.8), seg(QB, QD, GLD, 1.8),
-    txt(add(mid(QA, QB), [8, -8]), "a", DIM, 12), txt(add(mid(QB, QC2), [14, 0]), "b", DIM, 12),
-    txt(add(mid(QC2, QD), [0, 16]), "c", DIM, 12), txt(add(mid(QD, QA), [-14, 0]), "d", DIM, 12),
+    circ(QCEN, QR, FNT, 1.5),
+    seg(QA, QB, GRN, 2.2), seg(QB, QC2, ORG, 2.2), seg(QC2, QD, PUR, 2.2), seg(QD, QA, PNK, 2.2),  // sides a,b,c,d
+    seg(QA, QC2, ACC, 1.8), seg(QB, QD, GLD, 1.8),                                                  // diagonals p,q
+    quadLabels(),
+    txt(add(mid(QA, QB), [8, -8]), "a", GRN, 12), txt(add(mid(QB, QC2), [14, 0]), "b", ORG, 12),
+    txt(add(mid(QC2, QD), [0, 16]), "c", PUR, 12), txt(add(mid(QD, QA), [-14, 0]), "d", PNK, 12),
     txt(add(lerp(QA, QC2, 0.3), [12, 4]), "p", ACC, 12.5), txt(add(lerp(QB, QD, 0.3), [0, -8]), "q", GLD, 12.5),
-    cap(430, 340, "ac + bd = pq")
+    cap(430, 340, "ac + bd = pq  —  the four sides and two diagonals, each colored to match its label")
   ])];
 
   DIAGRAMS["brahmaguptas-formula"] = [wrap(430, 340, [
@@ -1111,9 +1133,9 @@
   DIAGRAMS["law-cosines-60-120"] = [(() => {
     const v = [150, 240], w = [270, 240], u = [50, 66.8];
     return wrap(420, 300, [
-      poly([v, w, u], DIM, 2),
+      seg(v, w, GRN, 2.4), seg(v, u, ORG, 2.4), seg(w, u, ACC, 2.4),
       angleArc(v, w, u, 24, GLD), txt(add(v, [-8, -30]), "C = 120°", GLD, 11.5),
-      txt(add(mid(v, w), [0, 18]), "a = 3"), txt(add(mid(v, u), [-24, 0]), "b = 5"),
+      txt(add(mid(v, w), [0, 18]), "a = 3", GRN), txt(add(mid(v, u), [-24, 0]), "b = 5", ORG),
       txt(add(mid(w, u), [28, 0]), "c = 7", ACC, 13),
       cap(420, 300, "c² = a² + b² + ab at 120°: 49 = 9 + 25 + 15 — the (3, 5, 7) triangle")
     ]);
@@ -1123,9 +1145,9 @@
     const v = [110, 250], w = [v[0] + 8 * sc, 250];
     const u = [v[0] + 5 * sc * Math.cos(rad(-60)), 250 + 5 * sc * Math.sin(rad(-60))];
     return wrap(420, 300, [
-      poly([v, w, u], DIM, 2),
+      seg(v, w, GRN, 2.4), seg(v, u, ORG, 2.4), seg(w, u, ACC, 2.4),
       angleArc(v, w, u, 26, GLD), txt(add(v, [42, -14]), "C = 60°", GLD, 11.5),
-      txt(add(mid(v, w), [0, 18]), "a = 8"), txt(add(mid(v, u), [-28, 0]), "b = 5"),
+      txt(add(mid(v, w), [0, 18]), "a = 8", GRN), txt(add(mid(v, u), [-28, 0]), "b = 5", ORG),
       txt(add(mid(w, u), [30, 0]), "c = 7", ACC, 13),
       cap(420, 300, "c² = a² + b² − ab at 60°: 49 = 64 + 25 − 40 — the (5, 8, 7) triangle")
     ]);
@@ -1539,24 +1561,6 @@
     ]);
   })()];
 
-  DIAGRAMS["circle-inversion"] = [(() => {
-    const O = [150, 168], R = 118;
-    const P = [218, 168];
-    const Pr = add(O, mul(norm(sub(P, O)), R * R / dist(O, P)));
-    const rEnd = onC(O, R, -125);
-    return wrap(460, 320, [
-      circ(O, R, GLD, 1.8, GLDS, "6 4"),
-      seg(O, [445, 168], FNT, 1.2),
-      seg(O, rEnd, GLD, 1.6), txt(add(mid(O, rEnd), [-12, -4]), "r", GLD, 13),
-      dot(O, DIM, 4), txt(add(O, [-4, 20]), "O", DIM),
-      dot(P, ACC, 4.5), dot(Pr, GRN, 4.5),
-      txt(add(P, [0, -12]), "P", ACC), txt(add(Pr, [4, -12]), "P′", GRN),
-      seg([O[0], 186], [P[0], 186], ACC, 1.4), txt([mid(O, P)[0], 202], "OP", ACC, 11.5),
-      seg([O[0], 216], [Pr[0], 216], GRN, 1.4), txt([mid(O, Pr)[0], 232], "OP′", GRN, 11.5),
-      cap(460, 320, "P′ lies on ray OP with OP · OP′ = r² — the inside of the circle swaps with the outside")
-    ]);
-  })()];
-
   DIAGRAMS["homothety-monge"] = [(() => {
     const c1 = [85, 175], r1c = 60, c2 = [240, 140], r2c = 30, c3 = [330, 205], r3c = 16;
     // External similitude center of circles i, j divides the center line externally in ratio ri : rj.
@@ -1762,16 +1766,37 @@
   ]))()];
 
   DIAGRAMS["napoleons-theorem"] = [(() => {
+    const apexOut = (P, Q, opp) => {                     // outward apex of the equilateral triangle on PQ
+      const m = mid(P, Q), h = dist(P, Q) * Math.sqrt(3) / 2, dir = norm(perp(sub(Q, P)));
+      const a1 = add(m, mul(dir, h)), a2 = sub(m, mul(dir, h));
+      return dist(a1, opp) > dist(a2, opp) ? a1 : a2;
+    };
     const ctr = (P, Q, opp) => {
       const m = mid(P, Q), off = mul(norm(perp(sub(Q, P))), dist(P, Q) / (2 * Math.sqrt(3)));
       const c1 = add(m, off), c2 = sub(m, off);
       return dist(c1, opp) > dist(c2, opp) ? c1 : c2;
     };
+    const eA = apexOut(B, C, A), eB = apexOut(C, A, B), eC = apexOut(A, B, C);
     const n1 = ctr(B, C, A), n2 = ctr(C, A, B), n3 = ctr(A, B, C);
-    return wrap(440, 400, [
-      ABC(), poly([n1, n2, n3], GLD, 2, GLDS),
-      dot(n1, GLD, 4), dot(n2, GLD, 4), dot(n3, GLD, 4),
-      cap(440, 400, "centers of outward equilateral triangles form an equilateral triangle")
+    // The outward triangles blow past the standard frame, so fit everything to view.
+    const pts = [A, B, C, eA, eB, eC, n1, n2, n3];
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const minx = Math.min.apply(null, xs), maxx = Math.max.apply(null, xs),
+          miny = Math.min.apply(null, ys), maxy = Math.max.apply(null, ys);
+    const W = 460, H = 430, mg = 42;
+    const sc = Math.min((W - 2 * mg) / (maxx - minx), (H - 2 * mg) / (maxy - miny));
+    const tx = p => [mg + (p[0] - minx) * sc + (W - 2 * mg - (maxx - minx) * sc) / 2, mg + (p[1] - miny) * sc];
+    const A1 = tx(A), B1 = tx(B), C1 = tx(C), ea = tx(eA), eb = tx(eB), ec = tx(eC),
+          N1 = tx(n1), N2 = tx(n2), N3 = tx(n3);
+    const cen = mul(add(add(A1, B1), C1), 1 / 3);
+    const vl = (p, s) => txt(add(p, mul(norm(sub(p, cen)), 15)), s, DIM, 12);
+    return wrap(W, H, [
+      poly([B1, C1, ea], DIM, 1.2, ACCS), poly([C1, A1, eb], DIM, 1.2, ACCS), poly([A1, B1, ec], DIM, 1.2, ACCS),
+      poly([A1, B1, C1], "var(--text)", 2),
+      poly([N1, N2, N3], GLD, 2, GLDS),
+      dot(N1, GLD, 3.5), dot(N2, GLD, 3.5), dot(N3, GLD, 3.5),
+      vl(A1, "A"), vl(B1, "B"), vl(C1, "C"),
+      cap(W, H, "erect an outward equilateral triangle on each side; their centers (gold) form an equilateral triangle")
     ]);
   })()];
 
@@ -1894,13 +1919,19 @@
   ])];
 
   DIAGRAMS["isoperimetric-facts"] = [(() => {
-    const s = 110, rw = 170, rh = 50;
-    return wrap(430, 300, [
-      poly([[70, 90], [70 + s, 90], [70 + s, 90 + s], [70, 90 + s]], ACC, 2, ACCS),
-      poly([[240, 120], [240 + rw, 120], [240 + rw, 120 + rh], [240, 120 + rh]], GLD, 2, GLDS),
-      txt([70 + s / 2, 90 + s / 2 + 4], "25", ACC, 15), txt([240 + rw / 2, 120 + rh / 2 + 4], "21", GLD, 15),
-      txt([70 + s / 2, 232], "5 × 5", DIM, 12), txt([240 + rw / 2, 195], "7 × 3", DIM, 12),
-      cap(430, 300, "same perimeter 20 — the square wins: symmetric shapes maximize area")
+    const k = 11;                                  // px per unit — every shape has perimeter 20·k
+    const cC = [95, 118], R = (10 / Math.PI) * k;  // circumference 20
+    const sq = 5 * k, sqx = 205, sqy = 118 - sq / 2;
+    const rw = 7 * k, rh = 3 * k, rx = 335, ry = 118 - rh / 2;
+    return wrap(470, 250, [
+      circ(cC, R, ACC, 2, ACCS),
+      poly([[sqx, sqy], [sqx + sq, sqy], [sqx + sq, sqy + sq], [sqx, sqy + sq]], GLD, 2, GLDS),
+      poly([[rx, ry], [rx + rw, ry], [rx + rw, ry + rh], [rx, ry + rh]], GRN, 2, "rgba(76,195,138,0.13)"),
+      txt(add(cC, [0, 4]), "≈31.8", ACC, 13.5),
+      txt([sqx + sq / 2, sqy + sq / 2 + 4], "25", GLD, 14),
+      txt([rx + rw / 2, ry + rh / 2 + 4], "21", GRN, 13),
+      txt([cC[0], 198], "circle", DIM, 11.5), txt([sqx + sq / 2, 198], "5 × 5", DIM, 11.5), txt([rx + rw / 2, 198], "7 × 3", DIM, 11.5),
+      cap(470, 250, "same perimeter 20: the circle wins (≈31.8), then the square (25) — symmetry maximizes area")
     ]);
   })()];
 
@@ -2181,6 +2212,813 @@
       txt(centroidOf(A, B, D), "[ABD]", ACC, 11), txt(centroidOf(A, C, D), "[ACD]", GLD, 11),
       txt(add(mid(B, D), [0, 19]), "BD", DIM, 11.5), txt(add(mid(D, C), [0, 19]), "DC", DIM, 11.5),
       cap(430, 330, "[ABD] / [ACD] = BD / DC  (shared apex A)")
+    ]);
+  })()];
+
+  DIAGRAMS["apollonius-circle"] = [(() => {
+    // A, B on a line; ratio k = 2. D divides AB internally 2:1, E externally 2:1;
+    // DE is the diameter. P is a sample point on the circle with PA/PB = 2.
+    const A = [120, 175], B = [240, 175], D = [200, 175], E = [360, 175];
+    const Oc = [280, 175], r = 80, P = [280, 95];
+    return wrap(450, 300, [
+      seg([80, 175], [400, 175], FNT, 1.4),
+      circ(Oc, r, ACC, 2, ACCS),
+      seg(P, A, GLD, 1.6), seg(P, B, GLD, 1.6),
+      dot(A, DIM, 4), dot(B, DIM, 4), dot(D, ACC, 3.5), dot(E, ACC, 3.5), dot(P, ACC, 4.5),
+      txt(add(A, [0, 20]), "A", DIM), txt(add(B, [-2, 20]), "B", DIM),
+      txt(add(D, [10, -9]), "D", ACC, 12), txt(add(E, [8, 20]), "E", ACC, 12),
+      txt(add(P, [0, -10]), "P", ACC),
+      txt(add(mid(P, A), [-11, -1]), "2k", GLD, 11.5), txt(add(mid(P, B), [12, -1]), "k", GLD, 11.5),
+      cap(450, 300, "PA : PB = 2 : 1 for all P on the circle; D, E divide AB internally & externally in that ratio")
+    ]);
+  })()];
+
+  DIAGRAMS["pappus-centroid"] = [(() => {
+    // A plane region (disk) at distance d from an axis; revolving it sweeps a torus.
+    const axisX = 110, cy = 158, C = [270, cy], rgen = 46;
+    return wrap(440, 300, [
+      seg([axisX, 40], [axisX, 276], DIM, 2, "6 5"), txt([axisX, 28], "axis", DIM, 11),
+      circ(C, rgen, ACC, 2, ACCS), dot(C, ACC, 4),
+      txt(add(C, [0, -rgen - 9]), "region  A,  boundary L", ACC, 11),
+      txt(add(C, [0, 4]), "centroid", ACC, 10),
+      seg([axisX, cy], C, GLD, 1.8), txt(add(mid([axisX, cy], C), [0, -9]), "d", GLD, 14),
+      dot([axisX, cy], DIM, 3),
+      cap(440, 300, "revolve about the axis → V = 2πd·A, S = 2πd·L   (torus: V = 2π²Rr², S = 4π²Rr)")
+    ]);
+  })()];
+
+  DIAGRAMS["projection-formula"] = [(() => {
+    const H = foot(A, B, C);
+    return wrap(430, 330, [
+      seg(B, H, GLD, 2.6), seg(H, C, PUR, 2.6),           // projections BH, HC
+      seg(A, B, ACC, 2.2), seg(A, C, ORG, 2.2),           // sides c, b
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      seg(A, H, FNT, 1.6, "5 4"), rightAngle(H, C, A, 11, FNT),
+      dot(H, DIM, 3.5), txt(add(H, [4, 20]), "H", DIM, 12),
+      txt(add(mid(B, H), [-6, 20]), "c cos B", GLD, 10.5), txt(add(mid(H, C), [8, 20]), "b cos C", PUR, 10.5),
+      txt(add(mid(A, B), [-14, -2]), "c", ACC, 12.5), txt(add(mid(A, C), [15, -2]), "b", ORG, 12.5),
+      cap(430, 330, "a = BH + HC = c cos B + b cos C  (each side's projection onto BC is colored to match)")
+    ]);
+  })()];
+
+  DIAGRAMS["triangle-half-angle-identities"] = [(() => {
+    const I = incenterOf(A, B, C), O = circumcenterOf(A, B, C);
+    const r = dist(I, foot(I, B, C)), R = dist(O, A);
+    return wrap(430, 384, [
+      circ(O, R, FNT, 1.4), circ(I, r, ACC, 1.8),
+      triangle(), vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      dot(I, ACC, 3), txt(add(I, [11, 4]), "I", ACC, 11),
+      dot(O, GLD, 3), txt(add(O, [11, 4]), "O", GLD, 11),
+      cap(430, 384, "inradius r, circumradius R:  r = 4R sin(A/2) sin(B/2) sin(C/2)")
+    ]);
+  })()];
+
+  DIAGRAMS["gergonne-nagel-points"] = [(() => {
+    const I = incenterOf(A, B, C);
+    const X = foot(I, B, C), Y = foot(I, C, A), Z = foot(I, A, B);
+    const r = dist(I, X), Ge = lineInt(A, X, B, Y);
+    return wrap(430, 340, [
+      circ(I, r, FNT, 1.5), triangle(), vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      seg(A, X, ACC, 1.4), seg(B, Y, ACC, 1.4), seg(C, Z, ACC, 1.4),
+      dot(X, GLD, 3), dot(Y, GLD, 3), dot(Z, GLD, 3),
+      dot(Ge, ACC, 4.5), txt(add(Ge, [11, 4]), "Ge", ACC, 11),
+      cap(430, 340, "Gergonne point: the cevians to the incircle touch points concur")
+    ]);
+  })()];
+
+  DIAGRAMS["mollweides-formula"] = [(() => {
+    return wrap(430, 320, [
+      ABC(),
+      txt(add(mid(B, C), [0, 20]), "a", DIM, 13), txt(add(mid(A, C), [16, -2]), "b", DIM, 13), txt(add(mid(A, B), [-16, -2]), "c", DIM, 13),
+      angleArc(A, B, C, 26, GLD), angleArc(B, C, A, 26, GLD), angleArc(C, A, B, 26, GLD),
+      cap(430, 320, "(a+b)/c = cos((A−B)/2) / sin(C/2)")
+    ]);
+  })()];
+
+  DIAGRAMS["morleys-theorem"] = [(() => {
+    function tris(P, Q, R) {
+      const u = Math.atan2(Q[1] - P[1], Q[0] - P[0]);
+      let dv = Math.atan2(R[1] - P[1], R[0] - P[0]) - u;
+      while (dv > Math.PI) dv -= 2 * Math.PI;
+      while (dv < -Math.PI) dv += 2 * Math.PI;
+      return [u + dv / 3, u + 2 * dv / 3];
+    }
+    const far = (P, ang) => [P[0] + Math.cos(ang) * 600, P[1] + Math.sin(ang) * 600];
+    const [a1, a2] = tris(A, B, C), [b1, b2] = tris(B, C, A), [c1, c2] = tris(C, A, B);
+    const PA = lineInt(B, far(B, b1), C, far(C, c2));
+    const PB = lineInt(C, far(C, c1), A, far(A, a2));
+    const PC = lineInt(A, far(A, a1), B, far(B, b2));
+    return wrap(430, 330, [
+      triangle(), vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      seg(B, PA, FNT, 1), seg(C, PA, FNT, 1), seg(C, PB, FNT, 1), seg(A, PB, FNT, 1), seg(A, PC, FNT, 1), seg(B, PC, FNT, 1),
+      poly([PA, PB, PC], ACC, 2, ACCS),
+      dot(PA, ACC, 3.5), dot(PB, ACC, 3.5), dot(PC, ACC, 3.5),
+      cap(430, 330, "adjacent angle trisectors meet at an equilateral triangle (Morley)")
+    ]);
+  })()];
+
+  DIAGRAMS["newtons-line"] = [(() => {
+    const P = [80, 92], Q = [362, 70], R = [332, 268], S = [112, 250], cen = [220, 170];
+    const M1 = mid(P, R), M2 = mid(Q, S), d = norm(sub(M2, M1));
+    return wrap(430, 320, [
+      poly([P, Q, R, S], DIM, 2),
+      seg(P, R, FNT, 1.4, "5 4"), seg(Q, S, FNT, 1.4, "5 4"),
+      seg(add(M1, mul(d, -110)), add(M2, mul(d, 110)), ACC, 1.6),
+      dot(M1, ACC, 4), dot(M2, ACC, 4),
+      txt(add(M1, [-2, -10]), "M₁", ACC, 11), txt(add(M2, [10, -6]), "M₂", ACC, 11),
+      txt(away(P, cen, 15), "A", DIM), txt(away(Q, cen, 15), "B", DIM), txt(away(R, cen, 15), "C", DIM), txt(away(S, cen, 15), "D", DIM),
+      cap(430, 320, "midpoints of the diagonals lie on the Newton–Gauss line")
+    ]);
+  })()];
+
+  DIAGRAMS["convex-position"] = [(() => {
+    const hull = [[90, 250], [180, 92], [322, 112], [362, 240], [212, 292]];
+    const inner = [[205, 195], [272, 205]];
+    return wrap(430, 330, [
+      poly(hull, ACC, 2, ACCS)
+    ].concat(hull.map(p => dot(p, ACC, 4.5)))
+      .concat(inner.map(p => dot(p, DIM, 4)))
+      .concat([cap(430, 330, "hull vertices are in convex position; interior points are not")]));
+  })()];
+
+  DIAGRAMS["sylvester-gallai"] = [(() => {
+    const top = [[95, 125], [212, 125], [329, 125]], bot = [[152, 245], [272, 245]];
+    return wrap(430, 340, [
+      seg([70, 125], [352, 125], FNT, 1.4),
+      seg([132, 245], [292, 245], FNT, 1.4),
+      seg(bot[0], top[2], ACC, 2)
+    ].concat(top.map(p => dot(p, DIM, 4.5))).concat(bot.map(p => dot(p, DIM, 4.5)))
+      .concat([dot(bot[0], ACC, 5), dot(top[2], ACC, 5),
+        txt([250, 200], "ordinary line", ACC, 11),
+        cap(430, 340, "not all collinear ⇒ some line passes through exactly two points")]));
+  })()];
+
+  DIAGRAMS["hellys-theorem"] = [(() => {
+    const c1 = [165, 150], c2 = [262, 150], c3 = [212, 234], r = 94, cp = [212, 178];
+    return wrap(430, 336, [
+      circ(c1, r, ACC, 1.8, ACCS), circ(c2, r, GLD, 1.8, GLDS),
+      circ(c3, r, GRN, 1.8, "rgba(76,195,138,0.13)"),
+      dot(cp, DIM, 5), txt(add(cp, [12, 4]), "common point", DIM, 10.5),
+      cap(430, 336, "every 3 convex sets meet ⇒ all meet (Helly, in the plane)")
+    ]);
+  })()];
+
+  DIAGRAMS["minkowski-lattice"] = [(() => {
+    const O = [215, 165], step = 44, pts = [];
+    for (let i = -4; i <= 4; i++) for (let j = -3; j <= 3; j++) pts.push(dot([O[0] + i * step, O[1] + j * step], FNT, 2.5));
+    const ell = `<ellipse cx="${O[0]}" cy="${O[1]}" rx="96" ry="60" fill="${ACCS}" stroke="${ACC}" stroke-width="2"/>`;
+    const Pt = [O[0] + step, O[1]];
+    return wrap(430, 330, pts.concat([
+      ell, dot(O, DIM, 3.5), txt(add(O, [-6, -9]), "O", DIM, 11),
+      dot(Pt, ACC, 5), txt(add(Pt, [10, -8]), "lattice pt", ACC, 10.5),
+      cap(430, 330, "centrally symmetric, area > 4 ⇒ a nonzero lattice point inside")
+    ]));
+  })()];
+
+  // ---------- Added: advanced geometry ----------
+  const vdot = (p, q) => p[0] * q[0] + p[1] * q[1];
+  const farFrom = (pair, p) => (dist(pair[0], p) > dist(pair[1], p) ? pair[0] : pair[1]);
+
+  DIAGRAMS["same-base-area-ratio"] = [(() => {
+    const Aq = [150, 70], Dq = [345, 58], Cq = [362, 250], Bq = [70, 272];
+    const P = lineInt(Aq, Cq, Bq, Dq);
+    const RED = "#e2555f", REDS = "rgba(226,85,95,0.15)";
+    return wrap(430, 320, [
+      poly([Aq, Bq, Dq], ACC, 1.6, ACCS),
+      poly([Cq, Bq, Dq], RED, 1.6, REDS),
+      seg(Bq, Dq, FNT, 1.6, "5 4"),
+      seg(Aq, P, ACC, 3), seg(P, Cq, RED, 3),
+      poly([Aq, Dq, Cq, Bq], DIM, 2),
+      dot(P, DIM, 3.5), dot(Aq, ACC), dot(Bq, ACC), dot(Cq, ACC), dot(Dq, ACC),
+      txt(add(mid(mid(Aq, Bq), P), [-2, 0]), "Area₁", ACC, 12.5),
+      txt(add(mid(mid(Cq, Dq), P), [10, 4]), "Area₂", RED, 12.5),
+      txt(add(away(Aq, P, 15), [0, 3]), "A", DIM, 13.5), txt(add(away(Bq, P, 15), [0, 6]), "B", DIM, 13.5),
+      txt(add(away(Cq, P, 15), [3, 3]), "C", DIM, 13.5), txt(add(away(Dq, P, 15), [2, 0]), "D", DIM, 13.5),
+      txt(add(P, [12, -5]), "P", DIM, 13),
+      cap(430, 320, "Triangles ABD (blue) and CBD (red) share base BD; the diagonal AC crosses it at P, so [ABD]/[CBD] = AP/PC.")
+    ]);
+  })()];
+
+  DIAGRAMS["isogonal-conjugate"] = [(() => {
+    const P = [200, 172];
+    const reflectDir = (v, u) => sub(mul(u, 2 * vdot(v, u)), v);
+    const biseA = norm(add(norm(sub(B, A)), norm(sub(C, A))));
+    const biseB = norm(add(norm(sub(A, B)), norm(sub(C, B))));
+    const rA = reflectDir(norm(sub(P, A)), biseA);
+    const rB = reflectDir(norm(sub(P, B)), biseB);
+    const Ps = lineInt(A, add(A, rA), B, add(B, rB));
+    return wrap(430, 330, [
+      triangle(),
+      seg(A, P, ACC, 1.6, "4 3"), seg(B, P, ACC, 1.6, "4 3"), seg(C, P, ACC, 1.6, "4 3"),
+      seg(A, Ps, GLD, 1.6, "4 3"), seg(B, Ps, GLD, 1.6, "4 3"), seg(C, Ps, GLD, 1.6, "4 3"),
+      angleArc(A, B, P, 30, ACC), angleArc(A, Ps, C, 30, GLD),
+      dot(P, ACC, 5), dot(Ps, GLD, 5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(P, [-6, 16]), "P", ACC, 13), txt(add(Ps, [12, 4]), "P*", GLD, 13),
+      cap(430, 330, "Reflecting each cevian across its angle bisector carries P to its isogonal conjugate P*: here ∠BAP = ∠CAP* (and likewise at B, C).")
+    ]);
+  })()];
+
+  DIAGRAMS["pedal-triangle"] = [(() => {
+    const P = [206, 168];
+    const Fa = foot(P, B, C), Fb = foot(P, C, A), Fc = foot(P, A, B);
+    return wrap(430, 330, [
+      triangle(),
+      seg(P, Fa, FNT, 1.4, "4 3"), seg(P, Fb, FNT, 1.4, "4 3"), seg(P, Fc, FNT, 1.4, "4 3"),
+      poly([Fa, Fb, Fc], ACC, 2, ACCS),
+      dot(Fa, ACC, 3.5), dot(Fb, ACC, 3.5), dot(Fc, ACC, 3.5), dot(P, GLD, 5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(P, [12, 4]), "P", GLD, 13),
+      cap(430, 330, "The feet of the perpendiculars from P form its pedal triangle, with area |R² − OP²|/(4R²)·[ABC]; when P is on the circumcircle it flattens to the Simson line.")
+    ]);
+  })()];
+
+  DIAGRAMS["reims-theorem"] = [(() => {
+    const O1 = [162, 178], r1 = 100, O2 = [300, 190], r2 = 104;
+    const d = dist(O1, O2), a = (r1 * r1 - r2 * r2 + d * d) / (2 * d), h = Math.sqrt(r1 * r1 - a * a);
+    const base = add(O1, mul(norm(sub(O2, O1)), a)), nrm = norm(perp(sub(O2, O1)));
+    const P = add(base, mul(nrm, h)), Q = sub(base, mul(nrm, h));
+    const dir1 = norm([0.55, -1]), dir2 = norm([0.9, 1]);
+    const Ap = farFrom(circleLineInts(O1, r1, P, add(P, dir1)), P);
+    const Cp = farFrom(circleLineInts(O2, r2, P, add(P, dir1)), P);
+    const Bp = farFrom(circleLineInts(O1, r1, Q, add(Q, dir2)), Q);
+    const Dp = farFrom(circleLineInts(O2, r2, Q, add(Q, dir2)), Q);
+    return wrap(440, 360, [
+      circ(O1, r1, FNT, 1.5), circ(O2, r2, FNT, 1.5),
+      seg(Ap, Cp, DIM, 1.6), seg(Bp, Dp, DIM, 1.6),
+      seg(Ap, Bp, ACC, 2.4), seg(Cp, Dp, ACC, 2.4),
+      dot(P, GLD, 4.5), dot(Q, GLD, 4.5),
+      dot(Ap, ACC), dot(Bp, ACC), dot(Cp, ACC), dot(Dp, ACC),
+      txt(add(Ap, [-12, -4]), "A", DIM, 13), txt(add(Cp, [10, -2]), "C", DIM, 13),
+      txt(add(Bp, [-12, 8]), "B", DIM, 13), txt(add(Dp, [10, 10]), "D", DIM, 13),
+      txt(add(P, [4, -10]), "P", GLD, 13), txt(add(Q, [4, 16]), "Q", GLD, 13),
+      cap(440, 360, "Two circles meet at P, Q. A line through P gives A, C and a line through Q gives B, D — then AB ∥ CD (Reim's theorem).")
+    ]);
+  })()];
+
+  DIAGRAMS["mixtilinear-incircle"] = [(() => {
+    const Am = [205, 72], Bm = [92, 250], Cm = [332, 244];
+    const O = circumcenterOf(Am, Bm, Cm), R = dist(O, Am), I = incenterOf(Am, Bm, Cm);
+    const uA = norm(add(norm(sub(Bm, Am)), norm(sub(Cm, Am))));
+    const cosA = vdot(norm(sub(Bm, Am)), norm(sub(Cm, Am))), halfA = Math.acos(cosA) / 2;
+    const sinH = Math.sin(halfA), cosH = Math.cos(halfA), w = sub(Am, O);
+    const t = (-2 * R * sinH - 2 * vdot(w, uA)) / (cosH * cosH);
+    const K = add(Am, mul(uA, t)), rho = t * sinH;
+    const T = add(O, mul(norm(sub(K, O)), R));
+    const Tc = foot(K, Am, Bm), Tb = foot(K, Am, Cm);
+    const M0 = farFrom(circleLineInts(O, R, Am, add(Am, uA)), Am), Marc = sub(mul(O, 2), M0);
+    return wrap(440, 400, [
+      circ(O, R, FNT, 1.5),
+      poly([Am, Bm, Cm], DIM, 2),
+      circ(K, rho, ACC, 1.8, ACCS),
+      seg(T, Marc, GLD, 1.6, "5 4"),
+      dot(Tb, ACC, 3.5), dot(Tc, ACC, 3.5), dot(T, GLD, 5), dot(I, GRN, 5), dot(Marc, DIM, 3.5),
+      txt(add(away(Am, O, 15), [0, 3]), "A", DIM, 13.5), txt(add(away(Bm, O, 15), [0, 6]), "B", DIM, 13.5),
+      txt(add(away(Cm, O, 15), [0, 6]), "C", DIM, 13.5),
+      txt(add(T, [10, -2]), "T", GLD, 13), txt(add(I, [10, 4]), "I", GRN, 13),
+      cap(440, 400, "The A-mixtilinear incircle touches AB, AC and the circumcircle at T; T, the incenter I, and the midpoint of arc BAC are collinear (dashed).")
+    ]);
+  })()];
+
+  DIAGRAMS["orthic-triangle"] = [(() => {
+    const H = orthocenterOf(A, B, C);
+    const Fa = foot(A, B, C), Fb = foot(B, C, A), Fc = foot(C, A, B);
+    return wrap(430, 340, [
+      triangle(),
+      seg(A, Fa, FNT, 1.4, "4 3"), seg(B, Fb, FNT, 1.4, "4 3"), seg(C, Fc, FNT, 1.4, "4 3"),
+      poly([Fa, Fb, Fc], ACC, 2, ACCS),
+      dot(Fa, ACC, 3.5), dot(Fb, ACC, 3.5), dot(Fc, ACC, 3.5), dot(H, GLD, 4.5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"), txt(add(H, [11, 4]), "H", GLD, 13),
+      cap(430, 340, "The altitude feet form the orthic triangle (blue); the orthocenter H is its incenter, and it is the least-perimeter inscribed triangle.")
+    ]);
+  })()];
+
+  DIAGRAMS["medial-triangle"] = [(() => {
+    const Ma = mid(B, C), Mb = mid(C, A), Mc = mid(A, B);
+    return wrap(430, 340, [
+      triangle(),
+      poly([Ma, Mb, Mc], ACC, 2, ACCS),
+      dot(Ma, ACC, 3.5), dot(Mb, ACC, 3.5), dot(Mc, ACC, 3.5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      cap(430, 340, "Side midpoints form the medial triangle — similar to ABC with ratio ½, a quarter of the area, cutting it into four congruent triangles.")
+    ]);
+  })()];
+
+  DIAGRAMS["contact-triangle"] = [(() => {
+    const I = incenterOf(A, B, C);
+    const Ta = foot(I, B, C), Tb = foot(I, C, A), Tc = foot(I, A, B), r = dist(I, Ta);
+    const Ge = lineInt(A, Ta, B, Tb);
+    return wrap(430, 340, [
+      triangle(),
+      circ(I, r, ACC, 1.5),
+      seg(A, Ta, FNT, 1.3, "4 3"), seg(B, Tb, FNT, 1.3, "4 3"), seg(C, Tc, FNT, 1.3, "4 3"),
+      poly([Ta, Tb, Tc], GLD, 2, GLDS),
+      dot(Ta, GLD, 3.5), dot(Tb, GLD, 3.5), dot(Tc, GLD, 3.5), dot(I, ACC, 2.5), dot(Ge, GRN, 4.5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"), txt(add(Ge, [10, 4]), "Ge", GRN, 12.5),
+      cap(430, 340, "The incircle touch points form the contact triangle (gold); the cevians to them meet at the Gergonne point (green).")
+    ]);
+  })()];
+
+  DIAGRAMS["perp-to-angle-bisector"] = [(() => {
+    const uA = norm(add(norm(sub(B, A)), norm(sub(C, A))));   // A-bisector direction (inward)
+    const bisEnd = add(A, mul(uA, 250));
+    const P = foot(B, A, bisEnd);            // foot of perpendicular from B to the bisector
+    const Bp = sub(mul(P, 2), B);            // reflection of B over the bisector (lands on AC)
+    const M = mid(B, C);
+    return wrap(430, 340, [
+      triangle(),
+      seg(A, bisEnd, GLD, 1.5),              // angle bisector
+      seg(B, Bp, ACC, 2),                    // perpendicular, doubled to B'
+      rightAngle(P, A, B, 11),
+      seg(P, M, GRN, 2, "5 4"),              // midline PM ∥ AC
+      dot(P, ACC, 4), dot(Bp, GLD, 4.5), dot(M, GRN, 4), dot(B, DIM, 3.5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(Bp, [8, 4]), "B'", GLD, 12.5), txt(add(P, [-6, -8]), "P", ACC, 12.5), txt(add(M, [2, 18]), "M", GRN, 12.5),
+      cap(430, 340, "Drop a perpendicular from B to the A-bisector and double it: B reflects to B′ on AC (AB′ = AB). The foot P and the midpoint M give PM ∥ AC with PM = |b − c|/2.")
+    ]);
+  })()];
+
+  // ---------- Added: inscribed angle, Pick, projective & new theorems ----------
+
+  DIAGRAMS["inscribed-angle-theorem"] = [(() => {
+    const cen = [220, 185], R = 120;
+    const Bp = onC(cen, R, 205), Cp = onC(cen, R, 335), Ap = onC(cen, R, 78);
+    return wrap(440, 340, [
+      circ(cen, R, FNT, 1.5),
+      seg(Ap, Bp, ACC, 2), seg(Ap, Cp, ACC, 2),
+      seg(cen, Bp, GLD, 1.8), seg(cen, Cp, GLD, 1.8),
+      angleArc(Ap, Bp, Cp, 26, ACC), txt(add(Ap, [0, 30]), "θ", ACC, 13),
+      angleArc(cen, Bp, Cp, 28, GLD), txt(add(cen, [0, 46]), "2θ", GLD, 13),
+      dot(cen, DIM, 3.5), txt(add(cen, [-4, -10]), "O", DIM, 12),
+      dot(Ap, "var(--text)", 4.5), dot(Bp, DIM, 3.5), dot(Cp, DIM, 3.5),
+      txt(add(Ap, [0, -12]), "A", "var(--text)", 12.5), txt(add(Bp, [-14, 4]), "B", DIM, 12), txt(add(Cp, [14, 4]), "C", DIM, 12),
+      cap(440, 340, "the inscribed angle at A is half the central angle at O subtending the same arc BC")
+    ]);
+  })()];
+
+  DIAGRAMS["picks-theorem"] = [(() => {
+    const st = 32, ox = 70, oy = 284, GW = 8, GH = 6;
+    const gp = (i, j) => [ox + i * st, oy - j * st];
+    const VL = [[1, 1], [6, 1], [6, 3], [4, 5], [1, 4]];
+    const onSeg = (p, a, b) => {
+      const cr = (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+      if (cr !== 0) return false;
+      return Math.min(a[0], b[0]) <= p[0] && p[0] <= Math.max(a[0], b[0]) &&
+             Math.min(a[1], b[1]) <= p[1] && p[1] <= Math.max(a[1], b[1]);
+    };
+    const onBnd = p => VL.some((v, k) => onSeg(p, v, VL[(k + 1) % VL.length]));
+    const inPoly = p => {
+      let c = false;
+      for (let k = 0, l = VL.length - 1; k < VL.length; l = k++) {
+        const xi = VL[k][0], yi = VL[k][1], xj = VL[l][0], yj = VL[l][1];
+        if (((yi > p[1]) !== (yj > p[1])) && (p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi)) c = !c;
+      }
+      return c;
+    };
+    const parts = [];
+    for (let i = 0; i <= GW; i++) for (let j = 0; j <= GH; j++) parts.push(dot(gp(i, j), FNT, 1.6));
+    parts.push(poly(VL.map(v => gp(v[0], v[1])), ACC, 2, ACCS));
+    for (let i = 0; i <= GW; i++) for (let j = 0; j <= GH; j++) {
+      if (onBnd([i, j])) parts.push(dot(gp(i, j), GLD, 4));
+      else if (inPoly([i, j])) parts.push(dot(gp(i, j), GRN, 4));
+    }
+    parts.push(cap(400, 330, "A = I + B/2 − 1.  Interior I = 11 (green), boundary B = 13 (gold), so A = 11 + 6.5 − 1 = 16.5"));
+    return wrap(400, 330, parts);
+  })()];
+
+  DIAGRAMS["ngon-vertex-distance-product"] = [(() => {
+    const cen = [225, 190], R = 125, n = 6;
+    const V = [];
+    for (let k = 0; k < n; k++) V.push(onC(cen, R, -90 + 360 * k / n));
+    const P = onC(cen, R, -90 + 180 / n);        // midpoint of arc V0V1
+    return wrap(450, 350, [
+      circ(cen, R, FNT, 1.4),
+      poly(V, DIM, 1.6),
+      ...V.map(v => seg(P, v, ACC, 1.5)),
+      ...V.map(v => dot(v, DIM, 3.5)),
+      dot(cen, FNT, 2.5),
+      dot(P, GLD, 5.5), txt(add(P, [12, 14]), "P", GLD, 13),
+      cap(450, 350, "P at an arc midpoint: the product PV₁···PVₙ reaches its maximum 2Rⁿ (it is 0 when P is a vertex)")
+    ]);
+  })()];
+
+  DIAGRAMS["inversion-properties"] = [(() => {
+    const O = [150, 178], r = 108;
+    const L1 = [300, 44], L2 = [300, 322];
+    const F = foot(O, L1, L2);
+    const inv = p => add(O, mul(sub(p, O), r * r / (dist(O, p) * dist(O, p))));
+    const Fs = inv(F), ccen = mid(O, Fs), crad = dist(O, Fs) / 2;
+    const P = [300, 92], Ps = inv(P);
+    return wrap(460, 340, [
+      circ(O, r, GLD, 1.8, GLDS, "6 4"),
+      seg(L1, L2, ACC, 2),
+      circ(ccen, crad, GRN, 1.8),
+      dot(O, DIM, 4), txt(add(O, [-6, 18]), "O", DIM, 12.5),
+      dot(F, ACC, 3.5), dot(Fs, GRN, 3.5),
+      seg(O, P, FNT, 1.2, "4 3"),
+      dot(P, ACC, 4.5), dot(Ps, GRN, 4.5),
+      txt(add(P, [12, 2]), "P", ACC, 12), txt(add(Ps, [-4, -12]), "P*", GRN, 12),
+      txt([314, 60], "line ℓ", ACC, 12),
+      txt(add(ccen, [4, -crad - 8]), "image circle", GRN, 11.5),
+      cap(460, 340, "a line not through O inverts to a circle through O; OP · OP* = r² and angles are preserved")
+    ]);
+  })()];
+
+  DIAGRAMS["brianchon-theorem"] = [(() => {
+    const cen = [230, 195], R = 92;
+    const ang = [-78, -18, 46, 112, 178, 244];
+    const tan = a => { const t = onC(cen, R, a), d = [-Math.sin(a * Math.PI / 180), Math.cos(a * Math.PI / 180)]; return [t, add(t, d)]; };
+    const TL = ang.map(tan), T = ang.map(a => onC(cen, R, a));
+    const V = ang.map((a, i) => lineInt(TL[i][0], TL[i][1], TL[(i + 1) % 6][0], TL[(i + 1) % 6][1]));
+    const Pt = lineInt(V[0], V[3], V[1], V[4]);
+    return wrap(460, 390, [
+      circ(cen, R, FNT, 1.5, GLDS),
+      poly(V, DIM, 1.8),
+      seg(V[0], V[3], ACC, 1.8), seg(V[1], V[4], ACC, 1.8), seg(V[2], V[5], ACC, 1.8),
+      ...T.map(t => dot(t, GLD, 3)),
+      ...V.map(v => dot(v, DIM, 3.5)),
+      dot(Pt, "var(--text)", 5),
+      txt(add(Pt, [8, -8]), "Brianchon point", "var(--text)", 11),
+      cap(460, 390, "hexagon circumscribed about a conic (each side tangent): the three main diagonals meet in one point")
+    ]);
+  })()];
+
+  DIAGRAMS["desargues-theorem"] = [(() => {
+    const O = [225, 185];
+    const Ap = [195, 130], Bp = [220, 205], Cp = [170, 250];
+    const A = add(O, mul(sub(Ap, O), 1.30)), B = add(O, mul(sub(Bp, O), 1.75)), C = add(O, mul(sub(Cp, O), 2.20));
+    const X = lineInt(A, B, Ap, Bp), Y = lineInt(B, C, Bp, Cp), Z = lineInt(C, A, Cp, Ap);
+    return wrap(470, 360, [
+      seg(O, A, FNT, 1, "4 3"), seg(O, B, FNT, 1, "4 3"), seg(O, C, FNT, 1, "4 3"),
+      seg(lerp(X, Y, -0.12), lerp(X, Y, 1.12), GRN, 2),        // axis of perspectivity
+      poly([A, B, C], ACC, 2), poly([Ap, Bp, Cp], GLD, 2),
+      dot(O, "var(--text)", 4.5), txt(add(O, [4, 16]), "O", "var(--text)", 12.5),
+      dot(X, GRN, 4), dot(Y, GRN, 4), dot(Z, GRN, 4),
+      dot(A, ACC, 3.5), dot(B, ACC, 3.5), dot(C, ACC, 3.5),
+      dot(Ap, GLD, 3.5), dot(Bp, GLD, 3.5), dot(Cp, GLD, 3.5),
+      txt(add(A, [10, 0]), "A", ACC, 12), txt(add(B, [12, 4]), "B", ACC, 12), txt(add(C, [-10, 14]), "C", ACC, 12),
+      txt(add(Ap, [-12, -4]), "A'", GLD, 11.5), txt(add(Bp, [12, 2]), "B'", GLD, 11.5), txt(add(Cp, [-12, 6]), "C'", GLD, 11.5),
+      cap(470, 360, "perspective from the point O ⇔ the three side-intersections X, Y, Z are collinear (the axis)")
+    ]);
+  })()];
+
+  DIAGRAMS["cross-ratio"] = [(() => {
+    const O = [225, 52];
+    const A = [80, 250], B = [160, 250], C = [262, 250], D = [372, 250];
+    const l2a = [45, 150], l2b = [420, 118];
+    const proj = p => lineInt(O, p, l2a, l2b);
+    const A2 = proj(A), B2 = proj(B), C2 = proj(C), D2 = proj(D);
+    return wrap(460, 300, [
+      seg([40, 250], [420, 250], DIM, 2), seg(l2a, l2b, DIM, 2),
+      seg(O, A, ACC, 1.2), seg(O, B, ACC, 1.2), seg(O, C, ACC, 1.2), seg(O, D, ACC, 1.2),
+      dot(O, "var(--text)", 4.5), txt(add(O, [0, -10]), "O", "var(--text)", 12),
+      dot(A, GLD, 4), dot(B, GLD, 4), dot(C, GLD, 4), dot(D, GLD, 4),
+      txt(add(A, [0, 20]), "A", GLD, 12), txt(add(B, [0, 20]), "B", GLD, 12), txt(add(C, [0, 20]), "C", GLD, 12), txt(add(D, [0, 20]), "D", GLD, 12),
+      dot(A2, GRN, 3.5), dot(B2, GRN, 3.5), dot(C2, GRN, 3.5), dot(D2, GRN, 3.5),
+      txt(add(A2, [-4, -9]), "A'", GRN, 11), txt(add(B2, [-4, -9]), "B'", GRN, 11), txt(add(C2, [-2, -9]), "C'", GRN, 11), txt(add(D2, [2, -9]), "D'", GRN, 11),
+      cap(460, 300, "(A,B;C,D) = (A',B';C',D'): every projection from O preserves the cross-ratio")
+    ]);
+  })()];
+
+  DIAGRAMS["harmonic-bundle"] = [(() => {
+    const y = 158, A = [90, y], B = [300, y], M = mid(A, B), MA = dist(A, M);
+    const MC = 70, C = [M[0] + MC, y], MD = MA * MA / MC, D = [M[0] + MD, y];
+    return wrap(470, 300, [
+      circ(M, MA, FNT, 1.2, "none", "5 4"),
+      seg([60, y], [D[0] + 34, y], DIM, 2),
+      dot(A, ACC, 4), dot(B, ACC, 4), dot(M, FNT, 3), dot(C, GLD, 4.5), dot(D, GLD, 4.5),
+      txt(add(A, [0, 22]), "A", ACC, 12), txt(add(B, [-4, 22]), "B", ACC, 12),
+      txt(add(M, [0, 22]), "M", FNT, 11), txt(add(C, [4, 22]), "C", GLD, 12), txt(add(D, [0, 22]), "D", GLD, 12),
+      cap(470, 300, "(A,B;C,D) = −1: C divides AB internally and D externally in the same ratio, so MA² = MC · MD")
+    ]);
+  })()];
+
+  DIAGRAMS["isotomic-conjugate"] = [(() => {
+    const P = add(add(mul(A, 0.32), mul(B, 0.42)), mul(C, 0.26));
+    const D = lineInt(A, P, B, C), E = lineInt(B, P, C, A), F = lineInt(C, P, A, B);
+    const refl = (x, m) => sub(mul(m, 2), x);
+    const Dp = refl(D, mid(B, C)), Ep = refl(E, mid(C, A)), Fp = refl(F, mid(A, B));
+    const Ps = lineInt(A, Dp, B, Ep);
+    return wrap(440, 340, [
+      ABC(),
+      seg(A, D, ACC, 1.5), seg(B, E, ACC, 1.5), seg(C, F, ACC, 1.5),
+      seg(A, Dp, GLD, 1.8), seg(B, Ep, GLD, 1.8), seg(C, Fp, GLD, 1.8),
+      dot(mid(B, C), FNT, 2.5), dot(mid(C, A), FNT, 2.5), dot(mid(A, B), FNT, 2.5),
+      dot(D, ACC, 3), dot(E, ACC, 3), dot(F, ACC, 3),
+      dot(Dp, GLD, 3.5), dot(Ep, GLD, 3.5), dot(Fp, GLD, 3.5),
+      dot(P, ACC, 5), txt(add(P, [11, 4]), "P", ACC, 12.5),
+      dot(Ps, GLD, 5), txt(add(Ps, [11, 4]), "P*", GLD, 12.5),
+      cap(440, 340, "reflect each cevian foot over the midpoint of its side; the new cevians meet at the isotomic conjugate P*")
+    ]);
+  })()];
+
+  DIAGRAMS["excentral-triangle"] = [(() => {
+    const mA = [0, -80], mB = [-96, 58], mC = [86, 66];
+    const a = dist(mB, mC), b = dist(mC, mA), c = dist(mA, mB);
+    const ex = (sa, sb, sc) => mul(add(add(mul(mA, sa), mul(mB, sb)), mul(mC, sc)), 1 / (sa + sb + sc));
+    const IA = ex(-a, b, c), IB = ex(a, -b, c), IC = ex(a, b, -c), I = ex(a, b, c);
+    const pts = [mA, mB, mC, IA, IB, IC];
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const W = 460, H = 380, m = 46;
+    const s = Math.min((W - 2 * m) / (maxx - minx), (H - 2 * m) / (maxy - miny));
+    const tx = p => [m + (p[0] - minx) * s + (W - 2 * m - (maxx - minx) * s) / 2, m + (p[1] - miny) * s];
+    const A1 = tx(mA), B1 = tx(mB), C1 = tx(mC), ia = tx(IA), ib = tx(IB), ic = tx(IC), ii = tx(I);
+    const subL = (base, s2) => base + '<tspan dy="4" font-size="9">' + s2 + '</tspan>';
+    return wrap(W, H, [
+      poly([ia, ib, ic], GLD, 2),
+      poly([A1, B1, C1], DIM, 2),
+      seg(ia, A1, ACC, 1.3, "4 3"), seg(ib, B1, ACC, 1.3, "4 3"), seg(ic, C1, ACC, 1.3, "4 3"),
+      dot(ia, GLD, 4.5), dot(ib, GLD, 4.5), dot(ic, GLD, 4.5),
+      dot(A1, DIM, 3.5), dot(B1, DIM, 3.5), dot(C1, DIM, 3.5),
+      dot(ii, "var(--text)", 4.5), txt(add(ii, [12, 4]), "I", "var(--text)", 12.5),
+      txt(add(ia, [0, 18]), subL("I", "A"), GLD, 12.5), txt(add(ib, [-14, -6]), subL("I", "B"), GLD, 12.5), txt(add(ic, [16, -6]), subL("I", "C"), GLD, 12.5),
+      txt(add(A1, [10, 4]), "A", DIM, 11.5), txt(add(B1, [12, 4]), "B", DIM, 11.5), txt(add(C1, [-12, 4]), "C", DIM, 11.5),
+      cap(W, H, "the three excenters form the excentral triangle; ABC is its orthic triangle and the incenter I is its orthocenter")
+    ]);
+  })()];
+
+  DIAGRAMS["complete-quadrilateral-miquel"] = [(() => {
+    const lines = [[[-55, 117], [525, 273]], [[175, -102], [380, 462]], [[337, -99], [-7, 392]], [[545, 227], [-46, 331]]];
+    const X = (i, j) => lineInt(lines[i][0], lines[i][1], lines[j][0], lines[j][1]);
+    const P01 = X(0, 1), P02 = X(0, 2), P03 = X(0, 3), P12 = X(1, 2), P13 = X(1, 3), P23 = X(2, 3);
+    const o0 = circumcenterOf(P12, P13, P23), o1 = circumcenterOf(P02, P03, P23),
+          o2 = circumcenterOf(P01, P03, P13), o3 = circumcenterOf(P01, P02, P12);
+    const r0 = dist(o0, P12), r1c = dist(o1, P02), r2c = dist(o2, P01), r3 = dist(o3, P01);
+    const circInts = (oa, ra, ob, rb) => {
+      const d = dist(oa, ob), aa = (ra * ra - rb * rb + d * d) / (2 * d), h = Math.sqrt(Math.max(0, ra * ra - aa * aa));
+      const u = norm(sub(ob, oa)), base = add(oa, mul(u, aa)), pp = perp(u);
+      return [add(base, mul(pp, h)), sub(base, mul(pp, h))];
+    };
+    const cc = circInts(o0, r0, o3, r3);
+    const M = dist(cc[0], P12) > dist(cc[1], P12) ? cc[0] : cc[1];
+    return wrap(470, 370, [
+      ...lines.map(L => seg(L[0], L[1], DIM, 1.6)),
+      circ(o0, r0, ACC, 1.3), circ(o1, r1c, GLD, 1.3), circ(o2, r2c, GRN, 1.3), circ(o3, r3, "rgba(91,140,255,0.55)", 1.3),
+      ...[P01, P02, P03, P12, P13, P23].map(p => dot(p, DIM, 3)),
+      dot(M, "var(--text)", 5.5), txt(add(M, [12, 4]), "M", "var(--text)", 13),
+      cap(470, 370, "four lines → four triangles; the four circumcircles all pass through the Miquel point M")
+    ]);
+  })()];
+
+  DIAGRAMS["descartes-sphere-theorem"] = [(() => {
+    const sph = (c, r, col, lab) =>
+      circ(c, r, col, 2, "rgba(91,140,255,0.08)") +
+      `<circle cx="${r1(c[0] - r * 0.34)}" cy="${r1(c[1] - r * 0.34)}" r="${r1(r * 0.20)}" fill="rgba(255,255,255,0.42)"/>` +
+      txt(add(c, [0, 4.5]), lab, col, 13);
+    // Cross-section drawn with genuinely tangent circles: three equal spheres
+    // plus a small one in the central gap. (Five mutually tangent spheres cannot
+    // be shown truly in the plane — the fourth here fills the gap, a fifth would
+    // sit out of the plane.)
+    const O = [225, 178], R = 66, d = 2 * R / Math.sqrt(3), rin = R * (2 - Math.sqrt(3)) / Math.sqrt(3);
+    const c1 = onC(O, d, -90), c2 = onC(O, d, 30), c3 = onC(O, d, 150);
+    return wrap(450, 340, [
+      sph(c1, R, ACC, "k₁"), sph(c2, R, GLD, "k₂"), sph(c3, R, GRN, "k₃"),
+      circ(O, rin, DIM, 1.8, "rgba(245,196,81,0.20)"),
+      cap(450, 340, "cross-section of mutually tangent spheres — three equal ones plus a small one in the central gap (a fifth completes the 3D set): curvatures kᵢ = 1/rᵢ satisfy (Σkᵢ)² = 3 Σkᵢ²")
+    ]);
+  })()];
+
+  // ---------- Added: surface path, integer triangles, extended bisector, common chord ----------
+
+  DIAGRAMS["surface-shortest-path"] = [(() => {
+    const x0 = 60, x1 = 180, x2 = 360, yT = 70, yB = 190;
+    const S = [x0, yB], E = [x2, yT];
+    return wrap(430, 270, [
+      poly([[x0, yT], [x1, yT], [x1, yB], [x0, yB]], DIM, 1.8, ACCS),
+      poly([[x1, yT], [x2, yT], [x2, yB], [x1, yB]], DIM, 1.8, GLDS),
+      seg([x1, yT], [x1, yB], FNT, 1.4, "5 4"),        // fold line
+      seg(S, E, ACC, 2.4),                              // straight (shortest) path
+      dot(S, "var(--text)", 4.5), dot(E, "var(--text)", 4.5),
+      txt(add(S, [-6, 16]), "S", "var(--text)", 12.5), txt(add(E, [8, -4]), "E", "var(--text)", 12.5),
+      txt([(x0 + x1) / 2, yB + 18], "a", DIM, 12.5), txt([(x1 + x2) / 2, yB + 18], "b", DIM, 12.5),
+      txt([x0 - 14, (yT + yB) / 2], "c", DIM, 12.5),
+      txt([x1, yT - 8], "fold", FNT, 11),
+      cap(430, 270, "unfold the two faces flat: the shortest surface path is the straight segment, length √((a+b)² + c²)")
+    ]);
+  })()];
+
+  DIAGRAMS["integer-triangles-perimeter"] = [(() => {
+    const sc = 15, baseY = 172;
+    const draw = (a, b, c, cx) => {                     // sides a, b, c; base = c
+      const A = [cx - c * sc / 2, baseY], B = [cx + c * sc / 2, baseY];
+      const apexx = (c * c + b * b - a * a) / (2 * c), apexy = Math.sqrt(Math.max(0, b * b - apexx * apexx));
+      const C = [A[0] + apexx * sc, baseY - apexy * sc];
+      return poly([A, B, C], DIM, 1.8, ACCS)
+        + txt([(A[0] + B[0]) / 2, baseY + 15], String(c), DIM, 11)
+        + txt([(A[0] + C[0]) / 2 - 9, (A[1] + C[1]) / 2], String(b), DIM, 11)
+        + txt([(B[0] + C[0]) / 2 + 9, (B[1] + C[1]) / 2], String(a), DIM, 11);
+    };
+    return wrap(440, 220, [
+      draw(2, 5, 5, 90), draw(3, 4, 5, 220), draw(4, 4, 4, 350),
+      cap(440, 220, "the 3 integer-sided triangles with perimeter 12: (2,5,5), (3,4,5), (4,4,4)")
+    ]);
+  })()];
+
+  DIAGRAMS["angle-bisector-circumcircle"] = [(() => {
+    const O = circumcenterOf(A, B, C), R = dist(O, A);
+    const c = dist(A, B), b = dist(A, C);
+    const L = lerp(B, C, c / (b + c));                  // A-bisector foot on BC
+    const ints = circleLineInts(O, R, A, L);
+    const D = dist(ints[0], A) > dist(ints[1], A) ? ints[0] : ints[1];
+    const I = incenterOf(A, B, C);
+    return wrap(440, 400, [
+      circ(O, R, FNT, 1.4),
+      triangle(),
+      seg(A, D, GLD, 2),                                // bisector extended to D
+      seg(B, D, ACC, 1.6), seg(C, D, ACC, 1.6),
+      dot(L, DIM, 3.5), dot(I, GRN, 4), dot(D, "var(--text)", 5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(D, [0, 18]), "D", "var(--text)", 12.5),
+      txt(add(L, [11, -5]), "L", DIM, 11.5),
+      txt(add(I, [12, 3]), "I", GRN, 11.5),
+      txt(add(mid(B, D), [-11, 0]), "=", ACC, 14), txt(add(mid(C, D), [11, 0]), "=", ACC, 14),
+      cap(440, 400, "the A-bisector meets the circumcircle at the arc midpoint D, so DB = DC; and AB·AC = AL·AD")
+    ]);
+  })()];
+
+  DIAGRAMS["common-chord-length"] = [(() => {
+    const O1 = [150, 150], R = 105, O2 = [300, 150], r = 120, d = dist(O1, O2);
+    const d1 = (d * d + R * R - r * r) / (2 * d);
+    const u = norm(sub(O2, O1)), M = add(O1, mul(u, d1)), pp = perp(u);
+    const half = Math.sqrt(Math.max(0, R * R - d1 * d1));
+    const P = add(M, mul(pp, half)), Q = sub(M, mul(pp, half));
+    return wrap(460, 300, [
+      circ(O1, R, ACC, 1.6), circ(O2, r, GLD, 1.6),
+      seg(O1, O2, FNT, 1.3, "5 4"),
+      seg(P, Q, GRN, 2.4),
+      rightAngle(M, O2, P, 11, FNT),
+      dot(O1, ACC, 3.5), dot(O2, GLD, 3.5), dot(M, GRN, 3.5),
+      dot(P, "var(--text)", 4), dot(Q, "var(--text)", 4),
+      txt(add(O1, [-6, 16]), "O₁", ACC, 11.5), txt(add(O2, [8, 16]), "O₂", GLD, 11.5),
+      txt(add(P, [10, 0]), "P", "var(--text)", 11.5), txt(add(Q, [10, 6]), "Q", "var(--text)", 11.5),
+      cap(460, 300, "the common chord PQ lies on the radical axis, ⟂ to O₁O₂; its length is 2√(R² − d₁²)")
+    ]);
+  })()];
+
+  DIAGRAMS["median-to-hypotenuse"] = [(() => {
+    const Ap = [110, 78], Cp = [110, 258], Bp = [382, 258], M = mid(Ap, Bp), R = dist(M, Ap);
+    const tick = (P, Q) => { const m = mid(P, Q), d = mul(norm(perp(sub(Q, P))), 5); return seg(sub(m, d), add(m, d), ACC, 2); };
+    return wrap(460, 360, [
+      circ(M, R, FNT, 1.3, "none", "5 4"),
+      poly([Ap, Bp, Cp], DIM, 2),
+      rightAngle(Cp, Ap, Bp, 12),
+      seg(Cp, M, GLD, 2),
+      tick(Ap, M), tick(M, Bp), tick(Cp, M),
+      dot(M, GRN, 4), dot(Ap, DIM, 3.5), dot(Bp, DIM, 3.5), dot(Cp, DIM, 3.5),
+      txt(add(Ap, [-14, 2]), "A", DIM, 12.5), txt(add(Bp, [12, 4]), "B", DIM, 12.5), txt(add(Cp, [-14, 4]), "C", DIM, 12.5),
+      txt(add(M, [8, -8]), "M", GRN, 12.5),
+      cap(460, 360, "M, the hypotenuse midpoint, is the circumcenter: MA = MB = MC = half the hypotenuse")
+    ]);
+  })()];
+
+  DIAGRAMS["equal-chords-arcs"] = [(() => {
+    const O = [210, 190], R = 140, d = 72;
+    const chord = (deg) => { const n = [Math.cos(rad(deg)), Math.sin(rad(deg))], m = [O[0] + d * n[0], O[1] + d * n[1]], t = [-n[1], n[0]], h = Math.sqrt(R * R - d * d); return { m: m, P: [m[0] + h * t[0], m[1] + h * t[1]], Q: [m[0] - h * t[0], m[1] - h * t[1]] }; };
+    const arc = (P, Q) => { const a1 = Math.atan2(P[1] - O[1], P[0] - O[0]), a2 = Math.atan2(Q[1] - O[1], Q[0] - O[0]); let da = a2 - a1; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI; return `<path d="M ${pf(P)} A ${r1(R)} ${r1(R)} 0 0 ${da > 0 ? 1 : 0} ${pf(Q)}" fill="none" stroke="${GLD}" stroke-width="3.5"/>`; };
+    const tick = (P, Q) => { const m = mid(P, Q), dd = mul(norm(perp(sub(Q, P))), 5); return seg(sub(m, dd), add(m, dd), GRN, 2); };
+    const c1 = chord(212), c2 = chord(328);
+    return wrap(430, 380, [
+      circ(O, R, FNT, 1.5),
+      arc(c1.P, c1.Q), arc(c2.P, c2.Q),
+      seg(c1.P, c1.Q, ACC, 2.4), seg(c2.P, c2.Q, ACC, 2.4),
+      seg(O, c1.m, DIM, 1.3, "4 3"), seg(O, c2.m, DIM, 1.3, "4 3"),
+      tick(O, c1.m), tick(O, c2.m),
+      dot(O, DIM, 3.5), txt(add(O, [0, -8]), "O", DIM, 11.5),
+      cap(430, 380, "equal chords ⟺ equal arcs (gold) ⟺ equal distance from the center (ticks)")
+    ]);
+  })()];
+
+  DIAGRAMS["incenter-area-split"] = [(() => {
+    const I = incenterOf(A, B, C);
+    const fBC = foot(I, B, C);
+    return wrap(430, 340, [
+      poly([B, I, C], "none", 0, ACCS),
+      poly([C, I, A], "none", 0, GLDS),
+      poly([A, I, B], "none", 0, "rgba(76,195,138,0.14)"),
+      triangle(),
+      seg(I, A, DIM, 1.5), seg(I, B, DIM, 1.5), seg(I, C, DIM, 1.5),
+      circ(I, dist(I, fBC), FNT, 1.2, "none", "4 3"),
+      seg(I, fBC, GLD, 1.6), txt(add(mid(I, fBC), [11, 0]), "r", GLD, 12),
+      dot(I, "var(--text)", 4), txt(add(I, [9, 5]), "I", "var(--text)", 12),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(mid(B, C), [0, 18]), "a", DIM, 12), txt(add(mid(C, A), [16, 0]), "b", DIM, 12), txt(add(mid(A, B), [-15, 0]), "c", DIM, 12),
+      cap(430, 340, "join I to the vertices: [BIC] : [CIA] : [AIB] = a : b : c, each its side's share of the perimeter")
+    ]);
+  })()];
+
+  DIAGRAMS["orthocentric-system"] = [(() => {
+    const H = orthocenterOf(A, B, C), O = circumcenterOf(A, B, C), R = dist(O, A);
+    const fa = foot(A, B, C), fb = foot(B, C, A), fc = foot(C, A, B);
+    const N = mid(O, H);
+    return wrap(430, 340, [
+      circ(N, R / 2, GLD, 1.6),                     // shared nine-point circle (outline only, so tidyDiagram won't treat it as a badge)
+      triangle(),
+      seg(A, fa, ACC, 1.4), seg(B, fb, ACC, 1.4), seg(C, fc, ACC, 1.4),
+      dot(fa, DIM, 3), dot(fb, DIM, 3), dot(fc, DIM, 3),
+      dot(H, "var(--text)", 5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(H, [10, 5]), "H", "var(--text)", 12.5),
+      cap(430, 340, "A, B, C, H — each is the orthocenter of the other three; all four triangles share the gold nine-point circle")
+    ]);
+  })()];
+
+  DIAGRAMS["altitude-bisector-angle"] = [(() => {
+    const O = circumcenterOf(A, B, C);
+    const fa = foot(A, B, C);
+    const c = dist(A, B), b = dist(A, C), L = lerp(B, C, c / (b + c));
+    return wrap(430, 340, [
+      circ(O, dist(O, A), FNT, 1.0, "none", "5 4"),
+      triangle(),
+      seg(A, fa, ACC, 1.8), seg(A, L, GLD, 1.9), seg(A, O, GRN, 1.6, "5 4"),
+      rightAngle(fa, A, B, 9),
+      angleArc(A, fa, L, 30, GLD), angleArc(A, L, O, 30, GLD),
+      dot(fa, DIM, 3), dot(L, GLD, 3.5), dot(O, GRN, 4),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(O, [10, 4]), "O", GRN, 11.5),
+      txt(add(fa, [-4, 18]), "alt", ACC, 10.5), txt(add(L, [6, 18]), "bis", GLD, 10.5),
+      txt(add(A, [46, 44]), "|B−C|/2", GLD, 10.5),
+      cap(430, 340, "the A-bisector (gold) bisects the angle between the A-altitude and AO — they are isogonal — so each half is |B−C|/2")
+    ]);
+  })()];
+
+  DIAGRAMS["incircle-excircle-touch"] = [(() => {
+    const a = dist(B, C), b = dist(A, C), c = dist(A, B), s = (a + b + c) / 2;
+    const I = incenterOf(A, B, C), X = foot(I, B, C), r = dist(I, X);
+    const Xp = lerp(B, C, (s - c) / a), M = mid(B, C);
+    return wrap(440, 330, [
+      triangle(),
+      circ(I, r, ACC, 1.4),
+      seg(I, X, ACC, 1.1, "3 3"),
+      seg(B, X, GLD, 3), seg(X, Xp, PUR, 3),                     // BX = s−b, XX' = |b−c|
+      dot(I, ACC, 2.5), dot(X, "var(--text)", 4), dot(Xp, "var(--text)", 4), dot(M, GRN, 3.5),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      txt(add(X, [-4, -9]), "X", "var(--text)", 11.5), txt(add(Xp, [8, -9]), "X'", "var(--text)", 11.5),
+      txt(add(M, [0, -9]), "M", GRN, 11),
+      txt(add(mid(B, X), [0, 20]), "s−b", GLD, 11), txt(add(mid(X, Xp), [4, 20]), "|b−c|", PUR, 11),
+      cap(440, 330, "on BC: X (incircle touch) is s−b from B and X' (A-excircle touch) is s−c from B, symmetric about the midpoint M, so XX' = |b−c|")
+    ]);
+  })()];
+
+  DIAGRAMS["regular-dodecagon"] = [(() => {
+    // Exact dissection: central hexagon (6 triangles) + a square on each hexagon
+    // edge + a triangle filling each gap = regular 12-gon (6 squares, 12 triangles).
+    const cen = [215, 176], s = 74;
+    const H = [0, 1, 2, 3, 4, 5].map(i => onC(cen, s, 60 * i));
+    const A2 = [], B2 = [];
+    for (let i = 0; i < 6; i++) {
+      const a = H[i], b = H[(i + 1) % 6];
+      let n = norm(perp(sub(b, a)));
+      if (dist(add(mid(a, b), n), cen) < dist(mid(a, b), cen)) n = mul(n, -1);
+      A2.push(add(a, mul(n, s))); B2.push(add(b, mul(n, s)));
+    }
+    const dod = [];
+    for (let i = 0; i < 6; i++) { dod.push(A2[i]); dod.push(B2[i]); }
+    const parts = [];
+    for (let i = 0; i < 6; i++) parts.push(poly([H[i], H[(i + 1) % 6], B2[i], A2[i]], "none", 0, ACCS));       // squares
+    for (let i = 0; i < 6; i++) parts.push(poly([cen, H[i], H[(i + 1) % 6]], "none", 0, GLDS));                 // central triangles
+    for (let i = 0; i < 6; i++) parts.push(poly([H[i], B2[(i + 5) % 6], A2[i]], "none", 0, GLDS));              // gap triangles
+    for (let i = 0; i < 6; i++) parts.push(poly([H[i], H[(i + 1) % 6], B2[i], A2[i]], FNT, 1.2));               // square outlines
+    for (let i = 0; i < 6; i++) parts.push(seg(cen, H[i], FNT, 1));                                             // central spokes
+    parts.push(poly(dod, DIM, 2));                                                                              // dodecagon boundary
+    parts.push(dot(cen, DIM, 2.5));
+    parts.push(txt(add(away(mid(A2[0], B2[0]), cen, 15), [0, 4]), "s", GLD));
+    parts.push(cap(430, 360, "6 squares + 12 equilateral triangles of side s  →  area 3(2+√3)s²"));
+    return wrap(430, 360, parts);
+  })()];
+
+  DIAGRAMS["regular-octahedron"] = [(() => {
+    // Schematic projection: two square pyramids sharing the equatorial square.
+    const T = [215, 66], Bt = [215, 302], L = [96, 184], R = [334, 184],
+          Bk = [215, 150], Fr = [215, 218], O = [215, 184];
+    return wrap(430, 352, [
+      poly([L, Bk, R, Fr], "none", 0, ACCS),                                   // equatorial cut square
+      seg(L, Bk, FNT, 1.3, "5 4"), seg(Bk, R, FNT, 1.3, "5 4"),                // hidden back equator edges
+      seg(T, Bk, FNT, 1.3, "5 4"), seg(Bt, Bk, FNT, 1.3, "5 4"),              // hidden edges to back vertex
+      seg(L, Fr, DIM, 2), seg(Fr, R, DIM, 2),                                  // visible front equator edges
+      seg(T, L, DIM, 2), seg(T, R, DIM, 2), seg(T, Fr, DIM, 2),               // top pyramid
+      seg(Bt, L, DIM, 2), seg(Bt, R, DIM, 2), seg(Bt, Fr, DIM, 2),            // bottom pyramid
+      seg(T, O, GRN, 1.6, "4 3"), dot(O, GRN, 3),                              // pyramid height
+      txt(add(mid(T, O), [20, 0]), "s/√2", GRN, 12),
+      txt(add(mid(Fr, R), [10, 11]), "s", GLD),
+      cap(430, 352, "a cut through the four equatorial vertices → two square pyramids")
+    ]);
+  })()];
+
+
+  DIAGRAMS["max-rectangle-in-triangle"] = [(() => {
+    // The maximal inscribed rectangle: top corners at the midpoints of the two
+    // sides (half height), so width = ½ base, height = ½ altitude, area = ½[△].
+    const A = [180, 48], B = [58, 272], C = [368, 272];
+    const L = mid(A, B), R = mid(A, C), Lb = [L[0], C[1]], Rb = [R[0], C[1]];
+    return wrap(430, 320, [
+      poly([A, B, C], DIM, 2),
+      poly([L, R, Rb, Lb], ACC, 1.8, ACCS),
+      seg([B[0], L[1]], [C[0], L[1]], FNT, 1.2, "5 4"),
+      dot(L, ACC, 3.5), dot(R, ACC, 3.5),
+      txt(add(mid(L, R), [0, -8]), "midline (½ h)", ACC, 11),
+      txt(add(mid(Lb, Rb), [0, 18]), "½ base", GLD, 12),
+      cap(430, 320, "top edge on the midline → width ½·base, height ½·altitude, so area = ½ [△]")
     ]);
   })()];
 
