@@ -38,16 +38,6 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
-          id: "complementary-counting",
-          name: "Complementary Counting",
-          type: "method",
-          latex: String.raw`\#(\text{good}) = \#(\text{total}) - \#(\text{bad})`,
-          description: String.raw`When "at least one" or a messy condition appears, count the opposite. The probability version: $P(\text{at least one}) = 1 - P(\text{none})$.`,
-          keywords: ["at least one", "complement", "opposite", "total minus bad"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
           id: "grid-paths",
           name: "Lattice Grid Paths",
           latex: String.raw`\#\text{paths } (0,0) \to (m, n) = \binom{m + n}{m}`,
@@ -222,17 +212,6 @@ window.MATH_SECTIONS.push({
       title: "Advanced Counting",
       formulas: [
         {
-          id: "pie",
-          name: "Principle of Inclusion-Exclusion (PIE)",
-          type: "method",
-          latex: String.raw`|A_1 \cup \cdots \cup A_n| = \sum |A_i| - \sum |A_i \cap A_j| + \sum |A_i \cap A_j \cap A_k| - \cdots`,
-          description: String.raw`Two sets: $|A \cup B| = |A| + |B| - |A \cap B|$. Three sets: add singles, subtract pairs, add the triple.`,
-          example: String.raw`How many of $1, \dots, 30$ are divisible by 2, 3, or 5? $\;15 + 10 + 6 - 5 - 3 - 2 + 1 = 22$ (subtract the pairwise overlaps $6, 10, 15$; add back multiples of $30$).`,
-          keywords: ["inclusion exclusion", "union", "overlap", "venn"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "derangements",
           name: "Derangements",
           latex: String.raw`D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!} = \left[\frac{n!}{e}\right] \;(\text{nearest integer})`,
@@ -282,24 +261,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "fibonacci-tilings",
-          name: "Tiling Recurrences",
-          latex: String.raw`a_n = a_{n-1} + a_{n-2}`,
-          description: String.raw`Tilings of a $1 \times n$ strip with $1 \times 1$ and $1 \times 2$ tiles are Fibonacci; binary strings with no two consecutive 1s likewise. Condition on the last piece to build a recurrence — the standard attack for structured sequences.`,
-          keywords: ["tilings", "recursion", "no two adjacent", "binary strings", "states", "state counting"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "generating-functions",
-          name: "Generating Functions",
-          latex: String.raw`\frac{1}{(1-x)^k} = \sum_{n \ge 0} \binom{n + k - 1}{k - 1} x^n, \qquad \frac{1}{1-x} = 1 + x + x^2 + \cdots, \qquad \frac{1}{(1-x)^2} = 1 + 2x + 3x^2 + \cdots`,
-          description: String.raw`Encode choices as polynomial factors and multiply: the coefficient of $x^n$ counts ways to total $n$. Dice sums use $(x + x^2 + \cdots + x^6)^2$; coin/stamp problems use $\frac{1}{1 - x^a}$ factors. The identity shown is stars and bars in disguise.`,
-          keywords: ["generating function", "coefficient of x^n", "dice sums", "encode choices"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "exponential-generating-functions",
           name: "Exponential Generating Functions (EGF)",
           latex: String.raw`\hat A(x) = \sum_{n \ge 0} a_n \frac{x^n}{n!}, \qquad \widehat{A \cdot B}(x) = \hat A(x)\,\hat B(x) \;\Rightarrow\; c_n = \sum_k \binom{n}{k} a_k\, b_{n-k}`,
@@ -322,7 +283,7 @@ window.MATH_SECTIONS.push({
           name: "Moser's Circle (Regions from Chords)",
           latex: String.raw`R(n) = \binom{n}{4} + \binom{n}{2} + 1 = 1,\ 2,\ 4,\ 8,\ 16,\ \mathbf{31},\ 57,\ \ldots`,
           description: String.raw`The famous "powers of 2" trap. Put $n$ points on a circle and draw all $\binom n2$ chords (with no three crossing at one interior point); the number of regions is $\binom n4 + \binom n2 + 1$, not $2^{n-1}$. It agrees — $1, 2, 4, 8, 16$ — right up to $n = 5$, then breaks to $\mathbf{31}$ (not $32$) at $n = 6$. The count drops out of Euler's $V - E + F = 2$: each set of $4$ points gives one interior crossing ($\binom n4$ vertices). The perfect cautionary tale against extrapolating a pattern from five cases.`,
-          keywords: ["moser circle", "regions from chords", "points on a circle", "1 2 4 8 16 31", "not powers of two", "chord regions", "euler formula regions", "pattern trap"],
+          keywords: ["euler formula regions", "moser circle", "regions from chords", "points on a circle", "1 2 4 8 16 31", "not powers of two", "chord regions", "pattern trap"],
           importance: "low",
           level: ["MATHCOUNTS", "AMC12", "AIME"]
         }
@@ -342,11 +303,11 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "partitions",
-          name: "Integer Partitions",
+          name: "Partitions and Compositions",
           latex: String.raw`p(n): \; 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, \dots, \qquad \#\{\text{compositions of } n\} = 2^{n-1}`,
           description: String.raw`Ways to write $n$ as an unordered sum of positive integers. Partitions into odd parts = partitions into distinct parts (Euler). Compositions (ordered sums) of $n$: $2^{n-1}$.`,
           keywords: ["partition", "unordered sum", "compositions", "distinct parts"],
-          importance: "medium",
+          importance: "low",
           level: ["AIME"]
         },
         {
@@ -480,26 +441,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "states-recursion-prob",
-          name: "Probability States / First-Step Analysis",
-          type: "method",
-          latex: String.raw`p_{\text{state}} = \sum_{\text{moves}} P(\text{move}) \cdot p_{\text{next state}}`,
-          description: String.raw`Name a probability variable per state, write one equation per state by conditioning on the first step, and solve the linear system. Handles random walks, games to $n$ wins, and gambler's ruin ($P = \frac{a}{a+b}$ for a fair walk).`,
-          keywords: ["markov", "random walk", "recursive probability", "gambler's ruin", "first step"],
-          importance: "high",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "symmetry-probability",
-          name: "Symmetry Arguments",
-          type: "method",
-          latex: String.raw`\text{by symmetry every position is equally likely}`,
-          description: String.raw`In a random arrangement, any particular position is equally likely to hold any particular item — ignore the reveal order. Many "conditional" setups collapse instantly under symmetry.`,
-          keywords: ["by symmetry", "equally likely", "random order", "shortcut"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "hypergeometric",
           name: "Hypergeometric Distribution",
           latex: String.raw`P(k \text{ special in a draw of } n) = \frac{\binom{K}{k}\binom{N-K}{n-k}}{\binom{N}{n}}`,
@@ -507,15 +448,6 @@ window.MATH_SECTIONS.push({
           keywords: ["without replacement", "exactly k", "cards", "balls from urn", "drawing without replacement"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "birthday-collision",
-          name: "Birthday-Style Collision Probability",
-          latex: String.raw`P(\text{all } k \text{ distinct}) = \prod_{i=0}^{k-1} \frac{n - i}{n} = \frac{n(n-1)\cdots(n-k+1)}{n^k}`,
-          description: String.raw`Probability that $k$ independent uniform choices among $n$ options are all different; collision probability is the complement. With $n = 365$, it drops below $\frac{1}{2}$ at $k = 23$.`,
-          keywords: ["birthday problem", "all different", "collision", "at least two share"],
-          importance: "medium",
-          level: ["AMC10", "AMC12"]
         },
         {
           id: "variance-independence",
@@ -541,7 +473,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`P(\gcd = 1) = \frac{6}{\pi^2}`,
           description: String.raw`The density $\frac{1}{\zeta(2)} \approx 60.8\%$: each prime $p$ fails to divide both with probability $1 - \frac{1}{p^2}$, and the product over primes is $\frac{6}{\pi^2}$. Same constant governs squarefree density.`,
           keywords: ["coprime probability", "zeta", "squarefree density", "6 over pi squared"],
-          importance: "lower",
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -563,26 +495,6 @@ window.MATH_SECTIONS.push({
           keywords: ["conditional expectation", "tower rule", "casework expectation", "weighted average", "first step", "wald"],
           importance: "medium",
           level: ["AMC12", "AIME"]
-        },
-        {
-          id: "polyhedron-walks",
-          name: "Random Walks on a Graph (State Collapse)",
-          latex: String.raw`\text{cube corner} \to \text{opposite: } E[\text{steps}] = 10; \quad \text{tetrahedron return: } \tfrac14 + \tfrac34\left(-\tfrac13\right)^n`,
-          description: String.raw`A particle hops to a random neighbor each step (a Markov chain on the graph). The universal move is to collapse symmetric vertices into a few states, then write one linear equation per state: condition on the first step for a probability, or add $1$ per step for an expected hitting/return time. On a cube, group the $8$ vertices by distance from the start ($0,1,2,3$ edges away) into $4$ states; on a tetrahedron the return probability even has the closed form above. Two cube facts worth knowing: a walk from a corner reaches the opposite corner in an expected $10$ steps, and the expected return time to the start is $8$ (for any regular graph the mean return time to a vertex is $\frac{2|E|}{\deg}$). First-step analysis is the same idea for general state problems.`,
-          example: String.raw`Cube, expected steps to the opposite corner: let $e_k$ be the expectation from distance $k$. Then $e_3=0$, $e_2=1+\tfrac23 e_1$, $e_1=1+\tfrac13 e_0+\tfrac23 e_2$, $e_0=1+e_1$. Solving gives $e_1=3+\tfrac35 e_0$ and $e_0=4+\tfrac35 e_0$, so $e_0=\mathbf{10}$.`,
-          keywords: ["random walk", "markov chain", "ant on a cube", "expected steps", "hitting time", "expected return time", "cube vertices", "tetrahedron", "return probability", "states symmetry", "random walk on a graph"],
-          importance: "medium",
-          level: ["AIME"]
-        },
-        {
-          id: "gamblers-ruin",
-          name: "Gambler's Ruin",
-          latex: String.raw`P(\text{reach } N \text{ from } a) = \frac{a}{N} \;\text{(fair)}, \qquad \frac{1 - (q/p)^a}{1 - (q/p)^N} \;\text{(win prob } p, \text{ lose } q)`,
-          description: String.raw`A walker at $a$ steps $+1$ with probability $p$ and $-1$ with probability $q = 1-p$, stopping at $0$ or $N$. Fair play makes the success chance proportional to the bankroll ($\frac{a}{N}$), with expected duration $a(N-a)$ steps; biased play replaces linearity with a geometric profile in $\frac{q}{p}$. Both come from solving the one-step recursion.`,
-          example: String.raw`$p = \frac{2}{3}$ (so $\frac{q}{p} = \frac{1}{2}$), start $a = 1$, target $N = 3$: $P = \frac{1 - \frac{1}{2}}{1 - \frac{1}{8}} = \frac{4}{7}$.`,
-          keywords: ["gamblers ruin", "biased walk", "reach target", "absorbing barriers", "bankroll", "expected duration"],
-          importance: "lower",
-          level: ["AIME"]
         },
         {
           id: "bayes-theorem",
@@ -624,16 +536,6 @@ window.MATH_SECTIONS.push({
           keywords: ["graph", "degrees", "edges", "double counting", "handshakes"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "double-counting",
-          name: "Double Counting",
-          type: "method",
-          latex: String.raw`\text{count one set two ways, then equate}`,
-          description: String.raw`Count incidences by rows and by columns. E.g. in any tournament, $\sum \binom{w_i}{2}$ counts "dominated pairs" — comparing to $\binom{n}{3}$ counts cyclic triangles.`,
-          keywords: ["count two ways", "incidence", "tournament", "rows columns", "committee counting"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
         },
         {
           id: "ramsey-33",
@@ -750,111 +652,6 @@ window.MATH_SECTIONS.push({
           keywords: ["lindstrom gessel viennot", "lgv lemma", "non-intersecting paths", "determinant of paths", "lattice paths", "plane partitions", "young tableaux"],
           importance: "lower",
           level: ["Olympiad"]
-        }
-      ]
-    },
-    {
-      title: "Problem-Solving Methods",
-      formulas: [
-        {
-          id: "casework-method",
-          name: "Casework",
-          type: "method",
-          latex: String.raw`\#(\text{total}) = \#(\text{case } 1) + \#(\text{case } 2) + \cdots \quad (\text{disjoint and exhaustive})`,
-          description: String.raw`Split on a decisive feature — the largest element, the leading digit, the position of the special object, a parity. The two failure modes are overlapping cases (double count) and missed cases (undercount); choose the splitting feature so each object lands in exactly one case. Switch to complementary counting when the cases explode.`,
-          keywords: ["casework", "split into cases", "disjoint", "exhaustive", "organize the count", "method"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "constructive-counting",
-          name: "Constructive Counting",
-          type: "method",
-          latex: String.raw`\#(\text{objects}) = (\text{choices for step } 1) \times (\text{choices for step } 2) \times \cdots`,
-          description: String.raw`Build the object one decision at a time and multiply the choice counts — valid only when every step has the same number of options regardless of earlier picks. Start with the most restricted slot (last digit of an even number, the seat of the picky person); if a step's count depends on history, split into cases or subtract overcounts. Divide at the end by symmetries you didn't intend to distinguish.`,
-          keywords: ["constructive counting", "multiplication principle", "build step by step", "most restricted first", "overcount divide", "method"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "bijection-method",
-          name: "Bijections",
-          type: "method",
-          latex: String.raw`\text{hard set} \;\xleftrightarrow{\;1 : 1\;}\; \text{easy set} \implies \text{same count}`,
-          description: String.raw`Recount the same objects in friendlier clothing: strictly increasing sequences $\leftrightarrow$ subsets, sums $\leftrightarrow$ stars-and-bars arrangements, paths $\leftrightarrow$ letter words, "at most" $\leftrightarrow$ complements via $k \leftrightarrow n - k$. If a clean formula counts the target, some bijection to a known family is usually hiding.`,
-          keywords: ["bijection", "one to one correspondence", "recount", "transform the problem", "same count", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "recursive-counting",
-          name: "Recursive Counting",
-          type: "method",
-          latex: String.raw`a_n = c_1 a_{n-1} + c_2 a_{n-2} + \cdots \quad (\text{classify by the final choice})`,
-          description: String.raw`Classify arrangements by their last step or last block, express $a_n$ in terms of smaller cases, then compute forward from tiny $n$. The workhorse for strings avoiding patterns, tilings, and seatings; with several interacting constraints, track one sequence per state and update them together.`,
-          keywords: ["recursion", "count by last step", "state counting", "build up", "strings avoiding pattern", "method", "build up by last step"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "indicator-variables",
-          name: "Indicator Variables & Linearity of Expectation",
-          type: "method",
-          latex: String.raw`X = X_1 + X_2 + \cdots + X_n \implies E[X] = \sum_i P(\text{event } i \text{ happens})`,
-          description: String.raw`To find an expected count, write it as a sum of $0/1$ indicators — one per potential occurrence — and add their probabilities. Linearity needs no independence whatsoever, which is the whole magic: dependent, overlapping events sum just as easily. Turns most "expected number of ..." problems into one-line computations.`,
-          keywords: ["indicator variables", "linearity of expectation", "expected number", "no independence needed", "sum of probabilities", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "invariants-coloring",
-          name: "Invariants & Coloring Arguments",
-          type: "method",
-          latex: String.raw`\text{invariant unchanged by every move} \ne \text{target} \Rightarrow \text{impossible}`,
-          description: String.raw`To prove a process can never reach a state or a tiling can never exist, find a quantity every legal move preserves — a parity, a sum mod $n$, a checkerboard color count — and show start and target disagree on it. Monovariants (quantities that only increase or decrease) prove termination the same way.`,
-          keywords: ["invariant", "coloring argument", "checkerboard", "parity argument", "impossible tiling", "monovariant", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
-          id: "generating-function-method",
-          name: "The Generating Function Method",
-          type: "method",
-          latex: String.raw`\text{each choice} \to \text{a polynomial factor}, \quad \text{multiply}, \quad [x^N] \text{ counts the ways}`,
-          description: String.raw`Encode each independent decision as a polynomial or series whose exponents are its possible values, multiply the factors, and read the coefficient of $x^N$. Dice sums use $(x + \cdots + x^6)^k$; coin and stamp combinations use $\prod \frac{1}{1 - x^{a_i}}$; bounded parts use truncated factors. Then extract: set $x = 1$ for a total, differentiate for a weighted sum, or apply a roots-of-unity filter for a residue class.`,
-          keywords: ["generating function method", "encode as polynomial", "coefficient extraction", "dice sums", "coin combinations", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
-          id: "extremal-principle",
-          name: "The Extremal Principle",
-          type: "method",
-          latex: String.raw`\text{take the extreme object (largest / smallest / closest)}`,
-          description: String.raw`Point at an extreme element — the largest value, the closest pair, the longest chain, the minimal counterexample — and exploit that nothing beats it. Often the extreme object cannot have a neighbor that would extend or improve it (or it would not have been extremal), which forces the structure you want or contradicts the assumption. The finite, combinatorial form of infinite descent.`,
-          keywords: ["extremal principle", "largest smallest", "minimal counterexample", "closest pair", "consider the extreme", "well ordering", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "probabilistic-method",
-          name: "The Probabilistic Method",
-          type: "method",
-          latex: String.raw`E[X] \ge c \implies \exists \text{ outcome with } X \ge c; \qquad P(\text{bad}) < 1 \implies \exists \text{ a good object}`,
-          description: String.raw`Prove something exists by showing a random construction produces it with positive probability. Two forms: the first-moment argument — since some outcome is at least the average, $E[X] \ge c$ guarantees an outcome with $X \ge c$ (and one with $X \le c$); and the union-bound argument — if the total probability of all "bad" events is below $1$, a choice avoiding all of them must exist. It's linearity of expectation repurposed from computing to guaranteeing.`,
-          keywords: ["probabilistic method", "first moment", "expectation existence", "union bound", "random construction", "exists better than average", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "transfer-matrix-method",
-          name: "The Transfer Matrix Method",
-          type: "method",
-          latex: String.raw`a_n = \mathbf{u}^{\top} M^{\,n} \mathbf{v}, \qquad M_{ij} = \#\{\text{allowed transitions state } i \to j\}`,
-          description: String.raw`To count length-$n$ sequences (tilings, walks, strings) obeying a local adjacency rule, build a transfer matrix $M$ whose $(i,j)$ entry marks the allowed transitions state $i \to j$; the count is then an entry of $M^n$. Diagonalizing $M$ yields a closed form and the governing linear recurrence $\det(xI - M) = 0$ — the engine behind "count the tilings / no-two-adjacent / walks on a small graph" problems.`,
-          keywords: ["transfer matrix", "matrix power counting", "adjacency matrix walks", "state transitions", "tilings", "linear recurrence from matrix", "M^n", "method"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
         }
       ]
     }

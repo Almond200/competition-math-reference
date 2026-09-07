@@ -224,7 +224,7 @@
   [
    "number of ways to tile a strip with dominoes",
    [
-    "fibonacci-tilings"
+    "recursive-counting"
    ]
   ],
   [

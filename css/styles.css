@@ -294,16 +294,59 @@ body {
 }
 
 /* Separates the formula reference from the pattern catalog in the sidebar. */
+/* The two books. Only one is unfolded at a time: opening Formulas folds Patterns away
+   and the reverse, so the sidebar reads as two folders rather than one long list. */
+.nav-group + .nav-group { margin-top: 14px; }
+
+.nav-group-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 7px 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.nav-group-btn:hover { background: var(--bg-panel); }
+
 .nav-group-label {
-  padding: 0 12px 6px;
-  margin-top: 18px;
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-faint);
 }
-.nav-group-label:first-child { margin-top: 0; }
+.nav-group.open .nav-group-label { color: var(--text-dim); }
+
+.nav-group-caret {
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid currentColor;
+  border-top: 3.5px solid transparent;
+  border-bottom: 3.5px solid transparent;
+  color: var(--text-faint);
+  transform-origin: 30% 50%;
+  transition: transform 0.24s cubic-bezier(0.25, 0.9, 0.3, 1);
+}
+.nav-group.open .nav-group-caret { transform: rotate(90deg); }
+
+.nav-group-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.26s cubic-bezier(0.25, 0.9, 0.3, 1),
+              opacity 0.2s ease;
+}
+.nav-group-inner { overflow: hidden; min-height: 0; padding-top: 5px; }
+.nav-group.open > .nav-group-body { grid-template-rows: 1fr; opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-group-body, .nav-group-caret { transition: none; }
+}
 
 .nav-section { margin-bottom: 4px; }
 
@@ -338,8 +381,30 @@ body {
 
 .nav-section-btn.active .nav-count { color: var(--accent); background: transparent; }
 
-.nav-subs { margin: 2px 0 8px; padding-left: 12px; display: none; }
-.nav-section.open .nav-subs { display: block; }
+/* Opening a section should read as a folder opening: its sub-subjects unfold while the
+   previously open one folds away. grid-template-rows 0fr -> 1fr is the one way to
+   transition to a true auto height, so the list needs the inner wrapper to clip against. */
+.nav-subs {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  padding-left: 12px;
+  opacity: 0;
+  transition: grid-template-rows 0.24s cubic-bezier(0.25, 0.9, 0.3, 1),
+              opacity 0.18s ease,
+              margin 0.24s cubic-bezier(0.25, 0.9, 0.3, 1);
+}
+.nav-subs-inner { overflow: hidden; min-height: 0; }
+
+.nav-section.open .nav-subs {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin: 2px 0 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-subs { transition: none; }
+}
 
 .nav-sub-link {
   display: block;
@@ -352,6 +417,149 @@ body {
 }
 
 .nav-sub-link:hover { color: var(--text); border-left-color: var(--accent); }
+
+/* ---------- Adding cards from a list's own page ---------- */
+
+.list-add { position: relative; margin: 10px 0 16px; max-width: 460px; }
+.list-add-input {
+  width: 100%;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.list-add-input:focus { outline: none; border-color: var(--accent); }
+
+.list-add-results {
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+.list-add-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 11px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.list-add-row:last-child { border-bottom: none; }
+.list-add-row:hover { background: var(--bg-panel); }
+.list-add-row .lar-plus {
+  flex: 0 0 18px;
+  text-align: center;
+  color: var(--accent);
+  font-weight: 700;
+}
+.list-add-row .lar-name { flex: 1 1 auto; min-width: 0; }
+.list-add-row .lar-crumb { flex: 0 0 auto; font-size: 11px; color: var(--text-faint); }
+.list-add-row .katex { font-size: 1em; }
+.list-add-empty { padding: 9px 12px; font-size: 12.5px; color: var(--text-faint); }
+
+/* Two panels of one figure belong side by side: stacked, the second sits a screen away
+   from the first and the comparison is lost. Collapses back to a column when narrow. */
+.detail-diagrams { display: grid; gap: 12px; }
+.detail-diagrams.dd-2 { grid-template-columns: 1fr 1fr; }
+.detail-diagrams.dd-3 { grid-template-columns: 1fr 1fr 1fr; }
+.detail-diagrams .detail-diagram { margin: 0; }
+@media (max-width: 900px) {
+  .detail-diagrams.dd-2, .detail-diagrams.dd-3 { grid-template-columns: 1fr; }
+}
+
+/* ---------- Card cross-links ---------- */
+
+/* Colour alone marks a cross-link, with no underline, so a paragraph carrying three of
+   them still reads as prose rather than as a menu. */
+.card-link {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.card-link:hover { color: var(--accent-strong, var(--accent)); }
+
+.card-link-broken { color: #dc2626; cursor: help; }
+
+/* Square-cornered card with a small arrow pointing at the linked word, the way a wiki
+   preview does it. The arrow is a rotated square sharing the card's border and background,
+   with the side facing the card masked by the card itself. */
+.card-preview {
+  position: absolute;
+  z-index: 60;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 11px 13px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.card-preview .cp-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transform: translateX(-50%) rotate(45deg);
+}
+/* sitting above the word: arrow on the bottom edge, pointing down */
+.card-preview .cp-arrow { bottom: -6px; border-top: none; border-left: none; }
+/* flipped below the word: arrow on the top edge, pointing up */
+.card-preview.cp-below .cp-arrow {
+  bottom: auto;
+  top: -6px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-right: none;
+}
+
+.card-preview .cp-thumb {
+  margin: -5px -7px 9px;
+  padding: 8px 6px;
+  background: var(--bg-panel);
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+/* Let the figure use the full width of the wider box; capping only the height keeps the
+   card a sensible rectangle instead of stretching to whatever aspect the diagram has. */
+.card-preview .cp-thumb svg { width: 100%; height: auto; max-height: 210px; }
+.card-preview .cp-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-weight: 650;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.card-preview .cp-desc { color: var(--text-dim); }
+.card-preview .cp-crumb {
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.card-preview .katex { font-size: 1em; }
+
+/* Curated list-building groups sit above raw keywords in the advanced picker. */
+.adv-tag-chip.adv-tag-group {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
 
 /* ---------- Content ---------- */
 
@@ -474,9 +682,11 @@ body {
 .copy-btn.copied { color: var(--level-mc); border-color: var(--level-mc); opacity: 1; }
 .extra-toggle .chev { font-size: 10px; }
 
+/* Full width by design, but tight vertically: the figure should fill the band rather than
+   float in the middle of it, so the padding is small and the diagram is allowed to be big. */
 .card-extra {
   margin-top: 10px;
-  padding: 12px 14px;
+  padding: 6px 14px 4px;
   background: rgba(0, 0, 0, 0.18);
   border: 1px dashed var(--border-light);
   border-radius: 8px;
@@ -924,7 +1134,8 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ---------- At-a-glance diagrams on cards ---------- */
 .card-glance svg { max-width: 300px; }
-.card-glance .diagram-cap { font-size: 11.5px; max-width: 340px; }
+.card-glance .diagram-cap { font-size: 11.5px; max-width: 340px; margin-top: 2px; }
+.card-glance.diagram { margin-bottom: 2px; }
 
 /* ---------- Add-to-list "+" button (minimal, neutral) ---------- */
 .addlist-btn {

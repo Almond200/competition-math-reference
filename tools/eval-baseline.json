@@ -300,7 +300,7 @@
   },
   {
    "q": "gambler's ruin",
-   "want": "gamblers-ruin",
+   "want": "states-recursion-prob",
    "rank": 1
   },
   {
@@ -355,7 +355,7 @@
   },
   {
    "q": "probability at least one shared birthday",
-   "want": "birthday-collision",
+   "want": "complementary-counting",
    "rank": 1
   },
   {
@@ -600,7 +600,7 @@
   },
   {
    "q": "expected steps to return to the start",
-   "want": "polyhedron-walks",
+   "want": "states-recursion-prob",
    "rank": 1
   },
   {

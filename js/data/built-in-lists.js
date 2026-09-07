@@ -27,5 +27,5 @@ window.MATH_BUILTIN_LISTS = [
   { id: "set-fun-identities", name: "Beautiful Identities & Party Tricks", subject: "Mixed",
     ids: ["ramanujan-nested-radical", "roots-unity-distance-product", "trig-telescoping-product", "triangle-square-identities", "triangle-angle-identities", "sophie-germain", "cubes-minus-3abc", "brahmagupta-fibonacci", "sos-identity", "sum-zero-identities", "eulers-formula", "special-trig-values", "an-minus-bn", "hermite-identity", "infinite-nest", "denesting-radicals"] },
   { id: "set-fun-counting", name: "Counting & Probability Surprises", subject: "Mixed",
-    ids: ["moser-circle", "derangements", "catalan-numbers", "birthday-collision", "burnsides-lemma", "cayleys-formula", "ramsey-33", "erdos-szekeres", "ballot-problem", "hockey-stick", "vandermonde", "sprague-grundy", "gamblers-ruin", "expected-fixed-points", "necklace-formula", "polya-enumeration", "stirling-bell", "plane-regions", "non-adjacent-selection"] }
+    ids: ["moser-circle", "derangements", "catalan-numbers", "complementary-counting", "burnsides-lemma", "cayleys-formula", "ramsey-33", "erdos-szekeres", "ballot-problem", "hockey-stick", "vandermonde", "sprague-grundy", "states-recursion-prob", "expected-fixed-points", "necklace-formula", "polya-enumeration", "stirling-bell", "plane-regions", "non-adjacent-selection"] }
 ];

@@ -236,8 +236,17 @@
     starredOnly: false,          // ★ chip: show only starred within the active section
     sectionFilters: _loaded.sectionFilters,  // per-section { rarities:Set, levels:Set }
     activeSectionId: SECTIONS.length ? SECTIONS[0].id : null,
-    adv: null                    // advanced search: { sections:Set, subs:Set, topics:Set, desc:string } or null
+    adv: null,                   // advanced search: { sections:Set, subs:Set, topics:Set, desc:string } or null
+    openGroup: null              // sidebar: explicitly opened group, or null to follow the active section
   };
+  const GROUP_LABELS = { formulas: "Formulas", tools: "Additional Tools" };
+  const groupOf = section => (section && section.group) || "formulas";
+  // The group standing open right now. An explicit click on a group header wins;
+  // otherwise it is simply the book the active section lives in.
+  function openGroupId() {
+    if (state.openGroup) return state.openGroup;
+    return groupOf(SECTIONS.find(x => x.id === state.activeSectionId));
+  }
   function activeFilter() {
     return state.sectionFilters[state.activeSectionId] || { rarities: new Set(IMP_TIERS), levels: new Set() };
   }
@@ -475,6 +484,143 @@
     "directed-angles": ["concyclic", "collinear"]
   };
 
+  // Broad, curated tags for building study lists: one label covering a whole family of
+  // cards, so "triangle centers" can be selected in advanced search and turned into a list
+  // in one move. Deliberately NOT merged into f.keywords the way EXTRA_TAGS is, because
+  // keywords render as chips on the card face and the face is already at its six-chip cap.
+  // These live in entry.groupTags and reach only search, the advanced picker, and filtering.
+  const TAG_GROUPS = {
+    "triangle centers": [
+      "euler-line-ratio", "euler-distance-theorem", "nine-point-circle", "simson-line",
+      "symmedian-lemoine", "lemoine-point", "spieker-point", "gergonne-nagel-points",
+      "incenter-excenter-lemma", "orthocenter-properties", "fermat-point", "feuerbach-theorem",
+      "center-distance-formulas", "triangle-center-angles", "orthocentric-system",
+      "brocard-angle", "carnots-theorem", "leibniz-formula", "incenter-coordinates",
+      "medial-triangle", "orthic-triangle", "excentral-triangle", "contact-triangle",
+      "isogonal-conjugate", "isotomic-conjugate", "pedal-triangle", "centroid-division"
+    ],
+    "circle theorems": [
+      "power-of-a-point", "ptolemys-theorem", "inscribed-angle-theorem", "tangent-chord-angle",
+      "angle-chord-secant", "tangent-facts", "two-tangents-angle", "common-tangent-lengths",
+      "radical-axis", "butterfly-theorem", "miquels-theorem", "harmonic-quadrilateral",
+      "cyclic-quad-diagonals", "circle-equation", "circular-segment", "brahmaguptas-formula",
+      "pitots-theorem", "descartes-circle-theorem", "caseys-theorem", "mixtilinear-incircle"
+    ],
+    "triangle areas": [
+      "herons-formula", "trig-area", "triangle-area-standard", "shoelace-formula",
+      "inradius-area", "circumradius-area", "exradii", "shared-angle-area-ratio",
+      "cevian-area-ratio", "rouths-theorem", "area-method", "picks-theorem"
+    ],
+    "counting basics": [
+      "permutations-combinations", "circular-permutations", "stars-and-bars", "pie",
+      "complementary-counting", "counting-blocks", "constructive-counting", "casework-method",
+      "bijection-method", "surjections", "multinomial-theorem", "handshakes-diagonals"
+    ],
+    "modular arithmetic": [
+      "fermats-little-theorem", "eulers-totient", "crt", "multiplicative-order",
+      "modular-inverse", "squares-mod-small", "wilsons-theorem", "lte",
+      "hensel-lifting", "periodicity-mod-m", "choose-modulus", "divisibility-rules"
+    ],
+    "inequalities": [
+      "am-gm", "cauchy-schwarz", "jensens-inequality", "power-mean-inequality",
+      "rearrangement", "chebyshev-sum-inequality", "holders-inequality", "minkowski-inequality",
+      "muirheads-inequality", "schurs-inequality", "maclaurin-inequality", "karamata-inequality",
+      "bernoulli-inequality", "trivial-inequality", "sos-method", "smoothing-method",
+      "tangent-line-trick", "normalization", "abs-triangle-inequality"
+    ],
+    "polynomial roots": [
+      "vietas-general", "newtons-sums", "rational-root-theorem", "factor-remainder-theorem",
+      "symmetric-polynomial-strategies", "root-transformations", "palindromic-polynomials",
+      "lagrange-interpolation", "shifted-polynomial-construction", "coefficient-extraction",
+      "eisenstein-criterion", "conjugate-root-theorems", "descartes-rule-signs"
+    ],
+    "sequences": [
+      "arithmetic-series", "geometric-series", "telescoping", "linear-recurrence",
+      "first-order-recurrence", "finite-differences", "periodic-sequences", "power-sums",
+      "double-summation", "recursive-counting", "catalan-numbers", "recursive-counting"
+    ],
+    "expected value": [
+      "expected-value", "indicator-variables", "states-recursion-prob", "binomial-probability",
+      "geometric-distribution", "basic-probability", "symmetry-probability",
+      "geometric-probability", "bayes-theorem", "probability-generating-functions"
+    ],
+    "3d geometry": [
+      "prism-pyramid-volumes", "sphere-formulas", "cone-formulas", "frustum-volume",
+      "space-diagonal", "regular-tetrahedron", "regular-octahedron", "eulers-polyhedron-formula",
+      "de-guas-theorem", "cayley-menger", "isosceles-tetrahedron", "tetrahedron-centroid",
+      "point-plane-distance", "plane-intercept-form", "skew-lines-distance", "solid-tactics",
+      "cross-section-method", "surface-shortest-path", "cavalieris-principle", "pappus-centroid",
+      "insphere-radius", "descartes-sphere-theorem", "cross-product-area"
+    ],
+    "binomial coefficients": [
+      "alternating-squared-binomials", "binomial-row-sums", "committee-chair", "hockey-stick",
+      "multinomial-theorem", "pascal-parity", "pascals-identity", "vandermonde",
+      "weighted-binomial-sums"
+    ],
+    "complex numbers": [
+      "complex-basics", "de-moivre", "eulers-formula", "roots-of-unity",
+      "roots-unity-distance-product"
+    ],
+    "coordinate geometry": [
+      "angle-between-lines", "british-flag-theorem", "circle-equation", "conic-sections",
+      "distance-midpoint", "incenter-coordinates", "line-forms", "picks-theorem",
+      "point-line-distance", "reflection-coordinates", "rotation-90", "section-formula",
+      "shoelace-formula", "vector-dot-product"
+    ],
+    "cyclic quadrilaterals": [
+      "brahmaguptas-formula", "bretschneiders-formula", "cyclic-opposite-angles",
+      "cyclic-quad-diagonals", "cyclic-quad-radius", "euler-quadrilateral", "newtons-line",
+      "pascals-theorem", "pitots-theorem", "ptolemy-equilateral", "ptolemys-inequality",
+      "ptolemys-theorem", "van-aubel", "varignons-theorem"
+    ],
+    "digits and bases": [
+      "base-conversion", "digit-count", "repeating-decimals", "terminating-decimals"
+    ],
+    "diophantine": [
+      "cauchy-davenport", "chevalley-warning", "chicken-mcnugget", "difference-of-squares-rep",
+      "erdos-ginzburg-ziv", "factor-pair-counting", "pell-equation", "pythagorean-triples",
+      "sum-of-three-squares", "sum-of-two-squares", "thues-lemma"
+    ],
+    "divisor functions": [
+      "coprime-residue-sum", "dirichlet-convolution", "eulers-totient", "lcm-pair-counting",
+      "mobius-inversion", "multiplicative-functions", "number-of-divisors",
+      "perfect-square-divisors", "product-of-divisors", "sigma-parity", "sum-of-divisors",
+      "totient-divisor-sum"
+    ],
+    "floors and radicals": [
+      "absolute-value-rules", "floor-basics", "hermite-identity", "ramanujan-nested-radical",
+      "rationalizing"
+    ],
+    "graph theory": [
+      "cayleys-formula", "eulerian-paths", "graph-coloring", "halls-marriage", "konigs-theorem",
+      "lgv-lemma", "matrix-tree-theorem", "planar-graph-bound", "plane-regions",
+      "turans-theorem"
+    ],
+    "logarithms": [
+      "change-of-base", "exponent-laws", "log-rules", "log-swap-identity"
+    ],
+    "pigeonhole and extremal": [
+      "erdos-szekeres", "extremal-principle", "handshake-lemma", "pigeonhole", "ramsey-33"
+    ],
+    "primes and factorials": [
+      "bertrands-postulate", "consecutive-product-factorial", "floor-multiples",
+      "kummers-theorem", "legendres-formula", "lucas-theorem", "p-adic-valuation",
+      "prime-divides-binomial", "primes-6k", "trailing-zeros", "vp-factorial"
+    ],
+    "trigonometry": [
+      "angle-addition", "arctan-telescoping", "common-angle-values",
+      "cosecant-cotangent-square-sums", "cot-tan-telescoping", "double-angle",
+      "even-power-sin-cos-sums", "evenly-spaced-angle-products", "half-angle",
+      "inverse-trig-identities", "product-sum", "pythagorean-identities", "reduction-identities",
+      "sin-cos-ap-sum", "special-trig-values", "triangle-angle-identities",
+      "triangle-square-identities", "trig-telescoping-product", "triple-angle"
+    ]
+  };
+  const GROUPS_BY_ID = {};
+  Object.keys(TAG_GROUPS).forEach(label => {
+    TAG_GROUPS[label].forEach(id => (GROUPS_BY_ID[id] = GROUPS_BY_ID[id] || []).push(label));
+  });
+
   // ---------- Concept index ----------
   // A card's formula says "R" and "r"; a reader looking for it types
   // "circumradius" and "inradius". Those words sit in the name or tags of only a
@@ -635,6 +781,8 @@
         if (EXTRA_TAGS[f.id]) f.keywords = f.keywords.concat(EXTRA_TAGS[f.id].filter(k => f.keywords.indexOf(k) === -1));
         entry.nameWords = new Set(indexWordsOf(f.name));
         entry.tagWords = new Set(f.keywords.flatMap(indexWordsOf));
+        entry.groupTags = GROUPS_BY_ID[f.id] || [];
+        entry.groupWords = new Set(entry.groupTags.flatMap(indexWordsOf));
         entry.tagPhrases = f.keywords.map(k => k.toLowerCase());
         entry.ctxWords = new Set(indexWordsOf(sub.title + " " + section.title));
         entry.descWords = new Set(indexWordsOf(f.description));
@@ -716,7 +864,8 @@
     { key: "descWords",    w: 2.5, b: 0.35 },
     { key: "ctxWords",     w: 1.2, b: 0.10 },
     { key: "bodyWords",    w: 0.5, b: 0.55 },
-    { key: "glossWords",   w: 0.8, b: 0.30 }
+    { key: "glossWords",   w: 0.8, b: 0.30 },
+    { key: "groupWords",   w: 1.0, b: 0.30 }
   ];
   // BM25 saturation. Deliberately large: in classic BM25, `tf` is how many TIMES a
   // term occurs, and saturation encodes "the fifth occurrence tells you little".
@@ -751,7 +900,7 @@
   const AUX_DF = new Map();
   ALL.forEach(e => {
     const seen = new Set();
-    [e.conceptWords, e.bodyWords, e.glossWords].forEach(set => { if (set) for (const w of set) seen.add(w); });
+    [e.conceptWords, e.bodyWords, e.glossWords, e.groupWords].forEach(set => { if (set) for (const w of set) seen.add(w); });
     seen.forEach(w => AUX_DF.set(w, (AUX_DF.get(w) || 0) + 1));
   });
   // ---------- Spelling correction ----------
@@ -968,14 +1117,24 @@
       document.addEventListener("keydown", onMenuKey, true);
     }, 0);
   }
-  function positionMenu(el, anchor) {
+  function positionMenu(el, anchor) { positionFloat(el, anchor, 244); }
+  // Clamps on both axes. `preferAbove` puts the box over the anchor, which is what a hover
+  // preview wants so it never covers the text you are still reading; it falls back to below
+  // when there is no room up there. The add-to-list menu keeps the opposite preference.
+  function positionFloat(el, anchor, w, preferAbove) {
     const r = anchor.getBoundingClientRect();
-    const w = 244, vw = document.documentElement.clientWidth;
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    el.style.width = w + "px";
     let left = r.left + window.scrollX;
     if (left + w > window.scrollX + vw - 8) left = window.scrollX + vw - w - 8;
-    el.style.width = w + "px";
-    el.style.top = (r.bottom + window.scrollY + 6) + "px";
     el.style.left = Math.max(8 + window.scrollX, left) + "px";
+    const h = el.offsetHeight || 160;
+    const fitsAbove = r.top - 6 - h >= 8;
+    const fitsBelow = r.bottom + 6 + h <= vh - 8;
+    const above = preferAbove ? (fitsAbove || !fitsBelow) : !fitsBelow && fitsAbove;
+    el.style.top = (above ? Math.max(8 + window.scrollY, r.top + window.scrollY - h - 6)
+                          : r.bottom + window.scrollY + 6) + "px";
   }
   function syncStarButtons(fid) {
     const on = inList("starred", fid);
@@ -1025,17 +1184,21 @@
     "altitude-hypotenuse", "incircle-tangent-lengths", "shared-angle-area-ratio", "exradii",
     "angle-bisector-theorem", "angle-bisector-length", "stewarts-theorem", "cevas-theorem",
     "menelaus-theorem", "ratio-lemma", "apollonius-theorem", "rouths-theorem", "trig-ceva",
-    "symmedian-lemoine", "incenter-excenter-lemma", "orthocenter-properties", "fermat-point",
+    "symmedian-lemoine", "harmonic-quadrilateral", "lemoine-point",
+    "stars-and-bars", "grid-paths", "catalan-numbers", "am-gm", "jensens-inequality",
+    "roots-of-unity", "floor-basics", "absolute-value-rules", "lattice-points-gcd",
+    "incenter-excenter-lemma", "orthocenter-properties", "fermat-point",
     "simson-line", "butterfly-theorem", "radical-axis", "miquels-theorem", "ptolemys-theorem",
     "cyclic-quad-diagonals", "varignons-theorem", "van-aubel", "napoleons-theorem",
     "trapezoid-special-segments", "intercept-theorem", "british-flag-theorem", "mass-points",
     "reflection-shortest-path", "rotation-trick", "spiral-similarity", "de-guas-theorem",
     "skew-lines-distance", "circular-segment", "feuerbach-theorem", "nine-point-circle",
-    "common-tangent-lengths", "angle-chord-secant", "centroid-division", "cevian-area-ratio",
+    "common-tangent-lengths", "angle-chord-secant", "tangent-chord-angle",
+    "centroid-division", "cevian-area-ratio",
     "midsegment-theorem", "euler-line-ratio", "euler-distance-theorem", "tangent-facts",
     "law-of-sines", "circumradius-area", "angle-chasing",
-    "pedal-triangle", "orthic-triangle", "medial-triangle", "contact-triangle", "isogonal-conjugate",
-    "pole-polar", "directed-angles", "complete-quadrilateral-miquel", "morleys-theorem", "pascals-theorem",
+    "pedal-triangle", "orthic-triangle", "medial-triangle", "contact-triangle", 
+    "pole-polar", "directed-angles", "complete-quadrilateral-miquel", "morleys-theorem", 
     "equal-chords-arcs"
   ]);
 
@@ -1409,7 +1572,7 @@
       }
     });
     if (window.renderMathInElement) {
-      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box").forEach(el => {
+      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box, .cp-head, .cp-desc").forEach(el => {
         renderMathInElement(el, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
@@ -1429,8 +1592,31 @@
   // and labels above the lines, then nudges apart labels that actually overlap.
   function tidyDiagrams(container) {
     container.querySelectorAll(".diagram svg").forEach(svg => {
-      try { tidyDiagram(svg); } catch (e) { /* getBBox can throw if the svg isn't laid out */ }
+      try {
+        tidyDiagram(svg);
+        // Only the at-a-glance figures on the scrolling card list get cropped. Detail pages
+        // have room to breathe; the card list is where an over-tall canvas costs real scroll.
+        if (svg.closest(".card-glance")) cropDiagramHeight(svg);
+      } catch (e) { /* getBBox can throw if the svg isn't laid out */ }
     });
+  }
+
+  // Trim the empty band above and below the drawing. Only the vertical extent of the
+  // viewBox changes: x and width are left alone, so the horizontal scale, and therefore the
+  // rendered size of the figure itself, is untouched. Several diagrams were composed on a
+  // canvas far taller than their content (AM-GM used 57% of its height on nothing), which
+  // read as a large empty box around a small picture. Runs after tidyDiagram so that labels
+  // it has just moved are inside the measured bounds.
+  function cropDiagramHeight(svg) {
+    const vb = (svg.getAttribute("viewBox") || "").trim().split(/\s+/).map(Number);
+    if (vb.length !== 4 || !vb.every(isFinite)) return;
+    const bb = svg.getBBox();
+    if (!bb || !isFinite(bb.height) || bb.height <= 0) return;
+    const pad = 12;                                   // room for stroke width and descenders
+    const top = Math.max(vb[1], bb.y - pad);
+    const bottom = Math.min(vb[1] + vb[3], bb.y + bb.height + pad);
+    const h = bottom - top;
+    if (h > 20 && h < vb[3] - 6) svg.setAttribute("viewBox", vb[0] + " " + top.toFixed(1) + " " + vb[2] + " " + h.toFixed(1));
   }
 
   function tidyDiagram(svg) {
@@ -1492,10 +1678,47 @@
     // (4) push labels off any line drawn through them. Label-vs-label was already
     // handled above, but a segment running under a label cut straight through the
     // glyphs, which is the more common and more damaging collision.
-    const segs = [...svg.querySelectorAll("line")].map(l => ({
-      p: [+l.getAttribute("x1"), +l.getAttribute("y1")],
-      q: [+l.getAttribute("x2"), +l.getAttribute("y2")]
-    })).filter(s2 => isFinite(s2.p[0]) && isFinite(s2.q[0]));
+    // Every drawn outline, not just <line>. Only straight segments were considered before,
+    // which left 40% of the collisions untouched: a label could sit squarely on a triangle
+    // edge (<polygon>), a circle, or an arc and nothing would move it. Curved and polygonal
+    // outlines are flattened into short segments so the same push-off maths applies.
+    const segs = [];
+    // `vertex` marks a real endpoint of a drawn segment. A label sitting near one is
+    // usually labelling that very point, so the push-off below leaves it alone. Samples taken
+    // along a flattened curve have no such meaning: every one of their endpoints is near the
+    // label, which silently exempted whole circles from the pass.
+    const addSeg = (p, q, vertex) => {
+      if (isFinite(p[0]) && isFinite(p[1]) && isFinite(q[0]) && isFinite(q[1]) &&
+          (p[0] !== q[0] || p[1] !== q[1])) segs.push({ p, q, vertex: !!vertex });
+    };
+    svg.querySelectorAll("line").forEach(l =>
+      addSeg([+l.getAttribute("x1"), +l.getAttribute("y1")], [+l.getAttribute("x2"), +l.getAttribute("y2")], true));
+    svg.querySelectorAll("polygon, polyline").forEach(el => {
+      const pts = (el.getAttribute("points") || "").trim().split(/\s+/)
+        .map(t => t.split(",").map(Number)).filter(p => p.length === 2 && p.every(isFinite));
+      for (let k = 0; k + 1 < pts.length; k++) addSeg(pts[k], pts[k + 1], true);
+      if (el.tagName.toLowerCase() === "polygon" && pts.length > 2) addSeg(pts[pts.length - 1], pts[0], true);
+    });
+    // Curves and circle outlines: sample the path into a polyline. Filled shapes are skipped,
+    // since a label sitting on a shaded region is fine; it is the stroke that cuts glyphs.
+    svg.querySelectorAll("path, circle, ellipse").forEach(el => {
+      const fill = (el.getAttribute("fill") || "none").toLowerCase();
+      const stroke = (el.getAttribute("stroke") || "").toLowerCase();
+      if (el.tagName.toLowerCase() !== "path" && fill !== "none" && fill !== "") return;
+      if (stroke === "none") return;
+      let len = 0;
+      try { len = el.getTotalLength ? el.getTotalLength() : 0; } catch (e) { return; }
+      if (!len || !isFinite(len)) return;
+      const n = Math.max(8, Math.min(160, Math.round(len / 6)));
+      let prev = null;
+      for (let k = 0; k <= n; k++) {
+        let pt;
+        try { pt = el.getPointAtLength(len * k / n); } catch (e) { return; }
+        const cur = [pt.x, pt.y];
+        if (prev) addSeg(prev, cur);
+        prev = cur;
+      }
+    });
     function clearLines() {
       if (!segs.length) return;
       for (const o of L) {
@@ -1505,9 +1728,11 @@
           const hw = o.w / 2 + 1.5, hh = o.h / 2 + 1.5;
           let best = null;
           for (const sg of segs) {
-            const near = Math.min(Math.hypot(sg.p[0] - cx, sg.p[1] - cy),
-                                  Math.hypot(sg.q[0] - cx, sg.q[1] - cy));
-            if (near < Math.max(20, o.h * 1.6)) continue;
+            if (sg.vertex) {
+              const near = Math.min(Math.hypot(sg.p[0] - cx, sg.p[1] - cy),
+                                    Math.hypot(sg.q[0] - cx, sg.q[1] - cy));
+              if (near < Math.max(20, o.h * 1.6)) continue;   // it is labelling that endpoint
+            }
             const vx = sg.q[0] - sg.p[0], vy = sg.q[1] - sg.p[1];
             const len2 = vx * vx + vy * vy; if (!len2) continue;
             let t = ((cx - sg.p[0]) * vx + (cy - sg.p[1]) * vy) / len2;
@@ -1992,8 +2217,8 @@
     const li = items.map(it => {
       const idx = it.indexOf(" — ");
       return idx !== -1
-        ? `<li>${it.slice(0, idx)}<span class="kf-note">${it.slice(idx + 3)}</span></li>`
-        : `<li>${it}</li>`;
+        ? `<li>${linkifyCards(it.slice(0, idx))}<span class="kf-note">${linkifyCards(it.slice(idx + 3))}</span></li>`
+        : `<li>${linkifyCards(it)}</li>`;
     }).join("");
     return {
       formsHtml: heading => `<div class="key-forms"><h4>${heading}</h4><ul class="detail-list">${li}</ul></div>`,
@@ -2004,6 +2229,109 @@
   // Details are plain text blocks separated by blank lines; a block may start
   // with a "## Heading" line — only that first line is the heading, the rest
   // of the block is an ordinary paragraph.
+  // ---------- Card cross-links ----------
+  // Wiki-style [[card-id]] or [[card-id|display text]] inside a write-up. Only the terms a
+  // reader plausibly does not know should be linked; linking every word that happens to have
+  // a card is the failure mode. Splitting on $...$ first means a bracket inside math is
+  // never touched, and an unresolvable id renders visibly broken so it is caught in review
+  // rather than silently dropping the text.
+  function linkifyCards(text) {
+    if (!text || text.indexOf("[[") === -1) return text;
+    return String(text).split(/(\$[^$]*\$)/).map((part, i) => {
+      if (i % 2) return part;
+      return part.replace(/\[\[([\w-]+)(?:\|([^\]]*))?\]\]/g, (m, id, label) => {
+        const e = BY_ID[id];
+        if (!e) return `<span class="card-link-broken" title="no card with id &ldquo;${escapeAttr(id)}&rdquo;">${escapeAttr(label || id)}</span>`;
+        return `<a class="card-link" href="#/f/${escapeAttr(id)}" data-card="${escapeAttr(id)}">${label || e.formula.name}</a>`;
+      });
+    }).join("");
+  }
+
+  // Trim to whole sentences. The old fixed-length cut sliced bulky opening paragraphs
+  // mid-clause, and splitting naively on "." would also break inside $...$ and after an
+  // abbreviation, so sentence ends are only taken outside math and when followed by a
+  // capital. At least one sentence always survives, however long it is.
+  function leadSentences(text, budget) {
+    const src = String(text || "").trim();
+    if (src.length <= budget) return src;
+    const parts = src.split(/(\$[^$]*\$)/);
+    let flat = "", marks = [];
+    parts.forEach((p, i) => {
+      if (i % 2) { flat += p; return; }
+      for (let k = 0; k < p.length; k++) {
+        flat += p[k];
+        if (/[.!?]/.test(p[k]) && /^\s+[A-Z(]/.test(p.slice(k + 1, k + 3) + "X")) marks.push(flat.length);
+      }
+    });
+    if (!marks.length) return src.slice(0, budget).replace(/\s+\S*$/, "");
+    let cut = marks[0];
+    for (const m of marks) { if (m <= budget) cut = m; else break; }
+    const out = flat.slice(0, cut).trim();
+    return out;
+  }
+
+  // Hover preview, the way a wiki shows a lead paragraph. Delayed so that sweeping the
+  // pointer across a paragraph of links does not flash a stack of cards.
+  let cpEl = null, cpTimer = 0, cpHide = 0, cpFor = null;
+  function hideCardPreview() {
+    clearTimeout(cpTimer); clearTimeout(cpHide);
+    if (cpEl) { cpEl.remove(); cpEl = null; cpFor = null; }
+  }
+  // Leaving the link does not dismiss immediately: the pointer needs a moment to cross the
+  // gap into the preview, and entering the preview cancels the pending hide outright.
+  function scheduleHideCardPreview() {
+    clearTimeout(cpTimer); clearTimeout(cpHide);
+    cpHide = setTimeout(hideCardPreview, 260);
+  }
+  function showCardPreview(a) {
+    const e = BY_ID[a.dataset.card];
+    if (!e || cpFor === a) return;
+    hideCardPreview();
+    cpFor = a;
+    const f = e.formula;
+    const kind = f.type === "method" ? `<span class="badge badge-method">METHOD</span>`
+               : f.type === "pattern" ? `<span class="badge badge-pattern">PATTERN</span>` : "";
+    const desc = leadSentences(f.description, 200);
+    const panels = (window.MATH_DIAGRAMS || {})[f.id];
+    const thumb = panels && panels[0]
+      ? `<div class="cp-thumb">${String(panels[0]).replace(/<div class="diagram-cap">[\s\S]*?<\/div>/, "")}</div>`
+      : "";
+    clearTimeout(cpHide);
+    cpEl = document.createElement("div");
+    cpEl.className = "card-preview";
+    cpEl.addEventListener("mouseenter", () => clearTimeout(cpHide));
+    cpEl.addEventListener("mouseleave", hideCardPreview);
+    // The box is a second target for the same link, so reading the summary and deciding to
+    // go there does not mean travelling back to the word.
+    cpEl.addEventListener("click", () => {
+      const id = a.dataset.card;
+      hideCardPreview();
+      location.hash = "#/f/" + id;
+      window.scrollTo({ top: 0 });
+    });
+    if (thumb) cpEl.classList.add("cp-has-thumb");
+    cpEl.innerHTML = thumb +
+      `<div class="cp-head">${f.name}${kind}</div><div class="cp-desc">${desc}</div>` +
+      `<div class="cp-crumb">${escapeAttr(e.section.title)} &rsaquo; ${escapeAttr(e.subsection.title)}</div>` +
+      `<span class="cp-arrow"></span>`;
+    document.body.appendChild(cpEl);
+    // Typeset BEFORE measuring. Positioning above the word needs the final height, and KaTeX
+    // (and the thumbnail's SVG) change it after the fact; measuring first is what left a gap
+    // above the word, and only above, since the below branch pins the top edge instead.
+    renderMath(cpEl);
+    const place = () => {
+      if (!cpEl) return;
+      positionFloat(cpEl, a, thumb ? 420 : 330, true);
+      const ar = a.getBoundingClientRect(), br = cpEl.getBoundingClientRect();
+      const arrow = cpEl.querySelector(".cp-arrow");
+      // Point the arrow at the word itself, which may sit anywhere along the box's width.
+      arrow.style.left = Math.min(Math.max(ar.left + ar.width / 2 - br.left, 14), br.width - 14) + "px";
+      cpEl.classList.toggle("cp-below", br.top > ar.top);
+    };
+    place();
+    requestAnimationFrame(place);          // the thumbnail's SVG can resolve a frame later
+  }
+
   function detailBodyHtml(body) {
     // Render the remaining lines of a block: an enumerated list when every line
     // starts with "- ", otherwise a paragraph. Enables explicit formula lists.
@@ -2011,9 +2339,9 @@
       const items = lines.map(l => l.trim()).filter(Boolean);
       if (!items.length) return "";
       if (items.every(l => l.startsWith("- "))) {
-        return `<ul class="detail-list">${items.map(l => `<li>${l.slice(2).trim()}</li>`).join("")}</ul>`;
+        return `<ul class="detail-list">${items.map(l => `<li>${linkifyCards(l.slice(2).trim())}</li>`).join("")}</ul>`;
       }
-      return `<p>${items.join(" ")}</p>`;
+      return `<p>${linkifyCards(items.join(" "))}</p>`;
     };
     // A "## Full proof" section is rendered collapsed behind a button. Some
     // results (the mean chain, Newton's inequalities) have a derivation worth
@@ -2044,13 +2372,20 @@
   function renderDetail(entry) {
     const f = entry.formula;
     state.activeSectionId = entry.section.id;
+    state.openGroup = null;
     const body = (window.MATH_DETAILS || {})[f.id];
     // Key forms is a method-card feature: it lists the shapes a technique is
     // applied in. A formula card already enumerates its formulas in the big box,
     // so any stray block on one is dropped rather than rendered.
-    const split = splitKeyForms(body);
-    const formsHtml = f.type === "method" ? split.formsHtml("Key forms")
-                    : f.type === "pattern" ? split.formsHtml("Recognize it") : "";
+    // Only method and pattern cards render a Key forms block. On any other card the
+    // block must be left in the body instead of being split out, or its content would be
+    // stripped and never shown (this was silently happening on eleven formula cards).
+    const isKeyFormsCard = f.type === "method" || f.type === "pattern";
+    const split = isKeyFormsCard ? splitKeyForms(body) : { formsHtml: () => "", rest: body };
+    // Patterns will read "Recognize it" (what tips you off that you are looking at this
+    // problem) once those blocks are rewritten; until then the existing content really is
+    // key forms, so it keeps the honest heading.
+    const formsHtml = split.formsHtml("Key forms");
     const rest = split.rest;
     const related = relatedEntries(entry, 6);
     const hasDiagram = !!(f.diagram || ((window.MATH_DIAGRAMS || {})[f.id] || []).length);
@@ -2074,7 +2409,12 @@
         <p class="card-desc detail-summary">${f.description}</p>
         ${formsHtml}
         ${f.diagram ? `<div class="diagram">${f.diagram}</div>` : ""}
-        ${((window.MATH_DIAGRAMS || {})[f.id] || []).map(d => `<div class="diagram detail-diagram">${d}</div>`).join("")}
+        ${(() => {
+          const panels = (window.MATH_DIAGRAMS || {})[f.id] || [];
+          if (!panels.length) return "";
+          const inner = panels.map(d => `<div class="diagram detail-diagram">${d}</div>`).join("");
+          return `<div class="detail-diagrams dd-${Math.min(panels.length, 3)}">${inner}</div>`;
+        })()}
         ${rest && rest.trim() ? `<div class="detail-body">${detailBodyHtml(rest)}</div>` : ""}
         ${(window.MATH_WIDGETS || {})[f.id] ? `<div class="interactive"><h4>Interactive</h4><div id="formula-widget"></div></div>` : ""}
         ${practiceHtml(f)}
@@ -2220,6 +2560,7 @@
   function entryHasTag(entry, L) {
     return entry.tagPhrases.indexOf(L) !== -1 ||
       entry.topics.some(t => t.label === L) ||
+      (entry.groupTags || []).indexOf(L) !== -1 ||
       entry.tagPhrases.some(p => p.indexOf(L) !== -1);
   }
 
@@ -2282,6 +2623,8 @@
       const w = TAG_W[entry.formula.importance] || 1;
       entry.formula.keywords.forEach(k => add(k, w, "tag"));
       entry.topics.forEach(t => add(t.label, w + 2, "topic"));
+      // Curated groups sort above raw keywords, since building a list is what they are for.
+      (entry.groupTags || []).forEach(g => add(g, w + 4, "group"));
     }
     ALL_TAGS_CACHE = [...m.values()];
     return ALL_TAGS_CACHE;
@@ -2301,7 +2644,7 @@
     }
     return cand.slice(0, limit || 12);
   }
-  const advTagChipHtml = t => `<button class="adv-tag-chip${t.kind === "topic" ? " adv-tag-topic" : ""}" data-adv-tag="${escapeAttr(t.label)}">${escapeAttr(t.label)}</button>`;
+  const advTagChipHtml = t => `<button class="adv-tag-chip${t.kind === "topic" ? " adv-tag-topic" : t.kind === "group" ? " adv-tag-group" : ""}" data-adv-tag="${escapeAttr(t.label)}">${escapeAttr(t.label)}</button>`;
   const advTagSelHtml = l => `<button class="filter-chip active adv-tag-sel" data-adv-tag-remove="${escapeAttr(l)}">${escapeAttr(l)} <span class="adv-tag-x">&times;</span></button>`;
   // How many cards carry at least one of the currently-drafted tags.
   function advTagCount() {
@@ -2511,6 +2854,32 @@
     renderMath($content);
   }
 
+  // Adding a card to a list used to be possible only from the card's own "+" button, which
+  // meant building a list from its own page was impossible. This searches the same index the
+  // top bar does and toggles membership through the same path the "+" menu uses.
+  function renderListAddResults(box, listId, q) {
+    const results = box.querySelector(".list-add-results");
+    const query = (q || "").trim();
+    if (!query) { results.hidden = true; results.innerHTML = ""; return; }
+    const l = getList(listId);
+    const inThisList = id => !!l && l.ids.indexOf(id) !== -1;
+    // Anything already added drops out of the results rather than sitting there with a tick,
+    // so the next candidate moves up and a run of additions needs no re-reading.
+    const all = (searchFormulas(query).results || []).filter(e => !inThisList(e.formula.id));
+    const hits = all.slice(0, 8);
+    results.hidden = false;
+    results.innerHTML = hits.length
+      ? hits.map(e => `<button class="list-add-row" data-list-add-id="${escapeAttr(e.formula.id)}">
+            <span class="lar-plus">+</span>
+            <span class="lar-name">${e.formula.name}</span>
+            <span class="lar-crumb">${escapeAttr(e.section.title)}</span>
+          </button>`).join("")
+      : `<div class="list-add-empty">${(searchFormulas(query).results || []).length
+            ? "Everything matching that is already in this list."
+            : "No formula matches that."}</div>`;
+    renderMath(results);
+  }
+
   function renderListDetail(listId) {
     const userL = getList(listId);
     const l = userL || BUILTIN_BY_ID[listId];
@@ -2523,6 +2892,10 @@
         ${l.builtin ? "" : `<button class="list-tool" data-list-rename="${l.id}">Rename</button>`}
         ${entries.length ? `<button class="list-tool danger" data-list-clear="${l.id}">Clear</button>` : ""}
         ${l.builtin ? "" : `<button class="list-tool danger" data-list-delete="${l.id}">Delete list</button>`}
+      </div>
+      <div class="list-add" data-list-add="${l.id}">
+        <input type="search" class="list-add-input" placeholder="Search formulas to add&hellip;" autocomplete="off" aria-label="Search formulas to add to this list">
+        <div class="list-add-results" hidden></div>
       </div>`;
     const glyph = isBuiltin ? `<span class="list-ico">&#9670;</span>` : `<span class="list-emoji">${listGlyph(l)}</span>`;
     $content.innerHTML = `
@@ -2711,31 +3084,45 @@
   // ---------- Sidebar ----------
 
   function buildSidebar() {
-    // The sidebar reads as two books: the formula reference, and the catalog of
-    // recurring problem formats. A heading is emitted once per run of sections
-    // sharing a group, so adding a section needs no change here.
-    const GROUP_LABELS = { formulas: "Formulas", patterns: "Patterns" };
-    let lastGroup = null;
-    $sidebar.innerHTML = SECTIONS.map(section => {
-      const group = section.group || "formulas";
-      const heading = group === lastGroup ? ""
-        : `<div class="nav-group-label">${GROUP_LABELS[group] || group}</div>`;
-      lastGroup = group;
-      return heading + `
+    // The sidebar reads as two books, and only one is unfolded at a time: opening
+    // Formulas folds Patterns away entirely, and the reverse. Sections nest inside
+    // their group so the whole block collapses as one.
+    const order = [];
+    const byGroup = new Map();
+    SECTIONS.forEach(section => {
+      const g = groupOf(section);
+      if (!byGroup.has(g)) { byGroup.set(g, []); order.push(g); }
+      byGroup.get(g).push(section);
+    });
+    $sidebar.innerHTML = order.map(group => `
+      <div class="nav-group" data-group="${group}">
+        <button class="nav-group-btn" data-group="${group}" aria-expanded="false">
+          <span class="nav-group-label">${GROUP_LABELS[group] || group}</span>
+          <span class="nav-group-caret" aria-hidden="true"></span>
+        </button>
+        <div class="nav-group-body"><div class="nav-group-inner">
+          ${byGroup.get(group).map(section => `
       <div class="nav-section" data-section="${section.id}">
         <button class="nav-section-btn" data-section="${section.id}">
           <span>${section.title}</span>
           <span class="nav-count">${sectionCount(section)}</span>
         </button>
-        <div class="nav-subs">
+        <div class="nav-subs"><div class="nav-subs-inner">
           ${section.subsections.map((sub, i) =>
             `<a class="nav-sub-link" data-section="${section.id}" data-sub="${i}">${sub.title}</a>`
           ).join("")}
-        </div>
-      </div>`;
-    }).join("");
+        </div></div>
+      </div>`).join("")}
+        </div></div>
+      </div>`).join("");
 
     $sidebar.addEventListener("click", e => {
+      const groupBtn = e.target.closest(".nav-group-btn");
+      if (groupBtn) {
+        state.openGroup = groupBtn.dataset.group;
+        updateNavActive();
+        return;
+      }
       const btn = e.target.closest(".nav-section-btn");
       const link = e.target.closest(".nav-sub-link");
       // In the mobile drawer, the first tap on a section opens it (revealing its
@@ -2752,6 +3139,7 @@
         clearStarredFilter();
         stripHash();
         state.activeSectionId = secId;
+        state.openGroup = null;
         render();
         window.scrollTo({ top: 0 });
       } else if (link) {
@@ -2759,6 +3147,7 @@
         clearStarredFilter();
         stripHash();
         state.activeSectionId = link.dataset.section;
+        state.openGroup = null;
         // Cancel any smooth scroll still animating from a previous click before the
         // content is swapped. Otherwise that animation keeps running toward an offset
         // measured against the OLD section, and if the new one is shorter (Geometry is
@@ -2775,8 +3164,15 @@
 
   function updateNavActive() {
     const onHome = getRoute().type === "home";
+    const open = openGroupId();
+    $sidebar.querySelectorAll(".nav-group").forEach(el => {
+      const mine = el.dataset.group === open;
+      el.classList.toggle("open", mine);
+      el.querySelector(".nav-group-btn").setAttribute("aria-expanded", mine ? "true" : "false");
+    });
     $sidebar.querySelectorAll(".nav-section").forEach(el => {
-      const isActive = onHome && !state.query.trim() && !state.starredOnly && el.dataset.section === state.activeSectionId;
+      const isActive = onHome && !state.query.trim() && !state.starredOnly && !state.adv
+                       && el.dataset.section === state.activeSectionId;
       el.classList.toggle("open", isActive);
       el.querySelector(".nav-section-btn").classList.toggle("active", isActive);
     });
@@ -2846,6 +3242,7 @@
       state.query = $search.value;
       if (state.query.trim()) { state.adv = null; stripHash(); }
       render();
+      window.scrollTo({ top: 0, behavior: "instant" });
     }, 120);
   });
 
@@ -2858,6 +3255,7 @@
     state.query = $search.value;
     if (state.query.trim()) { state.adv = null; stripHash(); }
     render();
+    window.scrollTo({ top: 0, behavior: "instant" });
     $search.blur();
   });
 
@@ -2868,6 +3266,7 @@
     clearStarredFilter();
     stripHash();
     state.activeSectionId = SECTIONS[0].id;
+    state.openGroup = null;
     render();
     window.scrollTo({ top: 0 });
   });
@@ -3062,6 +3461,27 @@
     }
   });
 
+  // Hover previews for [[card links]]. mouseenter does not bubble, so delegate on
+  // mouseover/mouseout and gate on which element the pointer actually crossed into.
+  $content.addEventListener("mouseover", e => {
+    const a = e.target.closest(".card-link");
+    if (!a) return;
+    clearTimeout(cpTimer); clearTimeout(cpHide);
+    if (cpFor === a) return;
+    cpTimer = setTimeout(() => showCardPreview(a), 400);
+  });
+  $content.addEventListener("mouseout", e => {
+    const a = e.target.closest(".card-link");
+    if (!a) return;
+    if (e.relatedTarget && (a.contains(e.relatedTarget) || (cpEl && cpEl.contains(e.relatedTarget)))) return;
+    scheduleHideCardPreview();
+  });
+  window.addEventListener("scroll", hideCardPreview, { passive: true });
+  // Clicking the link navigates natively, so without these the box outlives the page it
+  // belonged to and reappears at its old page coordinates in the corner of the new one.
+  $content.addEventListener("click", e => { if (e.target.closest(".card-link")) hideCardPreview(); });
+  window.addEventListener("hashchange", hideCardPreview);
+
   $content.addEventListener("click", e => {
     const asyBtn = e.target.closest(".copy-asy-btn");
     if (asyBtn) {
@@ -3121,6 +3541,24 @@
     }
     const addlistBtn = e.target.closest(".addlist-btn");
     if (addlistBtn) { openListMenu(addlistBtn, addlistBtn.dataset.addlist); return; }
+    const addRow = e.target.closest("[data-list-add-id]");
+    if (addRow) {
+      const box = addRow.closest("[data-list-add]");
+      const listId = box.dataset.listAdd, fid = addRow.dataset.listAddId;
+      toggleMembership(listId, fid);
+      const q = box.querySelector(".list-add-input").value;
+      // Re-render the list so the count and the card grid pick the change up, then put the
+      // search box back the way it was so several cards can be added in one go.
+      renderListDetail(listId);
+      const box2 = $content.querySelector("[data-list-add]");
+      if (box2) {
+        const input = box2.querySelector(".list-add-input");
+        input.value = q;
+        renderListAddResults(box2, listId, q);
+        input.focus();
+      }
+      return;
+    }
     const topicChip = e.target.closest(".topic-chip");
     if (topicChip) { location.hash = "#/topic/" + topicChip.dataset.topic; window.scrollTo({ top: 0 }); return; }
     const rn = e.target.closest("[data-list-rename]");
@@ -3146,6 +3584,15 @@
     if (card) {
       openFormula(card.dataset.id);
     }
+  });
+
+  let listAddTimer = 0;
+  $content.addEventListener("input", e => {
+    const box = e.target.closest("[data-list-add]");
+    if (!box) return;
+    clearTimeout(listAddTimer);
+    const q = e.target.value;
+    listAddTimer = setTimeout(() => renderListAddResults(box, box.dataset.listAdd, q), 140);
   });
 
   $content.addEventListener("submit", e => {

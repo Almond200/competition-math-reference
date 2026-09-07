@@ -62,7 +62,7 @@
   add("pie", "2024 AIME II, Problem 1");
   add("counting-functions", "2024 AIME II, Problem 6");
   add("non-adjacent-selection", "2023 AIME I, Problem 11", "2025 AIME II, Problem 10");
-  add("fibonacci-tilings", "2025 AIME II, Problem 10");
+  add("recursive-counting", "2025 AIME II, Problem 10");
   add("double-counting", "2023 AIME I, Problem 3");
   add("expected-value", "2025 AIME I, Problem 13");
   add("plane-regions", "2025 AIME I, Problem 13");
@@ -106,7 +106,7 @@
   add("factor-remainder-theorem", "2020 AIME II, Problem 10");
   add("roots-of-unity", "2022 AIME I, Problem 4", "2021 AMC 12A, Problem 22");
   add("sophie-germain", "2020 AMC 10B, Problem 22");
-  add("generating-functions", "2022 AIME II, Problem 13");
+  add("generating-function-method", "2022 AIME II, Problem 13");
 
   // Number Theory
   add("lte", "2020 AIME I, Problem 12", "2021 AIME I, Problem 14");
@@ -125,7 +125,7 @@
   add("vandermonde", "2020 AIME I, Problem 7");
   add("stars-and-bars", "2021 AIME I, Problem 4");
   add("states-recursion-prob", "2021 AIME I, Problem 1", "2021 AIME I, Problem 12");
-  add("polyhedron-walks", "2021 AIME II, Problem 8");
+  add("states-recursion-prob", "2021 AIME II, Problem 8");
   add("multiset-permutations", "2022 AIME I, Problem 9");
   add("double-counting", "2022 AIME I, Problem 12");
   add("conditional-probability", "2022 AIME II, Problem 2");

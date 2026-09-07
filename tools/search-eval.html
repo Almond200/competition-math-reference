@@ -71,9 +71,13 @@ function ready() {
   });
 }
 
+// Cache-bust both. A stale eval-queries.json is silent and vicious: the labels name cards
+// that were since renamed or merged away, every one of those queries reports as a miss, and
+// the run looks like a real regression. This has cost two false alarms already.
+const nocache = u => u + "?cb=" + Date.now();
 async function load() {
-  CASES = (await (await fetch("eval-queries.json")).json()).cases;
-  try { BASE = await (await fetch("eval-baseline.json")).json(); } catch (e) { BASE = null; }
+  CASES = (await (await fetch(nocache("eval-queries.json"))).json()).cases;
+  try { BASE = await (await fetch(nocache("eval-baseline.json"))).json(); } catch (e) { BASE = null; }
 }
 
 function run(api) {

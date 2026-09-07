@@ -38,16 +38,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "extended-euclidean-algorithm",
-          name: "Extended Euclidean Algorithm",
-          type: "method",
-          latex: String.raw`ax + by = \gcd(a, b), \qquad (x, y) = \big(y',\ x' - \lfloor a/b \rfloor\, y'\big) \text{ from } b\,x' + (a \bmod b)\,y' = \gcd(b, a \bmod b)`,
-          description: String.raw`Runs the Euclidean algorithm while tracking Bézout coefficients, producing integers $x, y$ with $ax + by = \gcd(a, b)$ in the same number of steps. Back-substitute the division equations (or carry the coefficients with the recurrence above). Its main jobs: computing a modular inverse — if $\gcd(a, m) = 1$ then $ax + my = 1$ gives $a^{-1} \equiv x \pmod m$ — and solving linear Diophantine equations $ax + by = c$ by scaling the coefficients by $c/\gcd$.`,
-          keywords: ["extended euclidean algorithm", "bezout coefficients", "modular inverse", "back substitution", "ax + by = gcd", "linear diophantine solution"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
           id: "divisibility-rules",
           name: "Divisibility Rules",
           latex: String.raw`3, 9: \text{digit sum}; \quad 11: \text{alternating digit sum}; \quad 4, 8: \text{last } 2, 3 \text{ digits}`,
@@ -247,7 +237,6 @@ window.MATH_SECTIONS.push({
         {
           id: "crt",
           name: "Chinese Remainder Theorem",
-          type: "method",
           latex: String.raw`\begin{cases} x \equiv a_1 \pmod{n_1} \\ x \equiv a_2 \pmod{n_2} \\ \;\;\vdots \\ x \equiv a_k \pmod{n_k} \end{cases} \implies x \text{ unique} \pmod{n_1 n_2 \cdots n_k}`,
           description: String.raw`With pairwise coprime moduli, there is a unique solution mod $n_1 n_2 \cdots n_k$. Solve big-modulus problems by splitting into prime-power pieces and recombining.`,
           example: String.raw`$x \equiv 2 \pmod 3$ and $x \equiv 3 \pmod 5$: numbers that are $3 \bmod 5$ are $3, 8, 13, \dots$ — and $8 \equiv 2 \pmod 3$, so $x \equiv 8 \pmod{15}$.`,
@@ -298,17 +287,6 @@ window.MATH_SECTIONS.push({
           description: String.raw`For odd prime $p$: the power is $+1$ if $a$ is a nonzero square mod $p$, $-1$ otherwise. $-1$ is a square mod $p$ iff $p \equiv 1 \pmod 4$.`,
           keywords: ["quadratic residue", "legendre symbol", "minus one square", "euler criterion", "quadratic residue test", "a to the (p-1)/2 mod p"],
           importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "hensel-lifting",
-          name: "Hensel Lifting",
-          type: "method",
-          latex: String.raw`f(a) \equiv 0 \!\!\pmod{p}, \; f'(a) \not\equiv 0 \!\!\pmod{p} \implies \text{unique lift mod } p^2`,
-          description: String.raw`Write $x = a + pt$ and expand: $f(a + pt) \equiv f(a) + pt\,f'(a) \pmod{p^2}$, a linear congruence in $t$. Each simple root mod $p$ lifts to exactly one root mod $p^2$ (and onward to $p^3, \dots$). The standard tool for "divisible by $p^2$" power congruences.`,
-          example: String.raw`(2024 AIME I #13) $n^4 \equiv -1 \pmod{p}$ needs $8 \mid p - 1$, so the least prime is $p = 17$ (e.g. $2^4 = 16 \equiv -1$). Lifting $n = 2 + 17t$ into $n^4 \equiv -1 \pmod{289}$ gives a linear condition on $t$, and the least positive solution overall is $m = 110$.`,
-          keywords: ["hensel", "lift mod p squared", "p squared divides", "linear congruence", "simple root", "lifting solutions mod p"],
-          importance: "medium",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -437,17 +415,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "lte",
-          name: "Lifting the Exponent (LTE)",
-          type: "method",
-          latex: String.raw`v_p(a^n - b^n) = v_p(a - b) + v_p(n), \qquad v_2(a^n - b^n) = v_2(a - b) + v_2(a + b) + v_2(n) - 1`,
-          description: String.raw`For odd prime $p \mid a - b$ with $p \nmid a, b$. For $p = 2$ (with $4 \mid a - b$, or adjust): $v_2(a^n - b^n) = v_2(a-b) + v_2(a+b) + v_2(n) - 1$ for even $n$.`,
-          example: String.raw`Largest power of $3$ dividing $4^9 - 1$: $v_3(4^9 - 1^9) = v_3(4-1) + v_3(9) = 1 + 2 = 3$. Check: $4^9 - 1 = 262143 = 27 \cdot 9709$. ✓`,
-          keywords: ["lte", "valuation of difference of powers", "largest power dividing", "lifting the exponent lemma", "v_p of a^n minus b^n", "p-adic valuation of a difference"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "primes-6k",
           name: String.raw`Primes Are $6k \pm 1$`,
           latex: String.raw`p > 3 \implies p \equiv \pm 1 \pmod{6}`,
@@ -539,7 +506,7 @@ window.MATH_SECTIONS.push({
           name: "Sum of Two Squares Theorem",
           latex: String.raw`n = a^2 + b^2 \iff v_p(n) \text{ even for all } p \equiv 3 \!\!\pmod 4`,
           description: String.raw`A positive integer is a sum of two squares iff every prime factor $\equiv 3 \pmod 4$ appears to an even power. The prime case is Fermat's two-square theorem: $p \equiv 1 \pmod 4$ is a sum of two squares in exactly one way, which is what makes the general criterion constructive.`,
-          keywords: ["two squares", "representable", "primes 1 mod 4", "sum of two squares theorem", "expressible as two squares", "primes 1 mod 4", "fermat two square theorem"],
+          keywords: ["fermat two square theorem", "two squares", "representable", "primes 1 mod 4", "sum of two squares theorem", "expressible as two squares", "primes 1 mod 4"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -569,16 +536,6 @@ window.MATH_SECTIONS.push({
           keywords: ["a squared minus b squared", "representable", "factor parity", "difference of two squares representation", "which numbers are a difference of squares", "not two mod four"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "fermat-two-squares",
-          name: "Fermat's Two-Square Theorem",
-          type: "method",
-          latex: String.raw`p \equiv 1 \!\!\pmod 4 \iff p = a^2 + b^2 \quad (p \text{ an odd prime}), \qquad \text{and } a, b \text{ are unique up to order and sign}`,
-          description: String.raw`An odd prime is a sum of two squares exactly when it is $1 \bmod 4$, and then in only one way. The uniqueness is what makes it a tool rather than a curiosity: it pins down the two squares, so any configuration built from a prime that is $1 \bmod 4$ is forced. The most common disguise is a right triangle whose hypotenuse is a given prime.`,
-          keywords: ["fermat two square theorem", "fermat's theorem on sums of two squares", "prime as a sum of two squares", "primes 1 mod 4", "p = a^2 + b^2", "prime hypotenuse", "unique representation as two squares", "brahmagupta fibonacci identity", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "sum-of-three-squares",
@@ -655,15 +612,6 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\#\text{digits of } n \text{ in base } b = \lfloor \log_b n \rfloor + 1`,
           description: String.raw`E.g. $2^{100}$ has $\lfloor 100 \log_{10} 2 \rfloor + 1 = 31$ digits. Remember $\log_{10} 2 \approx 0.3010$ and $\log_{10} 3 \approx 0.4771$.`,
           keywords: ["digits", "log", "how many digits", "leading digit"],
-          importance: "medium",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "recognition-numbers",
-          name: "Numbers Worth Recognizing",
-          latex: String.raw`1001 = 7 \cdot 11 \cdot 13, \qquad 999 = 3^3 \cdot 37, \qquad 1024 = 2^{10}, \qquad 1729 = 7 \cdot 13 \cdot 19`,
-          description: String.raw`The "fake primes" — products of two primes that look prime: $91 = 7 \cdot 13$, $119 = 7 \cdot 17$, $133 = 7 \cdot 19$, $143 = 11 \cdot 13$, $187 = 11 \cdot 17$, $221 = 13 \cdot 17$, $247 = 13 \cdot 19$, $323 = 17 \cdot 19$. Also: $111 = 3 \cdot 37$, powers of 2 through $2^{10} = 1024 \approx 10^3$, $7! = 5040$, $10! = 3{,}628{,}800$, and the estimates $\sqrt2 \approx 1.414$, $\sqrt3 \approx 1.732$, $\sqrt5 \approx 2.236$, $\pi \approx 3.1416$.`,
-          keywords: ["1001", "fake primes", "recognize factorizations", "powers of 2", "memorize constants", "1729", "sqrt approximations"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         }
@@ -812,51 +760,6 @@ window.MATH_SECTIONS.push({
           keywords: ["142857", "cyclic number", "1/7 decimal", "narcissistic number", "armstrong number", "153", "kaprekar constant", "6174", "digit curiosities", "recreational"],
           importance: "lowest",
           level: ["MATHCOUNTS"]
-        }
-      ]
-    },
-    {
-      title: "Problem-Solving Methods",
-      formulas: [
-        {
-          id: "gcd-substitution",
-          name: "GCD Substitution",
-          type: "method",
-          latex: String.raw`d = \gcd(a, b): \quad a = dx, \; b = dy, \; \gcd(x, y) = 1, \qquad \operatorname{lcm}(a, b) = dxy`,
-          description: String.raw`The opening move on any gcd/lcm problem: factor out the gcd so the remaining parts $x, y$ are coprime. Every condition simplifies — $ab = d^2xy$, $a + b = d(x+y)$, $\frac{\operatorname{lcm}}{\gcd} = xy$ — and coprimality unlocks unique-factorization arguments on $x$ and $y$ separately.`,
-          keywords: ["gcd substitution", "a = dx b = dy", "coprime parts", "factor out gcd", "gcd lcm system", "method"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AIME"]
-        },
-        {
-          id: "choose-modulus",
-          name: "Choosing the Right Modulus",
-          type: "method",
-          latex: String.raw`\text{squares} \bmod 4 \in \{0, 1\}, \qquad \text{squares} \bmod 8 \in \{0, 1, 4\}, \qquad \text{cubes} \bmod 9 \in \{0, \pm 1\}`,
-          description: String.raw`To kill an integer equation or force a case, reduce mod a modulus that collapses one side: $4$ or $8$ against squares, $9$ against cubes and digit sums, $10$ for last digits, $p$ to erase every term with a factor of $p$. If the two sides can't agree mod $m$, there are no solutions at all.`,
-          keywords: ["choose modulus", "mod trick", "no integer solutions", "impossible equation", "reduce mod", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "exponent-tracking",
-          name: "Prime Exponent Tracking",
-          type: "method",
-          latex: String.raw`\gcd \to \min(e_i, f_i), \quad \operatorname{lcm} \to \max(e_i, f_i), \quad \text{product} \to e_i + f_i, \quad \text{square} \to \text{all } e_i \text{ even}`,
-          description: String.raw`Every divisibility, gcd, lcm, perfect-power, and divisor-count condition is secretly a statement about prime exponents, one prime at a time. Write each number as $\prod p^{e_i}$, translate the conditions into min / max / sum / parity constraints on the exponents, and solve prime by prime — the primes never interact, so a hard multi-number condition splits into independent tiny problems.`,
-          keywords: ["exponent tracking", "prime factorization method", "min max exponents", "gcd lcm exponents", "perfect power parity", "method"],
-          importance: "high",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "bounding-diophantine",
-          name: "Bounding \& Finite Check",
-          type: "method",
-          latex: String.raw`\text{order the variables} \Rightarrow \text{the smallest is bounded} \Rightarrow \text{finite check}`,
-          description: String.raw`For a symmetric equation in positive integers, order the variables. The smallest one is then squeezed: in $\frac{1}{x} + \frac{1}{y} + \frac{1}{z} = 1$, the largest term is at least $\frac{1}{3}$ of the total, forcing $x \le 3$. Each surviving value of $x$ reduces the problem by one variable, and the recursion terminates in a short finite check.`,
-          keywords: ["bounding", "wlog ordering", "finitely many solutions", "smallest variable bound", "unit fractions", "finite check", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
         }
       ]
     }

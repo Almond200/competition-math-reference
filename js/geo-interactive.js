@@ -199,6 +199,46 @@
     });
   } };
 
+  // ---------- Symmedians & the Lemoine point ----------
+  W["lemoine-point"] = { mount: function (host) {
+    mountGeo(host, {
+      title: "Symmedians and the Lemoine point",
+      hint: "Drag the vertices. Watch the two ratios stay locked together.",
+      w: 430, h: 350,
+      init: { A: [175, 58], B: [62, 288], C: [372, 268] },
+      drag: { A: {}, B: {}, C: {} },
+      render: function (p) {
+        var a = dist(p.B, p.C), b = dist(p.A, p.C), c = dist(p.A, p.B);
+        var w = a * a + b * b + c * c;
+        var K = [(a * a * p.A[0] + b * b * p.B[0] + c * c * p.C[0]) / w,
+                 (a * a * p.A[1] + b * b * p.B[1] + c * c * p.C[1]) / w];
+        var Sa = add(p.B, mul(sub(p.C, p.B), (c * c) / (b * b + c * c)));
+        var Sb = add(p.C, mul(sub(p.A, p.C), (a * a) / (c * c + a * a)));
+        var Sc = add(p.A, mul(sub(p.B, p.A), (b * b) / (a * a + b * b)));
+        var M = mid(p.B, p.C);
+        var Fa = foot(K, p.B, p.C), Fb = foot(K, p.C, p.A), Fc = foot(K, p.A, p.B);
+        var da = dist(K, Fa), db = dist(K, Fb), dc = dist(K, Fc);
+        var body =
+          polyS([p.A, p.B, p.C], "gtri") +
+          seg(p.A, M, "gl-gold") +
+          seg(p.A, Sa, "gl-acc") + seg(p.B, Sb, "gl-acc") + seg(p.C, Sc, "gl-acc") +
+          seg(K, Fa, "gl-dash") + seg(K, Fb, "gl-dash") + seg(K, Fc, "gl-dash") +
+          dotS(M, "gd-gold", 3.5) + dotS(Sa, "gd-acc", 3.5) +
+          dotS(Fa, "gd", 2.5) + dotS(Fb, "gd", 2.5) + dotS(Fc, "gd", 2.5) +
+          dotS(p.A, "gd") + dotS(p.B, "gd") + dotS(p.C, "gd") + dotS(K, "gd-gold", 5) +
+          lbl(p.A, K, "A") + lbl(p.B, K, "B") + lbl(p.C, K, "C") +
+          txt(add(K, [9, -9]), "K", "gt-gold") + txt(add(M, [2, 18]), "M", "gt-gold");
+        var tri = function (x, y, z) { return "1 : " + fmt(y / x) + " : " + fmt(z / x); };
+        return { body: body, caption:
+          "K's distances to the sides are in ratio " + tri(da, db, dc) +
+          ", and the sides a : b : c are in ratio " + tri(a, b, c) +
+          ". The A-symmedian splits BC as 1 : " + fmt((b * b) / (c * c)) +
+          ", the square of the side ratio 1 : " + fmt(b / c) +
+          "; the median M splits it 1 : 1." };
+      }
+    });
+  } };
+
   // ---------- Power of a point ----------
   W["power-of-a-point"] = { mount: function (host) {
     var cen = [215, 175], r = 115;

@@ -44,9 +44,11 @@
     { q: String.raw`In how many ways can $5$ identical red balls and $8$ identical blue balls be arranged in a row so that no two red balls are adjacent?`,
       s: String.raw`Lay down the $8$ blue balls first; they create $9$ gaps. Choose $5$ of the gaps for the reds: $\binom{9}{5}=\mathbf{126}$.` }
   );
-  add("digit-counting",
+  add("constructive-counting",
     { q: String.raw`How many integers from $1$ to $9999$ have strictly increasing digits (left to right)?`,
-      s: String.raw`A strictly increasing number is determined by which digits it uses — any nonempty subset of $\{1,\dots,9\}$ (a $0$ could only lead, which is disallowed) written in order. With lengths $1$–$4$: $\binom91+\binom92+\binom93+\binom94=9+36+84+126=\mathbf{255}$.` }
+      s: String.raw`A strictly increasing number is determined by which digits it uses — any nonempty subset of $\{1,\dots,9\}$ (a $0$ could only lead, which is disallowed) written in order. With lengths $1$–$4$: $\binom91+\binom92+\binom93+\binom94=9+36+84+126=\mathbf{255}$.` },
+    { q: String.raw`How many integers from $1$ to $999$ contain no digit $7$?`,
+      s: String.raw`View each as a 3-digit string (leading zeros allowed) over the $9$ digits $\{0,\dots,9\}\setminus\{7\}$: $9^3 = 729$ strings, minus $000$, gives $\mathbf{728}$.` }
   );
   add("sos-method",
     { q: String.raw`Prove $2(a^3+b^3+c^3)\ge a^2b+ab^2+b^2c+bc^2+c^2a+ca^2$ for nonnegative reals.`,

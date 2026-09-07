@@ -177,7 +177,7 @@ window.MATH_SECTIONS.push({
         {
           id: "trapezoid-parallelogram-areas",
           name: "Quadrilateral Areas",
-          latex: String.raw`A_{\text{trap}} = \frac{(b_1+b_2)h}{2}, \quad A_{\text{par}} = bh, \quad A_{\text{rhomb/kite}} = \frac{d_1 d_2}{2}`,
+          latex: String.raw`A_{\text{trapezoid}} = \frac{(b_1+b_2)h}{2}, \quad A_{\text{parallelogram}} = bh, \quad A_{\text{rhomb/kite}} = \frac{d_1 d_2}{2}`,
           description: String.raw`The diagonal formula $\frac{d_1 d_2}{2}$ works for any quadrilateral with perpendicular diagonals.`,
           keywords: ["trapezoid", "parallelogram", "rhombus", "kite", "diagonals", "perpendicular"],
           importance: "high",
@@ -186,7 +186,7 @@ window.MATH_SECTIONS.push({
         {
           id: "trapezoid-special-segments",
           name: "The Four Mean Segments of a Trapezoid",
-          latex: String.raw`\text{midseg} = \frac{a+b}{2}, \quad \text{through diagonals} = \frac{2ab}{a+b}, \quad \text{similar split} = \sqrt{ab}, \quad \text{equal areas} = \sqrt{\tfrac{a^2+b^2}{2}}`,
+          latex: String.raw`\text{midsegment} = \frac{a+b}{2}, \quad \text{through diagonals} = \frac{2ab}{a+b}, \quad \text{similar split} = \sqrt{ab}, \quad \text{equal areas} = \sqrt{\tfrac{a^2+b^2}{2}}`,
           description: String.raw`Four parallel-to-the-bases segments, one per classical mean of the bases $a, b$: the midsegment (arithmetic), the segment through the diagonals' intersection (harmonic), the one splitting the trapezoid into two similar trapezoids (geometric), and the one splitting it into two equal areas (quadratic). They occur in the mean-inequality order HM $\le$ GM $\le$ AM $\le$ QM.`,
           keywords: ["trapezoid segment", "harmonic mean segment", "through diagonal intersection", "parallel to bases", "equal area segment"],
           importance: "medium",
@@ -208,6 +208,15 @@ window.MATH_SECTIONS.push({
       title: "Triangle Areas & Radii",
       formulas: [
         {
+          id: "area-method",
+          name: "Area Ratio from Base Ratios",
+          latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
+          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
+          keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
+          importance: "high",
+          level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
           id: "triangle-area-standard",
           name: "Standard Triangle Area",
           latex: String.raw`A = \frac{1}{2} b h`,
@@ -228,7 +237,7 @@ window.MATH_SECTIONS.push({
         {
           id: "max-rectangle-in-triangle",
           name: "Largest Rectangle in a Triangle",
-          latex: String.raw`A_{\text{rect}}^{\max} = \tfrac{1}{2}\,[\triangle]`,
+          latex: String.raw`A_{\text{rectangle}}^{\max} = \tfrac{1}{2}\,[\triangle]`,
           description: String.raw`The largest rectangle inscribed in a triangle with one side on a chosen base has area exactly half the triangle's. Its top edge lies on the midline (half the height), so its width is half that base and its height half the altitude: $\frac{b}{2}\cdot\frac{h}{2}=\frac{bh}{4}=\frac12[\triangle]$. The one-half ratio is the same whichever side you build it on.`,
           keywords: ["inscribed rectangle", "largest rectangle in a triangle", "maximum area rectangle", "half the area", "rectangle in triangle", "midline rectangle", "optimization"],
           importance: "low",
@@ -432,16 +441,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME", "Olympiad"]
         },
         {
-          id: "perp-to-angle-bisector",
-          name: "Perpendicular to an Angle Bisector (Reflect & Double)",
-          type: "method",
-          latex: String.raw`BP = c\sin\tfrac A2, \quad B' = \text{reflection of } B \text{ over the } A\text{-bisector} \in \overline{AC},\ AB' = c; \qquad PM = \tfrac{|b-c|}{2} \parallel AC`,
-          description: String.raw`The bisector of angle $A$ is a mirror that swaps ray $AB$ with ray $AC$. So the standard move — drop a perpendicular from $B$ to the bisector and extend it to double its length — reflects $B$ across the bisector: the foot $P$ is the midpoint, and the far end $B'$ lands on line $AC$ with $AB' = AB = c$. Consequences you can read off: the perpendicular length is $BP = c\sin\frac A2$ (so $BB' = 2c\sin\frac A2$), and $B'C = |b - c|$. Joining $P$ to the midpoint $M$ of $BC$ makes a midline of $\triangle BB'C$, so $PM \parallel AC$ with $PM = \frac{|b-c|}{2}$ — the quick way to locate that foot and get lengths in any angle-bisector configuration.`,
-          keywords: ["perpendicular to angle bisector", "reflect over bisector", "double the perpendicular", "foot of perpendicular to bisector", "c sin A/2", "b minus c over 2", "midline b-c", "auxiliary construction", "angle bisector mirror", "drop perpendicular and extend"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "stewarts-theorem",
           name: "Stewart's Theorem",
           latex: String.raw`a(d^2 + mn) = b^2 m + c^2 n`,
@@ -626,7 +625,7 @@ window.MATH_SECTIONS.push({
           id: "medial-triangle",
           name: "Medial Triangle",
           latex: String.raw`\triangle_{\text{med}} \sim \triangle ABC \ \big(\text{ratio } \tfrac12\big), \quad [\triangle_{\text{med}}] = \tfrac14 [ABC], \quad \text{perimeter} = s = \tfrac{a+b+c}{2}`,
-          description: String.raw`Joining the side midpoints gives the medial triangle: similar to $ABC$ with ratio $\frac12$ — quarter the area, half the perimeter ($= s$), sides parallel to $ABC$'s — splitting $ABC$ into four congruent triangles. The homothety at the centroid $G$ with ratio $-\frac12$ maps $ABC$ onto it (they share $G$). Its circumcircle is the nine-point circle (so its circumcenter is the nine-point center $N$), its incircle is the Spieker circle centered at the Spieker point (the incenter of the medial triangle = the centroid of $ABC$'s perimeter), and its orthocenter is the circumcenter $O$ of $ABC$ — so the medial triangle's own Euler-line facts translate straight back into $ABC$'s centers.`,
+          description: String.raw`Joining the side midpoints gives the medial triangle: similar to $ABC$ with ratio $\frac12$ — quarter the area, half the perimeter ($= s$), sides parallel to $ABC$'s — splitting $ABC$ into four congruent triangles. The homothety at the centroid $G$ with ratio $-\frac12$ maps $ABC$ onto it (they share $G$). Its circumcircle is the nine-point circle (so its circumcenter is the nine-point center $N$), its incircle is the Spieker circle, and its orthocenter is the circumcenter $O$ of $ABC$ — so the medial triangle's own Euler-line facts translate straight back into $ABC$'s centers.`,
           keywords: ["medial triangle", "midpoint triangle", "midpoints of sides", "similar ratio one half", "quarter area", "half perimeter", "four congruent triangles", "homothety centroid -1/2", "spieker circle", "spieker point", "nine point circle", "orthocenter is O"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -712,11 +711,11 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "symmedian-lemoine",
-          name: "Symmedians & the Lemoine Point",
-          latex: String.raw`\text{symmedian} = \text{median reflected over the bisector};\ \ BD:DC = c^2 : b^2`,
-          description: String.raw`The symmedian from $A$ cuts $BC$ in the ratio of the squares of the adjacent sides (the median's $1:1$, twisted by the reflection). All three symmedians meet at the Lemoine point, which minimizes the sum of squared distances to the sides. The tangent-intersection construction: tangents to the circumcircle at $B$ and $C$ meet on the $A$-symmedian.`,
-          example: String.raw`In a triangle with $AB = c = 6$ and $AC = b = 4$, the symmedian from $A$ meets $BC$ dividing it as $BD:DC = 36:16 = 9:4$ — versus the median's $1:1$ and the bisector's $6:4$.`,
-          keywords: ["symmedian", "lemoine point", "squares of sides", "tangent intersection", "reflected median"],
+          name: "Symmedians",
+          latex: String.raw`\text{symmedian} = \text{median reflected over the bisector}, \qquad BE : EC = c^2 : b^2`,
+          description: String.raw`The symmedian from $A$ is the median reflected over the angle bisector at $A$, and reflecting swaps the two adjacent sides, so the median's even split becomes $BE : EC = c^2 : b^2$. Equivalently it is the locus of points whose distances to $AB$ and $AC$ are in ratio $c : b$, where the bisector is the locus of equal distances and the median the locus of ratio $b : c$. Test an unknown cevian by dropping perpendiculars from $B$ and $C$ onto it: equal means median, ratio $c^2 : b^2$ means symmedian.`,
+          example: String.raw`With $AB = c = 6$ and $AC = b = 4$, the symmedian from $A$ meets $BC$ at $E$ with $BE : EC = 36 : 16 = 9 : 4$, against the median's $1 : 1$ and the bisector's $6 : 4$.`,
+          keywords: ["symmedian", "reflected median", "squares of sides", "isogonal to the median", "distances proportional to sides", "antiparallel", "perpendiculars to a cevian", "BE:EC = c^2:b^2"],
           importance: "low",
           level: ["AIME", "Olympiad"]
         },
@@ -784,7 +783,7 @@ window.MATH_SECTIONS.push({
           id: "triangle-center-angles",
           name: "Angles at the Triangle Centers",
           latex: String.raw`\angle BOC = 2A, \quad \angle BIC = 90^\circ + \tfrac{A}{2}, \quad \angle BI_AC = 90^\circ - \tfrac{A}{2}, \quad \angle BHC = 180^\circ - A`,
-          description: String.raw`Looking at side $BC$ from each center: the circumcenter $O$ sees the central angle $2A$ (double the inscribed $\angle A$); the incenter $I$ sees $90^\circ + \tfrac{A}{2}$ (from the half-angle bisectors); the $A$-excenter $I_A$ sees $90^\circ - \tfrac{A}{2}$ (the incenter's supplement); and the orthocenter $H$ sees $180^\circ - A$. Each follows from a one-line angle chase and turns up constantly in configuration problems.`,
+          description: String.raw`All four angles are subtended by the same side $BC$, seen from four different centres, and $A$ throughout means the triangle's angle at vertex $A$. The circumcentre $O$ sees the central angle $\angle BOC = 2A$, double the inscribed angle. The incentre $I$ sees $\angle BIC = 90^\circ + \tfrac{A}{2}$, which comes from the two half-angle bisectors at $B$ and $C$. The $A$-excentre $I_A$, the centre of the circle touching $BC$ and the extensions of the other two sides, sees $\angle BI_AC = 90^\circ - \tfrac{A}{2}$, the incentre's supplement. The orthocentre $H$ sees $\angle BHC = 180^\circ - A$. The figures show $O$ and $I$ on the first panel and $H$ and $I_A$ on the second, since the excentre lies well outside the triangle.`,
           keywords: ["angle BIC", "angle BOC", "angle BHC", "angle B I_A C", "incenter angle", "excenter angle 90 - A/2", "circumcenter central angle", "orthocenter angle", "90 plus half A"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -795,6 +794,33 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\{A,B,C,H\}:\ \text{each is the orthocenter of the other three}`,
           description: String.raw`A triangle together with its orthocenter, $\{A, B, C, H\}$, forms an orthocentric system: any one of the four points is the orthocenter of the triangle on the other three, so $H$ and the vertices play interchangeable roles. All four triangles $ABC$, $HBC$, $HCA$, $HAB$ share a single common nine-point circle, and their four circumcircles are congruent — each has radius $R$, because $\odot(HBC)$ is exactly the reflection of $\odot(ABC)$ across $BC$. (Their four circumcenters form a second orthocentric system, congruent to the first.)`,
           keywords: ["orthocentric system", "orthocenter of the other three", "four points orthocentric", "shared nine-point circle", "congruent circumcircles radius R", "reflection of circumcircle over side", "H and vertices symmetric"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "harmonic-quadrilateral",
+          name: "Harmonic Quadrilaterals & the Symmedian in a Circle",
+          latex: String.raw`\frac{BD}{CD} = \frac{AB}{AC} \iff AD \text{ is the } A\text{-symmedian}, \qquad \frac{BE}{CE} = \left(\frac{AB}{AC}\right)^{2}`,
+          description: String.raw`The tangents to the circumcircle at $B$ and $C$ meet at the pole $X$ of $BC$, and $AX$ is the $A$-symmedian. Extending it to meet the circle again at $D$ makes $ABDC$ a harmonic quadrilateral, meaning $AB \cdot CD = AC \cdot BD$. The engine is a pair of similar triangles: $XB = XC$ as tangent lengths and $XB^2 = XA \cdot XD$ by power of a point, so $\triangle XBA \sim \triangle XDB$ and $\triangle XCA \sim \triangle XDC$. Both proportions run in both directions, so either one is a test for the symmedian rather than just a consequence of it.`,
+          keywords: ["harmonic quadrilateral", "symmedian in a circle", "tangents meet on the symmedian", "pole of BC", "BD/CD = AB/AC", "similar triangles from tangents", "power of a point symmedian", "AB*CD = AC*BD", "second intersection of the symmedian"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "lemoine-point",
+          name: "The Lemoine Point (Symmedian Point)",
+          latex: String.raw`K = (a^2 : b^2 : c^2), \qquad d_a : d_b : d_c = a : b : c`,
+          description: String.raw`The three symmedians concur at the Lemoine point $K$, the isogonal conjugate of the centroid. Its distances to the three sides are proportional to $a, b, c$, and it is the unique point of the plane minimizing the sum of the squares of those distances. It is also the centroid of its own pedal triangle, which is the cleanest route to that minimization.`,
+          keywords: ["lemoine point", "symmedian point", "grebe point", "K point", "isogonal conjugate of the centroid", "minimize sum of squared distances to the sides", "pedal triangle centroid", "a^2 : b^2 : c^2", "concurrent symmedians"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "spieker-point",
+          name: "The Spieker Point & Spieker Circle",
+          latex: String.raw`S = (b+c : c+a : a+b), \qquad r_S = \tfrac{r}{2}, \qquad I,\; G,\; S,\; N \text{ collinear}`,
+          description: String.raw`The incenter of the medial triangle, and equivalently the centroid of the triangle's perimeter, meaning the balance point of three uniform rods along the sides. That is not the centroid of the triangle's area, which is $G$; the distinction is the usual confusion. Its incircle, the Spieker circle, is the incircle of the medial triangle and has radius $\frac r2$. It sits on the Nagel line through $I$, $G$ and the Nagel point $N$, exactly at the midpoint of $IN$.`,
+          keywords: ["spieker point", "spieker center", "spieker circle", "incenter of the medial triangle", "centroid of the perimeter", "nagel line", "midpoint of IN", "cleaver", "triangle center"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
         },
@@ -1183,6 +1209,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
+          id: "line-forms",
+          name: "Forms of a Line",
+          latex: String.raw`y = mx + b, \qquad y - y_1 = m(x - x_1), \qquad Ax + By = C, \qquad \frac{x}{a} + \frac{y}{b} = 1`,
+          description: String.raw`The same line written four ways, each convenient for a different given. Slope-intercept reads off slope and $y$-intercept; point-slope is what you write the instant you know a slope and one point; standard form $Ax + By = C$ keeps integer coefficients and makes $\gcd$ and lattice-point questions clean; intercept form has $x$-intercept $a$ and $y$-intercept $b$ on sight. In standard form the slope is $-\frac{A}{B}$ and the normal vector is $(A, B)$.`,
+          keywords: ["slope intercept form", "point slope form", "standard form", "intercept form", "equation of a line", "y = mx + b", "Ax + By = C", "line through two points", "convert between forms", "normal vector of a line"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
           id: "angle-between-lines",
           name: "Angle Between Two Lines",
           latex: String.raw`\tan\theta = \left| \frac{m_1 - m_2}{1 + m_1 m_2} \right|`,
@@ -1503,6 +1538,15 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
+          id: "plane-intercept-form",
+          name: "Equation of a Plane from Its Intercepts",
+          latex: String.raw`\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1 \quad\Longleftrightarrow\quad bc\,x + ca\,y + ab\,z = abc`,
+          description: String.raw`A plane meeting the axes at $(a,0,0)$, $(0,b,0)$, $(0,0,c)$ with all three intercepts nonzero. Reading it off is immediate, and clearing denominators gives the standard form $Ax + By + Cz = D$ with normal vector $(bc, ca, ab)$. The tetrahedron this plane cuts from the first octant has volume $\frac{abc}{6}$.`,
+          keywords: ["plane from three intercepts", "intercept form of a plane", "equation of a plane", "x/a + y/b + z/c = 1", "normal vector of a plane", "tetrahedron cut from octant", "plane through three points on the axes"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "point-plane-distance",
           name: "Point-to-Plane Distance",
           latex: String.raw`d = \frac{|ax_0 + by_0 + cz_0 + d_0|}{\sqrt{a^2 + b^2 + c^2}}`,
@@ -1522,16 +1566,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
-          id: "cavalieris-principle",
-          name: "Cavalieri's Principle",
-          type: "method",
-          latex: String.raw`\text{equal cross-sections at every height} \Rightarrow \text{equal volumes}`,
-          description: String.raw`Two solids that every horizontal plane slices into cross-sections of equal area have the same volume — whatever their shapes. This is why an oblique prism or cylinder keeps $V = Bh$ (shear it upright, no slice changes), and it delivers the sphere's volume by comparing it to a cylinder with a cone removed.`,
-          keywords: ["cavalieri", "cross section", "equal slices equal volume", "oblique prism", "shear"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "pappus-centroid",
           name: "Pappus's Centroid Theorems",
           latex: String.raw`V = 2\pi d \cdot A, \qquad S = 2\pi d \cdot L, \qquad \text{torus: } V = 2\pi^2 R r^2, \; S = 4\pi^2 R r`,
@@ -1539,16 +1573,6 @@ window.MATH_SECTIONS.push({
           keywords: ["pappus", "centroid theorem", "solid of revolution", "volume of revolution", "surface of revolution", "torus volume", "torus surface"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "solid-tactics",
-          name: "The 3D Playbook",
-          type: "method",
-          latex: String.raw`\text{coordinatize} \;\to\; \text{slice} \;\to\; \text{unfold} \;\to\; \text{recount the volume}`,
-          description: String.raw`The four standard attacks on 3D problems: (1) coordinatize with right angles at the origin — boxes, cubes, and right pyramids become vector arithmetic; (2) slice through the axis or plane of symmetry — tangency and inscribed-solid problems collapse to 2D; (3) unfold surfaces flat — shortest paths on boxes and cones become straight segments; (4) compute the volume two ways with different bases — the second reading extracts an inaccessible height or distance via $h = \frac{3V}{A}$.`,
-          keywords: ["3d tactics", "coordinatize", "slice symmetry", "unfold surface", "volume two ways", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },
@@ -1625,6 +1649,15 @@ window.MATH_SECTIONS.push({
           level: ["Olympiad"]
         },
         {
+          id: "mobius-transformations",
+          name: "Möbius Transformations",
+          latex: String.raw`f(z) = \frac{az + b}{cz + d}, \quad ad - bc \ne 0 \qquad \text{cross-ratio and the family of lines-and-circles are preserved}`,
+          description: String.raw`The maps of the extended complex plane built from one fraction. Every one is a composition of translations, rotations, scalings and the single inversion $z \mapsto \frac1z$, which is why the whole family sends lines and circles to lines and circles, treating a line as a circle through $\infty$. They preserve angles and the cross-ratio, three points can be sent to any other three in exactly one way, and $c = 0$ recovers the affine maps $z \mapsto \alpha z + \beta$.`,
+          keywords: ["mobius transformation", "möbius", "linear fractional transformation", "(az+b)/(cz+d)", "extended complex plane", "circles to circles", "conformal", "cross ratio preserved", "three points determine it", "riemann sphere", "inversion as a map"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
           id: "cross-ratio",
           name: "Cross-Ratio",
           latex: String.raw`(A, B; C, D) = \frac{AC}{BC} \Big/ \frac{AD}{BD} = \frac{AC \cdot BD}{BC \cdot AD}`,
@@ -1650,175 +1683,6 @@ window.MATH_SECTIONS.push({
           keywords: ["complete quadrilateral", "miquel point", "four circumcircles", "spiral similarity center", "four lines", "newton gauss line", "concyclic circumcenters", "miquel"],
           importance: "lowest",
           level: ["Olympiad"]
-        },
-        {
-          id: "inversion-properties",
-          name: "Circle Inversion",
-          type: "method",
-          latex: String.raw`OP \cdot OP^* = r^2, \qquad P^*Q^* = \frac{r^2 \cdot PQ}{OP \cdot OQ}`,
-          description: String.raw`Inversion centered at $O$ with radius $r$ sends $P$ to $P^*$ on ray $OP$ with $OP\cdot OP^* = r^2$. Its rulebook: lines through $O$ map to themselves; lines not through $O$ map to circles through $O$ (and back); circles not through $O$ map to circles; it is conformal (preserving angles, and hence tangency) and swaps a circle's inside and outside. Distances scale by $P^*Q^* = \frac{r^2\,PQ}{OP\cdot OQ}$, the basis of "inversion distance" computations. Centering $O$ at a busy point where many circles and lines meet collapses tangency and concyclicity into straight-line problems; inverting at a point of tangency even turns a chain of mutually tangent circles into a row of parallel lines (the Steiner-chain trick). Drag the point in the interactive tool below to watch it happen.`,
-          keywords: ["inversion properties", "inverse point", "op op* = r^2", "line to circle", "conformal", "inversion distance formula", "circle preserving", "inversive geometry", "inversion"],
-          importance: "low",
-          level: ["Olympiad"]
-        }
-      ]
-    },
-    {
-      title: "Problem-Solving Methods",
-      formulas: [
-        {
-          id: "angle-chasing",
-          name: "Angle Chasing",
-          type: "method",
-          latex: String.raw`\text{label an angle } \theta, \text{ then propagate it through the figure}`,
-          description: String.raw`The default first attack on any figure. Assign $\theta$ to one unknown angle and push it through the four propagators — triangle sums, base angles of isosceles triangles (equal sides $\Rightarrow$ equal angles), parallel-line angle pairs, and inscribed-angle/cyclic-quad relations — until the target angle is expressed in $\theta$ and solved.`,
-          keywords: ["angle chasing", "label angles", "theta", "propagate", "first attack", "base angles", "method"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "mass-points",
-          name: "Mass Points",
-          type: "method",
-          latex: String.raw`m_B \cdot BD = m_C \cdot DC, \qquad m_D = m_B + m_C`,
-          description: String.raw`Balance the triangle like a seesaw: assign masses inversely proportional to the segments a cevian creates; the cevian intersection ratios then read off directly ($AP : PD = m_D : m_A$). The fastest tool for "cevians divide the sides in given ratios, find a ratio" problems.`,
-          example: String.raw`$BD : DC = 2 : 1$ and $AF : FB = 1 : 1$. Put $m_B = 1, m_C = 2$ (so $m_D = 3$), and $m_A = m_B = 1$. On cevian $AD$: $AP : PD = m_D : m_A = 3 : 1$.`,
-          keywords: ["mass points", "cevian ratios", "balance", "method", "lever"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "spiral-similarity",
-          name: "Spiral Similarity",
-          type: "method",
-          latex: String.raw`AB \mapsto CD: \text{ center } X = \text{second intersection of } \odot(APC),\, \odot(BPD)`,
-          description: String.raw`A rotation-plus-scaling carrying one segment to another. Its center lies on both circles through matched endpoint pairs (where $P = AC \cap BD$ or $AB \cap CD$). Explains "two circles + two lines" AIME configurations and computes cleanly with complex numbers: $z \mapsto a + k e^{i\theta}(z - a)$.`,
-          example: String.raw`If $\frac{XA}{XC} = \frac{XB}{XD}$ and $\angle AXB = \angle CXD$, then $\triangle XAB \sim \triangle XCD$ — spotting this similar-triangle pair around a common vertex is the practical form of the method.`,
-          keywords: ["spiral similarity", "rotation scaling", "similar triangles common vertex", "complex numbers", "method"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "homothety-monge",
-          name: "Homothety & Monge's Theorem",
-          type: "method",
-          latex: String.raw`X \mapsto P + k(X-P);\ \ \text{three external similitude centers are collinear}`,
-          description: String.raw`A homothety (dilation) about $P$ with ratio $k$ scales every figure by $k$ and maps each circle to a circle; two circles always admit an external (and usually internal) center of similitude where their common tangents cross. Monge: for three circles, the three external centers are collinear. Homothety centered at a tangency point is the standard move for tangent-circle configurations.`,
-          example: String.raw`Circles of radii $2$ and $6$ with centers $8$ apart: the external similitude center sits on the center line at distance $4$ before the small center (dividing externally in ratio $2:6$), and both external tangents pass through it.`,
-          keywords: ["homothety", "dilation", "similitude center", "monge", "external tangents", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "ravi-substitution",
-          name: "Ravi Substitution",
-          type: "method",
-          latex: String.raw`a = y + z, \quad b = z + x, \quad c = x + y \qquad (x, y, z > 0)`,
-          description: String.raw`Sides of a triangle are exactly the numbers expressible this way — $x, y, z$ are the incircle tangent lengths ($x = s - a$, etc.). The substitution turns the triangle inequality into mere positivity, and simplifies Heron to $A = \sqrt{xyz(x+y+z)}$ — ideal for triangle inequalities and integer-sided triangle counts.`,
-          example: String.raw`Counting triangles with perimeter $12$: $x + y + z = 6$ with $x, y, z > 0$ (integers or half-integers of matching parity) — for integer sides, count positive integer solutions up to symmetry: $(1,1,4), (1,2,3), (2,2,2)$ give sides $(5,5,2), (4,5,3), (4,4,4)$: exactly $3$ triangles.`,
-          keywords: ["ravi", "tangent length substitution", "triangle inequality free", "heron simplified", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "barycentric-coordinates",
-          name: "Barycentric Coordinates",
-          type: "method",
-          latex: String.raw`P = \alpha A + \beta B + \gamma C, \quad \alpha + \beta + \gamma = 1, \quad (\alpha : \beta : \gamma) = [PBC] : [PCA] : [PAB]`,
-          description: String.raw`Write each point as a mass-weighted average of the triangle's vertices; the normalized weights are the signed sub-triangle area ratios. Standard centers are clean: centroid $(1:1:1)$, incenter $(a:b:c)$, circumcenter $\bigl(a^2(b^2+c^2-a^2):\cdots\bigr)$, orthocenter $(\tan A:\tan B:\tan C)$. Cevians and lines become linear equations, and collinearity/concurrence become $3\times 3$ determinants — a coordinate system tailored to the triangle, ideal when a configuration is drowning in ratios and named centers.`,
-          keywords: ["barycentric coordinates", "areal coordinates", "area ratios", "mass points", "incenter circumcenter coordinates", "homogeneous coordinates", "method"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "coordinate-bash",
-          name: "Coordinate Bashing",
-          type: "method",
-          latex: String.raw`\text{put the figure on axes, then finish with distance / shoelace / slopes}`,
-          description: String.raw`When a synthetic attack stalls, drop the figure onto coordinates chosen to erase the algebra: a right angle at the origin, a side along the $x$-axis, a center or midpoint at the origin for symmetry. Then lengths, areas, collinearity, perpendicularity, and circle conditions all become computation — trading cleverness for reliability.`,
-          keywords: ["coordinate bash", "place on axes", "analytic geometry", "brute force geometry", "smart origin", "method"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "auxiliary-lines",
-          name: "Auxiliary Lines & Constructions",
-          type: "method",
-          latex: String.raw`\text{add the right segment: altitude, parallel, radius, or a reflected copy}`,
-          description: String.raw`The decisive move in synthetic geometry is often a line not yet drawn. The standard repertoire: drop a perpendicular (height, distance), translate a diagonal to fuse two lengths, extend a cevian to meet a parallel (spawning similar triangles), join the center to a point of tangency (right angle), or reflect/rotate a point to straighten a bent path.`,
-          keywords: ["auxiliary line", "construction", "drop perpendicular", "extend cevian", "add radius", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "trig-bash",
-          name: "Trig Bashing",
-          type: "method",
-          latex: String.raw`\text{name an angle } \theta \to \text{Law of Sines / Cosines} \to \text{solve for } \theta`,
-          description: String.raw`When a figure resists synthetic attack but is rich in angles, assign a variable to one angle (or one side), then push everything through $\frac{a}{\sin A} = 2R$, $c^2 = a^2 + b^2 - 2ab\cos C$, and $[ABC] = \frac{1}{2}ab\sin C$ until a single equation in $\theta$ remains. Sum-to-product and the triangle-angle identities finish it.`,
-          keywords: ["trig bash", "law of sines bash", "assign an angle", "trigonometric identity solve", "angle variable", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "complex-bash",
-          name: "Complex Number Bashing",
-          type: "method",
-          latex: String.raw`z \mapsto \omega z: \text{ rotation by } \arg\omega; \qquad \text{equilateral } \iff a^2 + b^2 + c^2 = ab + bc + ca`,
-          description: String.raw`Put the figure on the complex plane: multiplying by $e^{i\theta}$ rotates about the origin (about $p$: $z \mapsto p + e^{i\theta}(z - p)$), and scaling and rotating are one operation. Regular $n$-gon vertices are the roots of unity $\omega^k$, the centroid is $\frac{a+b+c}{3}$, and the orientation-free equilateral condition above collapses many rotation configurations to one line of algebra.`,
-          keywords: ["complex bash", "complex numbers geometry", "rotation by multiplication", "roots of unity polygon", "equilateral condition", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "affine-transformations",
-          name: "Affine Transformations",
-          type: "method",
-          latex: String.raw`\text{parallelism, midpoints, and area ratios are preserved} \qquad \text{ellipse} \xrightarrow{\text{scale}} \text{circle}, \;\; \text{triangle} \xrightarrow{\text{affine}} \text{equilateral}`,
-          description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths along a line, midpoints, and multiplies every area by the same constant — so ratios of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-ratio question cannot tell them apart. It does not preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities.`,
-          keywords: ["affine transformation", "shear", "scaling", "stretch", "ellipse to circle", "area ratio invariant", "map to equilateral", "wlog equilateral", "method"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "pole-polar",
-          name: "Pole, Polar & Harmonic Division",
-          type: "method",
-          latex: String.raw`\text{polar of } P = \text{chord of contact } AB \qquad (X, Y;\, P, Q) = -1`,
-          description: String.raw`The polar of a point $P$ with respect to a circle packages all of $P$'s tangent–secant data into one line: when $P$ is outside, its polar is the chord of contact $AB$ joining the two tangency points. Duality (La Hire): $P$ lies on the polar of $Q$ iff $Q$ lies on the polar of $P$ — so "these three points are collinear / these three lines concur" collapses to a one-line pole–polar statement. Every secant from $P$ meeting the circle at $X, Y$ and the polar at $Q$ yields the harmonic bundle $(X, Y; P, Q) = -1$, which is exactly what a tangents-and-secants figure produces, trivializing problems that would otherwise be pages of trig.`,
-          keywords: ["pole polar", "polar line", "chord of contact", "harmonic division", "harmonic conjugate", "cross ratio", "la hire", "projective geometry", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "directed-angles",
-          name: "Directed Angles (mod 180°)",
-          type: "method",
-          latex: String.raw`\angle(\ell_1, \ell_2) \bmod 180^\circ \qquad A, B, C, D \text{ concyclic} \iff \angle(CA, CB) = \angle(DA, DB)`,
-          description: String.raw`A directed angle $\angle(\ell_1, \ell_2)$ is the rotation carrying line $\ell_1$ to line $\ell_2$, read modulo $180^\circ$ (lines, not rays). This single convention erases configuration dependence: the concyclic test is always $\angle(CA, CB) = \angle(DA, DB)$, with no separate "equal vs. supplementary" branches for which side of the chord a point lands on. An angle-chase that would otherwise need a fresh diagram for every configuration becomes one computation valid for all of them. Trade-off: directed angles prove collinearity and concyclicity but carry no length information and no absolute sign, so they finish incidence problems, not metric ones.`,
-          keywords: ["directed angles", "mod 180", "configuration independence", "concyclic test", "angle chasing", "supplementary cases", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "phantom-point",
-          name: "Phantom Point Method",
-          type: "method",
-          latex: String.raw`\text{define } X' \text{ with the wanted property, then prove } X' = X`,
-          description: String.raw`To show a hard-to-pin point $X$ (a messy intersection) has some property — lies on a line, on a circle, at a tangency — reverse the construction: define a phantom point $X'$ that has the desired property by fiat, then prove $X' = X$. Coinciding two points is usually far easier than computing the ugly intersection directly. The standard closer: two circles (or a circle and a line) meet in at most two points, so if $X$ and $X'$ are both the second common point beyond a known one, they must be equal. It's the proof-writing twin of auxiliary constructions, aimed at concurrency, collinearity, and "prove the circle passes through this point."`,
-          keywords: ["phantom point", "ghost point", "prove points coincide", "second intersection", "concurrency", "reverse reconstruction", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "area-method",
-          name: "The Area Method (Area Ratios)",
-          type: "method",
-          latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
-          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
-          keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
-          importance: "high",
-          level: ["AMC12", "AIME", "Olympiad"]
         }
       ]
     }

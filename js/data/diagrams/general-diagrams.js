@@ -26,6 +26,27 @@
     `<polygon points="${pts.map(pf).join(" ")}" fill="${fill}" stroke="${c}" stroke-width="${w}"/>`;
   const txt = (p, s, c = DIM, size = 13, anchor = "middle") =>
     `<text x="${r1(p[0])}" y="${r1(p[1])}" fill="${c}" font-size="${size}" text-anchor="${anchor}">${s}</text>`;
+  // ---------- graph helpers ----------
+  // Map a math-coordinate window onto a pixel box, then sample a function into a path.
+  // Every graph card below needs both, and the two older graph entries (vertex-form,
+  // jensens-inequality) each open-code the sampling loop.
+  const frame = (x0, x1, y0, y1, L, T, W, H) => ({
+    sx: X => L + (X - x0) / (x1 - x0) * W,
+    sy: Y => T + H - (Y - y0) / (y1 - y0) * H,
+    pt(X, Y) { return [this.sx(X), this.sy(Y)]; },
+    x0, x1, y0, y1, L, T, W, H
+  });
+  const plot = (f, m, from, to, n = 200, c = ACC, w = 2.2) => {
+    let d = "";
+    for (let k = 0; k <= n; k++) {
+      const X = from + (to - from) * k / n;
+      d += (k ? " L " : "M ") + r1(m.sx(X)) + " " + r1(m.sy(f(X)));
+    }
+    return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  };
+  const axes = (m, c = FNT) =>
+    seg(m.pt(m.x0, 0), m.pt(m.x1, 0), c, 1.2) + seg(m.pt(0, m.y0), m.pt(0, m.y1), c, 1.2);
+
   const CAPMARK = String.fromCharCode(1);
   const cap = (w, h, s) => CAPMARK + s;
   const wrap = (w, h, parts) => {
@@ -54,7 +75,7 @@
       dot(O, DIM, 3), dot(J, ACC, 4),
       txt([L[0] + a / 2, 255], "a", DIM, 13), txt([J[0] + b / 2, 255], "b", DIM, 13),
       txt(add(L, [0, 20]), " ", FNT, 10),
-      cap(440, 300, "semicircle over a + b: the radius is the AM, the half-chord at the joint is the GM — the chord never beats the radius, with equality when a = b (joint at the center); the general AM–GM covers n numbers a₁, …, aₙ")
+      cap(440, 300, "semicircle on a + b: the radius is the AM, the half-chord the GM")
     ]);
   })()];
 
@@ -158,7 +179,7 @@
       txt(add(Mchord, [-4, -12]), "½(f(x₁)+f(x₂))", ACC, 11.5),
       txt(add(Mcurve, [0, 20]), "f(½(x₁+x₂))", GLD, 11.5),
       txt([120, 132], "f convex", DIM, 12.5),
-      cap(440, 340, "convex: the chord (blue) lies above the graph, so the value at the average (gold) is at most the average of the values — Jensen; concave flips it")
+      cap(440, 340, "convex: the chord sits above the curve, so f(mean) ≤ mean of f")
     ]);
   })()];
 
@@ -175,7 +196,7 @@
       txt(onC(O, 40, -30), "2π/n", GLD, 11.5),
       txt(add(V[0], [16, 4]), "1", DIM, 12.5), txt(add(V[1], [16, -6]), "ω", GLD, 13),
       txt(add(V[2], [-14, -8]), "ω²", DIM, 12), txt(add(V[3], [-18, 4]), "−1", DIM, 12),
-      cap(460, 330, "the n solutions of zⁿ = 1 are ωᵏ = e^(2πik/n), k = 0, …, n−1 (n = 6 shown): equally spaced on the unit circle, vertices of a regular n-gon, summing to 0")
+      cap(460, 330, "the n solutions of zⁿ = 1, equally spaced around the unit circle")
     ]);
   })()];
 
@@ -218,7 +239,7 @@
     parts.push(dot([x0, y0], GLD, 5), dot([x0 + m * cell, y0 - n * cell], GLD, 5));
     parts.push(txt([x0 - 4, y0 + 20], "(0,0)", DIM, 12));
     parts.push(txt([x0 + m * cell + 4, y0 - n * cell - 10], "(m, n)", DIM, 12));
-    parts.push(cap(440, 320, "a right/up path from (0,0) to (m, n) is a word with m R's and n U's — choose which m of the m + n steps go right: C(m+n, m)"));
+    parts.push(cap(440, 320, "a right/up path is a word of m R's and n U's: C(m+n, m) of them"));
     return wrap(440, 320, parts);
   })()];
 
@@ -242,7 +263,7 @@
     parts.push(txt([x0 - 4, y0 + 18], "(0,0)", DIM, 11.5));
     parts.push(txt([x0 + n * cell + 6, y0 - n * cell - 10], "(n, n)", DIM, 11.5));
     parts.push(txt([x0 + n * cell - 64, y0 - n * cell - 2], "diagonal", GLD, 11.5));
-    parts.push(cap(430, 330, "paths from corner to corner that never cross above the diagonal: counted by Cₙ = C(2n, n)/(n + 1) — here n = 4"));
+    parts.push(cap(430, 330, "corner-to-corner paths never crossing the diagonal, counted by Cₙ"));
     return wrap(430, 330, parts);
   })()];
 
@@ -293,7 +314,7 @@
     parts.push(txt([x0 + gap * 0.5, y + 52], "x₁ = 2", ACC, 12.5));
     parts.push(txt([x0 + gap * 4, y + 52], "x₂ = 3", ACC, 12.5));
     parts.push(txt([x0 + gap * 7.5, y + 52], "x₃ = 2", ACC, 12.5));
-    parts.push(cap(400, 240, "x₁ + x₂ + x₃ = 7 as 7 stars and 2 bars: every arrangement of the 9 symbols is one solution — C(9, 2) = 36 in all"));
+    parts.push(cap(400, 240, "x₁ + x₂ + x₃ = 7 as 7 stars and 2 bars: C(9, 2) arrangements"));
     return wrap(400, 240, parts);
   })()];
 
@@ -309,7 +330,7 @@
     parts.push(dot([x0, y0], GLD, 5), dot([x0 + a * cell, y0 - b * cell], GLD, 5));
     parts.push(txt([x0 - 6, y0 + 18], "(0,0)", DIM, 11.5));
     parts.push(txt([x0 + a * cell, y0 - b * cell - 12], "(8, 5)", DIM, 11.5));
-    parts.push(cap(440, 300, "gcd(8, 5) = 1: no interior lattice points on the segment, and it crosses 8 + 5 − 1 = 12 unit squares"));
+    parts.push(cap(440, 300, "gcd(8, 5) = 1, so no interior lattice points on the segment"));
     return wrap(440, 300, parts);
   })()];
 
@@ -319,4 +340,160 @@
       if (s.indexOf("NaN") !== -1 && typeof console !== "undefined") console.warn("NaN in diagram: " + k);
     });
   });
+  // ---------- graph-shaped algebra cards ----------
+
+  // Bars on the input mirror; bars on the output fold. Shown side by side on one f.
+  DIAGRAMS["abs-value-graphing"] = [(() => {
+    const f = X => X - 1;
+    const mL = frame(-3.4, 3.4, -3.2, 3.2, 30, 26, 178, 178);
+    const mR = frame(-3.4, 3.4, -3.2, 3.2, 246, 26, 178, 178);
+    return wrap(440, 268, [
+      axes(mL), axes(mR),
+      plot(f, mL, -3.4, 3.4, 2, FNT, 1.4),
+      plot(X => Math.abs(X) - 1, mL, -3.2, 3.2, 120, ACC, 2.4),
+      plot(f, mR, -3.4, 3.4, 2, FNT, 1.4),
+      plot(X => Math.abs(X - 1), mR, -2.2, 3.4, 120, GLD, 2.4),
+      seg(mL.pt(0, -3.2), mL.pt(0, 3.2), FNT, 1.2, "3 3"),
+      txt([119, 20], "y = f(|x|)", ACC, 12.5),
+      txt([335, 20], "y = |f(x)|", GLD, 12.5),
+      txt([119, 244], "keep x ≥ 0, mirror it leftward", DIM, 11),
+      txt([335, 244], "fold everything below the axis up", DIM, 11),
+      cap(440, 268, "with f(x) = x − 1: bars on the input make the graph even, bars on the output make it non-negative")
+    ]);
+  })()];
+
+  // Count solutions by sliding a horizontal line, not by solving.
+  DIAGRAMS["piecewise-graph-counting"] = [(() => {
+    const g = X => Math.abs(Math.abs(X) - 3);
+    const m = frame(-6.2, 6.2, -0.7, 5.2, 46, 24, 350, 210);
+    const line = (bv, c, lab) => seg(m.pt(-6.2, bv), m.pt(5.0, bv), c, 1.6, "5 4") +
+      txt([m.sx(5.2), m.sy(bv) + 4], lab, c, 11, "start");
+    return wrap(440, 296, [
+      axes(m),
+      plot(g, m, -6.2, 6.2, 240, ACC, 2.4),
+      line(1, GLD, "b = 1 → 4"),
+      line(3, GRN, "b = 3 → 3"),
+      line(4.3, DIM, "b = 4.3 → 2"),
+      dot(m.pt(0, 3), GRN, 3.5),
+      txt([m.sx(-3), m.sy(0) + 15], "−3", DIM, 11), txt([m.sx(3), m.sy(0) + 15], "3", DIM, 11),
+      cap(440, 296, "y = ||x| − 3| meets y = b four times for 0 < b < 3, three times exactly at the peak b = 3, twice for b > 3")
+    ]);
+  })()];
+
+  // The sum of distances is piecewise linear, with a flat floor between the middle points.
+  DIAGRAMS["median-minimizes-abs"] = [(() => {
+    const A = [-3, -1, 2, 4];
+    const f = X => A.reduce((t, a) => t + Math.abs(X - a), 0);
+    const m = frame(-5.4, 6.4, 0, 22, 46, 24, 350, 200);
+    return wrap(440, 292, [
+      axes(m),
+      seg(m.pt(-1, 0), m.pt(-1, f(-1)), FNT, 1.2, "4 3"),
+      seg(m.pt(2, 0), m.pt(2, f(2)), FNT, 1.2, "4 3"),
+      rect(m.sx(-1), m.T, m.sx(2) - m.sx(-1), m.H, "none", 0, ACCS),
+      plot(f, m, -5.4, 6.4, 240, ACC, 2.4),
+      seg(m.pt(-1, f(-1)), m.pt(2, f(2)), GLD, 3.2),
+      ...A.map(a => dot(m.pt(a, 0), DIM, 3)),
+      ...A.map((a, i) => txt([m.sx(a), m.sy(0) + 15], ["a₁", "a₂", "a₃", "a₄"][i], DIM, 11)),
+      txt([m.sx(0.5), m.sy(f(0)) - 12], "flat minimum", GLD, 11.5),
+      cap(440, 292, "Σ|x − aᵢ| bends at each aᵢ; with an even count every point between the two middle ones ties for the minimum")
+    ]);
+  })()];
+
+  // The V and the two transformations that move it.
+  DIAGRAMS["absolute-value-rules"] = [(() => {
+    const m = frame(-4.6, 4.6, -2.4, 4.4, 46, 24, 350, 210);
+    return wrap(440, 292, [
+      axes(m),
+      plot(X => Math.abs(X), m, -4.4, 4.4, 120, ACC, 2.4),
+      plot(X => Math.abs(X - 2), m, -2.4, 4.6, 120, GLD, 2),
+      plot(X => -Math.abs(X) + 3, m, -4.4, 4.4, 120, GRN, 2),
+      txt(add(m.pt(-3.1, 3.1), [-4, -6]), "y = |x|", ACC, 12),
+      txt(add(m.pt(4.2, 2.2), [-6, -8]), "y = |x − 2|", GLD, 12),
+      txt(add(m.pt(-3.3, -0.3), [10, 16]), "y = 3 − |x|", GRN, 12),
+      dot(m.pt(0, 0), ACC, 3.5), dot(m.pt(2, 0), GLD, 3.5), dot(m.pt(0, 3), GRN, 3.5),
+      cap(440, 292, "the corner sits where the inside vanishes")
+    ]);
+  })()];
+
+  // Floor and fractional part share an axis, so x = ⌊x⌋ + {x} is visible.
+  DIAGRAMS["floor-basics"] = [(() => {
+    const m = frame(-2.3, 3.3, -2.4, 3.4, 46, 20, 350, 150);
+    const n = frame(-2.3, 3.3, -0.25, 1.35, 46, 190, 350, 62);
+    const steps = [];
+    for (let k = -3; k <= 3; k++) {
+      const x0 = Math.max(k, -2.3), x1 = Math.min(k + 1, 3.3);
+      if (x1 <= x0) continue;
+      steps.push(seg(m.pt(x0, k), m.pt(x1, k), ACC, 2.4));
+      if (k >= -2 && k <= 3) steps.push(dot(m.pt(k, k), ACC, 3.2));
+      steps.push(seg(n.pt(x0, x0 - k), n.pt(x1, x1 - k), GLD, 2.2));
+    }
+    return wrap(440, 300, [
+      axes(m), axes(n), ...steps,
+      txt([408, m.sy(2.6)], "⌊x⌋", ACC, 12.5, "end"),
+      txt([408, n.sy(0.9)], "{x}", GLD, 12.5, "end"),
+      cap(440, 300, "⌊x⌋ jumps at each integer, {x} resets there, and they sum to x")
+    ]);
+  })()];
+
+  // A convex curve never dips below its tangent, which is the whole bound.
+  DIAGRAMS["tangent-line-trick"] = [(() => {
+    const f = X => X * X;
+    const a = 1.1, t = X => f(a) + 2 * a * (X - a);
+    const m = frame(-0.4, 3.1, -1.6, 6.2, 52, 24, 344, 214);
+    return wrap(440, 300, [
+      axes(m),
+      plot(f, m, -0.4, 2.5, 160, ACC, 2.4),
+      plot(t, m, -0.4, 3.1, 2, GLD, 2),
+      seg(m.pt(a, 0), m.pt(a, f(a)), FNT, 1.2, "4 3"),
+      dot(m.pt(a, f(a)), GLD, 4.5),
+      txt([m.sx(a), m.sy(0) + 16], "a = s/n", GLD, 11.5),
+      txt(add(m.pt(2.3, f(2.3)), [4, -6]), "f(x)", ACC, 12, "start"),
+      txt(add(m.pt(2.75, t(2.75)), [4, 12]), "tangent at a", GLD, 12, "start"),
+      cap(440, 300, "for convex f the curve lies above its tangent, so Σf(xᵢ) ≥ Σ tangent = n·f(a) once the constraint kills the linear part")
+    ]);
+  })()];
+
+  // Cobweb: naming the whole expression x is the same as intersecting with y = x.
+  DIAGRAMS["infinite-nest"] = [(() => {
+    const g = X => Math.sqrt(2 + X);
+    const m = frame(0, 3.1, 0, 3.1, 60, 22, 300, 226);
+    const web = [];
+    let X = 0.15;
+    for (let k = 0; k < 7; k++) {
+      const Y = g(X);
+      web.push(seg(m.pt(X, X), m.pt(X, Y), GLD, 1.3));
+      web.push(seg(m.pt(X, Y), m.pt(Y, Y), GLD, 1.3));
+      X = Y;
+    }
+    return wrap(440, 304, [
+      axes(m),
+      plot(v => v, m, 0, 3.1, 2, DIM, 1.6),
+      ...web,
+      plot(g, m, 0, 3.1, 160, ACC, 2.4),
+      dot(m.pt(2, 2), ACC, 5),
+      txt(add(m.pt(2, 2), [12, -8]), "x = 2", ACC, 12.5, "start"),
+      txt(add(m.pt(2.55, g(2.55)), [6, -8]), "y = √(2 + x)", ACC, 12, "start"),
+      txt(add(m.pt(2.7, 2.7), [4, 14]), "y = x", DIM, 12, "start"),
+      cap(440, 304, "the nest converges to the fixed point, so setting x = √(2 + x) and solving x² = x + 2 gives x = 2")
+    ]);
+  })()];
+
+  // One line, four ways of writing it, with each form's given quantities marked.
+  DIAGRAMS["line-forms"] = [(() => {
+    const m = frame(-1.2, 6.2, -1.4, 5.4, 52, 24, 344, 210);
+    const f = X => -0.75 * X + 3;                  // x-intercept 4, y-intercept 3
+    const x1 = 2, y1 = f(2);
+    return wrap(440, 300, [
+      axes(m),
+      plot(f, m, -1.2, 6.2, 2, ACC, 2.4),
+      seg(m.pt(x1, 0), m.pt(x1, y1), FNT, 1.2, "4 3"),
+      dot(m.pt(0, 3), GLD, 4.5), dot(m.pt(4, 0), GLD, 4.5), dot(m.pt(x1, y1), ACC, 4.5),
+      txt(add(m.pt(0, 3), [-16, -8]), "b = 3", GLD, 11.5),
+      txt(add(m.pt(4, 0), [16, 16]), "a = 4", GLD, 11.5),
+      txt(add(m.pt(x1, y1), [30, -8]), "(x₁, y₁)", ACC, 11.5),
+      txt(add(m.pt(5.1, f(5.1)), [8, 14]), "slope m = −3/4", DIM, 11.5),
+      cap(440, 300, "y = −¾x + 3 · y − y₁ = m(x − x₁) · 3x + 4y = 12 · x/4 + y/3 = 1, all the same line")
+    ]);
+  })()];
+
 })();

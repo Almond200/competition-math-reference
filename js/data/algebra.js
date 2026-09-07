@@ -11,6 +11,16 @@ window.MATH_SECTIONS.push({
       title: "Polynomials & Equations",
       formulas: [
         {
+          id: "cauchy-functional-equations",
+          name: "Cauchy's Functional Equations",
+          latex: String.raw`f(x+y) = f(x)+f(y) \Rightarrow cx; \quad f(x+y) = f(x)f(y) \Rightarrow c^x; \quad f(xy) = f(x)+f(y) \Rightarrow \log; \quad f(xy) = f(x)f(y) \Rightarrow x^c`,
+          description: String.raw`The four classical templates: additive → linear, additive-to-multiplicative → exponential, multiplicative-to-additive → logarithmic, multiplicative → power (each assuming continuity, monotonicity, or boundedness — contest problems always supply enough regularity). Recognizing the template usually solves the problem outright.`,
+          example: String.raw`If $f(x+y) = f(x)f(y)$ for all reals and $f(2) = 9$ with $f$ positive, then $f(x) = c^x$ with $c^2 = 9$: $f(x) = 3^x$, so $f(5) = 243$.`,
+          keywords: ["cauchy equation", "additive", "multiplicative", "exponential form", "standard solutions"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "quadratic-formula",
           name: "Quadratic Formula & Discriminant",
           latex: String.raw`x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}, \qquad \Delta = b^2 - 4ac`,
@@ -68,34 +78,12 @@ window.MATH_SECTIONS.push({
         {
           id: "coefficient-extraction",
           name: "Coefficient Sums",
-          type: "method",
           latex: String.raw`P(1) = \sum a_i, \qquad \frac{P(1) + P(-1)}{2} = \sum_{\text{even } i} a_i, \qquad \frac{P(1) - P(-1)}{2} = \sum_{\text{odd } i} a_i`,
           description: String.raw`Plugging in special values extracts coefficient information without expanding: $P(1)$ is the sum of coefficients, $P(0)$ the constant term, $P(-1)$ the alternating sum. Works on any generating polynomial, e.g. $(1 + x + x^2)^{10}$.`,
           example: String.raw`Sum of the even-position coefficients of $(1 + x)^5$: $\frac{2^5 + 0}{2} = 16 = \binom{5}{0} + \binom{5}{2} + \binom{5}{4}$. ✓`,
           keywords: ["sum of coefficients", "plug in 1", "alternating sum", "even coefficients", "generating polynomial"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "newtons-sums",
-          name: "Newton's Sums",
-          type: "method",
-          latex: String.raw`p_k = e_1 p_{k-1} - e_2 p_{k-2} + \cdots + (-1)^{k-1} k\, e_k, \qquad p_1 = e_1, \qquad p_2 = e_1 p_1 - 2e_2, \qquad p_3 = e_1 p_2 - e_2 p_1 + 3e_3, \qquad p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 - 4e_4`,
-          description: String.raw`Relates power sums $p_k = \sum r_i^k$ of a polynomial's roots to the elementary symmetric polynomials $e_i$ (from Vieta). E.g. $p_2 = e_1 p_1 - 2e_2$, $p_3 = e_1 p_2 - e_2 p_1 + 3e_3$.`,
-          example: String.raw`For $x^2 - 3x + 2$ (roots $1, 2$): $e_1 = 3$, $e_2 = 2$, so $p_1 = 3$ and $p_2 = e_1 p_1 - 2e_2 = 9 - 4 = 5 = 1^2 + 2^2$. ✓ No need to find the roots at all.`,
-          keywords: ["power sums", "sum of squares of roots", "sum of cubes of roots", "symmetric"],
-          importance: "high",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "symmetric-polynomial-strategies",
-          name: "Fundamental Theorem of Symmetric Polynomials",
-          type: "method",
-          latex: String.raw`\text{every symmetric } f(r_1, \dots, r_n) \text{ is a polynomial in } e_1, \dots, e_n, \qquad \prod_{i=1}^{n} (a - r_i) = \frac{P(a)}{a_n}, \qquad \sum_{i=1}^{n} \frac{1}{a - r_i} = \frac{P'(a)}{P(a)}`,
-          description: String.raw`If an expression in the roots is unchanged by permuting them, it is computable from the coefficients alone — you never have to find the roots. Vieta supplies $e_1, \dots, e_n$, Newton's sums convert those to power sums, and any product over the roots is read off by evaluating $P$ at a well-chosen point (including a complex one).`,
-          keywords: ["fundamental theorem of symmetric polynomials", "symmetric polynomial", "symmetric function of the roots", "elementary symmetric polynomials", "complex number evaluation trick", "plug in a value", "evaluate the polynomial at", "product over the roots", "never find the roots", "expressions in the roots", "method"],
-          importance: "high",
-          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "conjugate-root-theorems",
@@ -116,17 +104,6 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
-          id: "lagrange-interpolation",
-          name: "Lagrange Interpolation",
-          type: "method",
-          latex: String.raw`P(x) = \sum_{i} y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j}`,
-          description: String.raw`The unique degree-$\le n{-}1$ polynomial through $n$ given points. Also: the finite-difference trick — a degree-$n$ polynomial has constant $n$-th differences.`,
-          example: String.raw`Through $(1,1), (2,4), (3,9)$: $P(x) = 1\cdot\frac{(x-2)(x-3)}{(1-2)(1-3)} + 4\cdot\frac{(x-1)(x-3)}{(2-1)(2-3)} + 9\cdot\frac{(x-1)(x-2)}{(3-1)(3-2)}$, which simplifies to $x^2$ — each basis term is $1$ at its own point and $0$ at the others.`,
-          keywords: ["interpolation", "points determine polynomial", "finite differences", "lagrange polynomial", "polynomial through given points", "interpolating polynomial"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "descartes-rule-signs",
           name: "Descartes' Rule of Signs",
           latex: String.raw`\#\{\text{positive roots}\} = \#\{\text{sign changes of } P(x)\} - 2k, \quad k \ge 0`,
@@ -135,27 +112,6 @@ window.MATH_SECTIONS.push({
           keywords: ["sign changes", "positive roots", "negative roots", "real roots count"],
           importance: "low",
           level: ["AMC12", "AIME"]
-        },
-        {
-          id: "root-transformations",
-          name: "Transforming the Roots of a Polynomial",
-          type: "method",
-          latex: String.raw`\text{roots } r_i + k: P(x - k); \qquad \text{roots } kr_i: P\!\left(\tfrac{x}{k}\right); \qquad \text{roots } \tfrac{1}{r_i}: x^n P\!\left(\tfrac{1}{x}\right)`,
-          description: String.raw`To build the polynomial whose roots are a function of the old roots, substitute the inverse function into $P$. Reversing the coefficients gives reciprocal roots; for squared roots, compute $P(\sqrt{x})P(-\sqrt{x})$ (or pair Vieta with Newton's sums).`,
-          example: String.raw`$P(x) = x^2 - 5x + 6$ (roots $2, 3$): reciprocal roots — reverse coefficients to $6x^2 - 5x + 1$ (roots $\frac{1}{2}, \frac{1}{3}$ ✓); roots shifted by $1$ — $P(x-1) = x^2 - 7x + 12$ (roots $3, 4$ ✓).`,
-          keywords: ["shift roots", "scale roots", "reciprocal roots", "reverse coefficients", "substitute"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "completing-the-square",
-          name: "Completing the Square",
-          type: "method",
-          latex: String.raw`x^2 + bx + c = \left( x + \tfrac{b}{2} \right)^2 + c - \tfrac{b^2}{4}`,
-          description: String.raw`Rewrite any quadratic as a perfect square plus a constant. This one move derives the quadratic formula, locates the vertex $\left( -\frac{b}{2}, \, c - \frac{b^2}{4} \right)$, proves a min or max without calculus, and turns a general circle $x^2 + y^2 + Dx + Ey + F = 0$ into center–radius form.`,
-          keywords: ["completing the square", "perfect square", "vertex", "minimum", "circle center radius"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
           id: "cardano-cubic",
@@ -169,7 +125,6 @@ window.MATH_SECTIONS.push({
         {
           id: "eisenstein-criterion",
           name: "Eisenstein's Irreducibility Criterion",
-          type: "method",
           latex: String.raw`p \mid a_0, a_1, \ldots, a_{n-1}, \quad p \nmid a_n, \quad p^2 \nmid a_0 \;\Rightarrow\; \textstyle\sum a_i x^i \text{ is irreducible over } \mathbb{Q}`,
           description: String.raw`If some prime $p$ divides every coefficient except the leading one, and $p^2$ does not divide the constant term, the integer polynomial cannot factor into lower-degree rational polynomials. It's the standard certificate of irreducibility beyond the rational root theorem (which only rules out linear factors). Often applied after a substitution $x \mapsto x+1$ that exposes an Eisenstein prime — the classic proof that $1 + x + \cdots + x^{p-1}$ (the $p$-th cyclotomic polynomial) is irreducible.`,
           keywords: ["eisenstein criterion", "irreducibility", "irreducible polynomial", "prime divides coefficients", "cyclotomic irreducible", "shift substitution"],
@@ -226,27 +181,6 @@ window.MATH_SECTIONS.push({
           keywords: ["fourth power", "composite", "factoring trick", "sophie germain identity", "factor a^4+4b^4", "fourth power factoring"],
           importance: "medium",
           level: ["AMC12", "AIME"]
-        },
-        {
-          id: "forced-difference-of-squares",
-          name: "Forcing a Difference of Squares",
-          type: "method",
-          latex: String.raw`X + Y = \underbrace{(X + Z + Y)}_{\text{perfect square}} - Z = (\square)^2 - (\square)^2`,
-          description: String.raw`When an expression is one term short of a perfect square, add that term and subtract it again. The result is a difference of two squares, which always factors. This is the single move behind $x^4+x^2+1$, the Sophie Germain identity, and most "factor this quartic" problems.`,
-          keywords: ["forcing a difference of squares", "add and subtract a term", "complete the square then factor", "x^4 + x^2 + 1", "factor a quartic", "creative factoring", "a^2 - b^2 trick", "make a perfect square", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "sfft",
-          name: "Simon's Favorite Factoring Trick (SFFT)",
-          type: "method",
-          latex: String.raw`xy + ax + by + ab = (x + b)(y + a)`,
-          description: String.raw`Add a constant to complete a product. Standard for solving $xy + ax + by = c$ over integers: factor and enumerate divisor pairs.`,
-          example: String.raw`Solve $xy + 3x + 2y = 18$ over positive integers: add $6$ to both sides to get $(x+2)(y+3) = 24$. Factor pairs of $24$ with $x + 2 \ge 3$, $y + 3 \ge 4$: $(3,8), (4,6), (6,4)$ give $(x,y) = (1,5), (2,3), (4,1)$.`,
-          keywords: ["sfft", "complete the rectangle", "integer solutions", "diophantine"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "cubes-minus-3abc",
@@ -336,7 +270,7 @@ window.MATH_SECTIONS.push({
           name: "When $a+b+c=0$",
           latex: String.raw`a+b+c = 0 \implies a^3+b^3+c^3 = 3abc, \qquad a^2+b^2+c^2 = -2(ab+bc+ca)`,
           description: String.raw`The constraint collapses whole families of symmetric expressions. Also $a^4+b^4+c^4 = \tfrac{1}{2}(a^2+b^2+c^2)^2 = 2(ab+bc+ca)^2$, and the power sums chain: $\frac{a^5+b^5+c^5}{5} = \frac{a^3+b^3+c^3}{3}\cdot\frac{a^2+b^2+c^2}{2}$ and $\frac{a^7+b^7+c^7}{7} = \frac{a^5+b^5+c^5}{5}\cdot\frac{a^2+b^2+c^2}{2}$. All drop out of Newton's sums with $e_1 = 0$.`,
-          keywords: ["sum zero", "a+b+c=0", "a3+b3+c3=3abc", "power sums", "newton sums", "vanishing sum", "conditional identity"],
+          keywords: ["conditional identity", "sum zero", "a+b+c=0", "a3+b3+c3=3abc", "power sums", "newton sums", "vanishing sum"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -382,16 +316,6 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
-          id: "telescoping",
-          name: "Telescoping Sums",
-          type: "method",
-          latex: String.raw`\frac{1}{k(k+1)} = \frac{1}{k} - \frac{1}{k+1} \implies \sum_{k=1}^{n} \frac{1}{k(k+1)} = 1 - \frac{1}{n+1}`,
-          description: String.raw`Partial fractions collapse the sum. General tool: write each term as $f(k) - f(k+1)$; everything cancels except the ends.`,
-          keywords: ["telescope", "partial fractions", "collapse", "cancel"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "arithmetico-geometric",
           name: "Arithmetico-Geometric Sum",
           latex: String.raw`\sum_{k=1}^{\infty} k x^k = \frac{x}{(1-x)^2} \quad (|x| < 1)`,
@@ -418,17 +342,6 @@ window.MATH_SECTIONS.push({
           keywords: ["recurrence", "recursion", "recursive", "recursive sequence", "characteristic equation", "closed form", "solving recurrences", "general form of a recursive sequence", "particular solution", "non-homogeneous recurrence", "repeated root", "complex roots oscillation", "substitution recurrence"],
           importance: "high",
           level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
-          id: "finite-differences",
-          name: "Method of Finite Differences",
-          type: "method",
-          latex: String.raw`\Delta a_n = a_{n+1} - a_n; \qquad \deg P = k \iff \Delta^k P \text{ is a nonzero constant}`,
-          description: String.raw`A degree-$k$ polynomial has constant $k$-th differences (and the constant is $k! \cdot$ leading coefficient). Given consecutive values $P(1), P(2), \dots$, build the difference table and extend it rightward to evaluate further values — no interpolation formula needed.`,
-          example: String.raw`Values $2, 3, 10, 29, 66$: differences $1, 7, 19, 37$; second differences $6, 12, 18$; third $6, 6$ — constant, so the source is a cubic, and extending the table gives the next value $66 + (37 + 24) = 127$.`,
-          keywords: ["difference table", "constant differences", "extend sequence", "polynomial degree"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
         },
         {
           id: "factorial-telescoping",
@@ -461,7 +374,6 @@ window.MATH_SECTIONS.push({
         {
           id: "double-summation",
           name: "Double Sums (Swapping & Splitting)",
-          type: "method",
           latex: String.raw`\sum_{i}\sum_{j} a_{ij} = \sum_{j}\sum_{i} a_{ij}, \qquad \sum_{i}\sum_{j} f(i)g(j) = \Big(\sum_i f(i)\Big)\Big(\sum_j g(j)\Big), \qquad \sum_{i=1}^{n}\sum_{j=i}^{n} a_{ij} = \sum_{j=1}^{n}\sum_{i=1}^{j} a_{ij}`,
           description: String.raw`A finite double sum is just a sum over a set of index pairs, so you may sweep that set in whichever order is convenient. Swapping the two summation signs, factoring a separable summand into a product of one-variable sums, and rewriting a triangular region's limits are the three moves that turn most intimidating double sums into routine ones.`,
           keywords: ["double sum", "double summation", "swap the order of summation", "interchange summation", "split a summation", "nested sums", "sum over pairs", "fubini for sums", "sum of i less than j", "triangular sum", "method"],
@@ -645,26 +557,6 @@ window.MATH_SECTIONS.push({
           keywords: ["weighted am gm", "weighted arithmetic geometric mean", "weights sum to one", "young inequality", "tangent weights", "engine of holder"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "sos-method",
-          name: "SOS Method (& uvw / pqr)",
-          type: "method",
-          latex: String.raw`\text{LHS} - \text{RHS} = S_a(b-c)^2 + S_b(c-a)^2 + S_c(a-b)^2 \ge 0`,
-          description: String.raw`For a symmetric inequality in $a, b, c$, force the difference into sum-of-squares form $S_a(b-c)^2 + S_b(c-a)^2 + S_c(a-b)^2 \ge 0$; nonnegative coefficients finish it. Its partner, the $uvw$ (pqr) method, rewrites everything in $p=a+b+c$, $q=ab+bc+ca$, $r=abc$ and pushes the extremum to a boundary. Together they dispatch most 3-variable symmetric inequalities mechanically.`,
-          keywords: ["sos method", "sum of squares method", "uvw method", "pqr method", "schur sos", "symmetric inequality", "S_a S_b S_c", "two variables equal", "boundary case", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "smoothing-method",
-          name: "Smoothing & Mixing Variables",
-          type: "method",
-          latex: String.raw`\text{fix } \textstyle\sum a_i,\; \text{replace } (a_i, a_j) \to \left(\tfrac{a_i+a_j}{2}, \tfrac{a_i+a_j}{2}\right) \text{ while the objective improves}`,
-          description: String.raw`To extremize a symmetric quantity under a constraint (usually fixed sum), repeatedly nudge two variables toward each other — or toward a boundary — so the objective only moves one way; the extremum sits where all variables are equal (or at the boundary). This is what rigorously licenses "equality when all equal," turning a hand-wave into a proof. The systematic versions are mixing variables (MV) and the $n-1$ equal-variable (EV) method; Jensen/convexity is the smooth, one-step analogue when the function is convex.`,
-          keywords: ["smoothing", "mixing variables", "MV method", "equal variable method", "EV method", "adjust two variables", "extremum symmetric", "equality all equal", "method"],
-          importance: "low",
-          level: ["Olympiad"]
         }
       ]
     },
@@ -696,16 +588,6 @@ window.MATH_SECTIONS.push({
           description: String.raw`Take $\log_b$ of both sides to verify. Turns awkward towers like $2^{\log_3 5}$ into friendlier ones like $5^{\log_3 2}$.`,
           keywords: ["swap", "tower", "trick identity", "exponent log swap", "a to the log b equals b to the log a", "log tower trick"],
           importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "log-substitution",
-          name: "Substituting for a Logarithm",
-          type: "method",
-          latex: String.raw`u = \log_b x \implies x = b^{\,u}, \qquad t = \log_a b \implies \log_b a = \frac{1}{t}`,
-          description: String.raw`A log equation is usually an ordinary algebraic equation wearing a disguise. Name the repeated logarithm — $u = \log_b x$, or $t = \log_a b$ for a base-swap pair — and the problem turns into a polynomial or rational equation in that one variable. Solve it there, then convert back with $x = b^{\,u}$ and check every root against the original domain.`,
-          keywords: ["log substitution", "substitute for a logarithm", "let u equal log x", "quadratic in log", "log equation", "disguised quadratic", "solve logarithmic equations", "convert back and check domain", "method"],
-          importance: "high",
           level: ["AMC12", "AIME"]
         },
         {
@@ -859,7 +741,7 @@ window.MATH_SECTIONS.push({
           name: "High-Power Sine and Cosine Sums",
           latex: String.raw`\sin^4\theta + \cos^4\theta = 1 - \tfrac{1}{2}\sin^2 2\theta, \qquad \sin^6\theta + \cos^6\theta = 1 - \tfrac{3}{4}\sin^2 2\theta`,
           description: String.raw`Squaring or cubing $\sin^2\theta + \cos^2\theta = 1$ leaves a single correction term built from $\sin\theta\cos\theta = \tfrac12\sin 2\theta$. Both reduce a symmetric even-power expression to one double angle, which is what makes them time-savers.`,
-          keywords: ["sin^4 + cos^4", "sin^6 + cos^6", "fourth powers of sine and cosine", "sixth powers", "even power trig sum", "reduce to double angle", "pythagorean identity squared"],
+          keywords: ["pythagorean identity squared", "sin^4 + cos^4", "sin^6 + cos^6", "fourth powers of sine and cosine", "sixth powers", "even power trig sum", "reduce to double angle"],
           importance: "low",
           level: ["AMC12", "AIME"]
         },
@@ -917,7 +799,7 @@ window.MATH_SECTIONS.push({
           name: "Triangle Squared-Angle Identities",
           latex: String.raw`\cos^2 A + \cos^2 B + \cos^2 C + 2\cos A\cos B\cos C = 1, \qquad \sin^2 A + \sin^2 B + \sin^2 C = 2 + 2\cos A\cos B\cos C, \qquad \tan\tfrac{A}{2}\tan\tfrac{B}{2} + \tan\tfrac{B}{2}\tan\tfrac{C}{2} + \tan\tfrac{C}{2}\tan\tfrac{A}{2} = 1`,
           description: String.raw`The identities everyone eventually memorizes for a triangle ($A+B+C=180^\circ$). The star is $\cos^2 A + \cos^2 B + \cos^2 C + 2\cos A\cos B\cos C = 1$, which collapses a symmetric pile of squared cosines into one relation; the sine version follows from $\cos^2 = 1-\sin^2$. Corollary: $\cos^2 A+\cos^2 B+\cos^2 C = 1$ exactly when the triangle is right.`,
-          keywords: ["cos squared identity", "cos^2 A + cos^2 B + cos^2 C", "2 cos A cos B cos C", "triangle squared angles", "sin squared sum triangle", "half angle tangent product", "aime cos squared angles", "triangle trig identity", "right triangle test"],
+          keywords: ["triangle trig identity", "cos squared identity", "cos^2 A + cos^2 B + cos^2 C", "2 cos A cos B cos C", "triangle squared angles", "sin squared sum triangle", "half angle tangent product", "aime cos squared angles", "right triangle test"],
           importance: "low",
           level: ["AIME", "Olympiad"]
         },
@@ -937,16 +819,6 @@ window.MATH_SECTIONS.push({
           description: String.raw`Two doubling relations that turn trig sums into telescopes. From $\cot\theta-\cot 2\theta=\csc 2\theta$, a sum of cosecants at doubling angles collapses; from $\tan\theta=\cot\theta-2\cot 2\theta$, the weighted sum $\sum 2^{k}\tan(2^{k}\theta)$ telescopes to $\cot\theta-2^{n}\cot(2^{n}\theta)$. The go-to move for an "evaluate this trig sum" problem built on angle doubling.`,
           keywords: ["cotangent telescoping", "cot theta minus cot 2theta", "csc doubling sum", "tan doubling telescope", "trig sum telescope", "half angle doubling"],
           importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "weierstrass-substitution",
-          name: "Weierstrass Substitution",
-          type: "method",
-          latex: String.raw`t = \tan\tfrac{\theta}{2}: \quad \sin\theta = \frac{2t}{1 + t^2}, \quad \cos\theta = \frac{1 - t^2}{1 + t^2}, \quad \tan\theta = \frac{2t}{1 - t^2}`,
-          description: String.raw`One substitution turns every trig function of $\theta$ into a rational function of $t = \tan\frac{\theta}{2}$, converting a trig equation into a polynomial one. The triple $(1 - t^2, \, 2t, \, 1 + t^2)$ is also a Pythagorean-triple generator.`,
-          keywords: ["weierstrass substitution", "half angle t", "tan theta over 2", "rationalize trig", "pythagorean triple"],
-          importance: "low",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1062,83 +934,6 @@ window.MATH_SECTIONS.push({
           keywords: ["addendo", "componendo", "dividendo", "componendo dividendo", "componendo et dividendo", "invertendo", "alternendo", "equal ratios", "ratio and proportion", "proportion property", "sum of numerators over sum of denominators", "mediant", "adding equal fractions"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        }
-      ]
-    },
-    {
-      title: "Problem-Solving Methods",
-      formulas: [
-        {
-          id: "trig-substitution",
-          name: "Trigonometric Substitution",
-          type: "method",
-          latex: String.raw`|x| \le 1 \Rightarrow x = \cos\theta, \qquad \sqrt{1 - x^2} = \sin\theta, \qquad 2x^2 - 1 = \cos 2\theta`,
-          description: String.raw`When a problem lives on $[-1, 1]$, involves $\sqrt{1 - x^2}$, or iterates $x \mapsto 2x^2 - 1$, substitute $x = \cos\theta$: radicals vanish and iteration becomes angle doubling. Nested radicals $\sqrt{2 + \sqrt{2 + \cdots}}$ become half-angle cosines via $\sqrt{2 + 2\cos\theta} = 2\cos\frac{\theta}{2}$.`,
-          example: String.raw`$\underbrace{\sqrt{2 + \sqrt{2 + \cdots + \sqrt{2}}}}_{n \text{ radicals}} = 2\cos\frac{\pi}{2^{n+1}}$ — e.g. $\sqrt{2} = 2\cos\frac{\pi}{4}$, $\sqrt{2+\sqrt2} = 2\cos\frac{\pi}{8}$.`,
-          keywords: ["substitute cosine", "sqrt 1 minus x squared", "sqrt 1 plus x squared", "sqrt x squared minus 1", "x = a sin theta", "x = a tan theta", "x = a sec theta", "angle doubling", "triple angle 4x^3 - 3x", "tangent double angle", "a + b + c = abc tangent", "nested radicals", "chebyshev", "weierstrass substitution", "half angle radical", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "functional-substitution",
-          name: "Functional Equation Substitution",
-          type: "method",
-          latex: String.raw`\text{try } (0,0), \; (x, 0), \; (x, x), \; (x, -x), \; (x, 1) \text{ in order}`,
-          description: String.raw`For an equation holding for all reals, plug in structured values: $(0,0)$ pins $f(0)$; $(x, 0)$ relates $f(x)$ to constants; $(x, x)$ and $(x, -x)$ produce doubling laws and parity. Cosine-flavored equations like $f(a+b) + f(a-b) = 2f(a)f(b)$ (2023 AMC 12B #22) yield to exactly this sequence.`,
-          example: String.raw`For $f(a+b) + f(a-b) = 2f(a)f(b)$, not identically zero: $a = b = 0$ gives $2f(0) = 2f(0)^2$, so $f(0) \in \{0, 1\}$; if $f(0) = 0$, setting $b = 0$ gives $2f(a) = 0$ for all $a$ — excluded. So $f(0) = 1$, and $a = 0$ then gives $f(b) + f(-b) = 2f(b)$: $f$ is even. (Solutions behave like $\cos kx$ and $\cosh kx$.)`,
-          keywords: ["functional equation", "plug in zero", "substitution", "f(x+y)", "parity", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "cauchy-functional-equations",
-          name: "Cauchy's Functional Equations",
-          latex: String.raw`f(x+y) = f(x)+f(y) \Rightarrow cx; \quad f(x+y) = f(x)f(y) \Rightarrow c^x; \quad f(xy) = f(x)+f(y) \Rightarrow \log; \quad f(xy) = f(x)f(y) \Rightarrow x^c`,
-          description: String.raw`The four classical templates: additive → linear, additive-to-multiplicative → exponential, multiplicative-to-additive → logarithmic, multiplicative → power (each assuming continuity, monotonicity, or boundedness — contest problems always supply enough regularity). Recognizing the template usually solves the problem outright.`,
-          example: String.raw`If $f(x+y) = f(x)f(y)$ for all reals and $f(2) = 9$ with $f$ positive, then $f(x) = c^x$ with $c^2 = 9$: $f(x) = 3^x$, so $f(5) = 243$.`,
-          keywords: ["cauchy equation", "additive", "multiplicative", "exponential form", "standard solutions"],
-          importance: "low",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "sp-substitution",
-          name: "Symmetric Substitution",
-          type: "method",
-          latex: String.raw`s = x + y, \; p = xy: \qquad x^2 + y^2 = s^2 - 2p, \qquad x^3 + y^3 = s^3 - 3sp, \qquad (x - y)^2 = s^2 - 4p`,
-          description: String.raw`Any symmetric system or expression in two variables collapses to the sum and product. Solve for $s$ and $p$, then recover $x, y$ as the roots of $t^2 - st + p = 0$ — Vieta run in reverse. For three variables the same game uses $e_1, e_2, e_3$ with Newton's sums.`,
-          keywords: ["symmetric substitution", "sum and product", "x plus y xy", "collapse system", "s p", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "partial-fractions",
-          name: "Partial Fractions",
-          type: "method",
-          latex: String.raw`\frac{1}{(x + a)(x + b)} = \frac{1}{b - a}\left( \frac{1}{x + a} - \frac{1}{x + b} \right)`,
-          description: String.raw`Break a rational function into a sum of simpler pieces, one per denominator factor. This is the engine behind telescoping sums — the split above collapses $\sum \frac{1}{k(k+1)}$ — and behind pulling coefficients out of a generating function once its denominator is factored.`,
-          keywords: ["partial fractions", "decompose rational", "telescoping", "cover up", "generating function coefficients", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "normalization",
-          name: "Normalization \& Homogenization",
-          type: "method",
-          latex: String.raw`\text{homogeneous problem} \implies \text{WLOG set } a + b + c = 1 \text{ (or } abc = 1, \text{ or a side } = 1)`,
-          description: String.raw`When an expression or inequality is homogeneous (scaling all variables by $t$ scales both sides the same way), you may impose one convenient constraint for free — normalize the sum, the product, or one length to $1$ — killing a degree of freedom without loss of generality. The reverse move, homogenizing, multiplies the low-degree terms of a constrained problem by the constraint to make every term the same degree, so tools like Muirhead and Schur apply.`,
-          keywords: ["normalization", "homogenize", "wlog scale", "set sum to 1", "degree of freedom", "homogeneous inequality", "method"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "tangent-line-trick",
-          name: "Tangent Line Trick",
-          type: "method",
-          latex: String.raw`f(x) \ge f(a) + f'(a)(x - a) \quad (f \text{ convex}), \qquad a = \tfrac{s}{n}`,
-          description: String.raw`To prove a symmetric inequality $\sum f(x_i) \ge C$ under a constraint $\sum x_i = s$, bound $f$ below by its tangent line at the equality point $a = s/n$: for convex $f$, $f(x) \ge f(a) + f'(a)(x-a)$, and summing the linear right-hand sides collapses to a one-line bound. It works whenever equality holds at all-variables-equal; just verify the tangent bound holds across the domain (usually a $(x-a)^2 \ge 0$ factor).`,
-          keywords: ["tangent line trick", "sos", "convex", "symmetric inequality", "equality case", "linear bound", "method"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
         }
       ]
     }

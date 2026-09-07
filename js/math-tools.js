@@ -501,6 +501,285 @@
     wireEnter(host, ".gp-w,.gp-h", function () { draw(false); }); draw(false);
   } };
 
+  // ---------- absolute value: type an equation, watch it get built ----------
+  // Clicking transformations together was fiddly, so the reader types the expression and a
+  // small recursive-descent parser reads it. Stepping falls out of the parse: with a single
+  // occurrence of x, walking from that leaf up to the root is exactly the list of
+  // transformations, innermost first.
+  W["abs-value-graphing"] = { mount: function (host) {
+    function parse(src) {
+      var s2 = String(src).replace(/^\s*y\s*=/, "").replace(/\s+/g, "");
+      var i = 0, absDepth = 0;
+      function peek() { return s2[i]; }
+      function eat(c) { if (s2[i] === c) { i++; return true; } return false; }
+      function expr() {
+        var n = term();
+        while (peek() === "+" || peek() === "-") { var op = s2[i++]; n = { op: op, a: n, b: term() }; }
+        return n;
+      }
+      function term() {
+        var n = factor();
+        for (;;) {
+          if (eat("*")) { n = { op: "*", a: n, b: factor() }; continue; }
+          if (eat("/")) { n = { op: "/", a: n, b: factor() }; continue; }
+          // Implicit multiplication: 2x, 3|x|, 2(x+1). A bar is ambiguous, so use position:
+          // here we sit just after a complete operand, and inside a |...| group that bar can
+          // only be the closer. Without this, the closing bar of |x| was read as the opening
+          // bar of a new factor and every expression failed to parse.
+          var c = peek();
+          if (c === "|" && absDepth > 0) return n;
+          if (c && (/[0-9.xX(|]/.test(c) || s2.substr(i, 4) === "sqrt")) { n = { op: "*", a: n, b: factor() }; continue; }
+          return n;
+        }
+      }
+      function factor() {
+        var n = unary();
+        if (eat("^")) n = { op: "^", a: n, b: factor() };
+        return n;
+      }
+      function unary() {
+        if (eat("-")) return { op: "neg", a: unary() };
+        return primary();
+      }
+      function primary() {
+        if (eat("(")) { var n = expr(); if (!eat(")")) throw 0; return n; }
+        // operand position, so a bar here always opens
+        if (eat("|")) { absDepth++; var m = expr(); absDepth--; if (!eat("|")) throw 0; return { op: "abs", a: m }; }
+        if (s2.substr(i, 4) === "sqrt") { i += 4; if (!eat("(")) throw 0; var q = expr(); if (!eat(")")) throw 0; return { op: "sqrt", a: q }; }
+        if (peek() === "x" || peek() === "X") { i++; return { op: "x" }; }
+        var m2 = /^\d+(\.\d+)?/.exec(s2.slice(i));
+        if (!m2) throw 0;
+        i += m2[0].length;
+        return { op: "num", v: parseFloat(m2[0]) };
+      }
+      var root = expr();
+      if (i !== s2.length) throw 0;
+      return root;
+    }
+    function evalAt(n, x) {
+      switch (n.op) {
+        case "x": return x;
+        case "num": return n.v;
+        case "neg": return -evalAt(n.a, x);
+        case "abs": return Math.abs(evalAt(n.a, x));
+        case "sqrt": var u = evalAt(n.a, x); return u < 0 ? NaN : Math.sqrt(u);
+        case "+": return evalAt(n.a, x) + evalAt(n.b, x);
+        case "-": return evalAt(n.a, x) - evalAt(n.b, x);
+        case "*": return evalAt(n.a, x) * evalAt(n.b, x);
+        case "/": return evalAt(n.a, x) / evalAt(n.b, x);
+        case "^": return Math.pow(evalAt(n.a, x), evalAt(n.b, x));
+      }
+      return NaN;
+    }
+    function tex(n, prec) {
+      prec = prec || 0;
+      var P = { "+": 1, "-": 1, "*": 2, "/": 2, "^": 4, neg: 3 };
+      function wrap(t, p) { return p < prec ? "\\left(" + t + "\\right)" : t; }
+      switch (n.op) {
+        case "x": return "x";
+        case "num": return String(n.v);
+        case "neg": return wrap("-" + tex(n.a, 3), 3);
+        case "abs": return "\\left|" + tex(n.a, 0) + "\\right|";
+        case "sqrt": return "\\sqrt{" + tex(n.a, 0) + "}";
+        case "/": return "\\frac{" + tex(n.a, 0) + "}{" + tex(n.b, 0) + "}";
+        case "^": return wrap(tex(n.a, 5) + "^{" + tex(n.b, 0) + "}", 4);
+        case "*": return wrap(tex(n.a, 2) + tex(n.b, 2), 2);
+        default: return wrap(tex(n.a, P[n.op]) + " " + n.op + " " + tex(n.b, P[n.op] + 1), P[n.op]);
+      }
+    }
+    // the chain of ancestors of the single x, innermost first
+    function chain(root) {
+      var path = null;
+      (function walk(n, acc) {
+        if (n.op === "x") { if (path) path = "many"; else path = acc.concat([n]); return; }
+        ["a", "b"].forEach(function (k) { if (n[k]) walk(n[k], acc.concat([n])); });
+      })(root, []);
+      if (!path || path === "many") return [root];
+      return path.slice().reverse();            // x first, then each enclosing step
+    }
+    function describe(n) {
+      switch (n.op) {
+        case "x": return "start from x itself";
+        case "abs": return "the bars fold everything below the axis up, adding a corner at each root";
+        case "sqrt": return "the square root keeps only where the inside is non-negative";
+        case "neg": return "the minus sign flips the graph over the x-axis";
+        case "^": return "raising to a power steepens the graph away from the roots";
+        case "+": case "-": return "adding a constant shifts the graph vertically, or shifts it horizontally when it is inside";
+        case "*": return "multiplying stretches the graph vertically, leaving every root where it was";
+        case "/": return "dividing compresses the graph vertically";
+      }
+      return "";
+    }
+
+    host.innerHTML =
+      '<div class="tool"><div class="tool-title">Type an absolute-value expression and step through how it is built</div>' +
+      '<div class="tool-row">y = <input class="tool-in av-eq" type="text" value="2||x-5|-5|" style="width:230px" ' +
+      'placeholder="e.g. |x^2-4|  or  3|x+1|-2"> <button class="tool-btn2 av-go">Graph</button></div>' +
+      '<div class="tool-row av-eg" style="flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 10px"></div>' +
+      '<div class="tool-row"><button class="tool-btn2 av-prev">&larr;</button>' +
+      ' <span class="av-step" style="margin:0 10px"></span>' +
+      ' <button class="tool-btn2 av-next">&rarr;</button></div>' +
+      '<div class="tool-sub av-tex" style="margin:6px 0"></div>' +
+      '<svg viewBox="0 0 400 250" class="tool-svg av-svg"></svg>' +
+      '<div class="tool-cap av-cap"></div></div>';
+    host.querySelector(".av-eg").innerHTML =
+      '<span class="tool-cap" style="margin:0 4px 0 0;line-height:1;font-size:12.5px">Examples:</span>' +
+      ["2||x-5|-5|", "|x^2-4|", "||x|-3|", "3|x+1|-2", "|sqrt(x)-2|"]
+      .map(function (e) { return '<button class="tool-btn2 av-pick" data-eq="' + e + '" style="background:var(--bg-card);color:var(--accent);border-color:var(--border);font-size:11.5px;padding:4px 10px">' + e + "</button>"; }).join("");
+
+    var stages = [], i = 0;
+    function build() {
+      var raw = host.querySelector(".av-eq").value;
+      try { stages = chain(parse(raw)); } catch (e) {
+        host.querySelector(".av-cap").innerHTML = '<span style="color:#dc2626">Could not read that. Use x, numbers, + - * / ^, brackets, |…| and sqrt( ).</span>';
+        return false;
+      }
+      i = 0;                      // a new expression starts at step 1, not at the finished graph
+      return true;
+    }
+    function draw() {
+      if (!stages.length) return;
+      if (i >= stages.length) i = stages.length - 1;
+      if (i < 0) i = 0;
+      var node = stages[i], f = function (x) { return evalAt(node, x); };
+      var x0 = -10, x1 = 14, lo = Infinity, hi = -Infinity;
+      for (var t = 0; t <= 240; t++) {
+        var xv = x0 + (x1 - x0) * t / 240, yv = f(xv);
+        if (isFinite(yv) && Math.abs(yv) < 1e4) { if (yv < lo) lo = yv; if (yv > hi) hi = yv; }
+      }
+      if (!isFinite(lo)) { lo = -1; hi = 1; }
+      var pad = Math.max(1, (hi - lo) * 0.15), y0 = Math.min(lo - pad, -1), y1 = Math.max(hi + pad, 1);
+      var L = 36, T = 14, Wd = 348, Hd = 200;
+      function X(v) { return L + (v - x0) / (x1 - x0) * Wd; }
+      function Y(v) { return T + Hd - (v - y0) / (y1 - y0) * Hd; }
+      function path(fn, cls) {
+        var d = "", pen = false;
+        for (var k = 0; k <= 400; k++) {
+          var v = x0 + (x1 - x0) * k / 400, yv = fn(v);
+          if (!isFinite(yv) || yv < y0 - 60 || yv > y1 + 60) { pen = false; continue; }
+          d += (pen ? " L " : " M ") + r2(X(v)) + " " + r2(Y(yv)); pen = true;
+        }
+        return d ? '<path d="' + d + '" class="' + cls + '" fill="none"/>' : "";
+      }
+      var out = '<line x1="' + r2(X(x0)) + '" y1="' + r2(Y(0)) + '" x2="' + r2(X(x1)) + '" y2="' + r2(Y(0)) + '" class="gl-ax"/>' +
+                '<line x1="' + r2(X(0)) + '" y1="' + r2(Y(y0)) + '" x2="' + r2(X(0)) + '" y2="' + r2(Y(y1)) + '" class="gl-ax"/>';
+      if (i > 0) { var pnode = stages[i - 1]; out += path(function (x) { return evalAt(pnode, x); }, "gl-dash"); }
+      out += path(f, "fg-curve");
+      host.querySelector(".av-svg").innerHTML = out;
+      host.querySelector(".av-tex").innerHTML = K("y = " + tex(node), true);
+      host.querySelector(".av-step").textContent = stages.length > 1 ? "step " + (i + 1) + " of " + stages.length : "one step";
+      host.querySelector(".av-cap").innerHTML = describe(node) + (i > 0 ? " &nbsp;(dashed: the previous step)" : "");
+      host.querySelector(".av-prev").disabled = i === 0;
+      host.querySelector(".av-next").disabled = i === stages.length - 1;
+    }
+    function run() { if (build()) draw(); }
+    host.querySelector(".av-go").addEventListener("click", run);
+    host.querySelector(".av-eq").addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+    host.addEventListener("click", function (e) {
+      var p = e.target.closest(".av-pick");
+      if (p) { host.querySelector(".av-eq").value = p.dataset.eq; run(); }
+    });
+    host.querySelector(".av-prev").addEventListener("click", function () { if (i > 0) { i--; draw(); } });
+    host.querySelector(".av-next").addEventListener("click", function () { if (i < stages.length - 1) { i++; draw(); } });
+    run();
+  } };
+
+  // ---------- reflection principle ----------
+  // The bijection is the hard part to see: a bad path, reflected after its first touch,
+  // becomes a path to the mirrored endpoint, and every path to that endpoint comes from
+  // exactly one bad path. Drawing both at once is the only way that reads.
+  W["reflection-principle"] = { mount: function (host) {
+    host.innerHTML =
+      '<div class="tool"><div class="tool-title">Reflecting a path that touches the barrier</div>' +
+      '<div class="tool-row">to (<input class="tool-in rp-w" type="number" value="6" min="1" max="10" style="width:48px">, ' +
+      '<input class="tool-in rp-h" type="number" value="4" min="0" max="10" style="width:48px">) ' +
+      'barrier y = x + <input class="tool-in rp-b" type="number" value="1" min="1" max="6" style="width:44px"> ' +
+      '<button class="tool-btn2 rp-go">Count</button> ' +
+      '<button class="tool-btn2 rp-path" style="background:var(--bg-card);color:var(--accent);border-color:var(--border)">New bad path</button></div>' +
+      '<svg viewBox="0 0 380 270" class="tool-svg rp-svg"></svg><div class="tool-cap rp-cap"></div></div>';
+    var svg = host.querySelector(".rp-svg"), cap = host.querySelector(".rp-cap");
+
+    // A path is bad when it ever reaches y = x + 1. Reflecting everything after the first
+    // such step swaps the remaining R and U moves, landing at (h-1, w+1).
+    function randomBad(w, h, bb) {
+      for (var tries = 0; tries < 400; tries++) {
+        var mv = [], i;
+        for (i = 0; i < w; i++) mv.push("R");
+        for (i = 0; i < h; i++) mv.push("U");
+        for (i = mv.length - 1; i > 0; i--) { var q = Math.floor(Math.random() * (i + 1)); var t = mv[i]; mv[i] = mv[q]; mv[q] = t; }
+        var x = 0, y = 0, hit = -1;
+        for (i = 0; i < mv.length; i++) {
+          if (mv[i] === "R") x++; else y++;
+          if (y === x + bb && hit === -1) hit = i;
+        }
+        if (hit !== -1) return { moves: mv, hit: hit };
+      }
+      return null;
+    }
+
+    function draw(newPath) {
+      var w = Math.max(1, Math.min(10, parseInt(host.querySelector(".rp-w").value, 10) || 1));
+      var h = Math.max(0, Math.min(10, parseInt(host.querySelector(".rp-h").value, 10) || 0));
+      var bb = Math.max(1, Math.min(6, parseInt(host.querySelector(".rp-b").value, 10) || 1));
+      var top = Math.max(w, h) + bb;
+      var G = Math.min(300 / w, 210 / top), ox = 40, oy = 240;
+      function X(i) { return ox + i * G; }
+      function Y(j) { return oy - j * G; }
+      var s2 = "", i, j;
+      for (i = 0; i <= w; i++) s2 += '<line x1="' + r2(X(i)) + '" y1="' + r2(Y(0)) + '" x2="' + r2(X(i)) + '" y2="' + r2(Y(top)) + '" class="gl-ax"/>';
+      for (j = 0; j <= top; j++) s2 += '<line x1="' + r2(X(0)) + '" y1="' + r2(Y(j)) + '" x2="' + r2(X(w)) + '" y2="' + r2(Y(j)) + '" class="gl-ax"/>';
+      // the barrier y = x + 1, the line a good path must never reach
+      var bx = Math.min(w, top - bb);
+      s2 += '<line x1="' + r2(X(0)) + '" y1="' + r2(Y(bb)) + '" x2="' + r2(X(bx)) + '" y2="' + r2(Y(bx + bb)) + '" class="gl-dash"/>';
+      s2 += '<text x="' + r2(X(0) + 6) + '" y="' + r2(Y(bb) - 6) + '" class="gt-gold" font-size="11">y = x + ' + bb + '</text>';
+
+      var st = draw._p && !newPath ? draw._p : randomBad(w, h, bb);
+      draw._p = st;
+      var capMsg;
+      if (!st) {
+        capMsg = "No path to (" + w + ", " + h + ") ever reaches y = x + " + bb + ", so every path is good: " +
+                 "C(" + (w + h) + ", " + h + ") = <b>" + nCr(w + h, h) + "</b>. " +
+                 "Raising the barrier always makes more paths legal; lowering it makes fewer.";
+      } else {
+        var x = 0, y = 0, d = "M" + r2(X(0)) + " " + r2(Y(0)) + " ", d2 = "", rx = 0, ry = 0;
+        for (i = 0; i < st.moves.length; i++) {
+          if (st.moves[i] === "R") x++; else y++;
+          d += "L" + r2(X(x)) + " " + r2(Y(y)) + " ";
+          if (i === st.hit) { rx = x; ry = y; d2 = "M" + r2(X(x)) + " " + r2(Y(y)) + " "; }
+          else if (i > st.hit) {
+            // after the touch, swap the move: R becomes U and U becomes R
+            if (st.moves[i] === "R") ry++; else rx++;
+            d2 += "L" + r2(X(rx)) + " " + r2(Y(ry)) + " ";
+          }
+        }
+        s2 += '<path d="' + d + '" class="fg-curve"/>';
+        s2 += '<path d="' + d2 + '" class="gl-gold" fill="none" stroke-dasharray="5 4"/>';
+        s2 += '<circle cx="' + r2(X(0)) + '" cy="' + r2(Y(0)) + '" r="4" class="gd"/>';
+        s2 += '<circle cx="' + r2(X(w)) + '" cy="' + r2(Y(h)) + '" r="4.5" class="gd-acc"/>';
+        s2 += '<circle cx="' + r2(X(st.hit >= 0 ? 0 : 0) + 0) + '" cy="0" r="0" class="gd"/>';
+        var fx = 0, fy = 0;
+        for (i = 0; i <= st.hit; i++) { if (st.moves[i] === "R") fx++; else fy++; }
+        s2 += '<circle cx="' + r2(X(fx)) + '" cy="' + r2(Y(fy)) + '" r="4.5" class="gd-gold"/>';
+        s2 += '<circle cx="' + r2(X(rx)) + '" cy="' + r2(Y(ry)) + '" r="4.5" class="gd-gold"/>';
+        s2 += '<text x="' + r2(X(rx) + 7) + '" y="' + r2(Y(ry) - 5) + '" class="gt-gold" font-size="11">(' + rx + ', ' + ry + ')</text>';
+        var good = nCr(w + h, h) - nCr(w + h, h - bb);
+        capMsg = "The solid path touches the barrier at the gold point; reflecting everything after that touch " +
+                 "(dashed) lands at (" + rx + ", " + ry + "), the mirror of (" + w + ", " + h + "). " +
+                 "Bad paths correspond one-to-one with paths to that mirrored endpoint, so good paths = " +
+                 "C(" + (w + h) + ", " + h + ") &minus; C(" + (w + h) + ", " + (h - bb) + ") = " +
+                 nCr(w + h, h) + " &minus; " + nCr(w + h, h - bb) + " = <b>" + good + "</b>. " +
+                 "The slope stays 1: reflecting across a tilted line would not send lattice paths to lattice paths, " +
+                 "so only the intercept is adjustable.";
+      }
+      svg.innerHTML = s2;
+      cap.innerHTML = capMsg;
+    }
+    host.querySelector(".rp-go").addEventListener("click", function () { draw(true); });
+    host.querySelector(".rp-path").addEventListener("click", function () { draw(true); });
+    wireEnter(host, ".rp-w,.rp-h,.rp-b", function () { draw(true); });
+    draw(true);
+  } };
+
   // ---------- permutations & combinations ----------
   W["permutations-combinations"] = { mount: function (host) {
     host.innerHTML =
