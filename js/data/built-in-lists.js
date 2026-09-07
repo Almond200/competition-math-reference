@@ -17,7 +17,7 @@ window.MATH_BUILTIN_LISTS = [
   { id: "set-geo-methods", name: "Geometry Problem-Solving Methods", subject: "Methods",
     ids: ["angle-chasing", "auxiliary-lines", "coordinate-bash", "trig-bash", "complex-bash", "barycentric-coordinates", "mass-points", "area-method", "affine-transformations", "directed-angles", "phantom-point", "pole-polar", "spiral-similarity", "rotation-trick", "inversion-properties", "homothety-monge"] },
   { id: "set-invariants", name: "Invariants, Coloring & Extremal", subject: "Methods",
-    ids: ["invariants-coloring", "extremal-principle", "probabilistic-method", "pigeonhole-principle", "erdos-szekeres", "dilworths-theorem", "sperners-theorem", "double-counting", "handshake-lemma", "ramsey-33", "bijection-method", "constructive-counting"] },
+    ids: ["invariants-coloring", "extremal-principle", "probabilistic-method", "pigeonhole", "erdos-szekeres", "dilworths-theorem", "sperners-theorem", "double-counting", "handshake-lemma", "ramsey-33", "bijection-method", "constructive-counting"] },
 
   // ---- Curiosities & fun facts (weird-but-nice-to-know) ----
   { id: "set-fun-geometry", name: "Kissing Circles & Surprising Geometry", subject: "Mixed",

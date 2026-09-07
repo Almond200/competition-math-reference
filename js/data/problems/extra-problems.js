@@ -8,6 +8,21 @@
     P[id] = (P[id] || []).concat(probs);
   };
 
+  // ---------- Remainder & factor theorems (integer half, from the merge) ----------
+  add("factor-remainder-theorem",
+    { q: String.raw`Can a polynomial with integer coefficients satisfy $P(1) = 2$ and $P(3) = 5$?`,
+      s: String.raw`No. For integer $a, b$ the factor theorem forces $(a-b) \mid P(a) - P(b)$, so $3 - 1 = 2$ would have to divide $P(3) - P(1) = 3$. It does not, so no such polynomial exists.` },
+    { q: String.raw`$P$ has integer coefficients, $P(2) = 3$ and $P(7) = 8$. Find all possible values of $P(12)$ modulo $5$.`,
+      s: String.raw`From $(7-2) \mid P(7)-P(2)$ we get $5 \mid 5$, consistent. For $P(12)$: $(12-2) \mid P(12)-3$ and $(12-7) \mid P(12)-8$, so $P(12) \equiv 3 \pmod{10}$ and $P(12) \equiv 8 \equiv 3 \pmod 5$. Hence $P(12) \equiv 3 \pmod 5$ always.` });
+
+  // ---------- Linear recurrences (absorbed from the merged method card) ----------
+  add("linear-recurrence",
+    { q: String.raw`Solve $a_n = 5a_{n-1} - 6a_{n-2}$ with $a_0 = 3$, $a_1 = 8$.`, s: String.raw`Characteristic equation $x^2 = 5x - 6$ gives $x = 2, 3$, so $a_n = A \cdot 2^n + B \cdot 3^n$. From $A + B = 3$ and $2A + 3B = 8$: $B = 2$, $A = 1$. Thus $a_n = 2^n + 2 \cdot 3^n$ (check $a_2 = 4 + 18 = 22 = 5 \cdot 8 - 6 \cdot 3$ ✓).` },
+    { q: String.raw`Solve $a_n = 4a_{n-1} - 4a_{n-2}$ with $a_0 = 1$, $a_1 = 6$.`,
+      s: String.raw`The characteristic equation $x^2 - 4x + 4 = 0$ has the repeated root $x = 2$, so the general solution is $a_n = (A + Bn)2^n$. From $a_0 = A = 1$ and $a_1 = (1+B)\cdot 2 = 6$ we get $B = 2$, giving $a_n = (1 + 2n)2^n$. Check: $a_2 = 5\cdot4 = 20 = 4\cdot6 - 4\cdot1$ ✓ — the $n$ factor is what a repeated root always contributes.` },
+    { q: String.raw`Solve the non-homogeneous recurrence $a_n = 3a_{n-1} + 2^n$ with $a_0 = 1$.`,
+      s: String.raw`The homogeneous part gives $A\cdot3^n$. For the particular solution try $C\cdot2^n$: substituting gives $C2^n = 3C2^{n-1} + 2^n$, so $2C = 3C + 2$ and $C = -2$. Then $a_n = A3^n - 2^{n+1}$, and $a_0 = A - 2 = 1$ forces $A = 3$, so $a_n = 3^{n+1} - 2^{n+1}$. Check: $a_1 = 9 - 4 = 5 = 3\cdot1 + 2$ ✓.` });
+
   // ---------- Balls in boxes ----------
   add("balls-boxes-table",
     { q: String.raw`How many ways are there to put $15$ identical balls into $4$ distinct boxes with each box holding between $1$ and $6$?`,

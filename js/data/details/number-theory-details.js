@@ -175,18 +175,17 @@ Factorial congruences mod primes: shift with $(p-2)! \equiv 1$, $(p-3)! \equiv \
 AIME factorial-remainder problems and slick primality observations. The half-factorial corollary explicitly constructs $x$ with $x^2 \equiv -1$, which some problems require.`,
 
 "crt": String.raw`## Key forms
-- $x\equiv a_i\pmod{n_i}$ with the $n_i$ pairwise coprime — a system of congruences
-- $\Rightarrow x$ is unique $\pmod{n_1 n_2\cdots n_k}$ — one solution mod the product
-- $x=\sum a_i N_i M_i$, $N_i=N/n_i$, $M_i=N_i^{-1}\bmod n_i$ — the reconstruction
+- a system $x\equiv a_i\pmod{n_i}$ with the moduli pairwise coprime has exactly one solution modulo $N=\prod n_i$ — existence and uniqueness together, which is what lets you split a problem into one congruence per prime power
+- the constructive form is $x=\sum_i a_iN_iM_i$ with $N_i=N/n_i$ and $M_i\equiv N_i^{-1}\pmod{n_i}$, since each term is $a_i$ modulo $n_i$ and $0$ modulo every other $n_j$
+- in practice it is usually faster to iterate two at a time: from $x\equiv a\pmod m$ write $x=a+mt$ and substitute into the next congruence to pin $t$
 
 ## Why it works
 The map $x \mapsto (x \bmod n_1, \dots, x \bmod n_k)$ from residues mod $N=\prod n_i$ to tuples is injective (a difference divisible by all pairwise-coprime $n_i$ is divisible by their product) and both sides have $N$ elements — so it is a bijection. Every combination of remainders occurs for exactly one residue mod $N$.
 
-## Building the solution
-Iterate two at a time: from $x\equiv a\pmod m$ write $x=a+mt$ and substitute into the next congruence to pin $t$. Or use the closed form $x\equiv\sum_i a_i M_i y_i\pmod N$, where $M_i=N/n_i$ and $y_i\equiv M_i^{-1}\pmod{n_i}$ — each term is $a_i$ mod $n_i$ and $0$ mod the rest. Example: $x\equiv 2\ (3),\ 3\ (5),\ 2\ (7)$ gives $x\equiv 23\pmod{105}$.
-
 ## How to use it
 Splitting is the everyday use: a question mod $1000$ becomes mod $8$ and mod $125$, solved separately and recombined. Counting multiplies: solutions mod $mn=$ (solutions mod $m$)$\times$(solutions mod $n$) for coprime $m,n$. If the moduli are not coprime, a solution exists iff the congruences agree on every common factor.
+
+Iterate two at a time: from $x\equiv a\pmod m$ write $x=a+mt$ and substitute into the next congruence to pin $t$. Or use the closed form $x\equiv\sum_i a_i M_i y_i\pmod N$, where $M_i=N/n_i$ and $y_i\equiv M_i^{-1}\pmod{n_i}$ — each term is $a_i$ mod $n_i$ and $0$ mod the rest. Example: $x\equiv 2\ (3),\ 3\ (5),\ 2\ (7)$ gives $x\equiv 23\pmod{105}$.
 
 ## On contests
 Everywhere in AIME number theory: last-three-digit problems, "find $x$ with these remainders," and counting solutions of polynomial congruences prime-power by prime-power. The split-solve-recombine rhythm should be automatic.`,
@@ -218,12 +217,7 @@ Casting out nines: verify arithmetic, find missing digits, and reduce enormous n
 ## On contests
 "Sum the digits, then sum again..." iterated-digit-sum problems are pure mod 9. Also quick sanity checks that eliminate answer choices on AMC — a habit worth building.`,
 
-"squares-mod-small": String.raw`## Key forms
-- $x^2\bmod4\in\{0,1\}$ — a square is $0$ or $1$ mod 4
-- $x^2\bmod8\in\{0,1,4\}$ — mod 8
-- $x^2\bmod9\in\{0,1,4,7\}$ — mod 9
-
-## Why it works
+"squares-mod-small": String.raw`## Why it works
 Square all residues: mod 4 the squares of $0,1,2,3$ are $0,1,0,1$; mod 8 odd squares are $(2k+1)^2 = 4k(k+1) + 1 \equiv 1$ (since $k(k+1)$ is even); mod 9 and 16 by the same enumeration.
 
 ## How to use it
@@ -253,7 +247,9 @@ MATHCOUNTS/AMC 10 staple ("units digit of $7^{2027}$"), and the entry point to t
 "primitive-roots": String.raw`## Why it works
 The units mod $n$ form a cyclic group exactly for $n=1,2,4,p^k,2p^k$ (odd prime $p$) — the structure theorem. A primitive root $g$ is a generator: its powers $g^0,\dots,g^{\varphi(n)-1}$ run through all units, the number of primitive roots is $\varphi(\varphi(n))$, and the order of any element divides $\varphi(n)$ with a primitive root hitting the maximum.
 
-## Discrete log and $k$-th powers
+## How to use it
+Convert multiplicative questions to additive ones — counting $k$-th powers, solving $x^k\equiv a$, products or sums over all residues. Worked case mod $7$ with $g=3$ (powers $3,2,6,4,5,1$): the cubes have $\gcd(3,6)=3$, so there are $\frac{6}{3}=2$ cubic residues, namely $g^0=1$ and $g^3=6$.
+
 Fixing $g$ turns multiplication into addition of exponents (the "index," a discrete log): $a=g^{\operatorname{ind}a}$, so $xy$ maps to $\operatorname{ind}x+\operatorname{ind}y\pmod{\varphi(n)}$. For $k$-th powers modulo a prime $p$, with $d=\gcd(k,p-1)$:
 
 - Number of primitive roots: $\varphi(\varphi(n))$
@@ -261,21 +257,13 @@ Fixing $g$ turns multiplication into addition of exponents (the "index," a discr
 - $x^k\equiv a\pmod p$ is solvable iff $a^{(p-1)/d}\equiv1\pmod p$
 - When solvable, it has exactly $d$ solutions
 
-## How to use it
-Convert multiplicative questions to additive ones — counting $k$-th powers, solving $x^k\equiv a$, products or sums over all residues. Worked case mod $7$ with $g=3$ (powers $3,2,6,4,5,1$): the cubes have $\gcd(3,6)=3$, so there are $\frac{6}{3}=2$ cubic residues, namely $g^0=1$ and $g^3=6$.
-
 ## On contests
 AIME problems counting solutions of $x^k\equiv1$, asking for products over all residues, or exploiting that orders divide $p-1$ lean on this cyclic structure — usually implicitly.`,
 
 "quadratic-reciprocity": String.raw`## Why it works
 Deep — Gauss gave eight proofs, the classic elementary one counting lattice points in a rectangle. Take it as a tool: for distinct odd primes, $\left(\frac{p}{q}\right)$ and $\left(\frac{q}{p}\right)$ are equal unless both are $\equiv 3\pmod 4$, in which case they differ by a sign.
 
-## Key forms
-- Reciprocity: $\left(\frac{p}{q}\right)\left(\frac{q}{p}\right)=(-1)^{\frac{p-1}{2}\cdot\frac{q-1}{2}}$ — equal unless both $p,q\equiv3\bmod4$
-- First supplement: $\left(\frac{-1}{p}\right)=(-1)^{(p-1)/2}$ — so $-1$ is a QR iff $p\equiv1\bmod4$
-- Second supplement: $\left(\frac{2}{p}\right)=(-1)^{(p^2-1)/8}$ — so $2$ is a QR iff $p\equiv\pm1\bmod8$
-- Euler's criterion: $\left(\frac{a}{p}\right)\equiv a^{(p-1)/2}\pmod p$ — compute the symbol as a power mod $p$
-## The algorithm
+## How to use it
 Evaluate a Legendre symbol like a gcd: factor the top, pull out $-1$ and $2$ with the supplements, flip the odd-prime factors (sign per reciprocity), reduce mod the bottom, repeat. Worked: $\left(\frac{30}{53}\right)=\left(\frac{2}{53}\right)\left(\frac{3}{53}\right)\left(\frac{5}{53}\right)$. Since $53\equiv5\bmod8$, $\left(\frac{2}{53}\right)=-1$; and $53\equiv1\bmod4$ so flips carry no sign: $\left(\frac{3}{53}\right)=\left(\frac{53}{3}\right)=\left(\frac{2}{3}\right)=-1$ and $\left(\frac{5}{53}\right)=\left(\frac{53}{5}\right)=\left(\frac{3}{5}\right)=-1$. Product $-1$: $30$ is a non-residue mod $53$.
 
 ## On contests
@@ -317,14 +305,14 @@ $\binom{m}{n} \bmod p$: write both in base $p$, multiply digit binomials (any di
 ## On contests
 Pascal-parity questions (Sierpinski patterns), "how many $\binom{2027}{k}$ are divisible by small prime," and fast binomial-mod-p evaluations on AIME. For prime-power moduli, combine with more careful tools — Lucas alone is mod $p$ only.`,
 
-"lte": String.raw`## Why it works
+"lte": String.raw`## Key forms
+- for an odd prime $p$ dividing $a-b$ but neither $a$ nor $b$, the exponent of $p$ in $a^n-b^n$ is $v_p(a-b)+v_p(n)$ — so a whole power-divisibility question reduces to two much easier valuations
+- the prime $2$ is the exception and needs its own statement: for even $n$, $v_2(a^n-b^n)=v_2(a-b)+v_2(a+b)+v_2(n)-1$
+- check the hypotheses before applying it, since $p\mid a-b$ and $p\nmid a$ are exactly what make the proof work — the formula is simply false without them
+
+## Why it works
 Factor $a^n - b^n = (a-b)(a^{n-1} + a^{n-2}b + \cdots + b^{n-1})$. When an odd prime $p \mid a-b$ with $p\nmid a,b$, each of the $n$ terms of the second factor is $\equiv a^{n-1}\pmod p$, so that factor is $\equiv n\,a^{n-1}$ and a careful induction on $v_p(n)$ adds exactly $v_p(n)$. The $p=2$ statements differ because the units mod $2^k$ are not cyclic.
 
-## Key forms
-- Odd prime $p$, with $p\mid a-b$ and $p\nmid a,b$: $\;v_p(a^n-b^n)=v_p(a-b)+v_p(n)$ — the main case
-- Sum version, $n$ odd and $p\mid a+b$: $\;v_p(a^n+b^n)=v_p(a+b)+v_p(n)$ — odd-exponent sums
-- $p=2$, both $a,b$ odd, $n$ odd: $\;v_2(a^n-b^n)=v_2(a-b)$ — the easy even-prime case
-- $p=2$, both $a,b$ odd, $n$ even: $\;v_2(a^n-b^n)=v_2(a-b)+v_2(a+b)+v_2(n)-1$ — the tricky case (classic trap)
 ## How to use it
 Check the hypotheses first — misapplying the $p=2$ formula is the classic error. Then read the valuation off in one line: the power of $3$ dividing $4^{729}-1$ is $v_3(4-1)+v_3(729)=1+6=7$. LTE is also the engine behind order-lifting: if $d=\operatorname{ord}_p(a)$ and $p^s\,\|\,a^d-1$, then $\operatorname{ord}_{p^k}(a)=d\cdot p^{\max(0,\,k-s)}$.
 
@@ -525,7 +513,12 @@ Digit counts of huge numbers via logs: $2^{100}$ has $\lfloor 100\log_{10}2\rflo
 // Entries added from the 2023-2025 AMC/AIME sweep.
 Object.assign(window.MATH_DETAILS, {
 
-"hensel-lifting": String.raw`## Why it works
+"hensel-lifting": String.raw`## Key forms
+- $f(a+pt)\equiv f(a)+pt\,f'(a)\pmod{p^2}$ — everything past the linear term vanishes, so the lift is linear
+- $\frac{f(a)}{p}+t\,f'(a)\equiv0\pmod p$ — solve this for $t$; it has a unique solution exactly when $f'(a)\not\equiv0\pmod p$
+- $f'(a)\equiv0\pmod p$ is the singular case — the lift then either fails or splits into $p$ solutions, so check the derivative before starting
+
+## Why it works
 Taylor-expand around the known root: $f(a + pt) = f(a) + pt f'(a) + p^2(\cdots)$. Modulo $p^2$ the tail vanishes, and since $p \mid f(a)$, the condition $f(a+pt) \equiv 0 \pmod{p^2}$ is the linear congruence $\frac{f(a)}{p} + t f'(a) \equiv 0 \pmod p$ — uniquely solvable for $t$ exactly when $f'(a) \not\equiv 0$.
 
 ## How to use it
@@ -542,7 +535,7 @@ Object.assign(window.MATH_DETAILS, {
 The multiplicative group mod $p^k$ is cyclic for odd $p$ (so $\lambda = \varphi$ there), but mod $2^k$ ($k \ge 3$) it is a product of a group of order 2 and a cyclic group of order $2^{k-2}$ — whence the smaller exponent. CRT splits the group mod $n$ into the prime-power pieces, and the universal exponent of a product is the lcm of the pieces' exponents.
 
 ## How to use it
-For "last $k$ digits of a huge power" problems, reduce the exponent mod $\lambda(10^k)$ instead of $\varphi(10^k)$: $\lambda(1000) = 100$ versus $\varphi(1000) = 400$. For power towers, iterate down the tower with $\lambda$ at each level. Remember the special cases $\lambda(2) = 1$, $\lambda(4) = 2$ and the lcm (not product) combination rule.
+For "last $k$ digits of a huge power" problems, reduce the exponent mod $\lambda(10^k)$ instead of $\varphi(10^k)$: $\lambda(1000) = 100$ versus $\varphi(1000) = 400$. For power towers, iterate down the tower with $\lambda$ at each level. Remember the special cases $\lambda(2) = 1$, $\lambda(4) = 2$ and the lcm (not product) combination rule. Since $\lambda(n)\mid\varphi(n)$ always, using $\lambda$ can only sharpen Euler's theorem, never weaken it — and the true order of any particular $a$ divides $\lambda(n)$ in turn.
 
 ## On contests
 AIME tower-of-exponents problems reward $\lambda$ heavily — a $4\times$ smaller modulus at each level compounds. Euler's theorem is never wrong, just slower; $\lambda$ is the sharp version of the same idea.`
@@ -599,13 +592,7 @@ Run the divisions mechanically and stop as soon as $p^k$ exceeds $n$ — usually
 
 Object.assign(window.MATH_DETAILS, {
 
-"recognition-numbers": String.raw`## Key forms
-- $1001=7\cdot11\cdot13$ — the classic palindrome factorization
-- $999=3^3\cdot37$ — behind period-3 repeating decimals
-- $1024=2^{10}$ — a power of two
-- $1729=7\cdot13\cdot19$ — the taxicab number
-
-## Why it works
+"recognition-numbers": String.raw`## Why it works
 Nothing deep — pure pattern recognition. The fake primes are products of two primes between 7 and 19, which is exactly the range trial division by 2, 3, 5 misses; $1001 = 7 \cdot 11 \cdot 13$ explains why $\overline{abcabc} = \overline{abc} \cdot 1001$ is always divisible by 7, 11, and 13; and $2^{10} \approx 10^3$ converts between binary and decimal scales.
 
 ## How to use it
@@ -618,7 +605,12 @@ Answer-extraction speed: AIME answers frequently require factoring numbers like 
 
 Object.assign(window.MATH_DETAILS, {
 
-"gcd-substitution": String.raw`## Why it works
+"gcd-substitution": String.raw`## Key forms
+- write $a=dx$ and $b=dy$ where $d=\gcd(a,b)$, and the quotients are automatically coprime — that is exactly what "greatest" means, and it is why every condition on the pair simplifies afterwards
+- coprimality makes the derived quantities immediate: $\operatorname{lcm}(a,b)=dxy$, hence $ab=\gcd\cdot\operatorname{lcm}$, and $a+b=d(x+y)$
+- given the gcd and lcm, the pairs $(x,y)$ are the coprime factorisations of $\frac{\operatorname{lcm}}{\gcd}$, and there are $2^{\omega}$ ordered ones since each prime's whole block must go entirely to $x$ or entirely to $y$
+
+## Why it works
 Dividing $a$ and $b$ by their gcd leaves quotients with no common factor — that's what "greatest" means. Everything about the pair then splits cleanly: $\operatorname{lcm}(a,b) = dxy$ because $x$ and $y$ share nothing, $ab = d^2xy = \gcd \cdot \operatorname{lcm}$ falls out immediately, and any equation in $a, b$ becomes an equation in $d$ and the coprime pair $(x, y)$.
 
 ## How to use it
@@ -628,9 +620,9 @@ Write $a = dx$, $b = dy$ the moment a problem mentions gcd or lcm — before doi
 The standard opener for "gcd + lcm + one more condition" problems at every level: count the pairs, minimize the sum, match a given product. MATHCOUNTS uses it with concrete numbers; AIME versions layer it with divisor counting — after substituting, everything reduces to prime-block bookkeeping on $xy$.`,
 
 "choose-modulus": String.raw`## Key forms
-- squares $\bmod4\in\{0,1\}$ — kills parity ambiguity fast
-- squares $\bmod8\in\{0,1,4\}$ — sharper square filter
-- cubes $\bmod9\in\{0,\pm1\}$ — the go-to modulus for cubes
+- powers occupy very few residues, which is what makes a well-chosen modulus decisive: squares are $0,1$ mod $4$ and $0,1,4$ mod $8$; cubes are $0,\pm1$ mod $9$; fourth powers are $0,1$ mod $16$
+- a true equation over the integers stays true modulo every $m$, so if the two sides can never agree modulo some $m$, the equation has no solutions at all — this is how "prove no solutions exist" problems are usually killed
+- match the modulus to the exponents present, and remember the other outcome: a forced residue that does not kill the equation still kills cases, as when $x$ must be even and you substitute $x=2x'$ and descend
 
 ## Why it works
 A true equation over the integers stays true mod every $m$. Residue classes of powers are sparse — squares hit only $\{0,1\}$ mod 4 and $\{0,1,4\}$ mod 8, cubes only $\{0, \pm1\}$ mod 9, fourth powers only $\{0,1\}$ mod 16 — so a well-chosen modulus can make one side land in a set the other side never touches.
@@ -642,9 +634,9 @@ Match the modulus to the exponents present: squares → mod 4 or 8, cubes → mo
 The first thing to try on "show no solutions exist" and on narrowing AIME Diophantine searches. Also the engine behind parity arguments — mod 2 is the simplest instance. If mod 4, 8, 9, and 16 all fail to break the equation, switch tools: size/bounding arguments or factoring usually take over.`,
 
 "digit-manipulation": String.raw`## Key forms
-- $\overline{ab}=10a+b$ — place value
-- $\overline{ab}+\overline{ba}=11(a+b)$ — a number plus its reverse
-- $\overline{ab}-\overline{ba}=9(a-b)$ — a number minus its reverse
+- write the number as its place-value polynomial, $\overline{abc}=100a+10b+c$, which turns a digit condition into an ordinary equation in the digits
+- a number plus its reversal always factors through $11$ and a number minus its reversal through $9$: $\overline{ab}+\overline{ba}=11(a+b)$ and $\overline{ab}-\overline{ba}=9(a-b)$, while for three digits $\overline{abc}-\overline{cba}=99(a-c)$ drops the middle digit entirely
+- the bounds do most of the work, since $1\le a\le9$ and $0\le b,c\le9$ leave only a handful of candidates once one digit is isolated
 
 ## Why it works
 Base-10 notation is the polynomial $\overline{abc} = 100a + 10b + c$. Reversal identities follow at once: $\overline{ab} + \overline{ba} = 11(a+b)$ and $\overline{ab} - \overline{ba} = 9(a - b)$, which is why digit-reversal problems always run through 9 and 11.
@@ -655,7 +647,11 @@ Name the digits, translate the condition into an equation, and exploit the bruta
 ## On contests
 A MATHCOUNTS and early-AMC staple: "a number equals $k$ times its digit sum," reversal differences, digits forming arithmetic sequences. The layered AMC version runs the same translation in another base $b$ — same polynomial, different radix, and comparing representations across bases gives systems in the digits.`,
 
-"squeeze-between-squares": String.raw`## Why it works
+"squeeze-between-squares": String.raw`## Key forms
+- if $n^2<N<(n+1)^2$ for some integer $n$, then $N$ cannot be a perfect square — consecutive squares are $2n+1$ apart, so a large expression trapped strictly between two of them is disqualified outright
+- guess the near-root and prove both inequalities: for a quartic try $(n^2+an+b)^2$ for small $b$, check small cases by hand since the squeeze usually only starts from some $n_0$, and read the boundary cases as the actual solutions
+
+## Why it works
 Perfect squares are spaced increasingly far apart — the gap between $n^2$ and $(n+1)^2$ is $2n + 1$. Any integer trapped strictly inside such a gap cannot be a square, and every integer $N$ in $[n^2, (n+1)^2)$ has $\lfloor \sqrt N \rfloor = n$ exactly.
 
 ## How to use it
@@ -668,7 +664,12 @@ The closer for "find all $n$ making this a perfect square" — squeeze for large
 
 Object.assign(window.MATH_DETAILS, {
 
-"vieta-jumping": String.raw`## Why it works
+"vieta-jumping": String.raw`## Key forms
+- if a symmetric condition is quadratic in each variable separately, fixing the others makes the remaining one a root of a quadratic, and Vieta hands you the second root for free: $a'=kb-a$ from the sum, and $a'=\frac{b^2-N}{a}$ from the product
+- the two expressions do different jobs — the sum shows $a'$ is an integer, and the product controls its sign and size
+- start from the solution minimising $a+b$ and jump: either the new solution is smaller, contradicting minimality, or you land on a degenerate case whose evaluation reveals what the constant must be
+
+## Why it works
 If a symmetric condition is quadratic in each variable separately, then fixing all but one variable makes the remaining one a root of a quadratic — and Vieta hands you the other root for free: $a' = kb - a = \frac{b^2 - N}{a}$, automatically an integer (from the sum) and with controllable sign and size (from the product). Starting from a minimal solution, the jump must either exit the allowed region — a contradiction — or hit a boundary case that pins down the constant.
 
 ## How to use it
@@ -699,7 +700,12 @@ To find $F_n \bmod m$, compute the period $\pi(m)$ (list terms mod $m$ until $0,
 ## On contests
 An olympiad and hard-AIME tool for "last digit of $F_{2024}$" or "for which $n$ is $F_n$ divisible by $m$" questions. The key recognitions: last digits cycle with period $60$, and divisibility of $F_n$ by $m$ is itself periodic in $n$.`,
 
-"exponent-tracking": String.raw`## Why it works
+"exponent-tracking": String.raw`## Key forms
+- a positive integer is exactly its vector of prime exponents, and distinct primes never interact — so a condition on the whole number splits into one independent condition per prime
+- the operations translate directly: $\gcd$ takes the coordinatewise minimum, $\operatorname{lcm}$ the maximum, multiplication adds exponents, and divisibility is the inequality $e_p(a)\le e_p(b)$ at every prime
+- being a perfect $k$-th power means $k$ divides every exponent, and $d(n)=\prod(e_p+1)$ — so power questions and divisor counts are also just exponent bookkeeping
+
+## Why it works
 By unique factorization, a positive integer is exactly its vector of prime exponents. Multiplication adds these vectors, gcd takes the coordinatewise minimum, lcm the maximum, a perfect $k$-th power means every coordinate is divisible by $k$, and $d(n)$ multiplies the $(e_i + 1)$. Crucially, distinct primes never interact — so a condition on the whole number decomposes into one independent condition per prime.
 
 ## How to use it
@@ -721,7 +727,12 @@ To test $n$: strip factors of $4$ repeatedly, then check whether what remains is
 ## On contests
 Mostly an olympiad-level classification tool and a fast way to rule out cases in a Diophantine problem. The mod-8 argument itself — squares are $0, 1, 4 \bmod 8$ — is far more broadly useful than the theorem, and is worth reaching for whenever an equation mixes three squares.`,
 
-"bounding-diophantine": String.raw`## Why it works
+"bounding-diophantine": String.raw`## Key forms
+- order the variables $x\le y\le z$ — among $k$ terms summing to $S$ the largest is at least $\frac Sk$, which caps the smallest variable
+- two inequalities pin it: $S\le\frac{k}{x}$ from above and $\frac1x\lt S$ from below leave only a handful of values to test
+- fix that value, substitute, and recurse on one fewer variable — then restore all permutations at the end
+
+## Why it works
 In a symmetric equation, ordering the variables costs nothing (multiply the count by the permutations at the end) but gains a lot: the smallest variable now carries the largest share of any sum of decreasing terms. That share is at least $\frac{1}{k}$ of the total across $k$ variables, which pins the smallest variable inside a tiny range. Fixing it reduces the problem by one variable, and the recursion bottoms out in finitely many checks.
 
 ## How to use it
@@ -787,7 +798,12 @@ Olympiad number theory and "why the Fermat test fails" discussions. Keep it dist
 
 Object.assign(window.MATH_DETAILS, {
 
-"extended-euclidean-algorithm": String.raw`## Why it works
+"extended-euclidean-algorithm": String.raw`## Key forms
+- the Euclidean algorithm runs on $\gcd(a,b)=\gcd(b,\,a\bmod b)$; the extended version also tracks how each remainder is built from $a$ and $b$, producing Bézout's $\gcd(a,b)=ax+by$
+- the Bézout coefficient is exactly the modular inverse: if $\gcd(a,b)=1$ then $ax+by=1$ gives $ax\equiv1\pmod b$, so $x\equiv a^{-1}$
+- the same coefficients settle solvability: $ax\equiv c\pmod b$ has a solution exactly when $\gcd(a,b)\mid c$, and then it has exactly $\gcd(a,b)$ solutions modulo $b$
+
+## Why it works
 Each remainder in the Euclidean algorithm is an integer combination of the original $a$ and $b$: $r_i = r_{i-2} - \lfloor r_{i-2}/r_{i-1}\rfloor\, r_{i-1}$. Back-substituting these equations from the last nonzero remainder (the gcd) upward expresses $\gcd(a,b)$ as $ax + by$; the forward recurrence $(x, y) = (y', x' - \lfloor a/b\rfloor y')$ carries the same bookkeeping in one pass.
 
 ## How to use it
@@ -801,7 +817,12 @@ The workhorse behind modular inverses on AIME and olympiad, and the constructive
 // Detail body added for a dense medium-importance card.
 Object.assign(window.MATH_DETAILS, {
 
-"periodicity-mod-m": String.raw`## Why it works
+"periodicity-mod-m": String.raw`## Key forms
+- a term's residue depends only on a finite amount of state — one residue for a power, or the last $k$ residues for an order-$k$ recurrence — so by pigeonhole the state must eventually repeat, and once it does the sequence cycles forever
+- find where the repeat begins and the period $T$, then reduce the index: $a_N\equiv a_{\,n_0+((N-n_0)\bmod T)}\pmod m$
+- for a pure power with $\gcd(a,m)=1$ the cycle starts immediately and $T$ is the multiplicative order of $a$, which divides $\varphi(m)$; watch for a pre-period when the gcd is not $1$, since the first terms then sit outside the cycle
+
+## Why it works
 A term's residue depends only on a finite piece of state: one residue for a power $a^n \bmod m$, or the tuple of the last $k$ residues for an order-$k$ linear recurrence. There are only finitely many such states (at most $m$, or $m^k$), so by pigeonhole the state must eventually recur — and once it does, the sequence cycles forever with some period $T$ (after a possible pre-period, if the step map is not reversible mod $m$).
 
 ## How to use it
@@ -820,12 +841,7 @@ It is the fast filter for "$\sigma(n)$ is odd/even" and a clean parity handle on
 
 Object.assign(window.MATH_DETAILS, {
 
-"dirichlet-convolution": String.raw`## Key forms
-- $(f*g)(n)=\sum_{d\mid n}f(d)g(n/d)$ — the convolution
-- $\mu*\mathbf1=\varepsilon$ — Möbius inverts the all-ones function
-- $\varphi*\mathbf1=\mathrm{id}$ — totient convolved with $\mathbf1$ gives $n$
-
-## Why it works
+"dirichlet-convolution": String.raw`## Why it works
 Grouping divisors as $d\cdot\frac{n}{d}=n$ makes $*$ commutative and associative with identity $\varepsilon(n)=[n=1]$, and on prime powers the convolution of two multiplicative functions stays multiplicative — so any such identity reduces to one prime at a time. Möbius inversion is exactly the statement that $\mu$ is the $*$-inverse of $\mathbf 1$.
 
 ## How to use it
@@ -834,12 +850,7 @@ Recognize a divisor sum $\sum_{d\mid n} f(d)g(n/d)$ as a convolution and factor 
 ## On contests
 Olympiad and advanced number theory; it is the clean framework for manipulating multiplicative functions and for any Möbius-inversion problem, replacing ad hoc divisor-sum algebra.`,
 
-"jacobi-symbol": String.raw`## Key forms
-- $\left(\frac an\right)=\prod_i\left(\frac a{p_i}\right)^{e_i}$ — product of Legendre symbols
-- $\left(\frac an\right)\left(\frac bn\right)=\left(\frac{ab}n\right)$ — multiplicative in the top
-- $\left(\frac mn\right)\left(\frac nm\right)=(-1)^{\frac{m-1}2\frac{n-1}2}$ — reciprocity (odd $m,n$)
-
-## Why it works
+"jacobi-symbol": String.raw`## Why it works
 Defining $\left(\frac{a}{n}\right)=\prod\left(\frac{a}{p_i}\right)^{e_i}$ inherits full multiplicativity in both arguments from the Legendre symbol, and for odd $n$ quadratic reciprocity plus the $-1$ and $2$ supplements all survive — so the symbol can be flipped and reduced without ever factoring $n$.
 
 ## How to use it
@@ -893,7 +904,12 @@ When the $f_i$ over $\mathbb F_p$ have degrees summing below the number of varia
 ## On contests
 Olympiad number theory and combinatorics; it is the standard nonconstructive tool for "show a nontrivial solution exists mod $p$" and for divisibility of solution counts.`,
 
-"cryptarithms": String.raw`## Why it works
+"cryptarithms": String.raw`## Key forms
+- translate the letters into place value first, so $\overline{ABC}$ becomes $100A+10B+C$ and the puzzle turns into a small system of equations in the digits
+- work right to left, tracking the carry, which in an addition can only be $0$ or $1$ — that single bound is what makes the search finite rather than a guess-and-check over $10!$ assignments
+- the leading column pins the largest letters: two three-digit numbers total under $2000$, so a four-letter answer must start with $1$; combine that with distinct digits, no leading zero, and a digit-sum check mod $9$ to prune before any casework
+
+## Why it works
 Column addition carries only $0$ or $1$ into the next column, so the columns form a tight chain of modular constraints; the distinctness of the ten letters and the no-leading-zero rule prune the branches fast.
 
 ## How to use it
@@ -905,6 +921,8 @@ A MATHCOUNTS and early-AMC staple (and a recreational classic); disciplined colu
 "base10-curiosities": String.raw`## Why it works
 The cyclic run of $142857$ is just the six-digit repeating block of $\frac17$ — $10$ is a primitive root mod $7$, so the period is full and multiplying by $1$–$6$ rotates the digits. Narcissistic numbers and Kaprekar's routine are finite digit-map facts you can check directly.
 
+The repunit family explains most of the rest. A string of $n$ ones is $\frac{10^n-1}{9}$, which is why $\frac19=0.\overline{1}$, $\frac1{99}=0.\overline{01}$ and $\frac1{999}=0.\overline{001}$, and why squaring a repunit of length $n\le9$ gives the palindrome $123\ldots n\ldots321$. The $1089$ trick is the same base-ten bookkeeping: reversing a three-digit number and subtracting always leaves a multiple of $99$, and adding that result to its own reverse always gives $1089$ — whose ninefold, $9801$, is itself reversed.
+
 ## How to use it
 Recognize $142857$ (with $\frac27,\dots,\frac67$ as its rotations, and $\times 7=999999$) on sight, and remember that Kaprekar's routine on a four-digit number with non-identical digits reaches $6174$ within a few steps. These are recall aids, not deep theorems.
 
@@ -915,20 +933,35 @@ Light MATHCOUNTS / trivia territory, but occasionally an AMC problem rewards spo
 
 Object.assign(window.MATH_DETAILS, {
 
-"p-adic-valuation": String.raw`## Key forms
-- $v_p(mn) = v_p(m) + v_p(n)$ — valuations add under multiplication
-- $v_p(m/n) = v_p(m) - v_p(n)$ — and subtract under division
-- $v_p(m+n) \ge \min(v_p(m), v_p(n))$, equality if $v_p(m)\ne v_p(n)$ — the ultrametric inequality
-- $v_p(\gcd(m,n)) = \min,\ \ v_p(\operatorname{lcm}(m,n)) = \max$ — of the two valuations
-- $v_p(n!) = \sum_{i\ge1}\lfloor n/p^i\rfloor$ — Legendre's formula for factorials
-
-## Why it works
-Unique factorization makes $v_p$ additive — the power of $p$ in a product is the sum of the powers, exactly like a logarithm for a single prime. The ultrametric bound holds because $p^{\min}$ divides both terms; when the two valuations differ, the smaller power survives the sum uncancelled, forcing equality there.
+"p-adic-valuation": String.raw`## Why it works
+Unique factorization makes $v_p$ additive — the power of $p$ in a product is the sum of the powers, exactly like a logarithm for a single prime. The ultrametric bound holds because $p^{\min}$ divides both terms; when the two valuations differ, the smaller power survives the sum uncancelled, forcing equality there. Divisibility statements translate the same way: $v_p(\gcd(m,n))$ is the minimum of the two valuations and $v_p(\operatorname{lcm}(m,n))$ the maximum, and for factorials Legendre's formula gives $v_p(n!)=\sum_{i\ge1}\lfloor n/p^i\rfloor$.
 
 ## How to use it
 Take $v_p$ of both sides of a divisibility statement or equation to turn it into linear arithmetic on exponents: $p^k \mid N \iff v_p(N)\ge k$, a perfect square needs every $v_p$ even, and "how many factors of $p$" becomes a sum. The equality case of the ultrametric bound is exactly the engine behind Lifting the Exponent.
 
 ## On contests
-The backbone of AIME and olympiad prime-power problems, and the language in which LTE, Legendre's formula, and Kummer's theorem are all phrased — reach for it whenever only the power of one prime matters.`
+The backbone of AIME and olympiad prime-power problems, and the language in which LTE, Legendre's formula, and Kummer's theorem are all phrased — reach for it whenever only the power of one prime matters.`,
 
+"fermat-two-squares": String.raw`## Key forms
+- $p\equiv1\pmod 4\iff p=a^2+b^2$ for an odd prime $p$ — and the pair $\{a,b\}$ is unique
+- $p\equiv3\pmod4\Rightarrow p\ne a^2+b^2$ — the ruling-out direction, since squares are $0$ or $1$ mod $4$ so a sum of two is never $3$
+- test $p-b^2$ for squareness with $b\le\sqrt{p/2}$ — uniqueness means the first hit is the whole answer, so the search never needs to continue
+- a prime hypotenuse $p=m^2+n^2$ gives exactly one right triangle, with legs $m^2-n^2$ and $2mn$ — uniqueness of the representation forces uniqueness of the triangle
+
+## Why it works
+One direction is a two-line parity argument: every square is $0$ or $1$ modulo $4$, so a sum of two squares is $0$, $1$ or $2$ mod $4$ and never $3$. That disposes of every prime $p\equiv3\pmod4$ immediately.
+
+The other direction is the real theorem. Since $p\equiv1\pmod4$, the congruence $x^2\equiv-1\pmod p$ is solvable, so $p$ divides $x^2+1$ for some $x$. Thue's lemma then produces integers $a,b$ with $0\lt a,b\lt\sqrt p$ and $a\equiv xb\pmod p$, whence $p\mid a^2+b^2$; but $0\lt a^2+b^2\lt2p$ forces $a^2+b^2=p$ exactly.
+
+Uniqueness is cleanest in the Gaussian integers. There $p=a^2+b^2$ factors as $(a+bi)(a-bi)$, and $\mathbb{Z}[i]$ has unique factorisation, so a prime $p\equiv1\pmod4$ splits into exactly one conjugate pair of Gaussian primes — leaving no freedom in $\{a,b\}$ beyond order and sign.
+
+## How to use it
+Read "$1$ mod $4$" as a licence to write the prime as a sum of two squares, and "$3$ mod $4$" as an instant impossibility proof. Combined with the multiplication identity, this extends to composites: a product of primes that are all $1$ mod $4$ is a sum of two squares, and each additional such prime factor doubles the number of essentially different representations.
+
+The application worth watching for is a right triangle whose hypotenuse is given to be a prime. If a problem says the hypotenuse is a prime $p$, then a triangle exists only when $p\equiv1\pmod4$, and then $p=m^2+n^2$ has exactly one solution, so the triangle is completely determined: the legs are $m^2-n^2$ and $2mn$. For $p=13=3^2+2^2$ that forces legs $5$ and $12$; for $p=61=6^2+5^2$ it forces $11$ and $60$. A prime hypotenuse that is $3$ mod $4$ — like $7$, $11$ or $19$ — admits no such triangle at all, which turns "find all right triangles with hypotenuse $p$" into a one-line answer.
+
+To find $a$ and $b$ for a specific prime, just test $p-b^2$ for squareness with $b$ running up to $\sqrt{p/2}$; uniqueness means the first hit is the only one.
+
+## On contests
+It is the engine behind Pythagorean-triple problems with a prime hypotenuse, and behind "how many ways can $N$ be written as a sum of two squares" once $N$ is factored. AIME uses it in disguise more often than by name — any time a prime that is $1$ mod $4$ appears alongside a sum of squares, this theorem is the reason the configuration is rigid.`,
 });

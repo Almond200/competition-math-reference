@@ -3,6 +3,7 @@ window.MATH_SECTIONS = window.MATH_SECTIONS || [];
 
 window.MATH_SECTIONS.push({
   id: "number-theory",
+  group: "formulas",
   title: "Number Theory",
   blurb: "Divisibility, modular arithmetic, divisor functions, valuations, Diophantine equations, and Farey fractions.",
   subsections: [
@@ -39,6 +40,7 @@ window.MATH_SECTIONS.push({
         {
           id: "extended-euclidean-algorithm",
           name: "Extended Euclidean Algorithm",
+          type: "method",
           latex: String.raw`ax + by = \gcd(a, b), \qquad (x, y) = \big(y',\ x' - \lfloor a/b \rfloor\, y'\big) \text{ from } b\,x' + (a \bmod b)\,y' = \gcd(b, a \bmod b)`,
           description: String.raw`Runs the Euclidean algorithm while tracking Bézout coefficients, producing integers $x, y$ with $ax + by = \gcd(a, b)$ in the same number of steps. Back-substitute the division equations (or carry the coefficients with the recurrence above). Its main jobs: computing a modular inverse — if $\gcd(a, m) = 1$ then $ax + my = 1$ gives $a^{-1} \equiv x \pmod m$ — and solving linear Diophantine equations $ax + by = c$ by scaling the coefficients by $c/\gcd$.`,
           keywords: ["extended euclidean algorithm", "bezout coefficients", "modular inverse", "back substitution", "ax + by = gcd", "linear diophantine solution"],
@@ -69,7 +71,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\gcd(n, n+1) = 1`,
           description: String.raw`More generally $\gcd(n, n+k) = \gcd(n, k)$ divides $k$. Among any $k$ consecutive integers, exactly one is divisible by $k$, and their product is divisible by $k!$.`,
           keywords: ["consecutive", "coprime", "product divisible factorial", "consecutive integers are coprime", "gcd of consecutive integers", "adjacent integers coprime"],
-          importance: "high",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         }
       ]
@@ -185,7 +187,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`(f * g)(n) = \sum_{d \mid n} f(d)\, g\!\left(\tfrac{n}{d}\right), \qquad \mu * \mathbf{1} = \varepsilon, \qquad \varphi * \mathbf{1} = \mathrm{id}`,
           description: String.raw`The convolution $(f*g)(n) = \sum_{d\mid n} f(d)g(n/d)$ makes arithmetic functions into a commutative ring whose identity is $\varepsilon(n) = [n=1]$; the convolution of two multiplicative functions is multiplicative. Möbius inversion is just "$\mu$ is the inverse of the all-ones function $\mathbf{1}$": $g = f*\mathbf 1 \iff f = g*\mu$. Standard identities become one line — $\varphi * \mathbf 1 = \mathrm{id}$ (i.e. $\sum_{d\mid n}\varphi(d) = n$), $\sigma = \mathrm{id} * \mathbf 1$, $\tau = \mathbf 1 * \mathbf 1$ — so divisor-sum problems reduce to algebra in this ring.`,
           keywords: ["dirichlet convolution", "arithmetic functions", "mobius inversion", "multiplicative function", "divisor sum", "identity function", "convolution ring"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         }
       ]
@@ -306,7 +308,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`Write $x = a + pt$ and expand: $f(a + pt) \equiv f(a) + pt\,f'(a) \pmod{p^2}$, a linear congruence in $t$. Each simple root mod $p$ lifts to exactly one root mod $p^2$ (and onward to $p^3, \dots$). The standard tool for "divisible by $p^2$" power congruences.`,
           example: String.raw`(2024 AIME I #13) $n^4 \equiv -1 \pmod{p}$ needs $8 \mid p - 1$, so the least prime is $p = 17$ (e.g. $2^4 = 16 \equiv -1$). Lifting $n = 2 + 17t$ into $n^4 \equiv -1 \pmod{289}$ gives a linear condition on $t$, and the least positive solution overall is $m = 110$.`,
           keywords: ["hensel", "lift mod p squared", "p squared divides", "linear congruence", "simple root", "lifting solutions mod p"],
-          importance: "low",
+          importance: "medium",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -351,7 +353,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\left(\frac{a}{n}\right) = \prod_i \left(\frac{a}{p_i}\right)^{e_i}, \qquad \left(\frac{a}{n}\right)\!\left(\frac{b}{n}\right) = \left(\frac{ab}{n}\right), \qquad \left(\frac{m}{n}\right)\!\left(\frac{n}{m}\right) = (-1)^{\frac{m-1}{2}\frac{n-1}{2}}`,
           description: String.raw`For odd $n = \prod p_i^{e_i}$, the Jacobi symbol is the product of the Legendre symbols over $n$'s prime factors. It is fully multiplicative in the top and bottom and obeys the same reciprocity and supplementary laws as the Legendre symbol — so you can evaluate $\left(\frac{a}{p}\right)$ rapidly by flipping and reducing, with no need to factor the numbers along the way (the practical algorithm for Legendre symbols). Caveat: $\left(\frac{a}{n}\right) = 1$ does not prove $a$ is a quadratic residue mod $n$; only $-1$ certifies a non-residue.`,
           keywords: ["jacobi symbol", "generalized legendre symbol", "quadratic reciprocity", "multiplicative symbol", "odd modulus", "compute without factoring", "kronecker"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         },
         {
@@ -360,7 +362,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\left(\frac{a}{p}\right) = (-1)^{\mu}, \qquad \mu = \#\Big\{ 1 \le k \le \tfrac{p-1}{2} : \ (ka \bmod p) > \tfrac{p}{2} \Big\}`,
           description: String.raw`To decide whether $a$ is a quadratic residue mod an odd prime $p$, look at the least positive residues of $a, 2a, \dots, \frac{p-1}{2}a$ and count how many exceed $p/2$ (the "negative" ones); the Legendre symbol is $(-1)$ to that count $\mu$. It is the workhorse behind the proofs of quadratic reciprocity and of the supplementary law $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$.`,
           keywords: ["gauss lemma", "quadratic residue", "legendre symbol", "negative least residues", "count residues", "reciprocity proof", "supplementary law"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         },
         {
@@ -421,7 +423,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`v_p\binom{m+n}{m} = \#\{\text{carries when adding } m + n \text{ in base } p\}`,
           description: String.raw`The power of $p$ dividing a binomial coefficient equals the number of carries in base-$p$ addition.`,
           keywords: ["binomial coefficient", "carries", "prime power", "kummer theorem", "carries when adding in base p", "prime power dividing a binomial"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -497,7 +499,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`The product of any $k$ consecutive integers is a multiple of $k!$ — it equals $k!\binom{n+k-1}{k}$, and a binomial coefficient is always a whole number. So two consecutive integers give an even product, three give a multiple of $6$, and so on. It's the quick reason binomial coefficients like $\binom{n}{3}$ come out as integers, and a handy divisibility hammer.`,
           keywords: ["consecutive integers product", "divisible by k factorial", "binomial coefficient integer", "product of k consecutive", "n(n+1)(n+2)", "always integer"],
           importance: "low",
-          level: ["AMC10", "AMC12", "AIME"]
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         }
       ]
     },
@@ -536,8 +538,8 @@ window.MATH_SECTIONS.push({
           id: "sum-of-two-squares",
           name: "Sum of Two Squares Theorem",
           latex: String.raw`n = a^2 + b^2 \iff v_p(n) \text{ even for all } p \equiv 3 \!\!\pmod 4`,
-          description: String.raw`A positive integer is a sum of two squares iff every prime factor $\equiv 3 \pmod 4$ appears to an even power. Primes $p \equiv 1 \pmod 4$ are sums of two squares (Fermat).`,
-          keywords: ["two squares", "representable", "primes 1 mod 4", "sum of two squares theorem", "expressible as two squares", "primes 1 mod 4"],
+          description: String.raw`A positive integer is a sum of two squares iff every prime factor $\equiv 3 \pmod 4$ appears to an even power. The prime case is Fermat's two-square theorem: $p \equiv 1 \pmod 4$ is a sum of two squares in exactly one way, which is what makes the general criterion constructive.`,
+          keywords: ["two squares", "representable", "primes 1 mod 4", "sum of two squares theorem", "expressible as two squares", "primes 1 mod 4", "fermat two square theorem"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -547,7 +549,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\gcd(a,n)=1 \implies \exists\, x,y:\; x \equiv ay \pmod{n}, \;\; 0 < |x|, |y| \le \sqrt{n}`,
           description: String.raw`A pigeonhole guarantee of a "small" solution to a congruence: for any modulus $n$ and $a$ coprime to it, some $x \equiv ay \pmod n$ has both $|x|, |y| \le \sqrt{n}$. Its famous payoff is Fermat's two-squares theorem — if $a^2 \equiv -1 \pmod p$ then $x \equiv ay$ forces $x^2 + y^2 \equiv 0 \pmod p$, and the size bound pins $x^2 + y^2 = p$.`,
           keywords: ["thue lemma", "pigeonhole congruence", "small solution", "two squares proof", "sum of two squares"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -567,6 +569,16 @@ window.MATH_SECTIONS.push({
           keywords: ["a squared minus b squared", "representable", "factor parity", "difference of two squares representation", "which numbers are a difference of squares", "not two mod four"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "fermat-two-squares",
+          name: "Fermat's Two-Square Theorem",
+          type: "method",
+          latex: String.raw`p \equiv 1 \!\!\pmod 4 \iff p = a^2 + b^2 \quad (p \text{ an odd prime}), \qquad \text{and } a, b \text{ are unique up to order and sign}`,
+          description: String.raw`An odd prime is a sum of two squares exactly when it is $1 \bmod 4$, and then in only one way. The uniqueness is what makes it a tool rather than a curiosity: it pins down the two squares, so any configuration built from a prime that is $1 \bmod 4$ is forced. The most common disguise is a right triangle whose hypotenuse is a given prime.`,
+          keywords: ["fermat two square theorem", "fermat's theorem on sums of two squares", "prime as a sum of two squares", "primes 1 mod 4", "p = a^2 + b^2", "prime hypotenuse", "unique representation as two squares", "brahmagupta fibonacci identity", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "sum-of-three-squares",
@@ -601,7 +613,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\sum_i \deg f_i < n \;\Rightarrow\; p \mid \#\{x \in \mathbb{F}_p^{\,n} : f_1(x) = \cdots = f_k(x) = 0\}`,
           description: String.raw`If polynomials $f_1, \dots, f_k$ over $\mathbb{F}_p$ in $n$ variables have total degree sum less than $n$, then the number of common zeros is divisible by $p$. Since the all-zero vector is already one solution when the $f_i$ have no constant term, there must be a second (nonzero) one — the classic way to prove existence of nontrivial solutions to low-degree systems mod $p$ without constructing them (e.g. EGZ, and "every graph has a small structure" arguments).`,
           keywords: ["chevalley warning", "finite field", "common zeros divisible by p", "low degree system", "nontrivial solution mod p", "existence"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         }
       ]
@@ -634,7 +646,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`A fraction's decimal expansion ends exactly when the reduced denominator has no prime factors besides 2 and 5; it then has $\max(a, b)$ decimal digits.`,
           example: String.raw`How many $\frac{k}{1000}$-style fractions terminate? All of them ($1000 = 2^3 5^3$). But $\frac{k}{120}$ terminates only when the reduced denominator drops the factor of 3 — i.e. when $3 \mid k$.`,
           keywords: ["terminating decimal", "2 and 5", "denominator", "decimal digits"],
-          importance: "high",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
@@ -827,36 +839,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "digit-manipulation",
-          name: "Digit Manipulation",
-          type: "method",
-          latex: String.raw`\overline{ab} = 10a + b, \qquad \overline{ab} + \overline{ba} = 11(a + b), \qquad \overline{ab} - \overline{ba} = 9(a - b)`,
-          description: String.raw`Write digit conditions as equations in the digits themselves ($\overline{abc} = 100a + 10b + c$), then solve the tiny Diophantine system with the bounds $1 \le a \le 9$, $0 \le b, c \le 9$. Reversal sums always factor through $11$; reversal differences through $9$.`,
-          keywords: ["digits", "two digit number", "reversed digits", "10a plus b", "digit equation", "method"],
-          importance: "medium",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "squeeze-between-squares",
-          name: "Squeezing Between Consecutive Powers",
-          type: "method",
-          latex: String.raw`n^2 < N < (n+1)^2 \implies N \text{ is not a perfect square, and } \lfloor \sqrt{N} \rfloor = n`,
-          description: String.raw`To show an expression is never a perfect square (or cube), trap it strictly between consecutive squares of a well-chosen $n$ — usually the obvious near-square-root, like $n^2 + n$ for a quartic. The same squeeze pins down integer parts of roots exactly.`,
-          keywords: ["between consecutive squares", "not a perfect square", "bounding", "squeeze", "floor of sqrt", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "vieta-jumping",
-          name: "Vieta Jumping",
-          type: "method",
-          latex: String.raw`x^2 - kbx + (b^2 - N) = 0 \text{ has roots } a, \; a' = kb - a = \frac{b^2 - N}{a}`,
-          description: String.raw`For a symmetric Diophantine condition quadratic in each variable: fix the constant, view one variable as the unknown, and use Vieta to flip a solution $(a, b)$ to a smaller one $(b, kb - a)$. Take a minimal solution and jump — either you contradict minimality, or you land on a degenerate base case that reveals the constant. Infinite descent, run through quadratics.`,
-          keywords: ["vieta jumping", "root flipping", "infinite descent", "minimal solution", "symmetric diophantine", "method"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
           id: "exponent-tracking",
           name: "Prime Exponent Tracking",
           type: "method",
@@ -875,26 +857,6 @@ window.MATH_SECTIONS.push({
           keywords: ["bounding", "wlog ordering", "finitely many solutions", "smallest variable bound", "unit fractions", "finite check", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
-          id: "periodicity-mod-m",
-          name: "Periodicity mod m (Cycle-Hunting)",
-          type: "method",
-          latex: String.raw`a_n \bmod m \text{ is eventually periodic} \implies a_N \equiv a_{\,n_0 + ((N - n_0)\,\bmod\,T)} \pmod m`,
-          description: String.raw`To find a far-out term's remainder — the last digits of $7^{2024}$, the $2015$th Fibonacci number mod $1000$, a recurrence's term mod $m$ — list the values mod $m$ until they repeat. There are only finitely many possible states (one residue for a power, or a fixed-length tuple of residues for a linear recurrence), so the sequence must cycle; find the period $T$ (and any pre-period), then reduce the index $N$ modulo $T$. Powers cycle with the multiplicative order of the base; linear recurrences cycle with the Pisano-style period of their state vector.`,
-          keywords: ["periodicity mod m", "find the cycle", "remainder of a huge term", "last digits of a power", "pisano period", "eventually periodic", "reduce the exponent", "order", "cycle hunting", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "cryptarithms",
-          name: "Cryptarithms (Alphametics)",
-          type: "method",
-          latex: String.raw`\overline{TWO} + \overline{TWO} = \overline{FOUR}: \quad \text{distinct digits, leading digit} \ne 0, \text{ carry } 0\text{ or }1 \text{ per column}`,
-          description: String.raw`The puzzles where letters stand for distinct digits ($\text{TWO}+\text{TWO}=\text{FOUR}$). Definitive attack: work column by column from the right, carrying only $0$ or $1$ in an addition; no leading letter may be $0$; each letter is a distinct digit $0$–$9$. The carry bounds pin the high letters immediately — a four-letter sum of two three-letter numbers forces the leading letter to be $1$ (two three-digit numbers total under $2000$) — and from there each column is a small constraint you propagate.`,
-          keywords: ["cryptarithm", "alphametic", "verbal arithmetic", "letters are digits", "carry column by column", "distinct digits", "method"],
-          importance: "low",
-          level: ["MATHCOUNTS", "AMC10"]
         }
       ]
     }

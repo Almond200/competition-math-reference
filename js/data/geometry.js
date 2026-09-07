@@ -5,6 +5,7 @@ window.MATH_SECTIONS = window.MATH_SECTIONS || [];
 
 window.MATH_SECTIONS.push({
   id: "geometry",
+  group: "formulas",
   title: "Geometry",
   blurb: "Triangles, circles, quadrilaterals, coordinates, and 3D — from the Pythagorean Theorem to Casey's Theorem.",
   subsections: [
@@ -65,7 +66,7 @@ window.MATH_SECTIONS.push({
           example: String.raw`$n=12$: $\operatorname{round}\!\left(\tfrac{144}{48}\right)=3$ — namely $(2,5,5),\ (3,4,5),\ (4,4,4)$.`,
           keywords: ["integer sided triangles", "count triangles", "perimeter", "triangle inequality counting", "alcuin sequence", "how many triangles", "noncongruent triangles"],
           importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "similar-figures-ratios",
@@ -236,10 +237,10 @@ window.MATH_SECTIONS.push({
         {
           id: "herons-formula",
           name: "Heron's Formula",
-          latex: String.raw`A = \sqrt{s(s-a)(s-b)(s-c)}`,
+          latex: String.raw`A = \sqrt{s(s-a)(s-b)(s-c)} = \tfrac{1}{4}\sqrt{2a^2b^2 + 2b^2c^2 + 2c^2a^2 - a^4 - b^4 - c^4}`,
           description: String.raw`Area from the three sides alone — the SSS area formula — with semiperimeter $s = \frac{a+b+c}{2}$. Keep the factored form $\sqrt{s(s-a)(s-b)(s-c)}$ rather than expanding; it is the 2D case of the Cayley–Menger determinant.`,
           example: String.raw`The famous $13$-$14$-$15$ triangle: $s = 21$, so $A = \sqrt{21 \cdot 8 \cdot 7 \cdot 6} = \sqrt{7056} = 84$. (Its altitudes are then $\frac{2 \cdot 84}{13}, 12, \frac{2 \cdot 84}{15}$.)`,
-          keywords: ["three sides", "semiperimeter", "SSS", "area"],
+          keywords: ["three sides", "semiperimeter", "SSS", "area", "heron expanded form", "area from sides without semiperimeter", "irrational side lengths", "16 A squared"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -247,7 +248,7 @@ window.MATH_SECTIONS.push({
           id: "inradius-area",
           name: "Inradius Formula",
           latex: String.raw`A = rs`,
-          description: String.raw`Area equals inradius times semiperimeter. Works for any polygon with an inscribed circle (tangential polygon).`,
+          description: String.raw`The inradius $r$ is the radius of the inscribed circle, the one circle tangent to, touching, all three sides of the triangle, centred at the incentre. Area equals inradius times semiperimeter. Works for any polygon with an inscribed circle (tangential polygon).`,
           example: String.raw`For the $13$-$14$-$15$ triangle, $A = 84$ and $s = 21$, so $r = \frac{84}{21} = 4$.`,
           keywords: ["inradius", "incircle", "semiperimeter", "inscribed circle", "area"],
           importance: "high",
@@ -266,7 +267,7 @@ window.MATH_SECTIONS.push({
           id: "circumradius-area",
           name: "Circumradius Formula",
           latex: String.raw`A = \frac{abc}{4R}`,
-          description: String.raw`Area from the three sides and circumradius $R$. Rearranged: $R = \frac{abc}{4A}$.`,
+          description: String.raw`The circumradius $R$ is the radius of the circle passing through all three vertices, the corners of the triangle, centred at the circumcentre. Area from the three sides and circumradius $R$. Rearranged: $R = \frac{abc}{4A}$.`,
           example: String.raw`For the $13$-$14$-$15$ triangle with $A = 84$: $R = \frac{13 \cdot 14 \cdot 15}{4 \cdot 84} = \frac{2730}{336} = \frac{65}{8}$.`,
           keywords: ["circumradius", "circumcircle", "abc", "area"],
           importance: "high",
@@ -308,7 +309,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`If $X$ lies on $AB$ and $Y$ on $AC$, the sub-triangle's area is the product of the side fractions — immediate from $\frac{1}{2}ab\sin A$ with the same included angle. One of the highest-frequency area tools on AMC and AIME.`,
           example: String.raw`$AX = \frac{1}{3}AB$ and $AY = \frac{3}{4}AC$: $[AXY] = \frac{1}{3}\cdot\frac{3}{4} = \frac{1}{4}$ of $[ABC]$.`,
           keywords: ["area ratio", "shared angle", "product of fractions", "sub triangle", "two sides"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -317,7 +318,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`AC \cap BD = P \implies \frac{[ABD]}{[CBD]} = \frac{AP}{PC}`,
           description: String.raw`Two triangles on a common base have areas in the ratio of their apexes' distances to that base. So $\triangle ABD$ and $\triangle CBD$ share base $BD$, and when segment $AC$ crosses $BD$ at $P$, that height ratio is read straight off as $AP : PC$ — giving $\frac{[ABD]}{[CBD]} = \frac{AP}{PC}$. This converts a length ratio along a diagonal into an area ratio and back, and is the engine behind the area method, mass points, and "in what ratio does the diagonal cut it?" questions.`,
           keywords: ["same base area ratio", "triangles common base", "diagonal splits area", "area ratio ap pc", "shared base", "ratio of heights", "diagonals intersection area", "diagonal split"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -444,10 +445,10 @@ window.MATH_SECTIONS.push({
           id: "stewarts-theorem",
           name: "Stewart's Theorem",
           latex: String.raw`a(d^2 + mn) = b^2 m + c^2 n`,
-          description: String.raw`For a cevian of length $d$ dividing side $a$ into segments $m$ (adjacent to $c$) and $n$ (adjacent to $b$). Mnemonic: "a man and his dad put a bomb in the sink" — $man + dad = bmb + cnc$.`,
+          description: String.raw`For a cevian, a segment from a vertex to a point on the opposite side, of length $d$ dividing side $a$ into segments $m$ (adjacent to $c$) and $n$ (adjacent to $b$). Mnemonic: "a man and his dad put a bomb in the sink" — $man + dad = bmb + cnc$.`,
           example: String.raw`Triangle with $b = 7$, $c = 5$, and side $a = 6$ split into $m = 2$ (next to $c$), $n = 4$: $6(d^2 + 8) = 49 \cdot 2 + 25 \cdot 4 = 198$, so $d^2 = 25$ and the cevian is $5$.`,
           keywords: ["cevian length", "stewart", "man dad bomb sink", "stewarts theorem", "cevian length formula", "a man and his dad put a bomb in the sink"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC12", "AIME"]
         },
         {
@@ -600,7 +601,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{reflect each cevian foot over the side's midpoint} \Rightarrow \text{new cevians concur}`,
           description: String.raw`The isotomic conjugate reflects each cevian's foot on a side over that side's midpoint; the three new cevians concur at $P^*$. The centroid is its own isotomic conjugate, and the Gergonne and Nagel points form an isotomic pair. It pairs with isogonal conjugation to generate the standard "conjugate" identities among triangle centers, and (via barycentrics) has the clean coordinate form $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.`,
           keywords: ["isotomic conjugate", "reflect foot over midpoint", "centroid self conjugate", "gergonne nagel pair", "barycentric reciprocal", "triangle center"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         },
         {
@@ -609,7 +610,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`[\text{pedal of }P] = \frac{\lvert R^2 - OP^2\rvert}{4R^2}\,[ABC]`,
           description: String.raw`Drop perpendiculars from a point $P$ to the three sides; their feet form the pedal triangle of $P$. Its area is $\frac{|R^2 - OP^2|}{4R^2}[ABC]$, so it collapses to a line exactly when $OP = R$ — $P$ on the circumcircle — which is precisely the Simson line (the degenerate pedal triangle). The pedal triangle of the incenter is the contact triangle, and the general area formula is the unifying statement behind Simson, the medial triangle ($P=O$), and orthocentric pedal facts.`,
           keywords: ["pedal triangle", "feet of perpendiculars", "pedal area formula", "simson line degenerate", "R^2 minus OP^2", "contact triangle", "orthic triangle"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -785,7 +786,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\angle BOC = 2A, \quad \angle BIC = 90^\circ + \tfrac{A}{2}, \quad \angle BI_AC = 90^\circ - \tfrac{A}{2}, \quad \angle BHC = 180^\circ - A`,
           description: String.raw`Looking at side $BC$ from each center: the circumcenter $O$ sees the central angle $2A$ (double the inscribed $\angle A$); the incenter $I$ sees $90^\circ + \tfrac{A}{2}$ (from the half-angle bisectors); the $A$-excenter $I_A$ sees $90^\circ - \tfrac{A}{2}$ (the incenter's supplement); and the orthocenter $H$ sees $180^\circ - A$. Each follows from a one-line angle chase and turns up constantly in configuration problems.`,
           keywords: ["angle BIC", "angle BOC", "angle BHC", "angle B I_A C", "incenter angle", "excenter angle 90 - A/2", "circumcenter central angle", "orthocenter angle", "90 plus half A"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -794,7 +795,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\{A,B,C,H\}:\ \text{each is the orthocenter of the other three}`,
           description: String.raw`A triangle together with its orthocenter, $\{A, B, C, H\}$, forms an orthocentric system: any one of the four points is the orthocenter of the triangle on the other three, so $H$ and the vertices play interchangeable roles. All four triangles $ABC$, $HBC$, $HCA$, $HAB$ share a single common nine-point circle, and their four circumcircles are congruent — each has radius $R$, because $\odot(HBC)$ is exactly the reflection of $\odot(ABC)$ across $BC$. (Their four circumcenters form a second orthocentric system, congruent to the first.)`,
           keywords: ["orthocentric system", "orthocenter of the other three", "four points orthocentric", "shared nine-point circle", "congruent circumcircles radius R", "reflection of circumcircle over side", "H and vertices symmetric"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -933,7 +934,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\angle APB = 180^\circ - \angle AOB = \tfrac{1}{2}\left(\text{arc}_{\text{far}} - \text{arc}_{\text{near}}\right)`,
           description: String.raw`From an external point $P$ the two tangents touch at $A, B$: the angle between them and the central angle $\angle AOB$ are supplementary. The tangent lengths are equal ($PA = PB$) and each radius meets its tangent at a right angle, so $PAOB$ is a right kite and $OP$ bisects $\angle APB$.`,
           keywords: ["two tangents", "external point", "angle between tangents", "supplementary central angle", "tangent kite", "circumscribed angle"],
-          importance: "high",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
@@ -980,7 +981,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`Points with equal power to two circles form a line perpendicular to the line of centers — through the intersection points when the circles meet. For three circles, the three radical axes concur at the radical center, from which all tangent lengths to the three circles are equal. Compute it by subtracting circle equations (the quadratic terms cancel).`,
           example: String.raw`$x^2 + y^2 = 25$ and $(x-6)^2 + y^2 = 9$: subtracting gives $12x - 36 = 16$, i.e. $x = \frac{13}{3}$ — the radical axis is this vertical line, and it passes through both intersection points of the circles.`,
           keywords: ["radical axis", "radical center", "equal power", "subtract circle equations", "common chord"],
-          importance: "medium",
+          importance: "high",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1018,7 +1019,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`A, B, C, D \text{ concyclic} \iff AB \parallel CD \text{ (chords cut by two circles through } P, Q)`,
           description: String.raw`Two circles meet at $P$ and $Q$. A line through $P$ hits them again at $A$ (first circle) and $C$ (second); a line through $Q$ hits them at $B$ and $D$. Then $AB \parallel CD$ — and conversely, a parallelism forces the four outer points to be concyclic. It is the go-to lemma for converting "these lines are parallel" into "these points are concyclic" (and back) in angle-chasing, and pairs naturally with directed angles.`,
           keywords: ["reim theorem", "reims theorem", "two circles parallel chords", "concyclic from parallel", "antiparallel", "angle chasing lemma"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         },
         {
@@ -1027,7 +1028,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{tangent to } AB, AC \text{ and the circumcircle at } T;\ \ T, I, \text{arc-midpoint collinear}`,
           description: String.raw`The $A$-mixtilinear incircle is tangent to sides $AB$, $AC$ and internally tangent to the circumcircle at a point $T$. Key facts: the incenter $I$ is the midpoint of the chord where the mixtilinear circle touches $AB$ and $AC$; the tangency point $T$, the incenter $I$, and the midpoint of arc $BAC$ are collinear; and $T$ maps the incircle to the circumcircle under the homothety at $T$. A recurring configuration in modern olympiad geometry.`,
           keywords: ["mixtilinear incircle", "tangent to two sides and circumcircle", "tangency point collinear incenter", "arc midpoint", "olympiad configuration", "homothety incircle circumcircle"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         }
       ]
@@ -1051,7 +1052,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`For a cyclic quadrilateral with sides $a, b, c, d$ in order and diagonals $p, q$: the products of opposite sides sum to the product of the diagonals.`,
           example: String.raw`Sanity check on a unit square: $1 \cdot 1 + 1 \cdot 1 = \sqrt{2} \cdot \sqrt{2} = 2$. ✓ A real use: a cyclic quadrilateral with sides $a = 2, b = 3, c = 6, d = 4$ and one diagonal known lets you solve for the other directly.`,
           keywords: ["ptolemy", "cyclic quadrilateral", "diagonals", "opposite sides"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC12", "AIME"]
         },
         {
@@ -1177,7 +1178,7 @@ window.MATH_SECTIONS.push({
           name: "Distance, Midpoint, Slope",
           latex: String.raw`d = \sqrt{(\Delta x)^2 + (\Delta y)^2}, \quad M = \left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}\right), \quad m = \frac{\Delta y}{\Delta x}`,
           description: String.raw`Perpendicular lines have slopes multiplying to $-1$. The point dividing $P_1P_2$ in ratio $k:1$ is $\frac{P_1 + kP_2}{1+k}$ (section formula).`,
-          keywords: ["distance formula", "midpoint", "slope", "perpendicular", "section formula"],
+          keywords: ["distance formula", "distance between two points", "midpoint", "slope", "perpendicular", "section formula"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
         },
@@ -1302,7 +1303,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`P = \left( \frac{m x_2 + n x_1}{m + n}, \; \frac{m y_2 + n y_1}{m + n} \right) \quad (AP : PB = m : n)`,
           description: String.raw`The point dividing $A(x_1, y_1)$ to $B(x_2, y_2)$ internally in ratio $m : n$ is the weighted average leaning toward $B$. The midpoint is the case $m = n$. External division (the point lies beyond the segment) just flips the sign of $n$: $\frac{m x_2 - n x_1}{m - n}$.`,
           keywords: ["section formula", "divide segment ratio", "internal division", "external division", "weighted point", "dividing a segment"],
-          importance: "high",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
@@ -1395,7 +1396,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`The three-dimensional analogue of the Descartes Circle Theorem: five mutually tangent spheres with curvatures $k_i = 1/r_i$ satisfy $\left(\sum k_i\right)^2 = 3\sum k_i^2$. The sign conventions match the 2D case — a sphere that encloses the others contributes a negative curvature, and a flat plane counts as $0$. Given four mutually tangent spheres, solving the quadratic for the fifth gives the two "filling" spheres $k_5 = \tfrac12\left(\sum_{i=1}^{4} k_i\right) \pm \tfrac{\sqrt3}{2}\sqrt{\left(\sum_{i=1}^{4} k_i\right)^2 - 2\sum_{i=1}^{4} k_i^2}$. In general the Soddy–Gosset theorem in $n$ dimensions reads $\left(\sum_{i=1}^{n+2} k_i\right)^2 = n\sum k_i^2$ — the circle theorem is the $n = 2$ case, this is $n = 3$.`,
           example: String.raw`Four mutually tangent unit spheres ($k = 1$, so $\sum k_i = 4$ and $\sum k_i^2 = 4$): the sphere in the central gap has $k_5 = 2 + \sqrt6$ (radius $\tfrac{1}{2+\sqrt6} \approx 0.225$), while the sphere enclosing all four has $k_5 = 2 - \sqrt6 < 0$.`,
           keywords: ["soddy", "gosset", "five spheres", "3d descartes", "descartes sphere", "sphere curvature", "kissing spheres", "mutually tangent spheres", "bend", "apollonian"],
-          importance: "low",
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1424,17 +1425,6 @@ window.MATH_SECTIONS.push({
           keywords: ["box", "diagonal", "3d distance", "cube"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "surface-shortest-path",
-          name: "Shortest Path on a Surface (Unfold the Net)",
-          type: "method",
-          latex: String.raw`\text{box } a\le b\le c,\ \text{opposite corners}:\quad \min = \sqrt{(a+b)^2 + c^2}`,
-          description: String.raw`A path forced to stay on a solid's surface is straightened by unfolding (developing) the surface into a plane — the shortest surface path becomes a straight segment, measured with the distance formula. A box unfolds several ways, so try each pairing and keep the smallest: for opposite corners of an $a\le b\le c$ box the minimum is $\sqrt{(a+b)^2+c^2}$. A cylinder unrolls into a rectangle (a helix becomes a straight line) and a cone into a circular sector. It is the 3D cousin of reflecting to straighten a wall-bouncing path.`,
-          example: String.raw`A $1\times 2\times 3$ box, corner to opposite corner across the faces: the three unfoldings give $\sqrt{(1+2)^2+3^2}=\sqrt{18}=3\sqrt2$, $\sqrt{(1+3)^2+2^2}=\sqrt{20}$, and $\sqrt{(2+3)^2+1^2}=\sqrt{26}$; the shortest is $3\sqrt2\approx4.24$ (the through-space diagonal $\sqrt{14}$ is not allowed on the surface).`,
-          keywords: ["shortest path surface", "unfold", "net", "spider and fly", "ant on a box", "geodesic", "develop surface", "cylinder unroll", "cone sector", "shortest route on a box", "method"],
-          importance: "medium",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
           id: "cross-product-area",
@@ -1534,6 +1524,7 @@ window.MATH_SECTIONS.push({
         {
           id: "cavalieris-principle",
           name: "Cavalieri's Principle",
+          type: "method",
           latex: String.raw`\text{equal cross-sections at every height} \Rightarrow \text{equal volumes}`,
           description: String.raw`Two solids that every horizontal plane slices into cross-sections of equal area have the same volume — whatever their shapes. This is why an oblique prism or cylinder keeps $V = Bh$ (shear it upright, no slice changes), and it delivers the sphere's volume by comparing it to a cylinder with a cone removed.`,
           keywords: ["cavalieri", "cross section", "equal slices equal volume", "oblique prism", "shear"],
@@ -1621,7 +1612,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{hexagon tangent to a conic} \implies AD,\; BE,\; CF \text{ concur}`,
           description: String.raw`The projective dual of Pascal's theorem: if a hexagon $ABCDEF$ is circumscribed about a conic (every side tangent to it), its three main diagonals $AD$, $BE$, $CF$ pass through one point. Pascal turns "six points on a conic" into a collinearity; Brianchon turns "six tangent lines" into a concurrency — the identical statement with points and lines swapped. Letting tangency points merge degenerates it into concurrency facts for circumscribed pentagons and quadrilaterals, and it yields the Gergonne point from a triangle's incircle.`,
           keywords: ["brianchon", "tangent hexagon", "dual of pascal", "diagonals concurrent", "circumscribed conic", "projective", "gergonne point"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         },
         {
@@ -1630,7 +1621,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{perspective from a point} \iff \text{perspective from a line}`,
           description: String.raw`Triangles $ABC$ and $A'B'C'$ are perspective from a point when $AA'$, $BB'$, $CC'$ concur, and perspective from a line when the three points $AB\cap A'B'$, $BC\cap B'C'$, $CA\cap C'A'$ are collinear (the axis of perspectivity). Desargues: either condition implies the other. It trades a concurrency for a collinearity and back — the two things projective problems keep asking for — and its converse proves concurrency by producing the axis.`,
           keywords: ["desargues", "perspective from point", "perspective from line", "axis of perspectivity", "concurrency", "collinearity", "projective duality", "two triangles"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         },
         {
@@ -1697,28 +1688,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "reflection-shortest-path",
-          name: "Reflection for Shortest Paths",
-          type: "method",
-          latex: String.raw`\min_{P \in \ell}\, (AP + PB) = A'B, \quad A' = \text{reflection of } A \text{ over } \ell`,
-          description: String.raw`To minimize a broken path touching a line (or several), reflect an endpoint across the line and measure straight. Bounce problems (billiards, light rays, ant-on-a-box) unfold the same way — reflect the room instead of bending the path.`,
-          example: String.raw`$A = (0, 3)$, $B = (6, 1)$, $P$ on the $x$-axis: reflect $A$ to $(0, -3)$; the minimum of $AP + PB$ is $\sqrt{6^2 + 4^2} = \sqrt{52} = 2\sqrt{13}$, achieved where segment $A'B$ crosses the axis.`,
-          keywords: ["reflection", "shortest path", "minimize distance", "billiard", "unfold", "method"],
-          importance: "medium",
-          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "rotation-trick",
-          name: "The Rotation Trick",
-          type: "method",
-          latex: String.raw`\text{rotate } 60^\circ \text{ (equilateral) or } 90^\circ \text{ (square) about a vertex}`,
-          description: String.raw`Given the distances from an interior point to the vertices of an equilateral triangle or square, rotate the figure about a vertex: one distance carries to a new position, creating an equilateral (or isosceles right) triangle from two of the distances — and a triangle whose sides are all three known lengths.`,
-          example: String.raw`$P$ inside equilateral $\triangle ABC$ with $PA = 3, PB = 4, PC = 5$: rotating $60^\circ$ about $B$ produces a $3$-$4$-$5$ right triangle plus an equilateral one, revealing $\angle APB = 150^\circ$ — from which the side and area of $ABC$ follow.`,
-          keywords: ["rotation", "point inside square", "point inside equilateral", "distances to vertices", "method", "distances from a special point"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "spiral-similarity",
           name: "Spiral Similarity",
           type: "method",
@@ -1728,28 +1697,6 @@ window.MATH_SECTIONS.push({
           keywords: ["spiral similarity", "rotation scaling", "similar triangles common vertex", "complex numbers", "method"],
           importance: "low",
           level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "tangency-condition",
-          name: "Unique Solution ⟹ Tangency",
-          type: "method",
-          latex: String.raw`\text{distance(center, line)} = r \qquad\text{or}\qquad \Delta = 0`,
-          description: String.raw`When a system "has exactly one solution" and its pieces are a circle and a line (or two circles, or a curve and a line), uniqueness means tangency: set the distance from the center to the line equal to the radius, or set the discriminant of the combined equation to zero, and solve for the parameter.`,
-          example: String.raw`(2025 AIME I #8) $|25 + 20i - z| = 5$ is a circle at $(25, 20)$; $|z - 4 - k| = |z - 3i - k|$ is the perpendicular bisector of two points depending on $k$. Exactly one solution forces the line tangent: distance $= \frac{|8k - 73|}{10} = 5$, so $k = \frac{123}{8}$ or $\frac{23}{8}$, summing to $\frac{73}{4}$ — answer $77$.`,
-          keywords: ["tangent", "unique solution", "discriminant zero", "distance equals radius", "exactly one intersection", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "cross-section-method",
-          name: "3D Tangency via Cross-Sections",
-          type: "method",
-          latex: String.raw`\text{slice through the axis of symmetry} \Rightarrow \text{2D circles and lines}`,
-          description: String.raw`Spheres, cylinders, cones, and tori that are tangent to each other become tangent circles and lines in the plane through their common axis of symmetry. Solve the 2D picture (center distances = sums/differences of radii, similar triangles), then rotate back.`,
-          example: String.raw`(2024 AIME II #8) A torus (tube radius $3$, center-circle radius $6$) rests inside a sphere of radius $11$: in the axial cross-section the tube center sits at distance $11 - 3 = 8$ from the sphere's center, so by similar triangles the tangency circle has radius $6 \cdot \frac{11}{8} = \frac{33}{4}$; resting outside gives $6 \cdot \frac{11}{14} = \frac{33}{7}$. The difference is $\frac{99}{28}$, answer $127$.`,
-          keywords: ["cross section", "torus", "sphere tangent", "axial slice", "3d to 2d", "method"],
-          importance: "medium",
-          level: ["AIME"]
         },
         {
           id: "homothety-monge",
@@ -1817,8 +1764,8 @@ window.MATH_SECTIONS.push({
           id: "complex-bash",
           name: "Complex Number Bashing",
           type: "method",
-          latex: String.raw`z \mapsto \omega z: \text{ rotation by } \arg\omega; \qquad \text{equilateral } \iff a + \omega b + \omega^2 c = 0 \;\; (\omega = e^{2\pi i/3})`,
-          description: String.raw`Put the figure on the complex plane: multiplying by $e^{i\theta}$ rotates about the origin (about $p$: $z \mapsto p + e^{i\theta}(z - p)$), and scaling and rotating are one operation. Regular $n$-gon vertices are the roots of unity $\omega^k$, the centroid is $\frac{a+b+c}{3}$, and the equilateral condition above collapses many rotation configurations to one line of algebra.`,
+          latex: String.raw`z \mapsto \omega z: \text{ rotation by } \arg\omega; \qquad \text{equilateral } \iff a^2 + b^2 + c^2 = ab + bc + ca`,
+          description: String.raw`Put the figure on the complex plane: multiplying by $e^{i\theta}$ rotates about the origin (about $p$: $z \mapsto p + e^{i\theta}(z - p)$), and scaling and rotating are one operation. Regular $n$-gon vertices are the roots of unity $\omega^k$, the centroid is $\frac{a+b+c}{3}$, and the orientation-free equilateral condition above collapses many rotation configurations to one line of algebra.`,
           keywords: ["complex bash", "complex numbers geometry", "rotation by multiplication", "roots of unity polygon", "equilateral condition", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -1830,7 +1777,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{parallelism, midpoints, and area ratios are preserved} \qquad \text{ellipse} \xrightarrow{\text{scale}} \text{circle}, \;\; \text{triangle} \xrightarrow{\text{affine}} \text{equilateral}`,
           description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths along a line, midpoints, and multiplies every area by the same constant — so ratios of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-ratio question cannot tell them apart. It does not preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities.`,
           keywords: ["affine transformation", "shear", "scaling", "stretch", "ellipse to circle", "area ratio invariant", "map to equilateral", "wlog equilateral", "method"],
-          importance: "medium",
+          importance: "low",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1870,7 +1817,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
           description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
           keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC12", "AIME", "Olympiad"]
         }
       ]

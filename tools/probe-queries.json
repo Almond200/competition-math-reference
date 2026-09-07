@@ -1,0 +1,492 @@
+{
+ "_readme": "Probe set: how a reader might DESCRIBE a theorem without knowing its name. Written by imagining the question rather than by collecting reported failures, so it samples the space instead of the complaints. Deliberately harder than eval-queries.json and kept separate: eval-queries.json is the regression gate, this is the exploration set. Each case is [query, [acceptable ids]]. Re-check labels before trusting a miss; several 'failures' here turned out to be wrong labels where search returned the better card.",
+ "probes": [
+  [
+   "how do i find the area of a triangle if i know all three sides",
+   [
+    "herons-formula"
+   ]
+  ],
+  [
+   "what is the formula for the area of a triangle with two sides and the angle between them",
+   [
+    "trig-area"
+   ]
+  ],
+  [
+   "find the third side when i know two sides and the included angle",
+   [
+    "law-of-cosines"
+   ]
+  ],
+  [
+   "relate a side to the sine of its opposite angle",
+   [
+    "law-of-sines"
+   ]
+  ],
+  [
+   "area of a polygon from its corner coordinates",
+   [
+    "shoelace-formula"
+   ]
+  ],
+  [
+   "length of a line from a corner to the other side splitting it in a known ratio",
+   [
+    "stewarts-theorem"
+   ]
+  ],
+  [
+   "the point where the three medians meet",
+   [
+    "centroid-division"
+   ]
+  ],
+  [
+   "distance from the center of a circle to a chord",
+   [
+    "chord-length"
+   ]
+  ],
+  [
+   "two chords crossing inside a circle multiply to the same thing",
+   [
+    "power-of-a-point"
+   ]
+  ],
+  [
+   "product of the two pieces of intersecting chords",
+   [
+    "power-of-a-point"
+   ]
+  ],
+  [
+   "angle at the center is twice the angle at the edge",
+   [
+    "inscribed-angle-theorem"
+   ]
+  ],
+  [
+   "opposite angles in a quadrilateral inscribed in a circle add to 180",
+   [
+    "cyclic-opposite-angles"
+   ]
+  ],
+  [
+   "diagonals of a quadrilateral inscribed in a circle",
+   [
+    "ptolemys-theorem"
+   ]
+  ],
+  [
+   "area of a quadrilateral inscribed in a circle from its four sides",
+   [
+    "brahmaguptas-formula"
+   ]
+  ],
+  [
+   "how tall is an equilateral triangle",
+   [
+    "equilateral-triangle-facts"
+   ]
+  ],
+  [
+   "volume of a pyramid",
+   [
+    "prism-pyramid-volumes"
+   ]
+  ],
+  [
+   "surface area and volume of a ball",
+   [
+    "sphere-formulas"
+   ]
+  ],
+  [
+   "shortest distance between two skew lines in space",
+   [
+    "skew-lines-distance"
+   ]
+  ],
+  [
+   "sum of the angles inside a polygon",
+   [
+    "polygon-angle-sums"
+   ]
+  ],
+  [
+   "how many diagonals does a polygon have",
+   [
+    "polygon-angle-sums"
+   ]
+  ],
+  [
+   "number of ways to arrange letters when some repeat",
+   [
+    "multiset-permutations"
+   ]
+  ],
+  [
+   "how many ways to pick a committee",
+   [
+    "permutations-combinations",
+    "committee-chair"
+   ]
+  ],
+  [
+   "ways to distribute identical candies to kids",
+   [
+    "stars-and-bars",
+    "balls-boxes-table"
+   ]
+  ],
+  [
+   "number of paths on a grid going only right and up",
+   [
+    "grid-paths"
+   ]
+  ],
+  [
+   "probability of getting exactly k heads in n flips",
+   [
+    "binomial-probability"
+   ]
+  ],
+  [
+   "expected number of rolls to see a six",
+   [
+    "geometric-distribution"
+   ]
+  ],
+  [
+   "average of a random variable when events overlap",
+   [
+    "indicator-variables"
+   ]
+  ],
+  [
+   "counting things by subtracting the ones you dont want",
+   [
+    "complementary-counting"
+   ]
+  ],
+  [
+   "arrangements where no one sits in their own seat",
+   [
+    "derangements"
+   ]
+  ],
+  [
+   "ways to seat people in a circle",
+   [
+    "circular-permutations"
+   ]
+  ],
+  [
+   "number of subsets of a set",
+   [
+    "counting-functions",
+    "subset-sum-facts"
+   ]
+  ],
+  [
+   "choosing with repetition allowed",
+   [
+    "stars-and-bars"
+   ]
+  ],
+  [
+   "probability that two events both happen",
+   [
+    "conditional-probability"
+   ]
+  ],
+  [
+   "how many ways to split people into teams",
+   [
+    "stirling-bell"
+   ]
+  ],
+  [
+   "chance the first person to go wins",
+   [
+    "turn-based-games",
+    "states-recursion-prob"
+   ]
+  ],
+  [
+   "counting with restrictions using overlap",
+   [
+    "pie"
+   ]
+  ],
+  [
+   "number of ways to tile a strip with dominoes",
+   [
+    "fibonacci-tilings"
+   ]
+  ],
+  [
+   "balanced parentheses count",
+   [
+    "catalan-numbers"
+   ]
+  ],
+  [
+   "colorings that look the same after rotating",
+   [
+    "burnsides-lemma"
+   ]
+  ],
+  [
+   "remainder when a huge power is divided by something",
+   [
+    "periodicity-mod-m"
+   ]
+  ],
+  [
+   "find the remainder of a big exponent",
+   [
+    "eulers-theorem",
+    "periodicity-mod-m",
+    "crt"
+   ]
+  ],
+  [
+   "solve two remainder conditions at once",
+   [
+    "crt"
+   ]
+  ],
+  [
+   "how many factors does a number have",
+   [
+    "number-of-divisors"
+   ]
+  ],
+  [
+   "sum of the factors of a number",
+   [
+    "sum-of-divisors"
+   ]
+  ],
+  [
+   "count numbers below n with no common factor with n",
+   [
+    "eulers-totient",
+    "totient-divisor-sum"
+   ]
+  ],
+  [
+   "last digit of a big power",
+   [
+    "last-digit-patterns",
+    "periodicity-mod-m",
+    "eulers-theorem"
+   ]
+  ],
+  [
+   "how many zeros at the end of a factorial",
+   [
+    "trailing-zeros"
+   ]
+  ],
+  [
+   "highest power of a prime dividing a factorial",
+   [
+    "legendres-formula",
+    "vp-factorial",
+    "p-adic-valuation"
+   ]
+  ],
+  [
+   "prove a number is never a perfect square",
+   [
+    "choose-modulus"
+   ]
+  ],
+  [
+   "solve an equation in whole numbers only",
+   [
+    "sfft"
+   ]
+  ],
+  [
+   "factor an expression by adding and subtracting a constant",
+   [
+    "sfft"
+   ]
+  ],
+  [
+   "when is a number divisible by 3",
+   [
+    "divisibility-rules"
+   ]
+  ],
+  [
+   "biggest number dividing both",
+   [
+    "gcd-lcm-product",
+    "gcd-substitution"
+   ]
+  ],
+  [
+   "relationship between gcd and lcm",
+   [
+    "gcd-lcm-product"
+   ]
+  ],
+  [
+   "numbers that are squares mod p",
+   [
+    "squares-mod-small",
+    "eulers-criterion"
+   ]
+  ],
+  [
+   "a to the p minus 1 is 1 mod p",
+   [
+    "fermats-little-theorem"
+   ]
+  ],
+  [
+   "factorial mod a prime",
+   [
+    "wilsons-theorem"
+   ]
+  ],
+  [
+   "binomial coefficient mod a prime",
+   [
+    "lucas-theorem",
+    "prime-divides-binomial"
+   ]
+  ],
+  [
+   "sum and product of the roots of a quadratic",
+   [
+    "vietas-quadratic"
+   ]
+  ],
+  [
+   "turn a quadratic into a perfect square plus a number",
+   [
+    "completing-the-square"
+   ]
+  ],
+  [
+   "formula for the sum of an arithmetic sequence",
+   [
+    "arithmetic-series"
+   ]
+  ],
+  [
+   "sum of a sequence that keeps multiplying by the same number",
+   [
+    "geometric-series"
+   ]
+  ],
+  [
+   "add up the first n squares",
+   [
+    "power-sums"
+   ]
+  ],
+  [
+   "a sequence where each term depends on the two before",
+   [
+    "linear-recurrence"
+   ]
+  ],
+  [
+   "solve a sequence defined by a rule",
+   [
+    "linear-recurrence"
+   ]
+  ],
+  [
+   "how to expand a power of a sum",
+   [
+    "binomial-theorem"
+   ]
+  ],
+  [
+   "sum where everything cancels except the ends",
+   [
+    "telescoping"
+   ]
+  ],
+  [
+   "proving one side is bigger using averages",
+   [
+    "am-gm"
+   ]
+  ],
+  [
+   "inequality with sums of squares",
+   [
+    "cauchy-schwarz",
+    "trivial-inequality"
+   ]
+  ],
+  [
+   "maximum of a product when the sum is fixed",
+   [
+    "max-product-fixed-sum",
+    "am-gm"
+   ]
+  ],
+  [
+   "what happens to logs when you multiply",
+   [
+    "log-rules",
+    "log-substitution"
+   ]
+  ],
+  [
+   "change a log to a different base",
+   [
+    "change-of-base"
+   ]
+  ],
+  [
+   "absolute value of a complex number",
+   [
+    "complex-basics"
+   ]
+  ],
+  [
+   "rotating a point in the complex plane",
+   [
+    "eulers-formula",
+    "rotation-90",
+    "complex-bash"
+   ]
+  ],
+  [
+   "nth roots of 1",
+   [
+    "roots-of-unity"
+   ]
+  ],
+  [
+   "expand sin of a sum of two angles",
+   [
+    "angle-addition"
+   ]
+  ],
+  [
+   "formula for sin of double the angle",
+   [
+    "double-angle"
+   ]
+  ],
+  [
+   "turn a product of sines into a sum",
+   [
+    "product-sum"
+   ]
+  ]
+ ]
+}

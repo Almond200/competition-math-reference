@@ -10,7 +10,7 @@
   // ---------- roots of unity ----------
   W["roots-of-unity"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Roots of unity — pick n</div>' +
+      '<div class="tool"><div class="tool-title">Roots of unity</div>' +
       '<div class="tool-row">n = <input class="tool-in ru-n" type="number" min="1" max="24" value="7"> ' +
       '<label><input type="checkbox" class="ru-poly" checked> connect them</label></div>' +
       '<svg viewBox="0 0 300 300" class="tool-svg ru-svg"></svg><div class="tool-cap ru-cap"></div></div>';
@@ -98,7 +98,7 @@
   W["pascals-identity"] = { mount: function (host) {
     var N = 12;
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Pascal&rsquo;s triangle — hover a cell</div>' +
+      '<div class="tool"><div class="tool-title">Pascal&rsquo;s triangle</div>' +
       '<div class="tool-row">colour: <select class="tool-in pt-mode"><option value="0">values</option><option value="2">mod 2 (Sierpiński)</option><option value="3">mod 3</option><option value="5">mod 5</option></select></div>' +
       '<div class="pt-grid"></div><div class="tool-cap pt-cap">Hover a cell to see Pascal&rsquo;s identity.</div></div>';
     var grid = host.querySelector(".pt-grid"), cap = host.querySelector(".pt-cap");
@@ -161,7 +161,7 @@
   // ---------- Euclidean algorithm + Bézout ----------
   W["euclidean-algorithm"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Euclidean algorithm — with Bézout coefficients</div>' +
+      '<div class="tool"><div class="tool-title">Euclidean algorithm with Bézout coefficients</div>' +
       '<div class="tool-row">a = <input class="tool-in eu-a" type="number" value="240" style="width:80px"> b = <input class="tool-in eu-b" type="number" value="46" style="width:80px"> <button class="tool-btn2 eu-go">Run</button></div>' +
       '<div class="tool-out eu-out"></div></div>';
     var out = host.querySelector(".eu-out");
@@ -185,7 +185,7 @@
   function gcd2(a, b) { while (b) { var t = a % b; a = b; b = t; } return a; }
   W["chicken-mcnugget"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Chicken McNugget — which totals are reachable?</div>' +
+      '<div class="tool"><div class="tool-title">Which totals are reachable?</div>' +
       '<div class="tool-row">a = <input class="tool-in cm-a" type="number" value="5" style="width:60px"> b = <input class="tool-in cm-b" type="number" value="8" style="width:60px"> <button class="tool-btn2 cm-go">Show</button></div>' +
       '<div class="tool-out cm-out"></div></div>';
     var out = host.querySelector(".cm-out");
@@ -258,7 +258,7 @@
   }
   W["vertex-form"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Function grapher — type any f(x)</div>' +
+      '<div class="tool"><div class="tool-title">Function grapher</div>' +
       '<div class="tool-row">f(x) = <input class="tool-in fg-f" type="text" value="(x-2)^2 - 3" style="width:180px"> x ∈ [<input class="tool-in fg-lo" type="number" value="-6" style="width:52px">, <input class="tool-in fg-hi" type="number" value="6" style="width:52px">] <button class="tool-btn2 fg-go">Plot</button></div>' +
       '<svg viewBox="0 0 460 300" class="tool-svg fg-svg"></svg><div class="tool-cap fg-cap"></div></div>';
     var svg = host.querySelector(".fg-svg"), cap = host.querySelector(".fg-cap");
@@ -333,7 +333,7 @@
   // ---------- quadratic formula ----------
   W["quadratic-formula"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Quadratic — roots, vertex &amp; discriminant</div>' +
+      '<div class="tool"><div class="tool-title">Roots, vertex &amp; discriminant</div>' +
       '<div class="tool-row">y = <input class="tool-in q-a" type="number" value="1" style="width:56px">x² + <input class="tool-in q-b" type="number" value="-3" style="width:56px">x + <input class="tool-in q-c" type="number" value="-4" style="width:56px"> <button class="tool-btn2 q-go">Plot</button></div>' +
       '<svg viewBox="0 0 440 300" class="tool-svg q-svg"></svg><div class="tool-out q-out"></div></div>';
     var svg = host.querySelector(".q-svg"), out = host.querySelector(".q-out");
@@ -365,7 +365,7 @@
   // ---------- AM-GM (geometric picture) ----------
   W["am-gm"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">AM ≥ GM — the semicircle picture</div>' +
+      '<div class="tool"><div class="tool-title">The semicircle picture</div>' +
       '<div class="tool-row">a = <input class="tool-in ag-a" type="number" value="2" style="width:64px"> b = <input class="tool-in ag-b" type="number" value="8" style="width:64px"> <button class="tool-btn2 ag-go">Show</button></div>' +
       '<svg viewBox="0 0 420 230" class="tool-svg ag-svg"></svg><div class="tool-cap ag-cap"></div></div>';
     var svg = host.querySelector(".ag-svg"), cap = host.querySelector(".ag-cap");
@@ -395,7 +395,7 @@
   // ---------- geometric series ----------
   W["geometric-series"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Geometric series — partial &amp; infinite sums</div>' +
+      '<div class="tool"><div class="tool-title">Partial &amp; infinite sums</div>' +
       '<div class="tool-row">a = <input class="tool-in gs-a" type="number" value="1" style="width:60px"> r = <input class="tool-in gs-r" type="number" value="0.5" step="0.1" style="width:60px"> n = <input class="tool-in gs-n" type="number" value="8" style="width:56px"> <button class="tool-btn2 gs-go">Show</button></div>' +
       '<svg viewBox="0 0 440 160" class="tool-svg gs-svg"></svg><div class="tool-cap gs-cap"></div></div>';
     var svg = host.querySelector(".gs-svg"), cap = host.querySelector(".gs-cap");
@@ -415,7 +415,7 @@
   // ---------- binomial theorem ----------
   W["binomial-theorem"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Binomial theorem — expand (x + y)ⁿ</div>' +
+      '<div class="tool"><div class="tool-title">Expand (x + y)ⁿ</div>' +
       '<div class="tool-row">n = <input class="tool-in bt-n" type="number" value="5" min="0" max="12" style="width:60px"> <button class="tool-btn2 bt-go">Expand</button></div>' +
       '<div class="tool-out bt-out"></div></div>';
     var out = host.querySelector(".bt-out");
@@ -432,7 +432,7 @@
   // ---------- de Moivre (powers of a complex number) ----------
   W["de-moivre"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">de Moivre — powers of z spiral around</div>' +
+      '<div class="tool"><div class="tool-title">Powers of z</div>' +
       '<div class="tool-row">z = <input class="tool-in dm-a" type="number" value="1.1" step="0.1" style="width:60px"> + <input class="tool-in dm-b" type="number" value="0.5" step="0.1" style="width:60px">i, &nbsp; up to z^<input class="tool-in dm-n" type="number" value="7" style="width:48px"> <button class="tool-btn2 dm-go">Plot</button></div>' +
       '<svg viewBox="0 0 320 300" class="tool-svg dm-svg"></svg><div class="tool-cap dm-cap"></div></div>';
     var svg = host.querySelector(".dm-svg"), cap = host.querySelector(".dm-cap");
@@ -456,7 +456,7 @@
   // ---------- finite differences ----------
   W["finite-differences"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Finite differences — find the pattern</div>' +
+      '<div class="tool"><div class="tool-title">Finite differences</div>' +
       '<div class="tool-row">sequence: <input class="tool-in fd-s" type="text" value="2 5 12 23 38 57" style="width:220px"> <button class="tool-btn2 fd-go">Build</button></div>' +
       '<div class="tool-out fd-out"></div></div>';
     var out = host.querySelector(".fd-out");
@@ -477,7 +477,7 @@
   // ---------- grid paths ----------
   W["grid-paths"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Lattice paths — moves right &amp; up only</div>' +
+      '<div class="tool"><div class="tool-title">Lattice paths, moves right &amp; up only</div>' +
       '<div class="tool-row">width <input class="tool-in gp-w" type="number" value="5" min="1" max="12" style="width:52px"> × height <input class="tool-in gp-h" type="number" value="3" min="1" max="12" style="width:52px"> <button class="tool-btn2 gp-go">Count</button> <button class="tool-btn2 gp-path" style="background:var(--bg-card);color:var(--accent);border-color:var(--border)">New path</button></div>' +
       '<svg viewBox="0 0 380 260" class="tool-svg gp-svg"></svg><div class="tool-cap gp-cap"></div></div>';
     var svg = host.querySelector(".gp-svg"), cap = host.querySelector(".gp-cap");
@@ -636,7 +636,7 @@
   // ---------- Pythagorean triple generator ----------
   W["pythagorean-triples"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Pythagorean triples — Euclid&rsquo;s formula</div>' +
+      '<div class="tool"><div class="tool-title">Pythagorean triples from Euclid&rsquo;s formula</div>' +
       '<div class="tool-row">m = <input class="tool-in py-m" type="number" value="2" style="width:56px"> n = <input class="tool-in py-n" type="number" value="1" style="width:56px"> <span class="tool-cap" style="margin:0">(m &gt; n &gt; 0)</span> <button class="tool-btn2 py-go">Generate</button></div>' +
       '<div class="tool-out py-out"></div></div>';
     var out = host.querySelector(".py-out");
@@ -674,7 +674,7 @@
   // ---------- Legendre's formula ----------
   W["legendres-formula"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Legendre&rsquo;s formula — power of p in n!</div>' +
+      '<div class="tool"><div class="tool-title">Power of p in n!</div>' +
       '<div class="tool-row">n = <input class="tool-in lg-n" type="number" value="100" style="width:80px"> p = <input class="tool-in lg-p" type="number" value="5" style="width:56px"> <button class="tool-btn2 lg-go">Compute</button></div>' +
       '<div class="tool-out lg-out"></div></div>';
     var out = host.querySelector(".lg-out");
@@ -693,7 +693,7 @@
   // ---------- CRT solver ----------
   W["crt"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Chinese Remainder Theorem — solve two congruences</div>' +
+      '<div class="tool"><div class="tool-title">Solve two congruences</div>' +
       '<div class="tool-row">x ≡ <input class="tool-in cr-a1" type="number" value="2" style="width:52px"> (mod <input class="tool-in cr-m1" type="number" value="3" style="width:52px">)</div>' +
       '<div class="tool-row">x ≡ <input class="tool-in cr-a2" type="number" value="3" style="width:52px"> (mod <input class="tool-in cr-m2" type="number" value="5" style="width:52px">) <button class="tool-btn2 cr-go">Solve</button></div>' +
       '<div class="tool-out cr-out"></div></div>';
@@ -717,7 +717,7 @@
   // ---------- regular polygon area ----------
   W["regular-polygon-area"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Regular polygon — area &amp; apothem</div>' +
+      '<div class="tool"><div class="tool-title">Regular polygon area &amp; apothem</div>' +
       '<div class="tool-row">sides n = <input class="tool-in rp-n" type="number" value="6" min="3" max="24" style="width:60px"> &nbsp; side length s = <input class="tool-in rp-s" type="number" value="1" step="0.5" style="width:60px"> <button class="tool-btn2 rp-go">Show</button></div>' +
       '<svg viewBox="0 0 300 240" class="tool-svg rp-svg"></svg><div class="tool-cap rp-cap"></div></div>';
     var svg = host.querySelector(".rp-svg"), cap = host.querySelector(".rp-cap");
@@ -782,7 +782,7 @@
   // ---------- repeating decimals ----------
   W["repeating-decimals"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Fraction → decimal: where does it repeat?</div>' +
+      '<div class="tool"><div class="tool-title">Fraction to decimal</div>' +
       '<div class="tool-row"><input class="tool-in rd-p" type="number" value="4" style="width:64px"> / <input class="tool-in rd-q" type="number" value="7" style="width:64px"> <button class="tool-btn2 rd-go">Expand</button></div>' +
       '<div class="tool-out rd-out"></div></div>';
     var out = host.querySelector(".rd-out");
@@ -826,7 +826,7 @@
   // ---------- divisibility rules ----------
   W["divisibility-rules"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Run every divisibility rule at once</div>' +
+      '<div class="tool"><div class="tool-title">Every divisibility rule at once</div>' +
       '<div class="tool-row">n = <input class="tool-in dv-n" type="text" value="123456" style="width:150px"> <button class="tool-btn2 dv-go">Test</button></div>' +
       '<div class="tool-out dv-out"></div></div>';
     var out = host.querySelector(".dv-out");
@@ -896,7 +896,7 @@
   // ---------- average speed ----------
   W["average-speed"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Average speed — why it isn’t the average of the speeds</div>' +
+      '<div class="tool"><div class="tool-title">Average speed over two legs</div>' +
       '<div class="tool-row">out at <input class="tool-in as-a" type="number" value="30" style="width:70px"> and back at <input class="tool-in as-b" type="number" value="60" style="width:70px"> (same distance each way) <button class="tool-btn2 as-go">Go</button></div>' +
       '<div class="tool-out as-out"></div></div>';
     var out = host.querySelector(".as-out");
@@ -916,7 +916,7 @@
   // ---------- sums of powers ----------
   W["power-sums"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">1 + 2 + … + n, and the sums of squares and cubes</div>' +
+      '<div class="tool"><div class="tool-title">Sums of n, n² and n³</div>' +
       '<div class="tool-row">n = <input class="tool-in ps-n" type="number" value="10" min="1" max="100000" style="width:90px"> <button class="tool-btn2 ps-go">Sum</button></div>' +
       '<div class="tool-out ps-out"></div></div>';
     var out = host.querySelector(".ps-out");
@@ -937,7 +937,7 @@
   // ---------- Bayes ----------
   W["bayes-theorem"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Bayes — the base rate does the work</div>' +
+      '<div class="tool"><div class="tool-title">Bayes with a base rate</div>' +
       '<div class="tool-row">P(disease) = <input class="tool-in by-pr" type="number" value="1" step="0.1" style="width:66px">% &nbsp; sensitivity P(+|D) = <input class="tool-in by-se" type="number" value="99" step="1" style="width:66px">% &nbsp; specificity P(−|¬D) = <input class="tool-in by-sp" type="number" value="95" step="1" style="width:66px">% <button class="tool-btn2 by-go">Update</button></div>' +
       '<div class="tool-out by-out"></div></div>';
     var out = host.querySelector(".by-out");
@@ -959,7 +959,7 @@
   // ---------- modular inverse ----------
   W["modular-inverse"] = { mount: function (host) {
     host.innerHTML =
-      '<div class="tool"><div class="tool-title">Modular inverse by the extended Euclidean algorithm</div>' +
+      '<div class="tool"><div class="tool-title">Modular inverse</div>' +
       '<div class="tool-row">a = <input class="tool-in mi-a" type="number" value="17" style="width:80px"> mod m = <input class="tool-in mi-m" type="number" value="43" style="width:80px"> <button class="tool-btn2 mi-go">Invert</button></div>' +
       '<div class="tool-out mi-out"></div></div>';
     var out = host.querySelector(".mi-out");

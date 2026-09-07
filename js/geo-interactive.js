@@ -43,22 +43,48 @@
   function txt(p, s, cls) { return '<text x="' + r1(p[0]) + '" y="' + r1(p[1]) + '" class="' + (cls || "gt") + '">' + s + "</text>"; }
   function lbl(p, from, s, cls) { var d = norm(sub(p, from)); return txt(add(p, mul(d, 15)), s, cls); }
   function ext(a, b, k) { var d = norm(sub(b, a)); return [add(a, mul(d, -k)), add(b, mul(d, k))]; }  // extend segment both ways
+
+  // The full line through a and b, clipped to the widget frame (Liang-Barsky).
+  // Extending a segment by a guessed number of pixels leaves the line stopping
+  // short whenever a point of interest sits outside it — Menelaus' F, the
+  // secant's external point, the foot of a perpendicular — which reads as the
+  // line partly vanishing. Clipping to the frame always spans the whole view.
+  function lineSpan(a, b, w, h, pad) {
+    if (pad == null) pad = 4;
+    var d = sub(b, a), L = len(d);
+    if (L < 1e-6) return [a, b];
+    d = mul(d, 1 / L);
+    var t0 = -1e9, t1 = 1e9;
+    var P = [-d[0], d[0], -d[1], d[1]];
+    var Q = [a[0] - pad, (w - pad) - a[0], a[1] - pad, (h - pad) - a[1]];
+    for (var i = 0; i < 4; i++) {
+      if (Math.abs(P[i]) < 1e-9) { if (Q[i] < 0) return [a, b]; continue; }
+      var t = Q[i] / P[i];
+      if (P[i] < 0) { if (t > t0) t0 = t; } else { if (t < t1) t1 = t; }
+    }
+    if (t0 >= t1) return [a, b];
+    return [add(a, mul(d, t0)), add(a, mul(d, t1))];
+  }
   function fmt(x) { return (Math.round(x * 100) / 100).toString(); }
 
   // ---- generic draggable canvas ----
   function mountGeo(host, cfg) {
     if (!host) return;
+    // Frames default to origin 0,0 but may start negative, giving figures that
+    // expand as you drag (Pythagoras' squares) somewhere to expand into.
+    var vx = cfg.vx || 0, vy = cfg.vy || 0;
     var wrap = document.createElement("div");
     wrap.className = "geo-widget";
     wrap.innerHTML =
       '<div class="geo-title">' + (cfg.title || "Play with it") + "</div>" +
-      '<svg viewBox="0 0 ' + cfg.w + " " + cfg.h + '" class="geo-svg" role="img"></svg>' +
+      '<svg viewBox="' + vx + " " + vy + " " + cfg.w + " " + cfg.h + '" class="geo-svg" role="img"></svg>' +
       '<div class="geo-cap"></div>' +
       '<div class="geo-hint">' + (cfg.hint || "Drag the highlighted points.") + "</div>";
     host.appendChild(wrap);
     var svg = wrap.querySelector("svg"), cap = wrap.querySelector(".geo-cap");
     var pts = {};
     Object.keys(cfg.init).forEach(function (k) { pts[k] = cfg.init[k].slice(); });
+
     function redraw() {
       var res = cfg.render(pts);
       var handles = "";
@@ -85,7 +111,8 @@
       if (!dragging) return;
       var xy = toSvg(e); if (!xy) return;
       var d = cfg.drag[dragging];
-      xy = [Math.max(10, Math.min(cfg.w - 10, xy[0])), Math.max(10, Math.min(cfg.h - 10, xy[1]))];
+      xy = [Math.max(vx + 10, Math.min(vx + cfg.w - 10, xy[0])),
+            Math.max(vy + 10, Math.min(vy + cfg.h - 10, xy[1]))];
       if (d && d.constrain) xy = d.constrain(xy, pts);
       pts[dragging] = xy; redraw();
     });
@@ -99,7 +126,8 @@
     var A = [130, 70], B = [70, 275], C = [355, 255];
     var cen = circum(A, B, C), r = dist(cen, A);
     mountGeo(host, {
-      title: "Simson line — drag P around the circle (or move the triangle)",
+      title: "Simson line",
+      hint: "Drag P around the circle, or move the triangle.",
       w: 430, h: 340,
       init: { A: A, B: B, C: C, P: projectToCircle([400, 120], cen, r) },
       drag: {
@@ -110,7 +138,7 @@
         var c = circum(p.A, p.B, p.C), rr = dist(c, p.A);
         p.P = projectToCircle(p.P, c, rr);
         var fa = foot(p.P, p.B, p.C), fb = foot(p.P, p.C, p.A), fc = foot(p.P, p.A, p.B);
-        var e = ext(fa, fb, 300);
+        var e = lineSpan(fa, fb, 430, 340);
         var body =
           circ(c, rr, "gc") + polyS([p.A, p.B, p.C], "gtri") +
           seg(p.P, fa, "gl-dash") + seg(p.P, fb, "gl-dash") + seg(p.P, fc, "gl-dash") +
@@ -126,7 +154,8 @@
   // ---------- Nine-point circle ----------
   W["nine-point-circle"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Nine-point circle — drag the vertices",
+      title: "Nine-point circle",
+      hint: "Drag the vertices.",
       w: 430, h: 350,
       init: { A: [150, 65], B: [70, 285], C: [365, 250] },
       drag: { A: {}, B: {}, C: {} },
@@ -151,13 +180,14 @@
   // ---------- Euler line ----------
   W["euler-line-ratio"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Euler line — drag the vertices",
+      title: "Euler line",
+      hint: "Drag the vertices.",
       w: 430, h: 350,
       init: { A: [160, 60], B: [70, 285], C: [370, 250] },
       drag: { A: {}, B: {}, C: {} },
       render: function (p) {
         var O = circum(p.A, p.B, p.C), G = centroid(p.A, p.B, p.C), H = ortho(p.A, p.B, p.C);
-        var e = ext(O, H, 60);
+        var e = lineSpan(O, H, 430, 350);
         var og = dist(O, G), gh = dist(G, H);
         var body =
           polyS([p.A, p.B, p.C], "gtri") + seg(e[0], e[1], "gl-acc") +
@@ -173,7 +203,8 @@
   W["power-of-a-point"] = { mount: function (host) {
     var cen = [215, 175], r = 115;
     mountGeo(host, {
-      title: "Power of a point — drag P, and drag D to spin the secant",
+      title: "Power of a point",
+      hint: "Drag P, or drag D to spin the secant.",
       w: 430, h: 350,
       init: { P: [360, 300], D: [120, 90] },
       drag: { P: {}, D: {} },
@@ -182,7 +213,7 @@
         var body = circ(cen, r, "gc") + dotS(cen, "gd", 2.5) + txt(add(cen, [8, 4]), "O");
         var cap;
         if (ints) {
-          var X = ints[0], Y = ints[1], e = ext(X, Y, 40);
+          var X = ints[0], Y = ints[1], e = lineSpan(X, Y, 430, 350);
           var pxpy = dist(p.P, X) * dist(p.P, Y);
           var power = Math.abs(dist(p.P, cen) * dist(p.P, cen) - r * r);
           body += seg(e[0], e[1], "gl-acc") + dotS(X, "gd-gold", 4) + dotS(Y, "gd-gold", 4) +
@@ -203,7 +234,8 @@
     function onC(a) { return [cen[0] + r * Math.cos(a), cen[1] + r * Math.sin(a)]; }
     function angAt(V, X, Y) { var a = sub(X, V), b = sub(Y, V); var c = dot(a, b) / ((len(a) * len(b)) || 1); return Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI; }
     mountGeo(host, {
-      title: "Inscribed angle — drag P around the arc",
+      title: "Inscribed angle",
+      hint: "Drag P around the arc.",
       w: 430, h: 360,
       init: { A: onC(Math.PI * 0.86), B: onC(Math.PI * 0.14), P: onC(-Math.PI * 0.5) },
       drag: {
@@ -230,7 +262,8 @@
     var init = { P0: [90, 90], P1: [330, 70], P2: [370, 250], P3: [210, 300], P4: [80, 240] };
     var drag = {}; Object.keys(init).forEach(function (k) { drag[k] = {}; });
     mountGeo(host, {
-      title: "Shoelace area — drag any vertex",
+      title: "Shoelace area",
+      hint: "Drag any vertex.",
       w: 440, h: 340,
       init: init, drag: drag,
       render: function (p) {
@@ -256,10 +289,11 @@
   W["pythagorean-theorem"] = { mount: function (host) {
     var C = [165, 250];
     mountGeo(host, {
-      title: "Pythagoras — drag the legs",
-      w: 400, h: 400,
+      title: "Pythagoras",
+      hint: "Drag the legs.",
+      vx: -15, vy: -90, w: 520, h: 525,
       init: { A: [280, 250], B: [165, 145] },
-      drag: { A: { constrain: function (xy) { return [Math.max(225, Math.min(300, xy[0])), 250]; } }, B: { constrain: function (xy) { return [165, Math.max(140, Math.min(215, xy[1]))]; } } },
+      drag: { A: { constrain: function (xy) { return [Math.max(215, Math.min(330, xy[0])), 250]; } }, B: { constrain: function (xy) { return [165, Math.max(100, Math.min(220, xy[1]))]; } } },
       render: function (p) {
         var a = len(sub(p.A, C)), b = len(sub(p.B, C)), c = len(sub(p.A, p.B));
         var sqA = squareOn(C, p.A, p.B), sqB = squareOn(C, p.B, p.A), sqC = squareOn(p.A, p.B, C);
@@ -275,7 +309,8 @@
   // ---------- Triangle inequality ----------
   W["triangle-inequality"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Triangle inequality — flatten it and watch",
+      title: "Triangle inequality",
+      hint: "Flatten it and watch.",
       w: 420, h: 320,
       init: { A: [210, 60], B: [80, 250], C: [340, 250] },
       drag: { A: {}, B: {}, C: {} },
@@ -295,7 +330,7 @@
   // ---------- Law of sines ----------
   W["law-of-sines"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Law of sines — a / sin A = 2R",
+      title: "Law of sines",
       w: 420, h: 360,
       init: { A: [220, 70], B: [110, 280], C: [330, 250] },
       drag: { A: {}, B: {}, C: {} },
@@ -315,7 +350,7 @@
   // ---------- Law of cosines ----------
   W["law-of-cosines"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Law of cosines — angle at C",
+      title: "Law of cosines",
       w: 420, h: 340,
       init: { A: [110, 90], B: [330, 110], C: [180, 280] },
       drag: { A: {}, B: {}, C: {} },
@@ -334,7 +369,8 @@
   // ---------- Heron's formula ----------
   W["herons-formula"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Heron's formula — drag the vertices",
+      title: "Heron's formula",
+      hint: "Drag the vertices.",
       w: 420, h: 320,
       init: { A: [200, 70], B: [90, 260], C: [340, 240] },
       drag: { A: {}, B: {}, C: {} },
@@ -354,7 +390,8 @@
   W["triangle-area-standard"] = { mount: function (host) {
     var B = [90, 280], C = [350, 280];
     mountGeo(host, {
-      title: "Area = ½ · base · height — slide the apex",
+      title: "Area = ½ · base · height",
+      hint: "Slide the apex.",
       w: 440, h: 320,
       init: { A: [180, 110] },
       drag: { A: {} },
@@ -372,7 +409,7 @@
   // ---------- Centroid divides medians 2:1 ----------
   W["centroid-division"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Centroid — the 2 : 1 split",
+      title: "Centroid",
       w: 420, h: 340,
       init: { A: [210, 70], B: [90, 280], C: [340, 270] },
       drag: { A: {}, B: {}, C: {} },
@@ -392,7 +429,7 @@
   // ---------- Angle bisector theorem ----------
   W["angle-bisector-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Angle bisector — BD / DC = AB / AC",
+      title: "Angle bisector",
       w: 420, h: 330,
       init: { A: [210, 60], B: [90, 270], C: [350, 270] },
       drag: { A: {}, B: {}, C: {} },
@@ -411,7 +448,8 @@
   // ---------- Ceva's theorem ----------
   W["cevas-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Ceva — drag P; the ratio product stays 1",
+      title: "Ceva",
+      hint: "Drag P.",
       w: 420, h: 340,
       init: { A: [210, 60], B: [80, 285], C: [355, 275], P: [215, 200] },
       drag: { A: {}, B: {}, C: {}, P: {} },
@@ -431,7 +469,7 @@
   // ---------- Circumcircle ----------
   W["circumradius-area"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Circumcircle — the circle through all three vertices",
+      title: "Circumcircle",
       w: 420, h: 380,
       init: { A: [210, 90], B: [110, 290], C: [330, 260] },
       drag: { A: {}, B: {}, C: {} },
@@ -451,7 +489,7 @@
   // ---------- Incircle ----------
   W["inradius-area"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Incircle — r = Area / s",
+      title: "Incircle",
       w: 420, h: 360,
       init: { A: [210, 70], B: [100, 290], C: [340, 275] },
       drag: { A: {}, B: {}, C: {} },
@@ -471,7 +509,7 @@
   // ---------- Orthocenter ----------
   W["orthocenter-properties"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Orthocenter — the three altitudes meet",
+      title: "Orthocenter",
       w: 420, h: 360,
       init: { A: [200, 80], B: [110, 285], C: [335, 250] },
       drag: { A: {}, B: {}, C: {} },
@@ -493,7 +531,8 @@
     var A = top, B = [cx - s / 2, 70 + s * Math.sqrt(3) / 2], C = [cx + s / 2, 70 + s * Math.sqrt(3) / 2];
     function inside(pt) { var d = sarea([A, B, C]) < 0 ? -1 : 1; return true; }
     mountGeo(host, {
-      title: "Viviani — drag P inside; the distances always sum the same",
+      title: "Viviani",
+      hint: "Drag P inside.",
       w: 420, h: 320,
       init: { P: [210, 200] },
       drag: { P: { constrain: function (xy) {
@@ -518,7 +557,7 @@
   W["vector-dot-product"] = { mount: function (host) {
     var O = [210, 210];
     mountGeo(host, {
-      title: "Dot product — a · b = |a||b| cos θ",
+      title: "Dot product",
       w: 420, h: 380,
       init: { A: [340, 130], B: [150, 90] },
       drag: { A: {}, B: {} },
@@ -537,7 +576,7 @@
   W["reflection-shortest-path"] = { mount: function (host) {
     var my = 300;
     mountGeo(host, {
-      title: "Shortest reflected path — reflect, then go straight",
+      title: "Shortest reflected path",
       w: 440, h: 360,
       init: { A: [110, 120], B: [340, 180] },
       drag: { A: { constrain: function (xy) { return [xy[0], Math.min(xy[1], my - 20)]; } }, B: { constrain: function (xy) { return [xy[0], Math.min(xy[1], my - 20)]; } } },
@@ -557,7 +596,8 @@
   W["british-flag-theorem"] = { mount: function (host) {
     var A = [90, 90], B = [350, 90], C = [350, 290], D = [90, 290];
     mountGeo(host, {
-      title: "British flag theorem — drag P anywhere",
+      title: "British flag theorem",
+      hint: "Drag P anywhere.",
       w: 440, h: 380,
       init: { P: [250, 170] },
       drag: { P: {} },
@@ -576,7 +616,8 @@
   W["ptolemys-theorem"] = { mount: function (host) {
     var cen = [215, 200], r = 140;
     mountGeo(host, {
-      title: "Ptolemy — cyclic quadrilateral, drag the corners",
+      title: "Ptolemy",
+      hint: "Drag the corners.",
       w: 430, h: 400,
       init: { A: projectToCircle([90, 90], cen, r), B: projectToCircle([340, 90], cen, r), C: projectToCircle([350, 320], cen, r), D: projectToCircle([90, 320], cen, r) },
       drag: {
@@ -605,7 +646,8 @@
     function onSeg(px, py, a, b) { var cr = (b[0] - a[0]) * (py - a[1]) - (b[1] - a[1]) * (px - a[0]); if (cr !== 0) return false; return Math.min(a[0], b[0]) <= px && px <= Math.max(a[0], b[0]) && Math.min(a[1], b[1]) <= py && py <= Math.max(a[1], b[1]); }
     function inPoly(px, py, poly) { var inside = false; for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) { var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1]; if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) inside = !inside; } return inside; }
     mountGeo(host, {
-      title: "Pick's theorem — drag the corners onto lattice points",
+      title: "Pick's theorem",
+      hint: "Drag the corners onto lattice points.",
       w: 420, h: 330,
       init: { P0: toScreen([1, 1]), P1: toScreen([7, 2]), P2: toScreen([8, 5]), P3: toScreen([4, 7]), P4: toScreen([1, 5]) },
       drag: (function () { var d = {}; ["P0", "P1", "P2", "P3", "P4"].forEach(function (k) { d[k] = { constrain: function (xy) { var l = [Math.max(0, Math.min(cols, Math.round((xy[0] - ox) / G))), Math.max(0, Math.min(rows, Math.round((xy[1] - oy) / G)))]; return toScreen(l); } }; }); return d; })(),
@@ -636,13 +678,14 @@
   W["menelaus-theorem"] = { mount: function (host) {
     var A = [210, 70], B = [80, 285], C = [360, 270];
     mountGeo(host, {
-      title: "Menelaus — drag D and E; the transversal product stays 1",
+      title: "Menelaus",
+      hint: "Drag D and E.",
       w: 430, h: 340,
       init: { D: foot([250, 300], B, C), E: foot([300, 150], C, A) },
       drag: { D: { constrain: function (xy) { return foot(xy, B, C); } }, E: { constrain: function (xy) { return foot(xy, C, A); } } },
       render: function (p) {
         var F = lineInt(p.D, p.E, A, B);
-        var e = ext(p.D, F, 60);
+        var e = lineSpan(p.D, p.E, 430, 340);
         var prod = (dist(B, p.D) / (dist(p.D, C) || 1)) * (dist(C, p.E) / (dist(p.E, A) || 1)) * (dist(A, F) / (dist(F, B) || 1));
         var body = polyS([A, B, C], "gtri") + seg(A, B, "gl-dash") +
           seg(e[0], e[1], "gl-acc") +
@@ -658,7 +701,7 @@
   // ---------- Varignon's theorem ----------
   W["varignons-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Varignon — the midpoints always form a parallelogram",
+      title: "Varignon",
       w: 420, h: 340,
       init: { A: [110, 80], B: [330, 110], C: [360, 280], D: [120, 300] },
       drag: { A: {}, B: {}, C: {}, D: {} },
@@ -678,7 +721,8 @@
   // ---------- Fermat point ----------
   W["fermat-point"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Fermat point — drag P to minimize PA + PB + PC",
+      title: "Fermat point",
+      hint: "Drag P to minimize PA + PB + PC.",
       w: 420, h: 360,
       init: { A: [200, 70], B: [90, 300], C: [340, 285], P: [200, 210] },
       drag: { A: {}, B: {}, C: {}, P: {} },
@@ -698,7 +742,7 @@
   // ---------- Apollonius / median length ----------
   W["apollonius-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Median length — Apollonius' theorem",
+      title: "Median length",
       w: 420, h: 330,
       init: { A: [210, 70], B: [90, 275], C: [350, 270] },
       drag: { A: {}, B: {}, C: {} },
@@ -716,7 +760,8 @@
   W["stewarts-theorem"] = { mount: function (host) {
     var A = [210, 70], B = [80, 285], C = [360, 275];
     mountGeo(host, {
-      title: "Stewart's theorem — drag D along BC",
+      title: "Stewart's theorem",
+      hint: "Drag D along BC.",
       w: 430, h: 340,
       init: { D: add(B, mul(sub(C, B), 0.4)) },
       drag: { D: { constrain: function (xy) { var t = dot(sub(xy, B), sub(C, B)) / (dot(sub(C, B), sub(C, B)) || 1); t = Math.max(0.08, Math.min(0.92, t)); return add(B, mul(sub(C, B), t)); } } },
@@ -736,7 +781,7 @@
   W["cyclic-opposite-angles"] = { mount: function (host) {
     var cen = [215, 195], r = 140;
     mountGeo(host, {
-      title: "Cyclic quadrilateral — opposite angles sum to 180°",
+      title: "Cyclic quadrilateral",
       w: 430, h: 390,
       init: { A: projectToCircle([100, 90], cen, r), B: projectToCircle([340, 110], cen, r), C: projectToCircle([350, 300], cen, r), D: projectToCircle([95, 300], cen, r) },
       drag: (function () { var d = {}; ["A", "B", "C", "D"].forEach(function (k) { d[k] = { constrain: function (xy) { return projectToCircle(xy, cen, r); } }; }); return d; })(),
@@ -755,7 +800,7 @@
   W["brahmaguptas-formula"] = { mount: function (host) {
     var cen = [215, 195], r = 135;
     mountGeo(host, {
-      title: "Brahmagupta — cyclic quadrilateral area",
+      title: "Brahmagupta",
       w: 430, h: 390,
       init: { A: projectToCircle([110, 100], cen, r), B: projectToCircle([335, 110], cen, r), C: projectToCircle([350, 300], cen, r), D: projectToCircle([100, 300], cen, r) },
       drag: (function () { var d = {}; ["A", "B", "C", "D"].forEach(function (k) { d[k] = { constrain: function (xy) { return projectToCircle(xy, cen, r); } }; }); return d; })(),
@@ -775,7 +820,8 @@
   // ---------- Section formula ----------
   W["section-formula"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Section formula — drag P along AB",
+      title: "Section formula",
+      hint: "Drag P along AB.",
       w: 430, h: 260,
       init: { A: [70, 130], B: [370, 150], P: [200, 138] },
       drag: {
@@ -797,7 +843,8 @@
   W["two-tangents-angle"] = { mount: function (host) {
     var O = [180, 190], r = 85;
     mountGeo(host, {
-      title: "Two tangents — equal lengths, drag P",
+      title: "Two tangents",
+      hint: "Drag P.",
       w: 420, h: 360,
       init: { P: [360, 120] },
       drag: { P: { constrain: function (xy) { var d = dist(xy, O); return d < r + 25 ? add(O, mul(norm(sub(xy, O)), r + 25)) : xy; } } },
@@ -817,7 +864,7 @@
   // ---------- Napoleon's theorem ----------
   W["napoleons-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Napoleon — outer triangle centers form an equilateral",
+      title: "Napoleon",
       w: 430, h: 380,
       init: { A: [215, 90], B: [120, 250], C: [320, 240] },
       drag: { A: {}, B: {}, C: {} },
@@ -839,7 +886,7 @@
   W["cross-product-area"] = { mount: function (host) {
     var O = [130, 250];
     mountGeo(host, {
-      title: "Cross product — parallelogram area",
+      title: "Cross product",
       w: 420, h: 320,
       init: { A: [320, 210], B: [210, 90] },
       drag: { A: {}, B: {} },
@@ -856,7 +903,7 @@
   // ---------- Midsegment theorem ----------
   W["midsegment-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Midsegment — parallel to the base, half as long",
+      title: "Midsegment",
       w: 420, h: 320,
       init: { A: [210, 70], B: [90, 275], C: [350, 270] },
       drag: { A: {}, B: {}, C: {} },
@@ -875,7 +922,7 @@
   // ---------- Euler's distance theorem ----------
   W["euler-distance-theorem"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Euler's distance — OI² = R² − 2Rr",
+      title: "Euler's distance",
       w: 420, h: 380,
       init: { A: [215, 80], B: [110, 290], C: [335, 265] },
       drag: { A: {}, B: {}, C: {} },
@@ -900,7 +947,7 @@
       init: { L1: [70, 210], L2: [370, 150], P: [220, 70] },
       drag: { L1: {}, L2: {}, P: {} },
       render: function (p) {
-        var e = ext(p.L1, p.L2, 40), F = foot(p.P, p.L1, p.L2), dpx = dist(p.P, F);
+        var e = lineSpan(p.L1, p.L2, 430, 300), F = foot(p.P, p.L1, p.L2), dpx = dist(p.P, F);
         var body = seg(e[0], e[1], "gl") + seg(p.P, F, "gl-acc") +
           dotS(F, "gd-gold", 4) + dotS(p.L1, "gd-acc", 4.5) + dotS(p.L2, "gd-acc", 4.5) + dotS(p.P, "gd-grn", 5) +
           txt(add(p.P, [8, -6]), "P", "gt-grn") + txt(add(mid(p.P, F), [8, 0]), "d", "gt-acc");
@@ -913,7 +960,7 @@
   W["chord-length"] = { mount: function (host) {
     var O = [210, 190], R = 140;
     mountGeo(host, {
-      title: "Chord length — 2√(R² − d²)",
+      title: "Chord length",
       w: 420, h: 380,
       init: { A: projectToCircle([100, 110], O, R), B: projectToCircle([330, 140], O, R) },
       drag: { A: { constrain: function (xy) { return projectToCircle(xy, O, R); } }, B: { constrain: function (xy) { return projectToCircle(xy, O, R); } } },
@@ -940,7 +987,8 @@
   // ---------- Altitude to the hypotenuse (geometric mean) ----------
   W["altitude-hypotenuse"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Altitude to the hypotenuse — drag A, B, or C (on the circle)",
+      title: "Altitude to the hypotenuse",
+      hint: "Drag A, B, or C.",
       w: 430, h: 320,
       init: { A: [80, 240], B: [360, 240], C: [230, 90] },
       drag: {
@@ -963,7 +1011,8 @@
   W["intercept-theorem"] = { mount: function (host) {
     var A = [215, 70], B = [90, 285], C = [355, 285];
     mountGeo(host, {
-      title: "Basic proportionality — drag D; DE stays parallel to BC",
+      title: "Basic proportionality",
+      hint: "Drag D.",
       w: 430, h: 330,
       init: { D: add(A, mul(sub(B, A), 0.45)) },
       drag: { D: { constrain: function (xy) { var t = dot(sub(xy, A), sub(B, A)) / (dot(sub(B, A), sub(B, A)) || 1); t = Math.max(0.12, Math.min(0.88, t)); return add(A, mul(sub(B, A), t)); } } },
@@ -998,7 +1047,7 @@
   // ---------- Projection formula ----------
   W["projection-formula"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Projection formula — a = b cos C + c cos B",
+      title: "Projection formula",
       w: 430, h: 320,
       init: { A: [215, 80], B: [90, 265], C: [360, 265] },
       drag: { A: {}, B: {}, C: {} },
@@ -1017,7 +1066,7 @@
   // ---------- Incircle tangent lengths ----------
   W["incircle-tangent-lengths"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Incircle tangent lengths — each equals s − (opposite side)",
+      title: "Incircle tangent lengths",
       w: 420, h: 360,
       init: { A: [210, 70], B: [95, 290], C: [345, 280] },
       drag: { A: {}, B: {}, C: {} },
@@ -1036,7 +1085,7 @@
   // ---------- Angle bisector length ----------
   W["angle-bisector-length"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Angle bisector length — from C to AB",
+      title: "Angle bisector length",
       w: 430, h: 330,
       init: { A: [95, 100], B: [345, 110], C: [210, 285] },
       drag: { A: {}, B: {}, C: {} },
@@ -1078,7 +1127,8 @@
   W["apollonius-circle"] = { mount: function (host) {
     var A = [130, 210], B = [330, 210];
     mountGeo(host, {
-      title: "Apollonius circle — drag P; the locus keeps PA/PB fixed",
+      title: "Apollonius circle",
+      hint: "Drag P.",
       w: 430, h: 360,
       init: { A: A, B: B, P: [250, 110] },
       drag: { A: {}, B: {}, P: {} },
@@ -1104,7 +1154,7 @@
   W["butterfly-theorem"] = { mount: function (host) {
     var O = [215, 195], R = 150;
     mountGeo(host, {
-      title: "Butterfly theorem — M bisects the chord it cuts",
+      title: "Butterfly theorem",
       w: 430, h: 390,
       init: { P: projectToCircle([80, 120], O, R), Q: projectToCircle([360, 250], O, R), A: projectToCircle([120, 300], O, R), C: projectToCircle([330, 90], O, R) },
       drag: (function () { var d = {}; ["P", "Q", "A", "C"].forEach(function (k) { d[k] = { constrain: function (xy) { return projectToCircle(xy, O, R); } }; }); return d; })(),
@@ -1126,7 +1176,8 @@
   // ---------- Radical axis ----------
   W["radical-axis"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Radical axis — drag the two circle centers",
+      title: "Radical axis",
+      hint: "Drag the two circle centers.",
       w: 430, h: 340,
       init: { O1: [150, 180], O2: [300, 190] },
       drag: { O1: {}, O2: {} },
@@ -1149,7 +1200,8 @@
     function M2S(m) { return [ox + m[0] * step, oy - m[1] * step]; }
     function snap(s) { var m = S2M(s); return M2S([Math.round(m[0]), Math.round(m[1])]); }
     mountGeo(host, {
-      title: "Distance & midpoint — drag the two points",
+      title: "Distance & midpoint",
+      hint: "Drag the two points.",
       w: 430, h: 320,
       init: { A: M2S([-3, -2]), B: M2S([4, 3]) },
       drag: { A: { constrain: snap }, B: { constrain: snap } },
@@ -1170,7 +1222,8 @@
     function M2S(m) { return [ox + m[0] * step, oy - m[1] * step]; }
     function snap(s) { var m = S2M(s); return M2S([Math.round(m[0]), Math.round(m[1])]); }
     mountGeo(host, {
-      title: "Reflections — drag P",
+      title: "Reflections",
+      hint: "Drag P.",
       w: 430, h: 320,
       init: { P: M2S([3, 2]) },
       drag: { P: { constrain: snap } },
@@ -1192,7 +1245,8 @@
     function M2S(m) { return [ox + m[0] * step, oy - m[1] * step]; }
     function snap(s) { var m = S2M(s); return M2S([Math.round(m[0]), Math.round(m[1])]); }
     mountGeo(host, {
-      title: "Rotations about the origin — drag P",
+      title: "Rotations about the origin",
+      hint: "Drag P.",
       w: 430, h: 320,
       init: { P: M2S([3, 1]) },
       drag: { P: { constrain: snap } },
@@ -1215,7 +1269,8 @@
     function M2S(m) { return [ox + m[0] * step, oy - m[1] * step]; }
     function snapC(s) { var m = S2M(s); return M2S([Math.round(m[0]), Math.round(m[1])]); }
     mountGeo(host, {
-      title: "Circle equation — drag the center and the radius handle",
+      title: "Circle equation",
+      hint: "Drag the center and the radius handle.",
       w: 430, h: 350,
       init: { C: M2S([1, 0]), Rh: M2S([4, 0]) },
       drag: { C: { constrain: snapC }, Rh: {} },
@@ -1233,7 +1288,8 @@
   W["inversion-properties"] = { mount: function (host) {
     var O = [215, 185], k = 95;
     mountGeo(host, {
-      title: "Inversion in a circle — drag P; OP · OP* = r²",
+      title: "Inversion in a circle",
+      hint: "Drag P.",
       w: 430, h: 370,
       init: { P: [320, 130] },
       drag: { P: { constrain: function (xy) { return dist(xy, O) < 14 ? add(O, [14, 0]) : xy; } } },
@@ -1251,7 +1307,8 @@
   W["golden-ratio-pentagon"] = { mount: function (host) {
     var cen = [210, 200];
     mountGeo(host, {
-      title: "Regular pentagon — diagonal / side = φ (drag a vertex)",
+      title: "Regular pentagon",
+      hint: "Drag a vertex.",
       w: 420, h: 400,
       init: { V: [210, 60] },
       drag: { V: {} },
@@ -1270,7 +1327,8 @@
   // ---------- Same-base area ratio (diagonal split) ----------
   W["same-base-area-ratio"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Same-base area ratio — drag any vertex",
+      title: "Same-base area ratio",
+      hint: "Drag any vertex.",
       w: 430, h: 390,
       init: { A: [130, 120], B: [90, 330], C: [365, 300], D: [330, 70] },
       drag: { A: {}, B: {}, C: {}, D: {} },
@@ -1295,7 +1353,8 @@
   W["median-to-hypotenuse"] = { mount: function (host) {
     var A = [80, 300], B = [370, 300];
     mountGeo(host, {
-      title: "Median to the hypotenuse — drag C around the circle",
+      title: "Median to the hypotenuse",
+      hint: "Drag C around the circle.",
       w: 450, h: 360,
       init: { A: A, B: B, C: [180, 120] },
       drag: {
@@ -1320,7 +1379,8 @@
   // ---------- cevian area ratio ----------
   W["cevian-area-ratio"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Cevian area ratio — drag D along BC",
+      title: "Cevian area ratio",
+      hint: "Drag D along BC.",
       w: 440, h: 350,
       init: { A: [210, 55], B: [70, 295], C: [390, 295], D: [270, 295] },
       drag: {
@@ -1346,35 +1406,49 @@
 
   // ---------- similar figure ratios ----------
   W["similar-figures-ratios"] = { mount: function (host) {
-    var O = [80, 300];
+    // The handle is the image of the apex under the homothety, so dragging it is
+    // the scaling. An earlier version used a free point whose distance alone set
+    // k, which meant sideways drags changed the figure for no visible reason.
+    var O = [95, 300], A = [95, 300], B = [215, 300], C = [140, 196];
+    var ray = norm(sub(C, O)), baseLen = dist(C, O);
     mountGeo(host, {
-      title: "Similar figures — drag the scale handle",
-      w: 450, h: 360,
-      init: { S: [300, 170] },
-      drag: { S: { constrain: function (xy) { var d = dist(xy, O); var k = Math.max(0.35, Math.min(2.4, d / 120)); return add(O, mul(norm(sub(xy, O)), k * 120)); } } },
+      title: "Similar figures",
+      hint: "Drag the apex of the larger triangle.",
+      w: 450, h: 350,
+      init: { P: add(O, mul(ray, baseLen * 1.7)) },
+      drag: { P: { constrain: function (xy) {
+        var t = dot(sub(xy, O), ray);
+        return add(O, mul(ray, Math.max(baseLen * 0.45, Math.min(baseLen * 2.35, t))));
+      } } },
       render: function (p) {
-        var k = Math.round(dist(p.S, O) / 120 * 100) / 100;
-        var A = [O[0], O[1]], B = [O[0] + 120, O[1]], C = [O[0] + 40, O[1] - 95];
-        function sc(P) { return [O[0] + (P[0] - O[0]) * k, O[1] + (P[1] - O[1]) * k]; }
-        var A2 = sc(A), B2 = sc(B), C2 = sc(C);
-        var a1 = Math.abs(sarea([A, B, C])), a2 = Math.abs(sarea([A2, B2, C2]));
-        var body = polyS([A2, B2, C2], "gtri") + polyS([A, B, C], "gtri-fill") +
-          seg(O, p.S, "gl-dash") +
-          dotS(p.S, "gd-acc", 5) + dotS(O, "gd", 3) +
-          txt(add(mid(A, B), [0, 18]), "1", "gt-gold") + txt(add(mid(A2, B2), [0, 20]), "k = " + fmt(k), "gt-acc");
+        var k = dist(p.P, O) / baseLen;
+        function sc(Q) { return add(O, mul(sub(Q, O), k)); }
+        var B2 = sc(B), C2 = p.P;
+        var a1 = Math.abs(sarea([A, B, C])), a2 = Math.abs(sarea([A, B2, C2]));
+        var big = k >= 1;
+        var body =
+          seg(O, add(O, mul(norm(sub(B2, O)), Math.max(dist(B2, O), dist(B, O)) + 26)), "gl-dash") +
+          seg(O, add(O, mul(ray, Math.max(dist(C2, O), baseLen) + 26)), "gl-dash") +
+          polyS(big ? [A, B2, C2] : [A, B, C], "gtri") +
+          polyS(big ? [A, B, C] : [A, B2, C2], "gtri-fill") +
+          dotS(O, "gd", 4) + dotS(C2, "gd-acc", 5.5) +
+          txt(add(mid(A, B), [0, 19]), "1", "gt-gold") +
+          txt(add(mid(A, B2), [0, big ? 19 : -9]), "k", "gt-acc") +
+          txt(add(O, [-16, 8]), "O");
         return {
           body: body,
-          caption: "Scale factor k = <b>" + fmt(k) + "</b> → every length ×" + fmt(k) + ", area ×k² = <b>" + fmt(k * k) + "</b> (measured " + fmt(a2 / (a1 || 1)) + "), volume of the matching solid ×k³ = <b>" + fmt(k * k * k) + "</b>."
+          caption: "Scale factor k = <b>" + fmt(k) + "</b>, measured from the centre O. Lengths scale by k, areas by k² = <b>" + fmt(k * k) +
+            "</b> (the two triangles here measure " + fmt(a2 / (a1 || 1)) + "), and the volume of a matching solid by k³ = <b>" + fmt(k * k * k) + "</b>."
         };
       }
     });
   } };
 
-  // ---------- circular segment ----------
   W["circular-segment"] = { mount: function (host) {
     var O = [220, 200], R = 140;
     mountGeo(host, {
-      title: "Circular segment — drag the chord ends",
+      title: "Circular segment",
+      hint: "Drag the chord ends.",
       w: 440, h: 400,
       init: { A: projectToCircle([120, 90], O, R), B: projectToCircle([340, 130], O, R) },
       drag: { A: { constrain: function (xy) { return projectToCircle(xy, O, R); } }, B: { constrain: function (xy) { return projectToCircle(xy, O, R); } } },
@@ -1400,7 +1474,8 @@
   W["angle-chord-secant"] = { mount: function (host) {
     var O = [200, 195], R = 135;
     mountGeo(host, {
-      title: "Chord angle — drag the four endpoints",
+      title: "Chord angle",
+      hint: "Drag the four endpoints.",
       w: 440, h: 390,
       init: {
         A: projectToCircle([90, 100], O, R), B: projectToCircle([320, 300], O, R),
@@ -1427,39 +1502,14 @@
     });
   } };
 
-  // ---------- special right triangles ----------
-  W["special-right-triangles"] = { mount: function (host) {
-    var C0 = [110, 300];
-    mountGeo(host, {
-      title: "45–45–90 and 30–60–90 — drag to resize",
-      w: 460, h: 360,
-      init: { S: [110 + 150, 300] },
-      drag: { S: { constrain: function (xy) { return [Math.max(C0[0] + 55, Math.min(C0[0] + 120, xy[0])), C0[1]]; } } },
-      render: function (p) {
-        var s = p.S[0] - C0[0];
-        var A1 = C0, B1 = [C0[0] + s, C0[1]], C1 = [C0[0], C0[1] - s];
-        var x = 255, sh = s * 0.8;
-        var A2 = [x, C0[1]], B2 = [x + sh, C0[1]], C2 = [x, C0[1] - sh * Math.sqrt(3)];
-        var body = polyS([A1, B1, C1], "gtri") + polyS([A2, B2, C2], "gtri") +
-          seg(A1, B1, "gl-gold") + seg(A1, C1, "gl-gold") + seg(B1, C1, "gl-acc") +
-          seg(A2, B2, "gl-gold") + seg(A2, C2, "gl-grn") + seg(B2, C2, "gl-acc") +
-          txt(add(mid(A1, B1), [-6, 18]), "1", "gt-gold") + txt(add(mid(A1, C1), [-16, 4]), "1", "gt-gold") + txt(add(mid(B1, C1), [8, -6]), "√2", "gt-acc") +
-          txt(add(mid(A2, B2), [-6, 18]), "1", "gt-gold") + txt(add(mid(A2, C2), [-20, 4]), "√3", "gt-grn") + txt(add(mid(B2, C2), [8, -6]), "2", "gt-acc") +
-          txt(add(B1, [-24, -8]), "45°") + txt(add(B2, [-26, -8]), "30°") + txt(add(A2, [10, -10]), "60°") +
-          dotS(p.S, "gd-acc", 5);
-        return { body: body, caption: "45–45–90 legs " + uL(s) + ", " + uL(s) + " and hypotenuse " + uL(dist(B1, C1)) + " = " + uL(s) + "·√2. &nbsp; 30–60–90 short leg " + uL(sh) + ", long leg " + uL(dist(A2, C2)) + " = " + uL(sh) + "·√3, hypotenuse " + uL(dist(B2, C2)) + " = 2·" + uL(sh) + ". The ratios 1 : 1 : √2 and 1 : √3 : 2 never change as you resize." };
-      }
-    });
-  } };
-
-  // ---------- equilateral triangle facts ----------
   W["equilateral-triangle-facts"] = { mount: function (host) {
     var Cn = [220, 200];
     mountGeo(host, {
-      title: "Equilateral triangle — drag a vertex to resize",
-      w: 440, h: 380,
+      title: "Equilateral triangle",
+      hint: "Drag a vertex to resize.",
+      w: 440, h: 400,
       init: { A: [220, 65] },
-      drag: { A: { constrain: function (xy) { var d = Math.max(70, Math.min(140, dist(xy, Cn))); return add(Cn, mul(norm(sub(xy, Cn)), d)); } } },
+      drag: { A: { constrain: function (xy) { var d = Math.max(55, Math.min(165, dist(xy, Cn))); return add(Cn, mul(norm(sub(xy, Cn)), d)); } } },
       render: function (p) {
         var R = dist(p.A, Cn), th = Math.atan2(p.A[1] - Cn[1], p.A[0] - Cn[0]);
         function vert(k) { var a = th + 2 * Math.PI * k / 3; return [Cn[0] + R * Math.cos(a), Cn[1] + R * Math.sin(a)]; }
@@ -1479,7 +1529,8 @@
   // ---------- trapezoid / parallelogram areas ----------
   W["trapezoid-parallelogram-areas"] = { mount: function (host) {
     mountGeo(host, {
-      title: "Trapezoid area — drag the top side",
+      title: "Trapezoid area",
+      hint: "Drag the top side.",
       w: 450, h: 350,
       init: { P: [150, 120], Q: [300, 120], B: [370, 290] },
       drag: {
@@ -1508,7 +1559,8 @@
   W["shared-angle-area-ratio"] = { mount: function (host) {
     var A = [90, 300];
     mountGeo(host, {
-      title: "Shared angle — drag the four points along the two rays",
+      title: "Shared angle",
+      hint: "Drag the four points along the two rays.",
       w: 450, h: 360,
       init: { B: [370, 300], C: [250, 90], D: [250, 300], E: [190, 175] },
       drag: {

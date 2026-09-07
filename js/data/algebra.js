@@ -3,6 +3,7 @@ window.MATH_SECTIONS = window.MATH_SECTIONS || [];
 
 window.MATH_SECTIONS.push({
   id: "algebra",
+  group: "formulas",
   title: "Algebra",
   blurb: "Polynomials, factoring tricks, series, inequalities, logarithms, complex numbers, and trigonometry.",
   subsections: [
@@ -49,9 +50,9 @@ window.MATH_SECTIONS.push({
         {
           id: "factor-remainder-theorem",
           name: "Remainder & Factor Theorems",
-          latex: String.raw`P(x) = (x - a)Q(x) + P(a)`,
-          description: String.raw`The remainder of $P(x)$ divided by $x - a$ is $P(a)$; so $x - a$ is a factor iff $P(a) = 0$. Remainder mod $(x-a)(x-b)$ is the line through $(a, P(a))$ and $(b, P(b))$.`,
-          keywords: ["remainder", "polynomial division", "root", "factor"],
+          latex: String.raw`P(x) = (x - a)Q(x) + P(a), \qquad a, b \in \mathbb{Z} \implies (a - b) \mid P(a) - P(b)`,
+          description: String.raw`The remainder of $P(x)$ divided by $x - a$ is $P(a)$, so $x - a$ is a factor iff $P(a) = 0$; the remainder mod $(x-a)(x-b)$ is the line through $(a, P(a))$ and $(b, P(b))$. Over the integers the same theorem gives $(a-b) \mid P(a) - P(b)$, the standard tool for "no such polynomial exists" arguments.`,
+          keywords: ["remainder", "polynomial division", "root", "factor", "remainder theorem", "factor theorem", "integer polynomial", "divides difference", "impossible polynomial", "P(a) P(b)", "integer polynomial divisibility"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -76,25 +77,25 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "int-poly-divisibility",
-          name: "Integer Polynomial Divisibility",
-          latex: String.raw`a, b \in \mathbb{Z} \implies (a - b) \mid P(a) - P(b)`,
-          description: String.raw`For any polynomial with integer coefficients — because $a^k - b^k$ is always divisible by $a - b$. The go-to tool for "no such polynomial exists" proofs and for pinning down $P(n)$ from a few given values.`,
-          example: String.raw`No integer polynomial has $P(1) = 2$ and $P(3) = 5$: it would need $3 - 1 = 2$ to divide $5 - 2 = 3$. ✗`,
-          keywords: ["integer polynomial", "divides difference", "impossible polynomial", "P(a) P(b)"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "newtons-sums",
           name: "Newton's Sums",
           type: "method",
-          latex: String.raw`p_k = e_1 p_{k-1} - e_2 p_{k-2} + \cdots + (-1)^{k-1} k\, e_k, \qquad p_1 = e_1, \qquad p_2 = e_1 p_1 - 2e_2, \qquad p_3 = e_1 p_2 - e_2 p_1 + 3e_3`,
+          latex: String.raw`p_k = e_1 p_{k-1} - e_2 p_{k-2} + \cdots + (-1)^{k-1} k\, e_k, \qquad p_1 = e_1, \qquad p_2 = e_1 p_1 - 2e_2, \qquad p_3 = e_1 p_2 - e_2 p_1 + 3e_3, \qquad p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 - 4e_4`,
           description: String.raw`Relates power sums $p_k = \sum r_i^k$ of a polynomial's roots to the elementary symmetric polynomials $e_i$ (from Vieta). E.g. $p_2 = e_1 p_1 - 2e_2$, $p_3 = e_1 p_2 - e_2 p_1 + 3e_3$.`,
           example: String.raw`For $x^2 - 3x + 2$ (roots $1, 2$): $e_1 = 3$, $e_2 = 2$, so $p_1 = 3$ and $p_2 = e_1 p_1 - 2e_2 = 9 - 4 = 5 = 1^2 + 2^2$. ✓ No need to find the roots at all.`,
           keywords: ["power sums", "sum of squares of roots", "sum of cubes of roots", "symmetric"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "symmetric-polynomial-strategies",
+          name: "Fundamental Theorem of Symmetric Polynomials",
+          type: "method",
+          latex: String.raw`\text{every symmetric } f(r_1, \dots, r_n) \text{ is a polynomial in } e_1, \dots, e_n, \qquad \prod_{i=1}^{n} (a - r_i) = \frac{P(a)}{a_n}, \qquad \sum_{i=1}^{n} \frac{1}{a - r_i} = \frac{P'(a)}{P(a)}`,
+          description: String.raw`If an expression in the roots is unchanged by permuting them, it is computable from the coefficients alone — you never have to find the roots. Vieta supplies $e_1, \dots, e_n$, Newton's sums convert those to power sums, and any product over the roots is read off by evaluating $P$ at a well-chosen point (including a complex one).`,
+          keywords: ["fundamental theorem of symmetric polynomials", "symmetric polynomial", "symmetric function of the roots", "elementary symmetric polynomials", "complex number evaluation trick", "plug in a value", "evaluate the polynomial at", "product over the roots", "never find the roots", "expressions in the roots", "method"],
+          importance: "high",
+          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "conjugate-root-theorems",
@@ -103,16 +104,6 @@ window.MATH_SECTIONS.push({
           description: String.raw`Real-coefficient polynomials have complex roots in conjugate pairs; rational-coefficient polynomials have irrational roots in radical-conjugate pairs.`,
           keywords: ["complex conjugate", "radical conjugate", "pairs of roots", "conjugate roots", "irrational roots in pairs", "imaginary roots in pairs"],
           importance: "high",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "palindromic-polynomials",
-          name: "Palindromic Polynomials",
-          latex: String.raw`x^4 + ax^3 + bx^2 + ax + 1 = 0 \;\xrightarrow{\div x^2}\; y^2 + ay + (b - 2) = 0, \quad y = x + \tfrac{1}{x}`,
-          description: String.raw`When coefficients read the same forwards and backwards, roots come in pairs $r, \frac{1}{r}$. Divide by the middle power of $x$ and substitute $y = x + \frac{1}{x}$ (using $x^2 + \frac{1}{x^2} = y^2 - 2$) to halve the degree.`,
-          example: String.raw`$x^4 + x^3 - 4x^2 + x + 1 = 0$: dividing by $x^2$ gives $y^2 + y - 6 = 0$ with $y = x + \frac{1}{x}$, so $y = 2$ or $-3$ — then solve two quadratics.`,
-          keywords: ["palindromic", "reciprocal polynomial", "x plus 1 over x", "symmetric coefficients"],
-          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -148,6 +139,7 @@ window.MATH_SECTIONS.push({
         {
           id: "root-transformations",
           name: "Transforming the Roots of a Polynomial",
+          type: "method",
           latex: String.raw`\text{roots } r_i + k: P(x - k); \qquad \text{roots } kr_i: P\!\left(\tfrac{x}{k}\right); \qquad \text{roots } \tfrac{1}{r_i}: x^n P\!\left(\tfrac{1}{x}\right)`,
           description: String.raw`To build the polynomial whose roots are a function of the old roots, substitute the inverse function into $P$. Reversing the coefficients gives reciprocal roots; for squared roots, compute $P(\sqrt{x})P(-\sqrt{x})$ (or pair Vieta with Newton's sums).`,
           example: String.raw`$P(x) = x^2 - 5x + 6$ (roots $2, 3$): reciprocal roots — reverse coefficients to $6x^2 - 5x + 1$ (roots $\frac{1}{2}, \frac{1}{3}$ ✓); roots shifted by $1$ — $P(x-1) = x^2 - 7x + 12$ (roots $3, 4$ ✓).`,
@@ -177,6 +169,7 @@ window.MATH_SECTIONS.push({
         {
           id: "eisenstein-criterion",
           name: "Eisenstein's Irreducibility Criterion",
+          type: "method",
           latex: String.raw`p \mid a_0, a_1, \ldots, a_{n-1}, \quad p \nmid a_n, \quad p^2 \nmid a_0 \;\Rightarrow\; \textstyle\sum a_i x^i \text{ is irreducible over } \mathbb{Q}`,
           description: String.raw`If some prime $p$ divides every coefficient except the leading one, and $p^2$ does not divide the constant term, the integer polynomial cannot factor into lower-degree rational polynomials. It's the standard certificate of irreducibility beyond the rational root theorem (which only rules out linear factors). Often applied after a substitution $x \mapsto x+1$ that exposes an Eisenstein prime — the classic proof that $1 + x + \cdots + x^{p-1}$ (the $p$-th cyclotomic polynomial) is irreducible.`,
           keywords: ["eisenstein criterion", "irreducibility", "irreducible polynomial", "prime divides coefficients", "cyclotomic irreducible", "shift substitution"],
@@ -198,7 +191,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\operatorname{Res}(f, g) = a_m^{\,n} b_n^{\,m} \prod_{i, j}(\alpha_i - \beta_j), \qquad \Delta_f = \frac{(-1)^{n(n-1)/2}}{a_n}\operatorname{Res}(f, f') = a_n^{2n-2}\!\!\prod_{i<j}(r_i - r_j)^2`,
           description: String.raw`The resultant $\operatorname{Res}(f,g)$ (the determinant of the Sylvester matrix) vanishes exactly when $f$ and $g$ share a root — so setting it to $0$ eliminates a variable from two polynomial equations. The discriminant is the resultant of $f$ with its derivative $f'$ (up to a constant): $\Delta_f = 0$ iff $f$ has a repeated root, and its sign counts real vs. complex roots. Generalizes the familiar $b^2-4ac$ (degree 2) and the cubic discriminant to any degree, and is the clean way to state tangency/double-root conditions.`,
           keywords: ["resultant", "discriminant", "repeated root", "double root", "common root", "eliminate variable", "sylvester matrix", "product of differences", "tangency condition"],
-          importance: "low",
+          importance: "lowest",
           level: ["Olympiad"]
         }
       ]
@@ -221,7 +214,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`a^n - b^n = (a-b)(a^{n-1} + a^{n-2}b + \cdots + b^{n-1}), \qquad a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)`,
           description: String.raw`Always divisible by $a - b$. For odd $n$, $a^n + b^n$ is divisible by $a + b$. Key for number theory divisibility arguments too.`,
           keywords: ["divisibility", "factor", "geometric sum", "odd exponent"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -235,6 +228,16 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "forced-difference-of-squares",
+          name: "Forcing a Difference of Squares",
+          type: "method",
+          latex: String.raw`X + Y = \underbrace{(X + Z + Y)}_{\text{perfect square}} - Z = (\square)^2 - (\square)^2`,
+          description: String.raw`When an expression is one term short of a perfect square, add that term and subtract it again. The result is a difference of two squares, which always factors. This is the single move behind $x^4+x^2+1$, the Sophie Germain identity, and most "factor this quartic" problems.`,
+          keywords: ["forcing a difference of squares", "add and subtract a term", "complete the square then factor", "x^4 + x^2 + 1", "factor a quartic", "creative factoring", "a^2 - b^2 trick", "make a perfect square", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "sfft",
           name: "Simon's Favorite Factoring Trick (SFFT)",
           type: "method",
@@ -242,7 +245,7 @@ window.MATH_SECTIONS.push({
           description: String.raw`Add a constant to complete a product. Standard for solving $xy + ax + by = c$ over integers: factor and enumerate divisor pairs.`,
           example: String.raw`Solve $xy + 3x + 2y = 18$ over positive integers: add $6$ to both sides to get $(x+2)(y+3) = 24$. Factor pairs of $24$ with $x + 2 \ge 3$, $y + 3 \ge 4$: $(3,8), (4,6), (6,4)$ give $(x,y) = (1,5), (2,3), (4,1)$.`,
           keywords: ["sfft", "complete the rectangle", "integer solutions", "diophantine"],
-          importance: "medium",
+          importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -316,7 +319,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`(x+y)(y+z)(z+x) = (x+y+z)(xy+yz+zx) - xyz`,
           description: String.raw`The product of the three pairwise sums collapses onto the elementary symmetric polynomials: with $e_1 = x+y+z$, $e_2 = xy+yz+zx$, $e_3 = xyz$, it is exactly $e_1 e_2 - e_3$. Companion identity: $(x+y+z)^3 - x^3 - y^3 - z^3 = 3(x+y)(y+z)(z+x)$. Both convert a product of binomials into Vieta-ready symmetric-sum data, and back.`,
           keywords: ["pairwise sums", "elementary symmetric polynomials", "product of sums", "vieta", "x+y y+z z+x", "symmetric"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
@@ -354,7 +357,7 @@ window.MATH_SECTIONS.push({
         {
           id: "arithmetic-series",
           name: "Arithmetic Sequence & Series",
-          latex: String.raw`a_n = a_1 + (n-1)d, \qquad S_n = \frac{n(a_1 + a_n)}{2}`,
+          latex: String.raw`a_n = a_1 + (n-1)d, \qquad n = \frac{a_n - a_1}{d} + 1, \qquad S_n = \frac{n(a_1 + a_n)}{2}`,
           description: String.raw`Sum = number of terms times the average of the first and last. Number of terms from $a$ to $b$ step $d$: $\frac{b-a}{d} + 1$.`,
           keywords: ["arithmetic", "common difference", "sum", "average", "gauss", "triangular numbers", "1+2+3"],
           importance: "high",
@@ -410,11 +413,11 @@ window.MATH_SECTIONS.push({
         {
           id: "linear-recurrence",
           name: "Solving Linear Recurrences",
-          latex: String.raw`a_n = c_1 a_{n-1} + c_2 a_{n-2} \implies x^2 = c_1 x + c_2, \qquad a_n = A r_1^n + B r_2^n \;\; (r_1 \ne r_2), \qquad a_n = (A + Bn) r^n \;\; (\text{double root})`,
-          description: String.raw`Roots $r_1, r_2$ of the characteristic equation give $a_n = A r_1^n + B r_2^n$ (or $(A + Bn)r^n$ for a double root), with $A, B$ from initial terms.`,
-          keywords: ["recurrence", "recursion", "recursive", "recursive sequence", "characteristic equation", "closed form"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
+          latex: String.raw`a_n = c_1 a_{n-1} + \cdots + c_k a_{n-k} \implies x^k = c_1 x^{k-1} + \cdots + c_k, \qquad a_n = \sum_i A_i r_i^{\,n}, \qquad a_n = (A + Bn) r^n \;\; (\text{double root}), \qquad a_n = \rho^n (A\cos n\phi + B\sin n\phi) \;\; (\rho e^{\pm i\phi})`,
+          description: String.raw`Substituting $a_n = r^n$ turns the recurrence into its characteristic polynomial. Distinct roots give $a_n = \sum A_i r_i^{\,n}$; a root of multiplicity $m$ contributes $(A_0 + \cdots + A_{m-1}n^{m-1})r^n$; a complex pair $\rho e^{\pm i\phi}$ gives the oscillation $\rho^n(A\cos n\phi + B\sin n\phi)$. Initial terms fix the coefficients. For a non-homogeneous rule, add a particular solution matched to the forcing term.`,
+          keywords: ["recurrence", "recursion", "recursive", "recursive sequence", "characteristic equation", "closed form", "solving recurrences", "general form of a recursive sequence", "particular solution", "non-homogeneous recurrence", "repeated root", "complex roots oscillation", "substitution recurrence"],
+          importance: "high",
+          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "finite-differences",
@@ -428,16 +431,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "periodic-sequences",
-          name: "Periodicity in Recursive Sequences",
-          latex: String.raw`a_n \text{ eventually repeats with period } p:\ \ a_n = a_{\,n \bmod p}`,
-          description: String.raw`Nonlinear recursions built from a fixed rational rule (like $t_n = \frac{5t_{n-1}+1}{25t_{n-2}}$ or $a_{n+1} = |a_n| - a_{n-1}$) are very often periodic: iterate by hand until the initial pair reappears, confirm one full extra cycle, then reduce the target index modulo the period. Watch for pre-periods (a few irregular terms before the cycle starts).`,
-          example: String.raw`$a_{n+1} = \frac{1}{1 - a_n}$ with $a_1 = 2$: the terms run $2, -1, \frac{1}{2}, 2, -1, \dots$ — period $3$. Since $2024 \equiv 2 \pmod 3$, $a_{2024} = a_2 = -1$.`,
-          keywords: ["periodic", "cycle", "recursion repeats", "index mod period", "iterate", "periodic recurrence", "period of recursion", "cyclic sequence", "lyness cycle", "mobius map order", "recurrence period", "tan addition recurrence", "1/(1-x)", "recursive"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "factorial-telescoping",
           name: "Factorial Telescoping Sums",
           latex: String.raw`\sum_{k=1}^{n} k \cdot k! = (n+1)! - 1, \qquad \sum_{k=1}^{n} \frac{k}{(k+1)!} = 1 - \frac{1}{(n+1)!}`,
@@ -445,7 +438,7 @@ window.MATH_SECTIONS.push({
           example: String.raw`$1\cdot1! + 2\cdot2! + 3\cdot3! = 1 + 4 + 18 = 23 = 4! - 1$. ✓`,
           keywords: ["k times k factorial", "telescoping factorial", "factorial sums", "telescoping factorial sum", "k times k factorial", "factorial series"],
           importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "first-order-recurrence",
@@ -466,12 +459,22 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "double-summation",
+          name: "Double Sums (Swapping & Splitting)",
+          type: "method",
+          latex: String.raw`\sum_{i}\sum_{j} a_{ij} = \sum_{j}\sum_{i} a_{ij}, \qquad \sum_{i}\sum_{j} f(i)g(j) = \Big(\sum_i f(i)\Big)\Big(\sum_j g(j)\Big), \qquad \sum_{i=1}^{n}\sum_{j=i}^{n} a_{ij} = \sum_{j=1}^{n}\sum_{i=1}^{j} a_{ij}`,
+          description: String.raw`A finite double sum is just a sum over a set of index pairs, so you may sweep that set in whichever order is convenient. Swapping the two summation signs, factoring a separable summand into a product of one-variable sums, and rewriting a triangular region's limits are the three moves that turn most intimidating double sums into routine ones.`,
+          keywords: ["double sum", "double summation", "swap the order of summation", "interchange summation", "split a summation", "nested sums", "sum over pairs", "fubini for sums", "sum of i less than j", "triangular sum", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
           id: "abel-summation",
           name: "Abel Summation (Summation by Parts)",
           latex: String.raw`\sum_{k=1}^{n} a_k b_k = A_n b_n - \sum_{k=1}^{n-1} A_k (b_{k+1} - b_k), \qquad A_k = a_1 + \cdots + a_k`,
           description: String.raw`The discrete analogue of integration by parts: replace a sum of products by the partial sums $A_k$ of one factor against the differences of the other. It's the tool for sums like $\sum k x^k$ or $\sum k \binom{n}{k}$ where one factor telescopes or has a known partial sum, and it's the backbone of the proofs of Chebyshev's and Karamata's inequalities. Especially powerful when $b_k$ is monotone (the differences keep one sign).`,
           keywords: ["abel summation", "summation by parts", "partial summation", "discrete integration by parts", "partial sums", "telescoping products"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         }
       ]
@@ -586,7 +589,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`p_1 \ge \sqrt{p_2} \ge \sqrt[3]{p_3} \ge \cdots \ge \sqrt[n]{p_n}, \qquad p_k = \frac{e_k}{\binom{n}{k}}`,
           description: String.raw`For nonnegative reals, average each elementary symmetric polynomial into $p_k = e_k / \binom{n}{k}$. Maclaurin's inequality chains them as above — a refinement of AM–GM, since $p_1 = \frac{\sum x_i}{n}$ is the AM and $\sqrt[n]{p_n} = \sqrt[n]{\prod x_i}$ is the GM. The local step is Newton's inequality $p_k^2 \ge p_{k-1}p_{k+1}$ (log-concavity of the $p_k$). Equality throughout iff all $x_i$ are equal.`,
           keywords: ["maclaurin inequality", "newton inequality", "symmetric means", "refinement of am-gm", "elementary symmetric", "log-concave"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         },
         {
@@ -604,7 +607,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`a_1 \le \cdots \le a_n,\ \ b_1 \le \cdots \le b_n:\quad n\sum_{i=1}^{n} a_i b_i \ge \Big(\sum a_i\Big)\Big(\sum b_i\Big), \qquad \text{opposite order} \Rightarrow \le`,
           description: String.raw`When $(a_i)$ and $(b_i)$ are sorted the same way, the aligned sum $\sum a_i b_i$ beats the "scrambled" average; sorted oppositely it loses. Dividing by $n^2$: the average of the products is at least the product of the averages for similarly-sorted sequences. It follows from the Rearrangement inequality and is the clean tool whenever a sum pairs a sequence with another that moves monotonically with it.`,
           keywords: ["chebyshev sum inequality", "sorted sequences", "similarly sorted", "average of products", "rearrangement corollary"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         },
         {
@@ -613,7 +616,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\Big(\sum |a_i + b_i|^p\Big)^{1/p} \le \Big(\sum |a_i|^p\Big)^{1/p} + \Big(\sum |b_i|^p\Big)^{1/p} \quad (p \ge 1), \qquad \sqrt{a^2+b^2} + \sqrt{c^2+d^2} \ge \sqrt{(a+c)^2 + (b+d)^2}`,
           description: String.raw`The triangle inequality for the $p$-norm: the norm of a sum is at most the sum of the norms. The case $p = 2$ (right) is literally $|\vec u| + |\vec v| \ge |\vec u + \vec v|$ — add the vectors tip to tail — and is the algebraic form of the reflection / shortest-path trick: a sum $\sum \sqrt{x_i^2 + y_i^2}$ is minimized by making the pieces collinear, giving $\sqrt{(\sum x_i)^2 + (\sum y_i)^2}$.`,
           keywords: ["minkowski inequality", "triangle inequality norm", "sum of square roots", "vector length", "shortest path algebraic", "reflection minimize"],
-          importance: "low",
+          importance: "lower",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -622,7 +625,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`x_1 \ge \cdots \ge x_n,\ \ y_1 \ge \cdots \ge y_n,\ \ \textstyle\sum_{i=1}^{k} x_i \ge \sum_{i=1}^{k} y_i,\ \ \sum x_i = \sum y_i \qquad \Longrightarrow\ \sum f(x_i) \ge \sum f(y_i)\ \ (f \text{ convex})`,
           description: String.raw`If the sorted sequence $(x_i)$ majorizes $(y_i)$ — equal totals, but every partial sum of the larger-sorted $x$'s is at least that of the $y$'s — then a convex $f$ spreads the $x$'s further apart and yields a larger sum. It is the master convexity inequality: Jensen is the special case where every $y_i$ equals the common mean, and AM–GM, power-mean, and many symmetric-sum bounds drop out as corollaries. Reverse the inequality for concave $f$.`,
           keywords: ["karamata inequality", "majorization", "convex function sum", "generalizes jensen", "hardy littlewood polya", "spreads apart"],
-          importance: "low",
+          importance: "lower",
           level: ["Olympiad"]
         },
         {
@@ -671,18 +674,18 @@ window.MATH_SECTIONS.push({
         {
           id: "log-rules",
           name: "Logarithm Rules",
-          latex: String.raw`\log(xy) = \log x + \log y, \quad \log \frac{x}{y} = \log x - \log y, \quad \log x^n = n \log x, \quad \log_b x = \frac{\log_c x}{\log_c b}`,
-          description: String.raw`With $\log_b b^x = x$ and $b^{\log_b x} = x$. Valid for positive arguments and base $b > 0$, $b \neq 1$.`,
-          keywords: ["log properties", "product rule", "power rule", "exponent"],
+          latex: String.raw`\log_b(xy) = \log_b x + \log_b y, \quad \log_b \frac{x}{y} = \log_b x - \log_b y, \quad \log_b x^n = n \log_b x, \quad \log_{b^m} x^n = \frac{n}{m}\log_b x, \quad b^{\log_b x} = x`,
+          description: String.raw`Every rule is an exponent law seen through the logarithm, with $\log_b b^x = x$ and $b^{\log_b x} = x$ saying the two functions undo each other. Raising the base to a power divides, so base and argument exponents combine as $\log_{b^m} x^n = \frac{n}{m}\log_b x$. Valid for positive arguments and base $b > 0$, $b \neq 1$; and $\log_b$ is increasing when $b > 1$ but decreasing when $0 < b < 1$, which flips every inequality.`,
+          keywords: ["log properties", "product rule", "power rule", "exponent", "logarithm rules", "log of a product", "log of a power", "power in the base", "log base to a power", "log inequality direction", "decreasing logarithm"],
           importance: "high",
           level: ["AMC10", "AMC12"]
         },
         {
           id: "change-of-base",
           name: "Change of Base",
-          latex: String.raw`\log_b a = \frac{\log_c a}{\log_c b} = \frac{1}{\log_a b}`,
-          description: String.raw`Also the chain rule: $\log_a b \cdot \log_b c = \log_a c$, which telescopes products of logs.`,
-          keywords: ["change of base", "reciprocal", "telescoping logs", "log base change formula", "logarithm change of base", "convert log base"],
+          latex: String.raw`\log_b a = \frac{\log_c a}{\log_c b} = \frac{1}{\log_a b}, \qquad \log_a b \cdot \log_b c \cdot \log_c d = \log_a d`,
+          description: String.raw`Rewrite any logarithm in whatever base is convenient. The chain rule is the same statement read forwards: adjacent factors cancel, so $\log_a b \cdot \log_b c \cdot \log_c d = \log_a d$ and any such product telescopes to the outermost base over the innermost argument.`,
+          keywords: ["change of base", "reciprocal", "telescoping logs", "log base change formula", "logarithm change of base", "convert log base", "logarithm chain rule", "chain rule for logs", "product of logarithms telescopes", "log a b times log b c"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -693,6 +696,16 @@ window.MATH_SECTIONS.push({
           description: String.raw`Take $\log_b$ of both sides to verify. Turns awkward towers like $2^{\log_3 5}$ into friendlier ones like $5^{\log_3 2}$.`,
           keywords: ["swap", "tower", "trick identity", "exponent log swap", "a to the log b equals b to the log a", "log tower trick"],
           importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "log-substitution",
+          name: "Substituting for a Logarithm",
+          type: "method",
+          latex: String.raw`u = \log_b x \implies x = b^{\,u}, \qquad t = \log_a b \implies \log_b a = \frac{1}{t}`,
+          description: String.raw`A log equation is usually an ordinary algebraic equation wearing a disguise. Name the repeated logarithm — $u = \log_b x$, or $t = \log_a b$ for a base-swap pair — and the problem turns into a polynomial or rational equation in that one variable. Solve it there, then convert back with $x = b^{\,u}$ and check every root against the original domain.`,
+          keywords: ["log substitution", "substitute for a logarithm", "let u equal log x", "quadratic in log", "log equation", "disguised quadratic", "solve logarithmic equations", "convert back and check domain", "method"],
+          importance: "high",
           level: ["AMC12", "AIME"]
         },
         {
@@ -746,16 +759,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "roots-of-unity-filter",
-          name: "Roots of Unity Filter",
-          type: "method",
-          latex: String.raw`\sum_{k \equiv r \,(\mathrm{mod}\, n)} \binom{m}{k} = \frac{1}{n} \sum_{j=0}^{n-1} \omega^{-jr} (1 + \omega^j)^m, \qquad \binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}`,
-          description: String.raw`Extracts every $n$-th coefficient of a generating function using $\omega = e^{2\pi i/n}$. E.g. $\binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}$.`,
-          keywords: ["roots of unity filter", "filter", "every third", "generating function", "coefficient extraction", "extract coefficients"],
-          importance: "medium",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "roots-unity-distance-product",
           name: "Distance Products over Roots of Unity",
           latex: String.raw`\prod_{k=1}^{n-1} \left|1 - \omega^k\right| = n, \qquad \prod_{k=1}^{n-1} \sin\frac{k\pi}{n} = \frac{n}{2^{n-1}}`,
@@ -800,7 +803,7 @@ window.MATH_SECTIONS.push({
         {
           id: "angle-addition",
           name: "Angle Addition & Subtraction",
-          latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad \cos(a \pm b) = \cos a \cos b \mp \sin a \sin b, \qquad \tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}`,
+          latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad \cos(a \pm b) = \cos a \cos b \mp \sin a \sin b, \qquad \tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}, \qquad \cot(a \pm b) = \frac{\cot a \cot b \mp 1}{\cot b \pm \cot a}`,
           description: String.raw`The source of the double- and half-angle formulas. Also the harmonic form $a\sin\theta + b\cos\theta = \sqrt{a^2+b^2}\,\sin(\theta + \varphi)$ with $\tan\varphi = \frac{b}{a}$ — the amplitude and phase of a sum of sinusoids (its maximum is $\sqrt{a^2+b^2}$).`,
           keywords: ["sum formula", "sin a plus b", "cos a plus b", "cosine addition", "tangent addition", "harmonic addition", "max of a sin plus b cos"],
           importance: "high",
@@ -850,6 +853,24 @@ window.MATH_SECTIONS.push({
           keywords: ["triple angle", "sin 3x", "cos 3x", "triple angle formula", "sin 3 theta", "cos 3 theta"],
           importance: "medium",
           level: ["AIME"]
+        },
+        {
+          id: "even-power-sin-cos-sums",
+          name: "High-Power Sine and Cosine Sums",
+          latex: String.raw`\sin^4\theta + \cos^4\theta = 1 - \tfrac{1}{2}\sin^2 2\theta, \qquad \sin^6\theta + \cos^6\theta = 1 - \tfrac{3}{4}\sin^2 2\theta`,
+          description: String.raw`Squaring or cubing $\sin^2\theta + \cos^2\theta = 1$ leaves a single correction term built from $\sin\theta\cos\theta = \tfrac12\sin 2\theta$. Both reduce a symmetric even-power expression to one double angle, which is what makes them time-savers.`,
+          keywords: ["sin^4 + cos^4", "sin^6 + cos^6", "fourth powers of sine and cosine", "sixth powers", "even power trig sum", "reduce to double angle", "pythagorean identity squared"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "cosecant-cotangent-square-sums",
+          name: "Finite Sums of Squared Cosecants and Cotangents",
+          latex: String.raw`\sum_{k=1}^{n-1}\csc^2\!\left(\frac{k\pi}{n}\right) = \frac{n^2-1}{3}, \qquad \sum_{k=1}^{n-1}\cot^2\!\left(\frac{k\pi}{n}\right) = \frac{(n-1)(n-2)}{3}`,
+          description: String.raw`Summing over the $n-1$ nontrivial $n$th roots of unity. The two differ by exactly $n-1$ because $\csc^2 = \cot^2 + 1$, so proving either one gives the other for free.`,
+          keywords: ["sum of csc squared", "sum of cot squared", "roots of unity trig sum", "cosecant squared sum", "cotangent squared sum", "k pi over n", "finite trigonometric sum"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "trig-telescoping-product",
@@ -961,26 +982,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "denesting-radicals",
-          name: String.raw`Denesting $\sqrt{a \pm \sqrt{b}}$`,
-          type: "method",
-          latex: String.raw`\sqrt{a \pm \sqrt{b}} = \sqrt{\frac{a + \sqrt{a^2 - b}}{2}} \pm \sqrt{\frac{a - \sqrt{a^2 - b}}{2}}`,
-          description: String.raw`Works cleanly when $a^2 - b$ is a perfect square. E.g. $\sqrt{3 + 2\sqrt2} = 1 + \sqrt2$ — guess $(\sqrt x + \sqrt y)^2$ and match.`,
-          keywords: ["nested radical", "denest", "simplify square root", "denest a nested radical", "simplify sqrt of a plus sqrt b", "unnest radical"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "infinite-nest",
-          name: "Infinite Nested Expressions",
-          type: "method",
-          latex: String.raw`x = \sqrt{a + x} \implies x^2 - x - a = 0`,
-          description: String.raw`For $\sqrt{a + \sqrt{a + \cdots}}$, continued fractions $a + \cfrac{1}{a + \cdots}$, or infinite power towers: name the expression $x$, use self-similarity, solve, and keep the valid root.`,
-          keywords: ["self similar", "continued fraction", "power tower", "converge"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "ramanujan-nested-radical",
           name: "Golden & Ramanujan Nested Radicals",
           latex: String.raw`\sqrt{1 + \sqrt{1 + \sqrt{1 + \cdots}}} = \varphi, \qquad \sqrt{1 + 2\sqrt{1 + 3\sqrt{1 + 4\sqrt{\cdots}}}} = 3`,
@@ -1006,15 +1007,6 @@ window.MATH_SECTIONS.push({
           keywords: ["absolute value", "distance on number line", "split cases", "sqrt x squared", "modulus"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "median-minimizes-abs",
-          name: "Minimizing a Sum of $|x - a_i|$ (Median Trick)",
-          latex: String.raw`\sum_{i} |x - a_i| \text{ is minimized at } x = \operatorname{median}(a_1, \dots, a_n)`,
-          description: String.raw`To minimize the total distance $\sum_i |x - a_i|$, place $x$ at the median of the $a_i$ (with an even count, anywhere between the two middle values ties for the minimum). The weighted sum $\sum_i w_i\,|x - a_i|$ is minimized at the weighted median — the $a_i$ at which the running weight, added in sorted order, first reaches half of $\sum w_i$. By contrast, squared distances $\sum (x - a_i)^2$ are minimized at the mean.`,
-          keywords: ["median", "minimize sum of absolute values", "weighted median", "sum of distances", "minimize |x-a|", "L1 optimization"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },
@@ -1044,10 +1036,10 @@ window.MATH_SECTIONS.push({
         {
           id: "relative-motion",
           name: "Relative Motion",
-          latex: String.raw`\text{closing speed} = v_1 + v_2 \;(\text{toward}), \quad v_1 - v_2 \;(\text{chasing}); \qquad \text{current: } v_{\text{net}} = v_{\text{still}} \pm v_{\text{stream}}`,
+          latex: String.raw`\text{closing speed} = v_1 + v_2 \;(\text{toward}), \quad v_1 - v_2 \;(\text{chasing}); \qquad \text{circular track: } \text{same way} \Rightarrow \text{faster gains } 1 \text{ lap}, \quad \text{opposite} \Rightarrow 1 \text{ lap between them}`,
           description: String.raw`Work in the frame of one mover: gaps close at the sum (head-on) or difference (chase) of speeds, so time = gap ÷ closing speed. Rivers, moving walkways, and wind add or subtract a drift vector — for crossing problems, split the velocity into across-stream and along-stream components.`,
           example: String.raw`Runner at $8$ m/s chasing one at $5$ m/s with a $60$ m head start: catches up in $\frac{60}{3} = 20$ seconds.`,
-          keywords: ["relative speed", "catch up", "head start", "river current", "upstream downstream", "closing speed"],
+          keywords: ["relative speed", "catch up", "head start", "river current", "upstream downstream", "closing speed", "circular track", "two runners", "laps", "same direction opposite direction", "when do they meet again", "running around a track"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
@@ -1076,17 +1068,6 @@ window.MATH_SECTIONS.push({
     {
       title: "Problem-Solving Methods",
       formulas: [
-        {
-          id: "fx-pairing",
-          name: "The $f(x) + f(1-x)$ Pairing Trick",
-          type: "method",
-          latex: String.raw`f(x) + f(1 - x) = \text{constant} \implies \sum_{k=1}^{n-1} f\!\left(\tfrac{k}{n}\right) = \frac{n-1}{2} \cdot \text{const}`,
-          description: String.raw`When a sum's arguments pair up symmetrically ($x$ with $1-x$, or $k$ with $n-k$), test whether $f(x) + f(1-x)$ simplifies to a constant — then the whole sum collapses to (number of pairs) × constant. The Gauss pairing idea, upgraded to functions.`,
-          example: String.raw`$f(x) = \frac{9^x}{9^x + 3}$ satisfies $f(x) + f(1-x) = 1$ (multiply the second fraction by $\frac{9^x}{3}$). So $f\!\left(\frac{1}{1001}\right) + \cdots + f\!\left(\frac{1000}{1001}\right) = 500$.`,
-          keywords: ["pairing", "f(x) f(1-x)", "symmetric sum", "gauss trick", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
         {
           id: "trig-substitution",
           name: "Trigonometric Substitution",
@@ -1120,17 +1101,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "piecewise-graph-counting",
-          name: "Counting Solutions by Graphing",
-          type: "method",
-          latex: String.raw`\#\text{solutions of } f(x) = c \;=\; \#\text{crossings of } y = f(x) \text{ with } y = c`,
-          description: String.raw`For nested absolute values and piecewise functions, don't solve — draw. Build the graph by transformations (each $|\cdot|$ folds the picture upward; each subtraction shifts it), then slide the horizontal line and count crossings as the parameter varies. Corner heights tell you exactly where the count jumps.`,
-          example: String.raw`$||x| - 2| = c$: the W-shaped graph has valleys at height $0$ ($x = \pm2$) and a local peak at height $2$ ($x = 0$). So: $4$ solutions for $0 < c < 2$, $3$ at $c = 2$, $2$ for $c > 2$ or $c = 0$.`,
-          keywords: ["absolute value graph", "count solutions", "W shape", "fold", "parameter", "method"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "sp-substitution",
           name: "Symmetric Substitution",
           type: "method",
@@ -1149,16 +1119,6 @@ window.MATH_SECTIONS.push({
           keywords: ["partial fractions", "decompose rational", "telescoping", "cover up", "generating function coefficients", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
-        },
-        {
-          id: "solving-recurrences",
-          name: "Solving Recurrences",
-          type: "method",
-          latex: String.raw`\text{characteristic roots} \to \text{homogeneous} + \text{particular} \to \text{fit initial terms}`,
-          description: String.raw`A decision tree for turning a recursive definition into a closed form. First-order linear ($a_n = ra_{n-1} + d$): shift to the fixed point and it becomes geometric. Homogeneous linear with constant coefficients: solve the characteristic polynomial, then $a_n = \sum A_i r_i^n$, with $(A + Bn)r^n$ for a double root. Non-homogeneous: add a particular solution matched to the right-hand side. Non-linear: substitute ($b_n = \frac{1}{a_n}$, $b_n = \log a_n$, $b_n = a_n - L$), telescope, or test for periodicity.`,
-          keywords: ["solving recurrences", "closed form", "general form of a recursive sequence", "characteristic equation", "particular solution", "substitution recurrence", "method"],
-          importance: "high",
-          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "normalization",

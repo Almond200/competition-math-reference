@@ -35,6 +35,8 @@
     middle: ["midpoint", "median"],
     center: ["centroid", "circumcenter", "incenter"],
     corner: ["vertex"],
+    connect: ["join", "joining", "joins"],
+    join: ["connect", "connecting"],
     edge: ["side"],
     leg: ["side", "right"],
     count: ["number", "counting"],
@@ -258,8 +260,12 @@
 
   function normWord(w) {
     w = w.toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (w.length > 3 && w.endsWith("es")) w = w.slice(0, -2);
-    else if (w.length > 3 && w.endsWith("s")) w = w.slice(0, -1);
+    // "-es" is only a real plural ending after a sibilant ("boxes", "matches",
+    // "classes"); elsewhere the "e" belongs to the stem, and stripping it turned
+    // "volumes" into "volum" and "circles" into "circl" — so those never matched
+    // the singular the reader actually typed.
+    if (w.length > 3 && /(?:ss|x|z|ch|sh)es$/.test(w)) w = w.slice(0, -2);
+    else if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) w = w.slice(0, -1);
     else if (w.length > 5 && w.endsWith("ing")) w = deDouble(w.slice(0, -3));   // "cutting"->"cut", "counting"->"count"
     else if (w.length > 4 && w.endsWith("ed")) w = deDouble(w.slice(0, -2));    // "solved"->"solv", "nested"->"nest"
     return w;
@@ -469,6 +475,157 @@
     "directed-angles": ["concyclic", "collinear"]
   };
 
+  // ---------- Concept index ----------
+  // A card's formula says "R" and "r"; a reader looking for it types
+  // "circumradius" and "inradius". Those words sit in the name or tags of only a
+  // handful of the cards that actually relate the two, and single letters are
+  // dropped from the LaTeX index, so a question asked in words could never reach
+  // a formula written in symbols. These rules read each card's LaTeX and emit the
+  // English names of the quantities it contains, plus a word for how they are
+  // combined — reaching the formulas themselves rather than their labels, which
+  // is something no amount of extra tagging can do.
+  //
+  // Precision matters more than recall here: a wrong concept pollutes every
+  // query using that word, so single letters are gated by section (an "r" in
+  // number theory is not an inradius) and ambiguous ones are matched only in a
+  // context that pins the meaning down.
+  const CONCEPT_RULES = [
+    // --- geometry ---
+    { sec: "geometry", re: /(?:^|[^A-Za-z\\_}])R(?![A-Za-z_])/, w: ["circumradius", "circumcircle", "circumscribed"] },
+    { sec: "geometry", re: /(?:^|[^A-Za-z\\_}])r(?![A-Za-z_])/, w: ["inradius", "incircle", "inscribed"] },
+    { sec: "geometry", re: /r_\{?[abcA-C]/, w: ["exradius", "excircle"] },
+    { sec: "geometry", re: /s\s*-\s*[abc]\b|s\(s|=\s*rs\b|\brs\b/, w: ["semiperimeter"] },
+    // "rs" is the inradius times the semiperimeter, but the r is glued to the s
+    // and so escapes the single-letter rule above.
+    { sec: "geometry", re: /\brs\b/, w: ["inradius", "semiperimeter", "area"] },
+    { sec: "geometry", re: /(?:^|[^A-Za-z\\])A\s*=|\[[A-Z]{3}\]|\\text\{Area\}/, w: ["area"] },
+    { sec: "geometry", re: /(?:^|[^A-Za-z\\_}])h(?![A-Za-z_])/, w: ["height", "altitude"] },
+    { sec: "geometry", re: /m_\{?[abc]/, w: ["median"] },
+    { sec: "geometry", re: /\\pi/, w: ["circle", "pi"] },
+    { sec: "geometry", re: /\^\\circ|\\angle/, w: ["angle", "degrees"] },
+    { sec: "geometry", re: /\\sin|\\cos|\\tan/, w: ["trigonometry"] },
+    // --- number theory ---
+    { re: /\\varphi|\\phi/, w: ["totient", "coprime", "euler"] },
+    { re: /\\sigma/, w: ["sum of divisors"] },
+    { re: /\\tau\b|d\(n\)/, w: ["number of divisors", "divisor count"] },
+    { re: /\\gcd/, w: ["gcd", "greatest common divisor"] },
+    { re: /\\operatorname\{lcm\}|\\text\{lcm\}|\\mathrm\{lcm\}/, w: ["lcm", "least common multiple"] },
+    { re: /\\pmod|\\equiv|\\bmod/, w: ["modular", "congruence", "remainder"] },
+    { re: /\\lfloor|\\lceil/, w: ["floor", "ceiling", "rounding"] },
+    { re: /v_p|v_\{p\}/, w: ["valuation", "exponent of a prime"] },
+    { re: /!\s*(?:$|[^=])|n!/, w: ["factorial"] },
+    { re: /\\binom|\\dbinom|\\tbinom/, w: ["binomial coefficient", "choose", "combination"] },
+    // --- algebra ---
+    { re: /e_\{?[1-9nk]/, w: ["elementary symmetric", "symmetric sums"] },
+    { re: /p_\{?[1-9nk]/, w: ["power sum"] },
+    { re: /\\log|\\ln/, w: ["logarithm"] },
+    { re: /\\sqrt/, w: ["radical", "square root"] },
+    { re: /\\overline|\\bar\{z\}|\\text\{Im\}|\\text\{Re\}|\bi\b/, w: ["complex"] },
+    // --- how the pieces are combined (structural) ---
+    { re: /\\le\b|\\ge\b|\\leq|\\geq|\\lt\b|\\gt\b/, w: ["inequality", "bound"] },
+    { re: /\\prod/, w: ["product"] },
+    { re: /\\sum/, w: ["sum"] }
+  ];
+
+  // Words for the shape of the statement, added only when the card really does
+  // tie two named quantities together — "ratio" on every card with a fraction
+  // would be noise, but on a card relating R to r it is exactly the way a reader
+  // describes what they are looking for.
+  function conceptsOf(f, sectionId) {
+    const tex = f.latex || "";
+    const out = new Set();
+    let named = 0;
+    for (const rule of CONCEPT_RULES) {
+      if (rule.sec && rule.sec !== sectionId) continue;
+      if (!rule.re.test(tex)) continue;
+      rule.w.forEach(w => indexWordsOf(w).forEach(x => out.add(x)));
+      named++;
+    }
+    if (named >= 2) {
+      // "the ratio between R and r" is how a reader describes any card tying the
+      // two together, not only one literally written as a fraction — and since
+      // every query token must land somewhere for a card to survive, a missing
+      // "ratio" would drop exactly the cards being looked for. It is a common
+      // word, so rarity weighting leaves it almost no influence on the ordering.
+      out.add("ratio");
+      if (/\\d?frac|\\tfrac|\\dfrac|\//.test(tex)) out.add("quotient");
+      if (/=/.test(tex)) ["relationship", "relation"].forEach(w => indexWordsOf(w).forEach(x => out.add(x)));
+    }
+    return out;
+  }
+
+  // Definition words for every glossary term appearing in a card's authored
+  // fields. Deliberately does NOT read the detail body: a term mentioned once in
+  // passing deep in an essay is not what the card is about.
+  const GLOSSARY = window.MATH_GLOSSARY || {};
+  const GLOSS_WORDS = new Map();
+  Object.keys(GLOSSARY).forEach(k => GLOSS_WORDS.set(k, indexWordsOf(GLOSSARY[k])));
+  function glossOf() {
+    const out = new Set();
+    for (let i = 0; i < arguments.length; i++) {
+      const set = arguments[i];
+      if (!set) continue;
+      for (const w of set) {
+        const def = GLOSS_WORDS.get(w);
+        if (def) for (const d of def) out.add(d);
+      }
+    }
+    return out;
+  }
+
+  // Say a formula out loud. Readers routinely search for the thing they can only
+  // pronounce -- "two pi r", "four thirds pi r cubed", "a squared plus b squared
+  // equals c squared", "n times n plus one over two" -- but a formula lives only in
+  // the card's LaTeX, which the text index strips. Rendering it into the words a
+  // person would actually say gives those queries something to match, and feeds the
+  // bigram index -- which is in fact the ONLY place it earns anything. Indexing these
+  // words as their own field was measured and dropped: it moved nothing on its own and
+  // cost a point on the probe set. The value is entirely in pairs like "two pi" and
+  // "pi r", which are highly distinctive even though every word in them is common.
+  const NUMWORD = ["zero", "one", "two", "three", "four", "five", "six",
+                   "seven", "eight", "nine", "ten"];
+  const ORDINAL = { 2: "halves", 3: "thirds", 4: "fourths", 5: "fifths", 6: "sixths",
+                    8: "eighths" };
+  function spokenLatex(tex) {
+    if (!tex) return "";
+    let t = String(tex);
+    t = t.replace(/\\(?:d|t)?frac\s*\{(\d+)\}\s*\{(\d+)\}/g, (m, a, b) =>
+      ORDINAL[+b] ? " " + (NUMWORD[+a] || a) + " " + ORDINAL[+b] + " " : " " + a + " over " + b + " ");
+    t = t.replace(/\\(?:d|t)?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, " $1 over $2 ");
+    t = t.replace(/\\binom\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, " $1 choose $2 ");
+    t = t.replace(/\\sqrt\s*\{([^{}]*)\}/g, " square root of $1 ");
+    t = t.replace(/\^\s*\{?2\}?/g, " squared ").replace(/\^\s*\{?3\}?/g, " cubed ");
+    t = t.replace(/\^\s*\{?([a-z0-9]+)\}?/g, " to the $1 ");
+    t = t.replace(/_\s*\{?([a-z0-9]+)\}?/g, " $1 ");
+    t = t.replace(/\\sum/g, " sum of ").replace(/\\prod/g, " product of ");
+    t = t.replace(/\\(?:cdot|times)/g, " times ").replace(/\\div/g, " divided by ");
+    t = t.replace(/\\pmod\s*\{?([^{}\s]*)\}?/g, " mod $1 ");
+    t = t.replace(/\\equiv/g, " congruent to ").replace(/\\approx/g, " approximately ");
+    t = t.replace(/\\l[et]q?\b/g, " less than or equal ").replace(/\\g[et]q?\b/g, " greater than or equal ");
+    t = t.replace(/\\(pi|theta|alpha|beta|gamma|phi|varphi|lambda|mu|sigma|omega|delta)\b/g, " $1 ");
+    t = t.replace(/\\(sin|cos|tan|cot|sec|csc|log|ln|gcd|lcm|min|max|det)\b/g, " $1 ");
+    t = t.replace(/\\text\s*\{([^{}]*)\}/g, " $1 ");
+    t = t.replace(/\\[a-zA-Z]+/g, " ");                       // drop remaining commands
+    t = t.replace(/=/g, " equals ").replace(/\+/g, " plus ").replace(/-/g, " minus ");
+    t = t.replace(/\b(\d)\b/g, (m, d) => " " + NUMWORD[+d] + " ");   // small digits
+    return t.replace(/[{}\\$&]/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  // Adjacent normalized word pairs, stopwords removed first so "area of a triangle"
+  // yields "area triangle" and matches a card that writes "triangle area".
+  function bigramsOf() {
+    const out = new Set();
+    for (let i = 0; i < arguments.length; i++) {
+      const txt = arguments[i];
+      if (!txt) continue;
+      for (const chunk of String(txt).split(/[.;:,()]/)) {
+        const ws = wordsOf(chunk.toLowerCase()).filter(t => !STOPWORDS.has(t));
+        for (let k = 0; k + 1 < ws.length; k++) out.add(ws[k] + " " + ws[k + 1]);
+      }
+    }
+    return out;
+  }
+
   const ALL = [];
   const BY_ID = {};
   SECTIONS.forEach(section => {
@@ -482,17 +639,196 @@
         entry.ctxWords = new Set(indexWordsOf(sub.title + " " + section.title));
         entry.descWords = new Set(indexWordsOf(f.description));
         entry.latexWords = new Set(latexTokens(f.latex));
+        // Pattern cards live in their own sections but still belong to a subject, and
+        // both the concept rules and the topic rules below are gated on subject.
+        const subjectId = f.subject || section.id;
+        entry.conceptWords = conceptsOf(f, subjectId);
+        // Plain-English definitions of any domain term this card uses, from the
+        // generated glossary. Lets a reader's wording ("bases of the altitudes")
+        // reach a card written in jargon ("altitude feet") without tagging that
+        // card, since one glossary entry serves every card using the term.
+        entry.glossWords = glossOf(entry.nameWords, entry.tagWords, entry.descWords);
+        // Adjacent word pairs from everything authored, plus the glossary gloss.
+        // Single words like "area", "triangle", "side" and "three" sit on hundreds of
+        // cards, so a query built entirely from them ("the area of a triangle if I
+        // know all three sides") gives BM25 nothing to separate Heron from any other
+        // triangle card. The PAIR "three sides" is rare, and pairs are what carry the
+        // intent in a plainly-worded question.
+        entry.bigrams = bigramsOf(f.name, f.keywords.join(" "), f.description,
+                                  Array.from(entry.glossWords).join(" "),
+                                  spokenLatex(f.latex));
+        // The extended write-up: by far the largest description of what a card
+        // means, and the only place most paraphrases of it appear ("the midpoints
+        // halve every side"). Weak evidence per word, so it is scored lowest, but
+        // it is what lets a plainly-worded question reach the right card.
+        entry.bodyWords = new Set(indexWordsOf(
+          ((window.MATH_DETAILS || {})[f.id] || "").replace(/\$[^$]*\$/g, " ").replace(/^##\s*/gm, "")
+        ));
         entry.mathFrags = mathFragments(f.latex);
         entry.nameLower = f.name.toLowerCase();
         const hay = (f.name + " " + f.keywords.join(" ") + " " + sub.title).toLowerCase();
         entry.topics = TOPIC_RULES.filter(t =>
-          (!t.sec || t.sec.indexOf(section.id) !== -1) && t.re && t.re.test(hay));
+          (!t.sec || t.sec.indexOf(subjectId) !== -1) && t.re && t.re.test(hay));
         if (f.type === "method") entry.topics = entry.topics.concat(METHODS_TOPIC);
         ALL.push(entry);
         BY_ID[f.id] = entry;
       });
     });
   });
+  // ---------- Term rarity (IDF) ----------
+  // How many entries contain each indexed word. A formula reference is full of
+  // words like "triangle", "area" or "number" that sit on hundreds of cards and
+  // say almost nothing about intent, while "sine", "stewart" or "frobenius" pin
+  // the answer down to a handful. With flat per-field weights three common words
+  // outvote the one rare word carrying the query — which is why adding more tags
+  // stopped helping: every extra shared tag makes the common words heavier.
+  // Weighting each token by how rare it is fixes that at the root and keeps
+  // working as the library grows, without touching a single card's tags.
+  const DF = new Map();
+  ALL.forEach(e => {
+    const seen = new Set();
+    [e.nameWords, e.tagWords, e.ctxWords, e.latexWords, e.descWords]
+      .forEach(set => { for (const w of set) seen.add(w); });
+    seen.forEach(w => DF.set(w, (DF.get(w) || 0) + 1));
+  });
+  const DOC_N = ALL.length || 1;
+  // Average field sizes, so a card carrying twenty keywords doesn't outrank a
+  // tightly-tagged one just by having more surface area to hit.
+  // ---------- BM25F field model ----------
+  // Every field here is a word SET, so within-field term frequency is 0 or 1: the
+  // ranking signal is which fields a term lands in and how rare that term is.
+  // `w` is the field's boost; `b` is BM25's length parameter applied per field, as
+  // BM25F prescribes.
+  //
+  // The b values are deliberately gentle. The previous scorer divided each tag hit
+  // by a factor spanning 0.4-1.8, which meant a card with 15 well-chosen keywords
+  // had every hit discounted 2.6x against a card with 4 - punishing exactly the
+  // cards that document themselves properly. (Medial Triangle carries both
+  // "midpoint triangle" and "midpoints of sides" yet lost to Varignon on
+  // "connecting midpoints of the sides" for precisely this reason.) At b = 0.35 a
+  // card with twice the average keyword count is discounted about 23%, which is
+  // the honest correction for "more keywords means more chances to be hit".
+  const FIELDS = [
+    { key: "nameWords",    w: 9.0, b: 0.55 },
+    { key: "tagWords",     w: 5.0, b: 0.35 },
+    { key: "conceptWords", w: 2.2, b: 0.20 },
+    { key: "latexWords",   w: 2.0, b: 0.20 },
+    { key: "descWords",    w: 2.5, b: 0.35 },
+    { key: "ctxWords",     w: 1.2, b: 0.10 },
+    { key: "bodyWords",    w: 0.5, b: 0.55 },
+    { key: "glossWords",   w: 0.8, b: 0.30 }
+  ];
+  // BM25 saturation. Deliberately large: in classic BM25, `tf` is how many TIMES a
+  // term occurs, and saturation encodes "the fifth occurrence tells you little".
+  // Here every field is a SET, so the pseudo-tf carries no frequency at all — it
+  // is purely which fields matched. A small k1 therefore squashes the one signal
+  // that matters: at k1 = 1.6 a hit in the card's NAME scored only 2.2x a hit
+  // buried in its prose, and "nine point circle" lost to Medial Triangle. A large
+  // k1 keeps the response near-linear in field importance while still damping a
+  // term that happens to land in every field at once.
+  let K1 = 8;
+  const COVERAGE_MIN = 0.70;            // share of query IDF a card must explain
+  // K1 / CORROB / SCALE and the field boosts above were grid-searched against
+  // tools/eval-queries.json (148 labelled queries). Result vs the previous
+  // hand-tuned scorer: top-1 129 -> 134, top-3 136 -> 143, MRR 0.902 -> 0.937,
+  // with name and jargon queries both staying at 100%. Re-run tools/search-eval.html
+  // after touching any of them.
+  FIELDS.forEach(f => {
+    f.avg = Math.max(1, ALL.reduce((n, e) => n + (e[f.key] ? e[f.key].size : 0), 0) / DOC_N);
+  });
+  // Per-entry, per-field length divisor, computed once at startup.
+  ALL.forEach(e => {
+    e.fieldNorm = FIELDS.map(f => {
+      const size = e[f.key] ? e[f.key].size : 0;
+      return 1 - f.b + f.b * (size / f.avg);
+    });
+  });
+  const IDF_BASE = Math.log(1 + DOC_N / 40) || 1;      // a word on ~40 cards weighs 1.0
+  // Frequencies for the derived fields (concepts and detail bodies) are kept in
+  // their own table: the weights above are calibrated on the authored fields, and
+  // folding hundreds of thousands of prose words into them would shift every
+  // existing score.
+  const AUX_DF = new Map();
+  ALL.forEach(e => {
+    const seen = new Set();
+    [e.conceptWords, e.bodyWords, e.glossWords].forEach(set => { if (set) for (const w of set) seen.add(w); });
+    seen.forEach(w => AUX_DF.set(w, (AUX_DF.get(w) || 0) + 1));
+  });
+  // ---------- Spelling correction ----------
+  // A mistyped word appears on zero cards, so `inCorpus` used to drop it from the
+  // query entirely — before any fuzzy matching could run. That is why "stewert
+  // theorem" returned nothing about Stewart: the only surviving token was
+  // "theorem". Correcting an unknown token to its nearest real corpus word first
+  // is both the fix and the right place for the logic, since it repairs the query
+  // once instead of asking every card to tolerate the typo separately.
+  //
+  // Bucketed by first letter because `fuzzy` already requires the initials to
+  // agree, so a lookup only scans a fraction of the vocabulary.
+  const VOCAB_BY_INITIAL = new Map();
+  (function () {
+    const seen = new Set();
+    const add = w => {
+      if (w.length < 4 || seen.has(w)) return;
+      seen.add(w);
+      const k = w[0];
+      if (!VOCAB_BY_INITIAL.has(k)) VOCAB_BY_INITIAL.set(k, []);
+      VOCAB_BY_INITIAL.get(k).push(w);
+    };
+    DF.forEach((_, w) => add(w));
+    AUX_DF.forEach((_, w) => add(w));
+  })();
+
+  // Nearest real word to a typo, or null. This is the standard noisy-channel
+  // choice: fewest edits first, and among equally close candidates the one that
+  // appears on the MOST cards. Preferring the rarest instead looks appealing but
+  // is backwards — "triangel" then resolves to some obscure near-neighbour rather
+  // than to "triangle", and the query is worse off than before it was corrected.
+  function correctToken(tok) {
+    if (tok.length < 4) return null;
+    const bucket = VOCAB_BY_INITIAL.get(tok[0]);
+    if (!bucket) return null;
+    let best = null, bestDf = -1, bestDist = 99;
+    for (const w of bucket) {
+      if (!fuzzy(w, tok)) continue;
+      const d = levBounded(w, tok, 3);
+      const df = (DF.get(w) || 0) + (AUX_DF.get(w) || 0);
+      if (d < bestDist || (d === bestDist && df > bestDf)) { bestDist = d; bestDf = df; best = w; }
+    }
+    return best;
+  }
+
+  // Bigrams get their own frequency table. They are far rarer than single words, so
+  // their IDF is naturally high; without a table of their own that rarity would be
+  // read against the unigram calibration and every pair would look equally decisive.
+  const BG_DF = new Map();
+  ALL.forEach(e => { for (const b of e.bigrams) BG_DF.set(b, (BG_DF.get(b) || 0) + 1); });
+  const BG_MAX = Math.log(1 + DOC_N / 2) || 1;
+  function bigramIdf(bg) {
+    const df = BG_DF.get(bg);
+    if (!df) return 0;
+    return Math.min(1, Math.log(1 + DOC_N / (1 + df)) / BG_MAX);
+  }
+
+  const IDF_CACHE = new Map();
+  function idfOf(word) {
+    let v = IDF_CACHE.get(word);
+    if (v !== undefined) return v;
+    const df = DF.get(word);
+    if (df) v = Math.log(1 + DOC_N / (1 + df)) / IDF_BASE;
+    else {
+      const aux = AUX_DF.get(word);
+      // A word that appears nowhere in the library at all cannot tell two cards
+      // apart, so it must not be treated as the distinctive one. "made" sits on
+      // zero cards, yet counting it as rare was enough to sink every result for
+      // "area of triangle made by connecting midpoints".
+      v = aux ? Math.log(1 + DOC_N / (1 + aux)) / IDF_BASE : 0.3;
+    }
+    v = Math.max(0.3, Math.min(2.6, v));
+    IDF_CACHE.set(word, v);
+    return v;
+  }
+  function inCorpus(word) { return DF.has(word) || AUX_DF.has(word); }
+
   function entriesForTopic(topicId) {
     return ALL.filter(e => e.topics.some(t => t.id === topicId));
   }
@@ -722,40 +1058,69 @@
 
   // ---------- Search ----------
 
-  // Each query token must match the entry somewhere (AND semantics).
-  // Returns a positive score if the token hits, 0 if it misses.
-  function tokenScore(entry, tok) {
-    let score = 0;
-    if (entry.nameWords.has(tok)) score += 22;
-    if (entry.tagWords.has(tok)) score += 16;
-    if (entry.ctxWords.has(tok)) score += 8;
-    if (entry.latexWords.has(tok)) score += 7;
-    if (entry.descWords.has(tok)) score += 5;
-    if (score === 0 && tok.length >= 3) {
-      // Prefix matching: "circum" hits "circumradius", "tan" hits "tangent".
-      for (const w of entry.nameWords) if (w.startsWith(tok)) { score += 11; break; }
-      for (const w of entry.tagWords) if (w.startsWith(tok)) { score += 9; break; }
-      if (score === 0) {
-        for (const w of entry.ctxWords) if (w.startsWith(tok)) { score += 5; break; }
-        for (const w of entry.descWords) if (w.startsWith(tok)) { score += 3; break; }
+  // BM25F pseudo term-frequency for one token against one card.
+  //
+  // Exact hits count fully; prefix, substring and edit-distance hits count for
+  // less. Field contributions combine as STRONGEST + a fraction of the rest.
+  //
+  // Textbook BM25F sums the fields, but that is only sound when each field
+  // contributes a real term count. With binary word sets, plain summing lets a
+  // card that mentions a word in five weak fields outscore the card that has it
+  // in its NAME — measured: "nine point circle" returned Medial Triangle first
+  // and the Nine-Point Circle third. The previous scorer avoided this by taking
+  // only the max field, which threw away corroboration instead. Taking the max
+  // plus a discounted remainder keeps the field hierarchy intact while still
+  // letting agreement across fields break ties.
+  //
+  // Also returns the indexed word that actually matched, so rarity is taken from
+  // what matched rather than what was typed: "circum" against "circumradius"
+  // should inherit how rare "circumradius" is.
+  const EXACT = 1, PREFIX = 0.6, SUBSTR = 0.4, FUZZ = 0.5;
+  let CORROB = 0.15;                    // credit given to fields beyond the strongest
+  // BM25 returns a score per token bounded by that token's IDF (about 0.3-2.6), so
+  // a whole query totals roughly 1-8. The whole-query bonuses below (exact name,
+  // tag phrase) and mathMatchScore were calibrated against the previous scorer,
+  // whose per-token scores ran 4-51. Left unscaled, any bonus that fired buried
+  // everything else and any card without one was ranked on near-flat noise —
+  // which is how "factor x^4 + 4" stopped returning its own card. Scaling the
+  // token sum back into the original range keeps every one of those constants
+  // meaningful instead of re-tuning them all.
+  let SCALE = 70;
+
+  function fieldTf(entry, tok) {
+    let sum = 0, max = 0, best = null, bestScore = 0, exact = false;
+    const add = (c, w, matched) => {
+      sum += c;
+      if (c > max) max = c;
+      if (w > bestScore) { bestScore = w; best = matched; }
+    };
+    for (let i = 0; i < FIELDS.length; i++) {
+      const set = entry[FIELDS[i].key];
+      if (set && set.has(tok)) {
+        exact = true;
+        add(FIELDS[i].w * EXACT / entry.fieldNorm[i], FIELDS[i].w, tok);
       }
     }
-    if (score === 0 && tok.length >= 3) {
-      // Substring (contains) matching: "sphere" hits "insphere", "gon" hits
-      // "polygon", "cyclic" hits "cyclotomic" — looser than prefix, weighted lower.
-      for (const w of entry.nameWords) if (w.indexOf(tok) !== -1) { score += 8; break; }
-      if (score === 0) for (const w of entry.tagWords) if (w.indexOf(tok) !== -1) { score += 6; break; }
-      if (score === 0) for (const w of entry.ctxWords) if (w.indexOf(tok) !== -1) { score += 3; break; }
-      if (score === 0) for (const w of entry.descWords) if (w.indexOf(tok) !== -1) { score += 2; break; }
+    if (exact) return { tf: max + CORROB * (sum - max), word: best };
+    if (tok.length < 3) return { tf: 0, word: tok };
+    // Nothing matched exactly, so fall back to the looser matchers — but only on
+    // the authored fields. Scanning the detail body word by word for every query
+    // token would dominate the cost of a query, for the weakest evidence there is.
+    for (let i = 0; i < FIELDS.length; i++) {
+      const f = FIELDS[i];
+      if (f.key === "bodyWords") continue;
+      const set = entry[f.key];
+      if (!set || !set.size) continue;
+      let q = 0, matched = null;
+      for (const w of set) if (w.startsWith(tok)) { q = PREFIX; matched = w; break; }
+      if (!q) for (const w of set) {
+        if (w.length > tok.length && w.indexOf(tok) !== -1) { q = SUBSTR; matched = w; break; }
+      }
+      if (!q && tok.length >= 4) for (const w of set) if (fuzzy(w, tok)) { q = FUZZ; matched = w; break; }
+      if (!q) continue;
+      add(f.w * q / entry.fieldNorm[i], f.w * q, matched);
     }
-    if (score === 0 && tok.length >= 4) {
-      // Typo tolerance: allow small edits ("stewert"→Stewart, "recurrance"→recurrence).
-      for (const w of entry.nameWords) if (fuzzy(w, tok)) { score += 9; break; }
-      if (score === 0) for (const w of entry.tagWords) if (fuzzy(w, tok)) { score += 7; break; }
-      if (score === 0) for (const w of entry.ctxWords) if (fuzzy(w, tok)) { score += 4; break; }
-      if (score === 0) for (const w of entry.descWords) if (fuzzy(w, tok)) { score += 2; break; }
-    }
-    return score;
+    return { tf: max + CORROB * (sum - max), word: best || tok };
   }
 
   // Levenshtein distance with an early-exit cap (returns cap+1 once exceeded).
@@ -793,39 +1158,83 @@
     return SYNONYMS[tok] ? [tok, ...SYNONYMS[tok].map(normWord)] : [tok];
   }
 
-  function scoreEntry(entry, queryLower, tokens, mathForms) {
+  // Grid-searched against tools/eval-queries.json AND a separate 78-query probe set
+  // written by imagining how a reader would describe a theorem without knowing its
+  // name. Phrase matching was the single biggest win of the whole rebuild:
+  // eval top-1 144 -> 152, probe top-1 49 -> 53. Both channels had been failing on
+  // plainly-worded questions because every individual word in them is common; the
+  // word PAIR is what carries the intent.
+  let BIGRAM_W = 50;
+
+  function scoreEntry(entry, queryLower, tokens, mathForms, queryBigrams) {
     let total = 0;
-    let hits = 0;
-    let allInNameOrTags = tokens.length > 0;
+    // Coverage replaces the old weak-link penalty AND the dead-word slack rule
+    // with a single number: what share of the query's *information* this card
+    // accounts for, measured in IDF rather than in word count. Failing to match
+    // "triangle" costs almost nothing; failing to match "frobenius" is fatal.
+    // That is the same intent the two old heuristics had, without them being able
+    // to compound into each other unpredictably.
+    let covered = 0, demand = 0;
 
     for (const tok of tokens) {
-      const variants = expandToken(tok);
-      const best = Math.max(...variants.map(t => tokenScore(entry, t)));
-      if (best > 0) hits++;
-      total += best;
-      if (!variants.some(t => entry.nameWords.has(t) || entry.tagWords.has(t))) allInNameOrTags = false;
+      let bestTf = 0, bestWord = tok;
+      for (const t of expandToken(tok)) {
+        const r = fieldTf(entry, t);
+        if (r.tf > bestTf) { bestTf = r.tf; bestWord = r.word; }
+      }
+      const idf = idfOf(bestTf > 0 ? bestWord : tok);
+      demand += idf;
+      if (bestTf > 0) {
+        covered += idf;
+        total += SCALE * idf * bestTf / (K1 + bestTf);   // BM25 saturation
+      }
+    }
+    const coverage = demand > 0 ? covered / demand : 0;
+    // Prefer cards that explain more of the query, but as a smooth factor rather
+    // than the old hard strict/loose pool split. That split discarded every
+    // partial match the moment any single card cleared the bar, which is how
+    // "reflect a point to shorten a path" fell from rank 1 to off the list.
+    total *= 0.25 + 0.75 * coverage;
+
+    // Phrase bonus. Each shared adjacent pair is weighted by how rare that pair is,
+    // so "three sides" earns real credit while "of the" earns none. This is what
+    // separates a card from its topical neighbours when every individual word in the
+    // query is common.
+    if (queryBigrams && queryBigrams.length) {
+      let bg = 0;
+      for (const b of queryBigrams) if (entry.bigrams.has(b)) bg += bigramIdf(b);
+      total += BIGRAM_W * bg;
     }
 
-    // Longer descriptive queries tolerate one dead word — otherwise a single
-    // word the entry never uses ("people", "thing") exiles the best match.
-    let matchedAll = hits === tokens.length || (tokens.length >= 4 && hits >= tokens.length - 1);
-
-    // Precision bonus: every word hit the name or tags directly — this is
-    // what the entry is *about*, not a stray mention in its description.
-    if (allInNameOrTags && tokens.length >= 2) total += 25;
-
-    // Whole-query bonuses: exact name or exact tag phrase.
+    // Whole-query bonuses: exact name, name containing the query, exact tag phrase.
     if (entry.nameLower === queryLower) total += 80;
-    else if (entry.nameLower.includes(queryLower) && queryLower.length >= 4) total += 30;
+    else if (entry.nameLower.includes(queryLower) && queryLower.length >= 4) {
+      // Scale by how much of the name the query actually covers. A flat bonus made
+      // every card whose name merely CONTAINS the word tie with the card the word
+      // names: searching "telescoping" put Arctangent Addition & Telescoping above
+      // Telescoping Sums, and "circle area" put Inradius Formula above Circle Basics.
+      // Covering most of the name is strong evidence; being one word of four is not.
+      total += 30 * (queryLower.length / entry.nameLower.length);
+    }
     if (entry.tagPhrases.includes(queryLower)) total += 40;
 
     // Typed-formula match against the entry's own math.
     const mScore = mathMatchScore(entry, mathForms);
     total += mScore;
-    if (mScore >= 30) matchedAll = true;
 
-    return { total, matchedAll };
+    return { total, matchedAll: coverage >= COVERAGE_MIN || mScore >= 30, coverage };
   }
+
+  // RRF constants. K damps the difference between adjacent ranks (60 is the
+  // standard choice); the two weights set how much say each channel has.
+  // Each channel has its own rank-decay constant, though both measured best at 60.
+  // Shrinking RRF_K_SEM lets the semantic side rescue a card the lexical channel
+  // buried, which sounds right and does lift the `hard` group (12 -> 16 at K = 12),
+  // but it costs more than it gains: `paraphrase` fell 48 -> 41 and top-1 dropped.
+  // Kept as a separate knob because the two channels genuinely could want
+  // different decay, but do not lower it without re-running the eval.
+  let RRF_K = 60, RRF_K_SEM = 60, RRF_LEX = 1.0, RRF_SEM = 0.30,
+      RRF_MARGIN = 0.25, RRF_MIN_TOKENS = 3, RRF_SIM_LO = 0.35, RRF_SIM_HI = 0.55;
 
   const IMP_RANK = { high: 0, medium: 1, low: 2, lower: 3, lowest: 4 };
 
@@ -837,17 +1246,40 @@
     if (!tokens.length) tokens = wordsOf(queryLower);
     // expand any abbreviation that appears as its own token (mixed queries)
     tokens = tokens.flatMap(t => ABBREV[t] ? wordsOf(ABBREV[t]).filter(w => !STOPWORDS.has(w)) : [t]);
+    // A token that appears on no card anywhere cannot narrow anything down; all
+    // it can do is stop every card from matching the whole query. Filler like
+    // "made" or "basically" is exactly this, and long plainly-worded questions
+    // are full of it. (Kept if it would empty the query, so a search for a word
+    // the library simply lacks still reports honestly rather than silently
+    // searching for something else.)
+    // Repair typos before pruning: an unknown token gets one chance to resolve to
+    // a real corpus word. Only then are the still-unknown ones (genuine filler
+    // like "made" or "basically") dropped, since a word on no card cannot narrow
+    // anything down and would otherwise stop every card from covering the query.
+    tokens = tokens.map(t => {
+      if (inCorpus(t)) return t;
+      return correctToken(t) || t;
+    });
+    // The semantic channel wants the words the lexical one is about to throw away:
+    // "connecting" sits on no card, so inCorpus drops it, yet it is precisely the
+    // word that should reach a card saying "joining the side midpoints".
+    const semanticTokens = tokens.slice();
+    const meaningful = tokens.filter(inCorpus);
+    if (meaningful.length) tokens = meaningful;
     const mathForms = queryMathForms(rawQuery);
     if (!tokens.length && !mathForms) return { results: [], partial: false };
+    // Query phrases, built the same way the index was so the two line up.
+    const queryBigrams = Array.from(bigramsOf(queryLower));
 
-    const strict = [];
-    const loose = [];
+    const scored = [];
+    let anyFull = false;
     // A text search is global: it ignores the per-section level/importance
     // filters, which are local to each of the four category pages, not to search.
     for (const entry of ALL) {
-      const { total, matchedAll } = scoreEntry(entry, queryLower, tokens, mathForms);
+      const { total, matchedAll } = scoreEntry(entry, queryLower, tokens, mathForms, queryBigrams);
       if (total <= 0) continue;
-      (matchedAll ? strict : loose).push({ entry, score: total });
+      if (matchedAll) anyFull = true;
+      scored.push({ entry, score: total });
     }
 
     // Prefer entries matching every keyword; fall back to partial matches.
@@ -855,8 +1287,73 @@
     const cmp = (a, b) => b.score - a.score ||
       IMP_RANK[a.entry.formula.importance] - IMP_RANK[b.entry.formula.importance] ||
       a.entry.formula.name.localeCompare(b.entry.formula.name);
-    const pool = strict.length ? strict : loose;
+    let pool = scored;
     pool.sort(cmp);
+
+    // ---------- Reciprocal Rank Fusion ----------
+    // Combine the lexical and semantic rankings by RANK, not by score. The two
+    // produce numbers on unrelated scales, and normalizing them against each other
+    // is fragile — a query where one channel happens to score large would swamp
+    // the other. RRF sidesteps calibration entirely: each channel contributes
+    // w/(K + rank), so a card the lexical side already ranks first cannot be
+    // displaced by a semantic guess, while a card only the semantic side knows
+    // about can still climb into view. That is what lets semantics be added
+    // without putting the existing behaviour at risk.
+    const SEM = window.MathSemantic;
+    if (SEM && SEM.ready() && semanticTokens.length) {
+      const sem = SEM.rank(semanticTokens, 40);
+      if (sem && sem.length) {
+        // Gate the semantic channel on how sure the lexical one is.
+        //
+        // Measured on the eval set, the two channels are not equals: lexical gets
+        // 134/148 top-1, semantic 100/148. Blending them everywhere therefore lets
+        // the weaker one disturb answers the stronger one already had right —
+        // "triangle inequality" fell from 1st to 4th, "denesting radicals" to 9th.
+        // But on queries where lexical is merely guessing, semantics is exactly
+        // what is needed: it is what finally puts Medial Triangle first for
+        // "area of triangle formed by connecting midpoints of the sides".
+        //
+        // The relative gap between the top two lexical scores separates those two
+        // situations. A decisive winner (exact name match, a rare term) leads by a
+        // wide margin and is left alone; a flat top means the lexical channel has
+        // no real opinion, so semantics gets its full say.
+        // Query length is the second signal. A one- or two-word query is nearly
+        // always a name or a piece of contest shorthand ("denesting radicals",
+        // "triangle inequality"), where the lexical channel is authoritative and
+        // there is no paraphrase to bridge. Long, plainly-worded questions are the
+        // opposite. Every casualty of ungated fusion was a short query; every
+        // beneficiary was a long one.
+        const s1 = pool.length ? pool[0].score : 0;
+        const s2 = pool.length > 1 ? pool[1].score : 0;
+        const margin = s1 > 0 ? (s1 - s2) / s1 : 0;
+        // Third signal, and the only calibrated one available: the semantic
+        // channel's own top cosine. BM25 scores mean nothing in absolute terms,
+        // but a cosine does — around 0.6 the match is genuinely close, around 0.3
+        // it is noise. So let the semantic side speak up when it is actually sure
+        // and stand down when it is guessing, instead of always contributing the
+        // same fixed share.
+        const sim = sem[0].score;
+        const conf = Math.max(0, Math.min(1, (sim - RRF_SIM_LO) / (RRF_SIM_HI - RRF_SIM_LO)));
+        const semW = semanticTokens.length < RRF_MIN_TOKENS
+          ? 0
+          : RRF_SEM * conf * (1 - Math.min(1, margin / RRF_MARGIN));
+        const fused = new Map();
+        for (let i = 0; i < pool.length; i++) {
+          fused.set(pool[i].entry.formula.id,
+            { entry: pool[i].entry, score: RRF_LEX / (RRF_K + i + 1) });
+        }
+        for (let i = 0; i < sem.length; i++) {
+          const bump = semW / (RRF_K_SEM + i + 1);
+          const hit = fused.get(sem[i].id);
+          if (hit) hit.score += bump;
+          else if (BY_ID[sem[i].id]) fused.set(sem[i].id, { entry: BY_ID[sem[i].id], score: bump });
+        }
+        pool = Array.from(fused.values());
+        pool.sort(cmp);
+      }
+    } else if (SEM && SEM.status() === "idle") {
+      SEM.load();          // warm it for the next keystroke; this query stays lexical
+    }
     // Trim the weak tail: keep the clearly-relevant matches (always at least the
     // top handful), then drop entries scoring far below the leader so a growing
     // library doesn't bury the answer under near-misses.
@@ -864,7 +1361,7 @@
     const kept = pool.filter((r, i) => i < 6 || r.score >= topScore * 0.3);
     return {
       results: kept.slice(0, 60).map(r => r.entry),
-      partial: !strict.length && loose.length > 0
+      partial: !anyFull && pool.length > 0
     };
   }
 
@@ -952,7 +1449,12 @@
     const badges = [...svg.querySelectorAll("circle")].map(c => ({
       cx: +c.getAttribute("cx"), cy: +c.getAttribute("cy"), r: parseFloat(c.getAttribute("r") || "0"),
       fill: (c.getAttribute("fill") || "").toLowerCase()
-    })).filter(c => c.r >= 9 && c.fill && c.fill !== "none");
+      // A mass-point weight badge is a small disk filled in the card colour. The
+      // old test — any filled circle of radius 9 or more — also caught the main
+      // circles of a figure, so every label inside one was flung out to its rim,
+      // stacking three labels on the same spot in Apollonius, inversion and
+      // Descartes.
+    })).filter(c => c.r >= 9 && c.r <= 15 && /bg-card/.test(c.fill));
     const L = texts.map(t => {
       const b = t.getBBox();
       const o = { t, w: b.width, h: b.height, x: b.x + b.width / 2, y: b.y + b.height / 2, dx: 0, dy: 0 };
@@ -960,31 +1462,93 @@
         badges.some(c => Math.hypot(o.x - c.cx, o.y - c.cy) < c.r * 0.7);   // a weight centered in a badge — leave put
       return o;
     }).filter(o => o.w > 0);
-    for (let i = 0; i < L.length; i++) {
-      if (L[i].fixed) continue;
-      for (let it = 0; it < 12; it++) {
-        let moved = false;
-        for (let j = 0; j < L.length; j++) {
-          if (i === j) continue;
-          const a = L[i], b = L[j];
-          const ox = (a.w + b.w) / 2 - Math.abs((a.x + a.dx) - (b.x + b.dx));
-          const oy = (a.h + b.h) / 2 - Math.abs((a.y + a.dy) - (b.y + b.dy));
-          if (ox > 2 && oy > Math.min(a.h, b.h) * 0.4) {      // real overlap only
-            moved = true;
+    // Relax every overlapping pair at once, pushing both halves apart. Moving one
+    // label at a time could not untangle a three-way pile-up: each fix recreated
+    // an overlap with the label handled just before it.
+    function separateLabels() {
+      for (let it = 0; it < 30; it++) {
+        let worst = 0;
+        for (let i = 0; i < L.length; i++) {
+          for (let j = i + 1; j < L.length; j++) {
+            const a = L[i], b = L[j];
+            if (a.fixed && b.fixed) continue;
+            const ox = (a.w + b.w) / 2 + 2 - Math.abs((a.x + a.dx) - (b.x + b.dx));
+            const oy = (a.h + b.h) / 2 - Math.abs((a.y + a.dy) - (b.y + b.dy));
+            if (ox <= 0 || oy <= Math.min(a.h, b.h) * 0.35) continue;
+            worst = Math.max(worst, oy);
             let vx = (a.x + a.dx) - (b.x + b.dx), vy = (a.y + a.dy) - (b.y + b.dy);
-            if (!vx && !vy) vy = 1;
-            const n = Math.hypot(vx, vy) || 1, step = Math.min(oy, a.h * 0.5);
-            a.dx += vx / n * step; a.dy += vy / n * step;
+            if (!vx && !vy) { vx = (i % 2) ? 1 : -1; vy = 1; }
+            const n = Math.hypot(vx, vy) || 1;
+            const step = Math.min(oy, Math.min(a.h, b.h) * 0.55) * 0.6;
+            const wa = b.fixed ? 1 : 0.5, wb = a.fixed ? 1 : 0.5;
+            if (!a.fixed) { a.dx += vx / n * step * (wa * 2); a.dy += vy / n * step * (wa * 2); }
+            if (!b.fixed) { b.dx -= vx / n * step * (wb * 2); b.dy -= vy / n * step * (wb * 2); }
           }
         }
-        if (!moved) break;
+        if (worst === 0) break;
       }
     }
+
+    // (4) push labels off any line drawn through them. Label-vs-label was already
+    // handled above, but a segment running under a label cut straight through the
+    // glyphs, which is the more common and more damaging collision.
+    const segs = [...svg.querySelectorAll("line")].map(l => ({
+      p: [+l.getAttribute("x1"), +l.getAttribute("y1")],
+      q: [+l.getAttribute("x2"), +l.getAttribute("y2")]
+    })).filter(s2 => isFinite(s2.p[0]) && isFinite(s2.q[0]));
+    function clearLines() {
+      if (!segs.length) return;
+      for (const o of L) {
+        if (o.fixed) continue;
+        for (let it = 0; it < 4; it++) {
+          const cx = o.x + o.dx, cy = o.y + o.dy;
+          const hw = o.w / 2 + 1.5, hh = o.h / 2 + 1.5;
+          let best = null;
+          for (const sg of segs) {
+            const near = Math.min(Math.hypot(sg.p[0] - cx, sg.p[1] - cy),
+                                  Math.hypot(sg.q[0] - cx, sg.q[1] - cy));
+            if (near < Math.max(20, o.h * 1.6)) continue;
+            const vx = sg.q[0] - sg.p[0], vy = sg.q[1] - sg.p[1];
+            const len2 = vx * vx + vy * vy; if (!len2) continue;
+            let t = ((cx - sg.p[0]) * vx + (cy - sg.p[1]) * vy) / len2;
+            t = Math.max(0, Math.min(1, t));
+            const fx = sg.p[0] + vx * t, fy = sg.p[1] + vy * t;
+            let nx = cx - fx, ny = cy - fy;
+            const d = Math.hypot(nx, ny);
+            const reach = (Math.abs(nx) * hw + Math.abs(ny) * hh) / (d || 1);
+            const need = reach - d + 1.5;
+            if (need <= 0) continue;
+            if (!best || need > best.need) {
+              if (d < 0.01) { nx = -vy; ny = vx; }
+              const n = Math.hypot(nx, ny) || 1;
+              best = { need, ux: nx / n, uy: ny / n };
+            }
+          }
+          if (!best) break;
+          o.dx += best.ux * best.need; o.dy += best.uy * best.need;
+        }
+      }
+    }
+
+    // The two passes can undo one another (clearing a line can shove a label onto
+    // its neighbour), so alternate them. Label-on-label is the worse defect —
+    // overlapping glyphs are unreadable, while a line grazing a label is only
+    // untidy — so the separation pass runs last and gets the final say.
+    // Clamp inside the loop, not after it: capping a label's travel at the very
+    // end could drop it back on top of a neighbour the separation pass had just
+    // resolved.
+    function capMoves() {
+      L.forEach(o => {
+        const cap = o.h * 2.6, d = Math.hypot(o.dx, o.dy);
+        if (d > cap) { o.dx *= cap / d; o.dy *= cap / d; }
+      });
+    }
+    for (let round = 0; round < 4; round++) { clearLines(); capMoves(); separateLabels(); }
+    capMoves(); separateLabels();
+
     const vb = (svg.getAttribute("viewBox") || "0 0 400 300").split(/\s+/).map(Number);
     const ctr = [(vb[2] || 400) / 2, (vb[3] || 300) / 2];
     L.forEach(o => {
-      const cap = o.h * 1.7, d = Math.hypot(o.dx, o.dy);
-      if (d > cap) { o.dx *= cap / d; o.dy *= cap / d; }
       // keep letter labels off weight-badge disks (badges sit outside the figure,
       // so push the label inward, toward the figure's center, until it clears)
       if (!o.fixed) {
@@ -1013,8 +1577,9 @@
   };
 
   function badgeHtml(f) {
-    const method = f.type === "method" ? `<span class="badge badge-method">METHOD</span>` : "";
-    return method + f.level.map(l => `<span class="badge badge-${l}">${LEVEL_LABELS[l]}</span>`).join("");
+    const kind = f.type === "method" ? `<span class="badge badge-method">METHOD</span>`
+              : f.type === "pattern" ? `<span class="badge badge-pattern">PATTERN</span>` : "";
+    return kind + f.level.map(l => `<span class="badge badge-${l}">${LEVEL_LABELS[l]}</span>`).join("");
   }
 
   // Importance sits beside the title, separate from the level badges on the right.
@@ -1162,18 +1727,25 @@
 
   // Contest problems that use this formula — newest first, each opening a Database
   // detail view and linking out to its AoPS wiki page for the statement.
+  // Cards for the common formulas can carry dozens of tagged problems, which
+  // buries whatever follows them. Show the first few and keep the rest one
+  // click away.
+  const PROB_PREVIEW = 5;
+
   function contestHtml(f) {
     const probs = PROBLEMS_BY_FORMULA[f.id] || [];
     if (!probs.length) return "";
-    const items = probs.map(p =>
-      `<li class="prob-row">
+    const items = probs.map((p, i) =>
+      `<li class="prob-row${i >= PROB_PREVIEW ? " prob-extra" : ""}">
          <a class="prob-open" href="#/problem/${p.slug}">${refShort(p.ref)}</a>
          ${p.url ? `<a class="ref-ext-link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer" title="Open on AoPS">AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
        </li>`).join("");
+    const hidden = probs.length - PROB_PREVIEW;
     return `
       <div class="practice contest-refs">
         <h4>Practice problems <span class="practice-note">${probs.length}</span></h4>
         <ul class="prob-list">${items}</ul>
+        ${hidden > 0 ? `<button type="button" class="show-more-btn prob-more" aria-expanded="false">Show ${hidden} more</button>` : ""}
       </div>`;
   }
 
@@ -1393,27 +1965,30 @@
     return scored.slice(0, max).map(r => r.other);
   }
 
-  // Pull a "## Key forms" (or legacy "## Key formulas") block out of a detail
-  // body so it can render as a dedicated blue-box list directly under the big
-  // formula box. Each item may carry a small explanation after " — ", shown on
-  // its own line beneath the formula. Returns { formsHtml, rest }.
+  // Pull a "## Key forms" block (older cards may still say "Key ideas" or
+  // "Key formulas") out of a detail body so it can render as its own subsection
+  // just under the description. Key forms is for METHOD cards only: it lists the
+  // common shapes the method is applied in. Formula cards have their formulas
+  // enumerated in the big box already, so they carry no such block. Each item may
+  // carry a small explanation after " — ", shown on its own line beneath the
+  // formula. Returns { formsHtml, rest }.
   function splitKeyForms(body) {
-    if (!body) return { formsHtml: "", rest: "" };
+    if (!body) return { formsHtml: () => "", rest: "" };
     const blocks = body.split(/\n\s*\n/);
     let formLines = null;
     const rest = [];
     for (const block of blocks) {
       const lines = block.replace(/\s+$/, "").split("\n");
       while (lines.length && !lines[0].trim()) lines.shift();
-      if (formLines === null && lines.length && /^##\s+key\s+form(s|ulas?)\s*$/i.test(lines[0].trim())) {
+      if (formLines === null && lines.length && /^##\s+key\s+(ideas?|form(s|ulas?))\s*$/i.test(lines[0].trim())) {
         formLines = lines.slice(1);
       } else {
         rest.push(block);
       }
     }
-    if (formLines === null) return { formsHtml: "", rest: body };
+    if (formLines === null) return { formsHtml: () => "", rest: body };
     const items = formLines.map(l => l.trim()).filter(l => l.startsWith("- ")).map(l => l.slice(2).trim());
-    if (!items.length) return { formsHtml: "", rest: body };
+    if (!items.length) return { formsHtml: () => "", rest: body };
     const li = items.map(it => {
       const idx = it.indexOf(" — ");
       return idx !== -1
@@ -1421,7 +1996,7 @@
         : `<li>${it}</li>`;
     }).join("");
     return {
-      formsHtml: `<div class="key-forms"><div class="kf-label">Key forms</div><ul class="detail-list">${li}</ul></div>`,
+      formsHtml: heading => `<div class="key-forms"><h4>${heading}</h4><ul class="detail-list">${li}</ul></div>`,
       rest: rest.join("\n\n")
     };
   }
@@ -1440,23 +2015,43 @@
       }
       return `<p>${items.join(" ")}</p>`;
     };
-    return body.split(/\n\s*\n/).map(block => {
+    // A "## Full proof" section is rendered collapsed behind a button. Some
+    // results (the mean chain, Newton's inequalities) have a derivation worth
+    // keeping in full, but printing it inline would bury the short explanation
+    // most readers came for.
+    let inProof = false;
+    const out = body.split(/\n\s*\n/).map(block => {
       const lines = block.replace(/\s+$/, "").split("\n");
       while (lines.length && !lines[0].trim()) lines.shift();
       if (!lines.length) return "";
       let html = "";
       if (lines[0].trim().startsWith("## ")) {
-        html += `<h4>${lines.shift().trim().slice(3).trim()}</h4>`;
+        const title = lines.shift().trim().slice(3).trim();
+        const isProof = /^full proof$/i.test(title);
+        if (inProof && !isProof) { html += "</div></div>"; inProof = false; }
+        if (isProof) {
+          inProof = true;
+          html += `<div class="full-proof"><button type="button" class="show-more-btn proof-toggle" aria-expanded="false">Show full proof</button><div class="proof-body">`;
+        } else {
+          html += `<h4>${title}</h4>`;
+        }
       }
       return html + chunk(lines);
     }).join("");
+    return out + (inProof ? "</div></div>" : "");
   }
 
   function renderDetail(entry) {
     const f = entry.formula;
     state.activeSectionId = entry.section.id;
     const body = (window.MATH_DETAILS || {})[f.id];
-    const { formsHtml, rest } = splitKeyForms(body);
+    // Key forms is a method-card feature: it lists the shapes a technique is
+    // applied in. A formula card already enumerates its formulas in the big box,
+    // so any stray block on one is dropped rather than rendered.
+    const split = splitKeyForms(body);
+    const formsHtml = f.type === "method" ? split.formsHtml("Key forms")
+                    : f.type === "pattern" ? split.formsHtml("Recognize it") : "";
+    const rest = split.rest;
     const related = relatedEntries(entry, 6);
     const hasDiagram = !!(f.diagram || ((window.MATH_DIAGRAMS || {})[f.id] || []).length);
     const asyBtn = entry.section.id === "geometry" && hasDiagram
@@ -1476,13 +2071,13 @@
           ${asyBtn}
         </div>
         <div class="formula-display detail-formula" data-latex="${escapeAttr(f.latex)}"></div>
-        ${formsHtml}
         <p class="card-desc detail-summary">${f.description}</p>
+        ${formsHtml}
         ${f.diagram ? `<div class="diagram">${f.diagram}</div>` : ""}
         ${((window.MATH_DIAGRAMS || {})[f.id] || []).map(d => `<div class="diagram detail-diagram">${d}</div>`).join("")}
         ${rest && rest.trim() ? `<div class="detail-body">${detailBodyHtml(rest)}</div>` : ""}
-        ${practiceHtml(f)}
         ${(window.MATH_WIDGETS || {})[f.id] ? `<div class="interactive"><h4>Interactive</h4><div id="formula-widget"></div></div>` : ""}
+        ${practiceHtml(f)}
         ${contestHtml(f)}
         ${related.length ? `
           <div class="related">
@@ -1497,6 +2092,8 @@
     var wdg = (window.MATH_WIDGETS || {})[f.id];
     if (wdg) { try { wdg.mount(document.getElementById("formula-widget")); } catch (e) { if (window.console) console.warn("widget error:", f.id, e); } }
     try { decorateNumberInputs(document.getElementById("formula-widget")); } catch (e) {}
+    wireProblemToggle($content);
+    wireProofToggles($content);
   }
 
   // Replace the browser's default (light) number-input spinner with themed ▲▼ arrows
@@ -1529,6 +2126,30 @@
         btns.children[1].addEventListener("click", function () { step(-1); });
       })(inputs[i]);
     }
+  }
+
+  function wireProofToggles(root) {
+    (root || document).querySelectorAll(".proof-toggle").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const box = btn.closest(".full-proof");
+        const open = box.classList.toggle("proof-open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        btn.textContent = open ? "Hide full proof" : "Show full proof";
+      });
+    });
+  }
+
+  function wireProblemToggle(root) {
+    const btn = (root || document).querySelector(".prob-more");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const box = btn.closest(".contest-refs");
+      const open = box.classList.toggle("probs-open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.textContent = open
+        ? "Show fewer"
+        : `Show ${box.querySelectorAll(".prob-extra").length} more`;
+    });
   }
 
   function escapeAttr(s) {
@@ -2090,7 +2711,17 @@
   // ---------- Sidebar ----------
 
   function buildSidebar() {
-    $sidebar.innerHTML = SECTIONS.map(section => `
+    // The sidebar reads as two books: the formula reference, and the catalog of
+    // recurring problem formats. A heading is emitted once per run of sections
+    // sharing a group, so adding a section needs no change here.
+    const GROUP_LABELS = { formulas: "Formulas", patterns: "Patterns" };
+    let lastGroup = null;
+    $sidebar.innerHTML = SECTIONS.map(section => {
+      const group = section.group || "formulas";
+      const heading = group === lastGroup ? ""
+        : `<div class="nav-group-label">${GROUP_LABELS[group] || group}</div>`;
+      lastGroup = group;
+      return heading + `
       <div class="nav-section" data-section="${section.id}">
         <button class="nav-section-btn" data-section="${section.id}">
           <span>${section.title}</span>
@@ -2101,7 +2732,8 @@
             `<a class="nav-sub-link" data-section="${section.id}" data-sub="${i}">${sub.title}</a>`
           ).join("")}
         </div>
-      </div>`).join("");
+      </div>`;
+    }).join("");
 
     $sidebar.addEventListener("click", e => {
       const btn = e.target.closest(".nav-section-btn");
@@ -2127,6 +2759,13 @@
         clearStarredFilter();
         stripHash();
         state.activeSectionId = link.dataset.section;
+        // Cancel any smooth scroll still animating from a previous click before the
+        // content is swapped. Otherwise that animation keeps running toward an offset
+        // measured against the OLD section, and if the new one is shorter (Geometry is
+        // 184 cards, Number Theory 89) it can strand you past the end of the new page
+        // on a blank screen. Scrolling to the current position instantly is enough to
+        // stop it without moving anything.
+        window.scrollTo({ top: window.scrollY, behavior: "instant" });
         render();
         const target = document.getElementById(`sub-${link.dataset.section}-${link.dataset.sub}`);
         if (target) target.scrollIntoView({ block: "start" });
@@ -2537,4 +3176,62 @@
   buildSidebar();
   buildLevelFilters();
   render();
+
+  // ---------- Debug / evaluation hook ----------
+  // The search internals are otherwise sealed inside this IIFE, which meant every
+  // relevance measurement so far was taken by hand-patching a temporary export in
+  // and out of this file. tools/search-eval.html needs a stable, synchronous entry
+  // point (the UI path is debounced, and a background tab throttles its timers),
+  // so expose one — gated on ?debug=1 so nothing is added to the normal page.
+  if (/[?&]debug=1\b/.test(location.search)) {
+    window.__mathSearch = {
+      searchFormulas,
+      entries: ALL,
+      byId: BY_ID,
+      scoreEntry,
+      bigramsOf,
+      spokenLatex,
+      idfOf,
+      // Grid-search support: override K1 / COVERAGE weighting / field boosts and
+      // recompute the cached per-field length divisors, without reloading.
+      fields: FIELDS,
+      semantic: function () { return window.MathSemantic; },
+      tune(cfg) {
+        if (cfg.k1 != null) K1 = cfg.k1;
+        if (cfg.corrob != null) CORROB = cfg.corrob;
+        if (cfg.scale != null) SCALE = cfg.scale;
+        if (cfg.rrfK != null) RRF_K = cfg.rrfK;
+        if (cfg.rrfKSem != null) RRF_K_SEM = cfg.rrfKSem;
+        if (cfg.rrfLex != null) RRF_LEX = cfg.rrfLex;
+        if (cfg.rrfSem != null) RRF_SEM = cfg.rrfSem;
+        if (cfg.rrfMargin != null) RRF_MARGIN = cfg.rrfMargin;
+        if (cfg.rrfMinTokens != null) RRF_MIN_TOKENS = cfg.rrfMinTokens;
+        if (cfg.rrfSimLo != null) RRF_SIM_LO = cfg.rrfSimLo;
+        if (cfg.rrfSimHi != null) RRF_SIM_HI = cfg.rrfSimHi;
+        if (cfg.bigramW != null) BIGRAM_W = cfg.bigramW;
+        if (cfg.w) FIELDS.forEach(f => { if (cfg.w[f.key] != null) f.w = cfg.w[f.key]; });
+        if (cfg.b) FIELDS.forEach(f => { if (cfg.b[f.key] != null) f.b = cfg.b[f.key]; });
+        ALL.forEach(e => {
+          e.fieldNorm = FIELDS.map(f => {
+            const size = e[f.key] ? e[f.key].size : 0;
+            return 1 - f.b + f.b * (size / f.avg);
+          });
+        });
+        return { k1: K1, fields: FIELDS.map(f => ({ key: f.key, w: f.w, b: f.b })) };
+      },
+      // Rank of a card id for a query, 1-based; 0 when it does not appear.
+      rankOf(query, id) {
+        const r = searchFormulas(query).results || [];
+        for (let i = 0; i < r.length; i++) {
+          const e = r[i].entry || r[i];
+          if ((e.formula ? e.formula.id : e.id) === id) return i + 1;
+        }
+        return 0;
+      },
+      topIds(query, n) {
+        return (searchFormulas(query).results || []).slice(0, n || 10)
+          .map(r => { const e = r.entry || r; return e.formula ? e.formula.id : e.id; });
+      }
+    };
+  }
 })();

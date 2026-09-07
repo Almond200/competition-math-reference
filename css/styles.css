@@ -50,7 +50,13 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scrollbar-gutter: stable; }
+/* scroll-padding-top tells the browser the first N pixels of the scrollport are
+   obscured by the sticky .topbar, so scrollIntoView stops short of sliding the
+   target underneath it. Without it, clicking a sidebar sub-subject put the
+   heading at viewport y = 0, i.e. completely behind the bar. Uses --topbar-h so
+   the taller narrow-screen bar is handled by the same rule. */
+html { scroll-behavior: smooth; scrollbar-gutter: stable;
+       scroll-padding-top: calc(var(--topbar-h) + 12px); }
 
 body {
   margin: 0;
@@ -224,19 +230,6 @@ body {
   flex-wrap: wrap;
 }
 
-.sort-wrap {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-left: auto;
-}
-
-.sort-wrap label {
-  font-size: 12px;
-  color: var(--text-faint);
-  font-weight: 600;
-}
-
 #sort-select {
   font-size: 12px;
   font-weight: 600;
@@ -299,6 +292,18 @@ body {
   scrollbar-gutter: stable;
   padding: 20px 12px 40px 24px;
 }
+
+/* Separates the formula reference from the pattern catalog in the sidebar. */
+.nav-group-label {
+  padding: 0 12px 6px;
+  margin-top: 18px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.nav-group-label:first-child { margin-top: 0; }
 
 .nav-section { margin-bottom: 4px; }
 
@@ -380,14 +385,6 @@ body {
   flex: 1;
   height: 1px;
   background: var(--border);
-}
-
-.sub-crossnote {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-faint);
-  text-transform: none;
-  letter-spacing: 0;
 }
 
 /* ---------- Formula cards ---------- */
@@ -475,24 +472,6 @@ body {
 .card:hover .copy-btn { opacity: 1; }
 .copy-btn:hover { color: var(--text); border-color: var(--border-light); }
 .copy-btn.copied { color: var(--level-mc); border-color: var(--level-mc); opacity: 1; }
-
-.extra-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.extra-toggle:hover { border-color: var(--accent); }
 .extra-toggle .chev { font-size: 10px; }
 
 .card-extra {
@@ -541,36 +520,6 @@ body {
 }
 
 .diagram { margin-bottom: 14px; }
-
-.contest-refs .ref-list {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--text-dim);
-  font-size: 13.5px;
-  line-height: 2;
-}
-
-.contest-refs .ref-list li::marker { color: var(--accent); }
-
-.contest-refs .ref-list a.ref-link {
-  color: var(--text-dim);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: color .12s ease, border-color .12s ease;
-}
-
-.contest-refs .ref-list a.ref-link:hover,
-.contest-refs .ref-list a.ref-link:focus-visible {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  outline: none;
-}
-
-.contest-refs .ref-list .ref-ext {
-  font-size: 11px;
-  margin-left: 3px;
-  opacity: .55;
-}
 
 .diagram + .card-example { margin-top: 4px; }
 
@@ -689,6 +638,7 @@ body.nav-open .nav-backdrop { opacity: 1; }
 .card:hover .more-hint { opacity: 1; }
 
 .badge-method { background: #45d6c3; }
+.badge-pattern { background: #f0a35e; }
 
 .back-link {
   display: inline-block;
@@ -716,17 +666,10 @@ body.nav-open .nav-backdrop { opacity: 1; }
 .detail-formula { padding: 22px 18px; }
 .detail-formula .katex { font-size: 1.45em; }
 
-/* "Key forms": the full formula list, directly under the big box on
-   multi-formula cards. Each item is a formula with a small note beneath it. */
+/* "Key forms": the common shapes a method is applied in, its own subsection under
+   the Key idea paragraph. Method cards only. Each item is a formula with a small
+   note beneath it. */
 .key-forms { margin: 2px 0 14px; }
-.key-forms .kf-label {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  font-weight: 700;
-  margin: 0 0 8px;
-}
 .key-forms .detail-list {
   list-style: none;
   margin: 0;
@@ -757,7 +700,11 @@ body.nav-open .nav-backdrop { opacity: 1; }
 
 .detail-body { margin-top: 4px; }
 
-.detail-body h4 {
+.detail-body h4,
+.key-forms h4,
+.related h4,
+.practice h4,
+.interactive h4 {
   color: var(--text);
   font-size: 14px;
   font-weight: 600;
@@ -766,13 +713,19 @@ body.nav-open .nav-backdrop { opacity: 1; }
   align-items: center;
   gap: 10px;
 }
+.key-forms h4 { margin: 22px 0 8px; }
+.related h4, .practice h4, .interactive h4 { margin: 0 0 10px; }
 
 .detail-body p { font-weight: 400; }
 
 .detail-diagram { margin: 14px 0 4px; }
 .detail-diagram svg { max-width: 430px; }
 
-.detail-body h4::after {
+.detail-body h4::after,
+.key-forms h4::after,
+.related h4::after,
+.practice h4::after,
+.interactive h4::after {
   content: "";
   flex: 1;
   height: 1px;
@@ -822,49 +775,11 @@ body.nav-open .nav-backdrop { opacity: 1; }
 
 .related { margin-top: 26px; }
 
-.related h4 {
-  color: var(--text);
-  font-size: 14px;
-  margin: 0 0 10px;
-}
-
 /* ---------- Practice questions (detail pages only) ---------- */
 
 .practice { margin-top: 26px; }
 
-.practice h4 {
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0 0 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.practice h4::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
 .interactive { margin-top: 26px; }
-.interactive h4 {
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0 0 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.interactive h4::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
 
 /* ---------- Problem database ---------- */
 .practice-note { font-weight: 500; font-size: 11.5px; color: var(--text-faint); }
@@ -1044,34 +959,6 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 }
 .topic-chip:hover { border-color: var(--accent); }
 
-/* ---------- Bulk-add bar ---------- */
-.bulk-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 9px 14px;
-  margin: 4px 0 16px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-.bulk-count { font-size: 13px; color: var(--text-dim); }
-.bulk-add-btn {
-  margin-left: auto;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  padding: 5px 12px;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-.bulk-add-btn:hover { background: var(--accent); color: #fff; }
-
 /* ---------- Add-to-list popover ---------- */
 .listmenu {
   position: absolute;
@@ -1107,11 +994,8 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
   text-align: left;
 }
 .lm-row:hover { background: var(--bg-card-hover); }
-.lm-bulk:disabled { opacity: 0.5; cursor: default; }
-.lm-bulk:disabled:hover { background: transparent; }
 .lm-emoji { flex-shrink: 0; }
 .lm-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lm-hint { font-size: 11px; color: var(--accent); font-weight: 700; }
 .lm-new {
   display: flex;
   gap: 6px;
@@ -1237,9 +1121,6 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
   padding: 18px 18px 20px;
 }
 .builder h3 { margin: 0 0 4px; font-size: 16px; }
-.builder-sub { margin: 0 0 14px; font-size: 13px; color: var(--text-dim); }
-.builder-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.builder-row + .builder-row { margin-top: 12px; }
 .builder select, .builder input {
   font: inherit;
   font-size: 13px;
@@ -1250,28 +1131,7 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
   border-radius: 8px;
 }
 .builder select:focus, .builder input:focus { outline: none; border-color: var(--accent); }
-.builder-act { border-top: 1px solid var(--border); padding-top: 14px; }
-.builder-count {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--accent);
-  min-width: 92px;
-}
 .builder-count.none { color: var(--text-faint); }
-.builder-into { font-size: 13px; color: var(--text-dim); display: inline-flex; align-items: center; gap: 8px; }
-.builder-add {
-  margin-left: auto;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  padding: 7px 16px;
-  cursor: pointer;
-}
-.builder-add:hover { filter: brightness(1.08); }
 
 /* ---------- List detail ---------- */
 .list-detail-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
@@ -1335,27 +1195,7 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 }
 .show-more-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
 .builtin-note { color: var(--text-dim); font-size: 13px; margin: 2px 0 14px; }
-
-/* Builder level chips (multi-select) */
-.builder-levels { align-items: center; }
-.builder-lbl { font-size: 13px; color: var(--text-dim); margin-right: 2px; }
-.b-lvl-chip {
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 4px 12px;
-  cursor: pointer;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
-}
-.b-lvl-chip:hover { border-color: var(--accent); color: var(--accent); }
 .b-lvl-chip.active { color: #fff; background: var(--accent); border-color: var(--accent); }
-
-/* ---------- Settings gear + filters modal ---------- */
-.gear-btn { font-size: 19px; line-height: 1; padding: 4px 9px; }
 #theme-btn { font-size: 18px; line-height: 1; }
 
 .modal-overlay {
@@ -1392,22 +1232,6 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 }
 .modal-close:hover { color: var(--text); }
 .settings-body { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 20px; }
-
-.setting-switch { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-.setting-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
-.switch-track {
-  flex-shrink: 0; width: 40px; height: 22px; border-radius: 999px;
-  background: var(--border-light); position: relative; transition: background 0.15s; margin-top: 1px;
-}
-.switch-thumb {
-  position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
-  border-radius: 50%; background: #fff; transition: transform 0.15s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-.setting-switch input:checked + .switch-track { background: var(--accent); }
-.setting-switch input:checked + .switch-track .switch-thumb { transform: translateX(18px); }
-.switch-label { font-size: 14px; color: var(--text); line-height: 1.35; }
-.switch-label em { display: block; font-style: normal; font-size: 12px; color: var(--text-dim); margin-top: 3px; }
 
 .settings-group-title {
   font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em;
@@ -1581,9 +1405,22 @@ select.tool-in { cursor: pointer; }
 .tool-tbl td.dv-no { color: rgb(239, 95, 139); }
 .tool-tbl td:last-child { text-align: left; }
 .rd-bar { border-top: 2px solid var(--accent); padding-top: 1px; color: var(--accent); }
+
+/* Practice-problem list: only the first few show until "Show more" is clicked.
+   The button reuses .show-more-btn so it matches the app's other reveal controls. */
+/* A long derivation, folded away behind a button so the short explanation above
+   it stays readable. */
+.full-proof { margin: 14px 0 4px; display: flex; flex-direction: column; align-items: flex-start; }
+.full-proof .proof-body { display: none; width: 100%; }
+.full-proof.proof-open .proof-body { display: block; order: 1; }
+/* Once open, the control belongs under the proof it closes, not stranded above it. */
+.full-proof.proof-open .proof-toggle { order: 2; margin-top: 14px; }
+.full-proof .proof-body p:first-child { margin-top: 12px; }
+
+.contest-refs .prob-extra { display: none; }
+.contest-refs.probs-open .prob-extra { display: flex; }
 .fg-curve { stroke: var(--accent); stroke-width: 2; fill: none; }
 .tool-bar { fill: var(--accent); }
-.tool-bar-dim { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
 .sb-token { font-size: 20px; letter-spacing: 3px; word-break: break-all; line-height: 1.5; }
 .sb-star { color: var(--gold); }
 .sb-bar { color: var(--accent); }

@@ -446,7 +446,7 @@
     const Ma = mid(B, C), Mb = mid(C, A), Mc = mid(A, B);
     return wrap(430, 330, [
       ABC(), seg(A, Ma, ACC, 1.8), seg(B, Mb, GLD, 1.8), seg(C, Mc, GRN, 1.8),
-      txt(add(lerp(A, Ma, 0.35), [14, 0]), "mₐ", ACC, 11.5), txt(add(lerp(B, Mb, 0.4), [0, -8]), "m_b", GLD, 11.5), txt(add(lerp(C, Mc, 0.4), [4, 14]), "m_c", GRN, 11.5),
+      txt(add(lerp(A, Ma, 0.35), [14, 0]), "mₐ", ACC, 11.5), txt(add(lerp(B, Mb, 0.4), [0, -8]), "m_b", GLD, 11.5), txt(add(lerp(C, Mc, 0.4), [7, 19]), "m_c", GRN, 11.5),
       cap(430, 330, "the medians mₐ, m_b, m_c close into a triangle of area ¾ [ABC]")
     ]);
   })()];
@@ -869,7 +869,7 @@
       ...grid, poly(pts, ACC, 2, ACCS),
       ...pts.map(p => dot(p, GLD, 4)),
       txt(add(pts[0], [-6, 18]), "(0,0)", GLD, 11.5), txt(add(pts[1], [10, 18]), "(5,0)", GLD, 11.5),
-      txt(add(pts[2], [24, 0]), "(6,4)", GLD, 11.5), txt(add(pts[3], [-24, -6]), "(1,3)", GLD, 11.5),
+      txt(add(pts[2], [18, -2]), "(6,4)", GLD, 11.5), txt(add(pts[3], [-24, -6]), "(1,3)", GLD, 11.5),
       cap(430, 330, "vertices (xᵢ, yᵢ) in order — cross-multiply around: here A = ½|Σ(xᵢyᵢ₊₁ − yᵢxᵢ₊₁)| = 17.5")
     ]);
   })()];
@@ -1038,8 +1038,8 @@
       dot(P, GRN, 4.5), txt(add(P, [12, -8]), "P", GRN),
       dot(D, DIM, 3.2), dot(E, DIM, 3.2),
       massBadge(add(away(A, CEN, 30), [16, 0]), "3"),
-      massBadge(add(away(B, CEN, 30), [10, -6]), "4"),
-      massBadge(add(away(C, CEN, 30), [-10, -6]), "2"),
+      massBadge(add(away(B, CEN, 30), [0, -3]), "4"),
+      massBadge(add(away(C, CEN, 30), [0, -6]), "2"),
       massBadge(add(D, [0, 24]), "6"),
       cap(430, 330, "BD:DC = 1:2, AE:EC = 2:3  ⇒  AP:PD = 6:3 = 2:1")
     ]);
@@ -1134,7 +1134,7 @@
     const v = [150, 240], w = [270, 240], u = [50, 66.8];
     return wrap(420, 300, [
       seg(v, w, GRN, 2.4), seg(v, u, ORG, 2.4), seg(w, u, ACC, 2.4),
-      angleArc(v, w, u, 24, GLD), txt(add(v, [-8, -30]), "C = 120°", GLD, 11.5),
+      angleArc(v, w, u, 24, GLD), txt(add(v, [2, -40]), "C = 120°", GLD, 11.5),
       txt(add(mid(v, w), [0, 18]), "a = 3", GRN), txt(add(mid(v, u), [-24, 0]), "b = 5", ORG),
       txt(add(mid(w, u), [28, 0]), "c = 7", ACC, 13),
       cap(420, 300, "c² = a² + b² + ab at 120°: 49 = 9 + 25 + 15 — the (3, 5, 7) triangle")
@@ -1241,7 +1241,7 @@
       ...grid,
       seg(p1, corner, GLD, 1.7, "5 4"), seg(corner, p2, GLD, 1.7, "5 4"),
       seg(p1, p2, ACC, 2.2), dot(p1, DIM, 4), dot(p2, DIM, 4), dot(M, GRN, 4.5),
-      txt(add(p1, [-4, 20]), "(x₁, y₁)", DIM, 11.5), txt(add(p2, [8, -10]), "(x₂, y₂)", DIM, 11.5),
+      txt(add(p1, [-16, 27]), "(x₁, y₁)", DIM, 11.5), txt(add(p2, [18, -10]), "(x₂, y₂)", DIM, 11.5),
       txt(add(mid(p1, corner), [0, 18]), "Δx", GLD, 12), txt(add(mid(corner, p2), [20, 0]), "Δy", GLD, 12),
       txt(add(mid(p1, M), [-8, -10]), "d", ACC), txt(add(M, [4, -12]), "M", GRN),
       cap(430, 330, "d = √(Δx² + Δy²);  M averages the endpoints")
@@ -1432,7 +1432,7 @@
       txt(add(mid(cen, T), [-8, -8]), "r", ACC),
       dot(cen, DIM, 3.5), txt(add(cen, [-14, 2]), "O", DIM, 12.5),
       txt(add(T, [18, 8]), "T", ACC, 12.5),
-      txt(add(add(T, mul(dir, 150)), [-26, -8]), "y = mx + c", GLD, 11.5),
+      txt(add(add(T, mul(dir, 150)), [-33, 4]), "y = mx + c", GLD, 11.5),
       cap(430, 300, "exactly one common point ⟺ distance(center, line) = r ⟺ Δ = 0")
     ]);
   })()];
@@ -1509,7 +1509,7 @@
       ABC(),
       seg(A, Mm, GLD, 1.7, "6 4"), seg(A, T, FNT, 1.5), seg(A, S, ACC, 2.2),
       dot(Mm, GLD, 3.5), dot(T, FNT, 3), dot(S, ACC, 4),
-      txt(add(Mm, [8, 20]), "median", GLD, 11.5), txt(add(S, [-16, 20]), "symmedian", ACC, 11.5),
+      txt(add(Mm, [8, 20]), "median", GLD, 11.5), txt(add(S, [-25, 25]), "symmedian", ACC, 11.5),
       cap(430, 330, "reflect the median over the bisector: BS : SC = c² : b²")
     ]);
   })()];
@@ -1535,7 +1535,7 @@
       seg(P, A, ACC, 1.8), seg(P, B, ACC, 1.8), seg(P, C, ACC, 1.8),
       seg(P, f1, GLD, 1.7, "4 3"), seg(P, f2, GLD, 1.7, "4 3"), seg(P, f3, GLD, 1.7, "4 3"),
       dot(P, "var(--text)", 4.5), txt(add(P, [12, -6]), "P", "var(--text)"),
-      txt(add(mid(P, f1), [10, 4]), "dₐ", GLD, 11), txt(add(mid(P, f2), [10, -4]), "d_b", GLD, 11), txt(add(mid(P, f3), [-12, -2]), "d_c", GLD, 11),
+      txt(add(mid(P, f1), [10, 4]), "dₐ", GLD, 11), txt(add(mid(P, f2), [15, 5]), "d_b", GLD, 11), txt(add(mid(P, f3), [-12, 8]), "d_c", GLD, 11),
       cap(430, 330, "PA + PB + PC ≥ 2(dₐ + d_b + d_c) — distances to vertices vs. perpendiculars to sides")
     ]);
   })()];
@@ -1889,7 +1889,7 @@
     return wrap(430, 300, [
       seg(P, q1, ACC, 2), seg(P, q2, GLD, 2),
       angleArc(P, q1, q2, 60, GRN), txt(add(P, [80, -28]), "θ", GRN, 13),
-      txt(add(q1, [-30, -8]), "slope m₁", ACC, 11.5), txt(add(q2, [-28, 16]), "slope m₂", GLD, 11.5),
+      txt(add(q1, [-30, -8]), "slope m₁", ACC, 11.5), txt(add(q2, [-25, 26]), "slope m₂", GLD, 11.5),
       cap(430, 300, "tan θ = |(m₁ − m₂) / (1 + m₁m₂)|")
     ]);
   })()];
@@ -1995,7 +1995,7 @@
       dot(O, DIM, 4),
       txt(add(U, [16, 4]), "u", ACC, 14), txt(add(V, [-2, -10]), "v", GLD, 14),
       angleArc(O, U, V, 32, DIM), txt([152, 202], "θ", DIM, 13),
-      txt(add(mid(O, f), [-6, 16]), "proj", GRN, 11),
+      txt(add(mid(O, f), [-20, 12]), "proj", GRN, 11),
       cap(440, 300, "u · v = |u||v| cos θ: positive for an acute θ, zero when u ⊥ v; the green segment is u's projection onto v")
     ]);
   })()];
@@ -2107,7 +2107,7 @@
       // incenter I — 90 + A/2 (labels pushed left, away from O)
       seg(I, B2, GRN, 1.6), seg(I, C2, GRN, 1.6), dot(I, GRN, 4.5),
       txt(add(I, [-15, -9]), "I", GRN, 12.5),
-      angleArc(I, C2, B2, 21, GRN), txt(add(I, [-30, 25]), "90°+A/2", GRN, 11),
+      angleArc(I, C2, B2, 21, GRN), txt(add(I, [-46, 16]), "90°+A/2", GRN, 11),
       cap(460, 400, "from side BC: the circumcenter O subtends 2A (central angle), the incenter I subtends 90° + A/2")
     ]);
   })()];
@@ -2349,7 +2349,7 @@
       seg(bot[0], top[2], ACC, 2)
     ].concat(top.map(p => dot(p, DIM, 4.5))).concat(bot.map(p => dot(p, DIM, 4.5)))
       .concat([dot(bot[0], ACC, 5), dot(top[2], ACC, 5),
-        txt([250, 200], "ordinary line", ACC, 11),
+        txt([260, 203], "ordinary line", ACC, 11),
         cap(430, 340, "not all collinear ⇒ some line passes through exactly two points")]));
   })()];
 
@@ -2619,7 +2619,7 @@
       dot(P, ACC, 4.5), dot(Ps, GRN, 4.5),
       txt(add(P, [12, 2]), "P", ACC, 12), txt(add(Ps, [-4, -12]), "P*", GRN, 12),
       txt([314, 60], "line ℓ", ACC, 12),
-      txt(add(ccen, [4, -crad - 8]), "image circle", GRN, 11.5),
+      txt(add(ccen, [4, -crad - 24]), "image circle", GRN, 11.5),
       cap(460, 340, "a line not through O inverts to a circle through O; OP · OP* = r² and angles are preserved")
     ]);
   })()];
@@ -2638,7 +2638,7 @@
       ...T.map(t => dot(t, GLD, 3)),
       ...V.map(v => dot(v, DIM, 3.5)),
       dot(Pt, "var(--text)", 5),
-      txt(add(Pt, [8, -8]), "Brianchon point", "var(--text)", 11),
+      txt(add(Pt, [56, 5]), "Brianchon point", "var(--text)", 11),
       cap(460, 390, "hexagon circumscribed about a conic (each side tangent): the three main diagonals meet in one point")
     ]);
   })()];
@@ -2657,7 +2657,7 @@
       dot(A, ACC, 3.5), dot(B, ACC, 3.5), dot(C, ACC, 3.5),
       dot(Ap, GLD, 3.5), dot(Bp, GLD, 3.5), dot(Cp, GLD, 3.5),
       txt(add(A, [10, 0]), "A", ACC, 12), txt(add(B, [12, 4]), "B", ACC, 12), txt(add(C, [-10, 14]), "C", ACC, 12),
-      txt(add(Ap, [-12, -4]), "A'", GLD, 11.5), txt(add(Bp, [12, 2]), "B'", GLD, 11.5), txt(add(Cp, [-12, 6]), "C'", GLD, 11.5),
+      txt(add(Ap, [-12, -4]), "A'", GLD, 11.5), txt(add(Bp, [25, 2]), "B'", GLD, 11.5), txt(add(Cp, [-12, 6]), "C'", GLD, 11.5),
       cap(470, 360, "perspective from the point O ⇔ the three side-intersections X, Y, Z are collinear (the axis)")
     ]);
   })()];

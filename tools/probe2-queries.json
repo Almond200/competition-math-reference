@@ -1,0 +1,490 @@
+{
+ "_readme": "Second probe set, written after the first to cover angles it missed: short keyword queries, notation (\"n choose k\", \"sigma of n\"), \"when do I use X\", comparisons, spoken-aloud formulas (\"two pi r\"), and problem-scenario framing (\"ladder leaning against a wall\"). Harder than probe-queries.json. Same rule: re-check a label before believing a miss.",
+ "probes": [
+  [
+   "triangle area sine",
+   [
+    "trig-area"
+   ]
+  ],
+  [
+   "heron",
+   [
+    "herons-formula"
+   ]
+  ],
+  [
+   "n choose k",
+   [
+    "permutations-combinations",
+    "binomial-theorem"
+   ]
+  ],
+  [
+   "phi function",
+   [
+    "eulers-totient"
+   ]
+  ],
+  [
+   "sigma of n",
+   [
+    "sum-of-divisors"
+   ]
+  ],
+  [
+   "tau function number of divisors",
+   [
+    "number-of-divisors"
+   ]
+  ],
+  [
+   "v_p of n factorial",
+   [
+    "legendres-formula",
+    "vp-factorial"
+   ]
+  ],
+  [
+   "mod arithmetic basics",
+   [
+    "modular-basics"
+   ]
+  ],
+  [
+   "roots unity",
+   [
+    "roots-of-unity"
+   ]
+  ],
+  [
+   "log rules",
+   [
+    "log-rules"
+   ]
+  ],
+  [
+   "circle area",
+   [
+    "circle-basics"
+   ]
+  ],
+  [
+   "pythagorean triples",
+   [
+    "pythagorean-triples"
+   ]
+  ],
+  [
+   "ceiling floor",
+   [
+    "floor-basics"
+   ]
+  ],
+  [
+   "arithmetic mean geometric mean",
+   [
+    "am-gm"
+   ]
+  ],
+  [
+   "telescoping",
+   [
+    "telescoping"
+   ]
+  ],
+  [
+   "when do i use the law of cosines instead of the law of sines",
+   [
+    "law-of-cosines",
+    "law-of-sines"
+   ]
+  ],
+  [
+   "when should i use complementary counting",
+   [
+    "complementary-counting"
+   ]
+  ],
+  [
+   "when is it better to count the opposite",
+   [
+    "complementary-counting"
+   ]
+  ],
+  [
+   "what do i use when a problem says at least one",
+   [
+    "complementary-counting"
+   ]
+  ],
+  [
+   "what should i try when an equation has no solutions",
+   [
+    "choose-modulus"
+   ]
+  ],
+  [
+   "how do i know if a quadratic has real roots",
+   [
+    "quadratic-formula"
+   ]
+  ],
+  [
+   "what do i do with nested radicals",
+   [
+    "denesting-radicals",
+    "infinite-nest"
+   ]
+  ],
+  [
+   "what to do when the answer must be an integer",
+   [
+    "bounding-diophantine",
+    "choose-modulus"
+   ]
+  ],
+  [
+   "difference between permutations and combinations",
+   [
+    "permutations-combinations"
+   ]
+  ],
+  [
+   "difference between gcd and lcm",
+   [
+    "gcd-lcm-product"
+   ]
+  ],
+  [
+   "inradius versus circumradius",
+   [
+    "euler-distance-theorem",
+    "center-distance-formulas"
+   ]
+  ],
+  [
+   "median versus altitude",
+   [
+    "stewarts-theorem",
+    "apollonius-theorem"
+   ]
+  ],
+  [
+   "the formula with a squared plus b squared equals c squared",
+   [
+    "pythagorean-theorem"
+   ]
+  ],
+  [
+   "one half base times height",
+   [
+    "triangle-area-standard"
+   ]
+  ],
+  [
+   "the thing where you flip and multiply the fraction",
+   [
+    "proportion-properties"
+   ]
+  ],
+  [
+   "sum of angles in a triangle is 180",
+   [
+    "angle-chasing",
+    "polygon-angle-sums"
+   ]
+  ],
+  [
+   "n times n plus one over two",
+   [
+    "power-sums",
+    "arithmetic-series"
+   ]
+  ],
+  [
+   "two pi r",
+   [
+    "circle-basics"
+   ]
+  ],
+  [
+   "four thirds pi r cubed",
+   [
+    "sphere-formulas"
+   ]
+  ],
+  [
+   "a over sin a equals two r",
+   [
+    "law-of-sines"
+   ]
+  ],
+  [
+   "problem gives me the perimeter and area of a triangle",
+   [
+    "inradius-area",
+    "herons-formula"
+   ]
+  ],
+  [
+   "a problem where a number leaves remainder 2 when divided by 3",
+   [
+    "crt",
+    "modular-basics"
+   ]
+  ],
+  [
+   "i need to count arrangements of a word with double letters",
+   [
+    "multiset-permutations"
+   ]
+  ],
+  [
+   "the problem says no two people can sit next to each other",
+   [
+    "gap-method",
+    "non-adjacent-selection"
+   ]
+  ],
+  [
+   "a bug walks randomly on a cube",
+   [
+    "polyhedron-walks"
+   ]
+  ],
+  [
+   "marbles drawn without replacement",
+   [
+    "hypergeometric"
+   ]
+  ],
+  [
+   "dice sum probability",
+   [
+    "generating-function-method",
+    "basic-probability"
+   ]
+  ],
+  [
+   "coin flips until first heads",
+   [
+    "geometric-distribution"
+   ]
+  ],
+  [
+   "a fair coin flipped n times exactly k heads",
+   [
+    "binomial-probability"
+   ]
+  ],
+  [
+   "cards drawn from a deck probability",
+   [
+    "symmetry-probability",
+    "hypergeometric"
+   ]
+  ],
+  [
+   "shortest distance a spider walks on a room",
+   [
+    "surface-shortest-path"
+   ]
+  ],
+  [
+   "ladder leaning against a wall",
+   [
+    "pythagorean-theorem"
+   ]
+  ],
+  [
+   "clock hands angle",
+   [
+    "clock-angle"
+   ]
+  ],
+  [
+   "how fast do two trains meet",
+   [
+    "relative-motion"
+   ]
+  ],
+  [
+   "work rate two people painting",
+   [
+    "work-rates"
+   ]
+  ],
+  [
+   "mixing two solutions of different concentration",
+   [
+    "weighted-average"
+   ]
+  ],
+  [
+   "average speed round trip",
+   [
+    "average-speed"
+   ]
+  ],
+  [
+   "prove three points are on one line",
+   [
+    "menelaus-theorem"
+   ]
+  ],
+  [
+   "prove three lines meet at a point",
+   [
+    "cevas-theorem"
+   ]
+  ],
+  [
+   "prove four points lie on a circle",
+   [
+    "cyclic-opposite-angles",
+    "angle-chasing"
+   ]
+  ],
+  [
+   "show two triangles are similar",
+   [
+    "similar-figures-ratios"
+   ]
+  ],
+  [
+   "find where a line crosses a circle",
+   [
+    "tangency-condition",
+    "circle-equation"
+   ]
+  ],
+  [
+   "biggest value of a product",
+   [
+    "am-gm",
+    "max-product-fixed-sum"
+   ]
+  ],
+  [
+   "smallest possible value of a sum",
+   [
+    "am-gm",
+    "cauchy-schwarz"
+   ]
+  ],
+  [
+   "maximize area with fixed perimeter",
+   [
+    "isoperimetric-facts"
+   ]
+  ],
+  [
+   "minimum of a quadratic",
+   [
+    "vertex-form",
+    "completing-the-square"
+   ]
+  ],
+  [
+   "digits of a number reversed",
+   [
+    "digit-manipulation"
+   ]
+  ],
+  [
+   "sum of the digits",
+   [
+    "divisibility-rules",
+    "digit-manipulation"
+   ]
+  ],
+  [
+   "number that reads the same backwards",
+   [
+    "base10-curiosities",
+    "digit-manipulation"
+   ]
+  ],
+  [
+   "repeating decimal to fraction",
+   [
+    "repeating-decimals"
+   ]
+  ],
+  [
+   "binary representation",
+   [
+    "base-conversion"
+   ]
+  ],
+  [
+   "converting between bases",
+   [
+    "base-conversion"
+   ]
+  ],
+  [
+   "infinite series that adds to a finite number",
+   [
+    "geometric-series"
+   ]
+  ],
+  [
+   "sum of 1 over n squared",
+   [
+    "power-sums"
+   ]
+  ],
+  [
+   "fibonacci closed form",
+   [
+    "binets-formula"
+   ]
+  ],
+  [
+   "golden ratio",
+   [
+    "golden-ratio-pentagon"
+   ]
+  ],
+  [
+   "expand a bracket to a power",
+   [
+    "binomial-theorem"
+   ]
+  ],
+  [
+   "factor a difference of two squares",
+   [
+    "difference-of-squares"
+   ]
+  ],
+  [
+   "complex conjugate",
+   [
+    "complex-basics",
+    "conjugate-root-theorems"
+   ]
+  ],
+  [
+   "de moivre",
+   [
+    "de-moivre"
+   ]
+  ],
+  [
+   "polynomial with given roots",
+   [
+    "vietas-general",
+    "root-transformations"
+   ]
+  ],
+  [
+   "remainder when dividing polynomials",
+   [
+    "factor-remainder-theorem"
+   ]
+  ]
+ ]
+}

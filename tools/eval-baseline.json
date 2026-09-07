@@ -1,0 +1,877 @@
+{
+ "when": "2026-09-06",
+ "mode": "hybrid: BM25F + phrase/bigram (incl. spoken-LaTeX) + spelling correction + 121-term glossary (lexical + semantic) + embeddings via confidence-gated RRF",
+ "history": {
+  "legacy(n=148)": 129,
+  "bm25f(n=148)": 134,
+  "hybrid pre-glossary(n=168)": 139,
+  "+lexical glossary(n=171)": 144,
+  "+phrase matching(n=171)": 152,
+  "+name coverage & spoken latex(n=171)": 153
+ },
+ "companion_sets": {
+  "tools/probe-queries.json": "53/78",
+  "tools/probe2-queries.json": "44/77"
+ },
+ "n": 171,
+ "top1": 153,
+ "top3": 166,
+ "mrr": 0.9318,
+ "rows": [
+  {
+   "q": "law of cosines",
+   "want": "law-of-cosines",
+   "rank": 1
+  },
+  {
+   "q": "heron's formula",
+   "want": "herons-formula",
+   "rank": 1
+  },
+  {
+   "q": "shoelace formula",
+   "want": "shoelace-formula",
+   "rank": 1
+  },
+  {
+   "q": "ptolemy's theorem",
+   "want": "ptolemys-theorem",
+   "rank": 1
+  },
+  {
+   "q": "stewart's theorem",
+   "want": "stewarts-theorem",
+   "rank": 1
+  },
+  {
+   "q": "mass points",
+   "want": "mass-points",
+   "rank": 1
+  },
+  {
+   "q": "power of a point",
+   "want": "power-of-a-point",
+   "rank": 1
+  },
+  {
+   "q": "nine point circle",
+   "want": "nine-point-circle",
+   "rank": 1
+  },
+  {
+   "q": "euler line",
+   "want": "euler-line-ratio",
+   "rank": 1
+  },
+  {
+   "q": "medial triangle",
+   "want": "medial-triangle",
+   "rank": 1
+  },
+  {
+   "q": "varignon's theorem",
+   "want": "varignons-theorem",
+   "rank": 1
+  },
+  {
+   "q": "midsegment theorem",
+   "want": "midsegment-theorem",
+   "rank": 1
+  },
+  {
+   "q": "binomial theorem",
+   "want": "binomial-theorem",
+   "rank": 1
+  },
+  {
+   "q": "vieta's formulas",
+   "want": "vietas-quadratic | vietas-general",
+   "rank": 1
+  },
+  {
+   "q": "newton's sums",
+   "want": "newtons-sums",
+   "rank": 1
+  },
+  {
+   "q": "catalan numbers",
+   "want": "catalan-numbers",
+   "rank": 1
+  },
+  {
+   "q": "derangements",
+   "want": "derangements",
+   "rank": 1
+  },
+  {
+   "q": "burnside's lemma",
+   "want": "burnsides-lemma",
+   "rank": 1
+  },
+  {
+   "q": "pigeonhole principle",
+   "want": "pigeonhole",
+   "rank": 1
+  },
+  {
+   "q": "stars and bars",
+   "want": "stars-and-bars",
+   "rank": 1
+  },
+  {
+   "q": "hockey stick identity",
+   "want": "hockey-stick",
+   "rank": 1
+  },
+  {
+   "q": "expected value",
+   "want": "expected-value",
+   "rank": 1
+  },
+  {
+   "q": "euler's totient function",
+   "want": "eulers-totient",
+   "rank": 1
+  },
+  {
+   "q": "wilson's theorem",
+   "want": "wilsons-theorem",
+   "rank": 1
+  },
+  {
+   "q": "fermat's little theorem",
+   "want": "fermats-little-theorem",
+   "rank": 1
+  },
+  {
+   "q": "lucas theorem",
+   "want": "lucas-theorem",
+   "rank": 1
+  },
+  {
+   "q": "chinese remainder theorem",
+   "want": "crt",
+   "rank": 1
+  },
+  {
+   "q": "vieta jumping",
+   "want": "vieta-jumping",
+   "rank": 1
+  },
+  {
+   "q": "jensen's inequality",
+   "want": "jensens-inequality",
+   "rank": 1
+  },
+  {
+   "q": "power mean inequality",
+   "want": "power-mean-inequality",
+   "rank": 1
+  },
+  {
+   "q": "cauchy schwarz",
+   "want": "cauchy-schwarz",
+   "rank": 1
+  },
+  {
+   "q": "telescoping sums",
+   "want": "telescoping",
+   "rank": 1
+  },
+  {
+   "q": "law of sines",
+   "want": "law-of-sines",
+   "rank": 1
+  },
+  {
+   "q": "triangle inequality",
+   "want": "triangle-inequality",
+   "rank": 1
+  },
+  {
+   "q": "logarithm rules",
+   "want": "log-rules",
+   "rank": 1
+  },
+  {
+   "q": "markov's inequality",
+   "want": "markovs-inequality",
+   "rank": 1
+  },
+  {
+   "q": "fermat's two square theorem",
+   "want": "fermat-two-squares",
+   "rank": 1
+  },
+  {
+   "q": "approximating square roots",
+   "want": "sqrt-approximation",
+   "rank": 1
+  },
+  {
+   "q": "double sums",
+   "want": "double-summation",
+   "rank": 1
+  },
+  {
+   "q": "periodicity in recursive sequences",
+   "want": "periodic-sequences",
+   "rank": 1
+  },
+  {
+   "q": "sfft",
+   "want": "sfft",
+   "rank": 1
+  },
+  {
+   "q": "simon's favorite factoring trick",
+   "want": "sfft",
+   "rank": 1
+  },
+  {
+   "q": "lte",
+   "want": "lte",
+   "rank": 1
+  },
+  {
+   "q": "lifting the exponent",
+   "want": "lte",
+   "rank": 1
+  },
+  {
+   "q": "crt",
+   "want": "crt",
+   "rank": 1
+  },
+  {
+   "q": "pie",
+   "want": "pie",
+   "rank": 1
+  },
+  {
+   "q": "inclusion exclusion",
+   "want": "pie",
+   "rank": 1
+  },
+  {
+   "q": "am gm",
+   "want": "am-gm",
+   "rank": 1
+  },
+  {
+   "q": "roots of unity filter",
+   "want": "roots-of-unity-filter",
+   "rank": 1
+  },
+  {
+   "q": "coordinate bash",
+   "want": "coordinate-bash",
+   "rank": 1
+  },
+  {
+   "q": "trig bash",
+   "want": "trig-bash",
+   "rank": 1
+  },
+  {
+   "q": "complex bash",
+   "want": "complex-bash",
+   "rank": 1
+  },
+  {
+   "q": "angle chasing",
+   "want": "angle-chasing",
+   "rank": 1
+  },
+  {
+   "q": "spiral similarity",
+   "want": "spiral-similarity",
+   "rank": 1
+  },
+  {
+   "q": "barycentric coordinates",
+   "want": "barycentric-coordinates",
+   "rank": 1
+  },
+  {
+   "q": "directed angles",
+   "want": "directed-angles",
+   "rank": 1
+  },
+  {
+   "q": "gambler's ruin",
+   "want": "gamblers-ruin",
+   "rank": 1
+  },
+  {
+   "q": "coupon collector",
+   "want": "geometric-distribution",
+   "rank": 1
+  },
+  {
+   "q": "weierstrass substitution",
+   "want": "weierstrass-substitution",
+   "rank": 1
+  },
+  {
+   "q": "denesting radicals",
+   "want": "denesting-radicals",
+   "rank": 1
+  },
+  {
+   "q": "area of a triangle using sine",
+   "want": "trig-area",
+   "rank": 3
+  },
+  {
+   "q": "area of triangle formed by connecting midpoints of the sides",
+   "want": "medial-triangle",
+   "rank": 1
+  },
+  {
+   "q": "area of the triangle made by joining the midpoints",
+   "want": "medial-triangle",
+   "rank": 1
+  },
+  {
+   "q": "triangle whose vertices are the midpoints of another triangle",
+   "want": "medial-triangle",
+   "rank": 6
+  },
+  {
+   "q": "circle through the midpoints and feet of altitudes",
+   "want": "nine-point-circle",
+   "rank": 1
+  },
+  {
+   "q": "ratio between circumradius and inradius",
+   "want": "euler-distance-theorem | center-distance-formulas",
+   "rank": 9
+  },
+  {
+   "q": "how many ways to split n identical objects into groups",
+   "want": "stars-and-bars | balls-boxes-table",
+   "rank": 1
+  },
+  {
+   "q": "probability at least one shared birthday",
+   "want": "birthday-collision",
+   "rank": 1
+  },
+  {
+   "q": "most edges without a triangle",
+   "want": "turans-theorem",
+   "rank": 2
+  },
+  {
+   "q": "draw without lifting your pencil",
+   "want": "eulerian-paths",
+   "rank": 1
+  },
+  {
+   "q": "number of spanning trees of a graph",
+   "want": "matrix-tree-theorem",
+   "rank": 1
+  },
+  {
+   "q": "shortest path on the surface of a box",
+   "want": "surface-shortest-path",
+   "rank": 1
+  },
+  {
+   "q": "prove no integer solutions exist",
+   "want": "choose-modulus",
+   "rank": 1
+  },
+  {
+   "q": "trap a number between consecutive squares",
+   "want": "squeeze-between-squares",
+   "rank": 1
+  },
+  {
+   "q": "reflect a point to shorten a path",
+   "want": "reflection-shortest-path",
+   "rank": 1
+  },
+  {
+   "q": "assign masses to find cevian ratios",
+   "want": "mass-points",
+   "rank": 1
+  },
+  {
+   "q": "expected number of trials until first success",
+   "want": "geometric-distribution",
+   "rank": 1
+  },
+  {
+   "q": "count solutions with an upper bound on each variable",
+   "want": "stars-bars-upper-bound",
+   "rank": 1
+  },
+  {
+   "q": "largest antichain of subsets",
+   "want": "sperners-theorem",
+   "rank": 1
+  },
+  {
+   "q": "polynomial takes the same value at several points",
+   "want": "shifted-polynomial-construction",
+   "rank": 1
+  },
+  {
+   "q": "minimize sum of absolute distances",
+   "want": "median-minimizes-abs",
+   "rank": 1
+  },
+  {
+   "q": "split n into parts with the largest product",
+   "want": "max-product-fixed-sum",
+   "rank": 1
+  },
+  {
+   "q": "exponent of a prime in a factorial",
+   "want": "legendres-formula | vp-factorial",
+   "rank": 1
+  },
+  {
+   "q": "find the last digits of a huge power",
+   "want": "periodicity-mod-m",
+   "rank": 1
+  },
+  {
+   "q": "unique sum of non-consecutive fibonacci numbers",
+   "want": "zeckendorf-theorem",
+   "rank": 1
+  },
+  {
+   "q": "average number of colorings fixed by each symmetry",
+   "want": "burnsides-lemma",
+   "rank": 1
+  },
+  {
+   "q": "volume of two solids with equal cross sections",
+   "want": "cavalieris-principle",
+   "rank": 1
+  },
+  {
+   "q": "ways to seat people around a round table",
+   "want": "circular-permutations",
+   "rank": 1
+  },
+  {
+   "q": "swap the order of summation",
+   "want": "double-summation",
+   "rank": 1
+  },
+  {
+   "q": "right triangle with a prime hypotenuse",
+   "want": "fermat-two-squares",
+   "rank": 1
+  },
+  {
+   "q": "estimate a square root by hand",
+   "want": "sqrt-approximation",
+   "rank": 1
+  },
+  {
+   "q": "turn a product over the roots into one evaluation",
+   "want": "symmetric-polynomial-strategies",
+   "rank": 1
+  },
+  {
+   "q": "number of trees on n labeled vertices",
+   "want": "cayleys-formula",
+   "rank": 1
+  },
+  {
+   "q": "longest increasing or decreasing subsequence forced",
+   "want": "erdos-szekeres",
+   "rank": 1
+  },
+  {
+   "q": "some box must contain at least two items",
+   "want": "pigeonhole",
+   "rank": 1
+  },
+  {
+   "q": "probability a random permutation has no fixed point",
+   "want": "derangements | expected-fixed-points",
+   "rank": 2
+  },
+  {
+   "q": "chance that two random integers share no common factor",
+   "want": "coprime-probability",
+   "rank": 1
+  },
+  {
+   "q": "distance from a point to a line",
+   "want": "point-line-distance",
+   "rank": 1
+  },
+  {
+   "q": "sum of the first n cubes",
+   "want": "power-sums",
+   "rank": 1
+  },
+  {
+   "q": "sum of an infinite geometric series",
+   "want": "geometric-series",
+   "rank": 1
+  },
+  {
+   "q": "number of terms in an arithmetic sequence",
+   "want": "arithmetic-series",
+   "rank": 1
+  },
+  {
+   "q": "angle between a tangent and a chord",
+   "want": "tangent-chord-angle | angle-chord-secant",
+   "rank": 1
+  },
+  {
+   "q": "opposite angles of a cyclic quadrilateral",
+   "want": "cyclic-opposite-angles",
+   "rank": 1
+  },
+  {
+   "q": "length of the angle bisector",
+   "want": "angle-bisector-length",
+   "rank": 1
+  },
+  {
+   "q": "how many divisors does a number have",
+   "want": "number-of-divisors",
+   "rank": 7
+  },
+  {
+   "q": "sum of all divisors of n",
+   "want": "sum-of-divisors",
+   "rank": 1
+  },
+  {
+   "q": "last two digits of a power",
+   "want": "periodicity-mod-m | last-digit-patterns",
+   "rank": 1
+  },
+  {
+   "q": "when is a number a sum of two squares",
+   "want": "sum-of-two-squares",
+   "rank": 1
+  },
+  {
+   "q": "factor x^4 + 4",
+   "want": "forced-difference-of-squares | useful-factorizations",
+   "rank": 1
+  },
+  {
+   "q": "equation with the same value at two points",
+   "want": "shifted-polynomial-construction | factor-remainder-theorem",
+   "rank": 1
+  },
+  {
+   "q": "remainder when a polynomial is divided by x minus a",
+   "want": "factor-remainder-theorem",
+   "rank": 1
+  },
+  {
+   "q": "counting lattice paths on a grid",
+   "want": "grid-paths",
+   "rank": 1
+  },
+  {
+   "q": "how many rectangles in a grid",
+   "want": "rectangles-in-grid",
+   "rank": 1
+  },
+  {
+   "q": "regions formed by chords of a circle",
+   "want": "moser-circle",
+   "rank": 1
+  },
+  {
+   "q": "maximum regions from n lines",
+   "want": "plane-regions",
+   "rank": 1
+  },
+  {
+   "q": "probability the first player wins",
+   "want": "turn-based-games",
+   "rank": 1
+  },
+  {
+   "q": "expected steps to return to the start",
+   "want": "polyhedron-walks",
+   "rank": 1
+  },
+  {
+   "q": "two points chosen at random on a segment",
+   "want": "geometric-probability | order-statistics",
+   "rank": 3
+  },
+  {
+   "q": "circumradius formula",
+   "want": "circumradius-area | law-of-sines",
+   "rank": 1
+  },
+  {
+   "q": "inradius and area",
+   "want": "inradius-area",
+   "rank": 1
+  },
+  {
+   "q": "totient",
+   "want": "eulers-totient",
+   "rank": 1
+  },
+  {
+   "q": "prime valuation",
+   "want": "p-adic-valuation | legendres-formula",
+   "rank": 1
+  },
+  {
+   "q": "golden ratio",
+   "want": "golden-ratio-pentagon",
+   "rank": 1
+  },
+  {
+   "q": "complex numbers on the unit circle",
+   "want": "eulers-formula | roots-of-unity",
+   "rank": 1
+  },
+  {
+   "q": "roots of unity",
+   "want": "roots-of-unity",
+   "rank": 1
+  },
+  {
+   "q": "sum and product of roots",
+   "want": "vietas-quadratic | vietas-general",
+   "rank": 1
+  },
+  {
+   "q": "discriminant of a quadratic",
+   "want": "quadratic-formula",
+   "rank": 1
+  },
+  {
+   "q": "distance between two points",
+   "want": "distance-midpoint",
+   "rank": 1
+  },
+  {
+   "q": "equation of a circle",
+   "want": "circle-equation",
+   "rank": 1
+  },
+  {
+   "q": "slope of perpendicular lines",
+   "want": "distance-midpoint",
+   "rank": 1
+  },
+  {
+   "q": "volume of a sphere",
+   "want": "sphere-formulas",
+   "rank": 1
+  },
+  {
+   "q": "surface area of a cone",
+   "want": "cone-formulas",
+   "rank": 1
+  },
+  {
+   "q": "interior angle of a regular polygon",
+   "want": "polygon-angle-sums",
+   "rank": 1
+  },
+  {
+   "q": "modular inverse",
+   "want": "modular-inverse | extended-euclidean-algorithm",
+   "rank": 1
+  },
+  {
+   "q": "order of an element mod n",
+   "want": "multiplicative-order | primitive-roots",
+   "rank": 2
+  },
+  {
+   "q": "quadratic residue",
+   "want": "squares-mod-small | eulers-criterion",
+   "rank": 2
+  },
+  {
+   "q": "variance of a random variable",
+   "want": "variance-independence",
+   "rank": 2
+  },
+  {
+   "q": "conditional probability",
+   "want": "conditional-probability",
+   "rank": 1
+  },
+  {
+   "q": "triangel area",
+   "want": "trig-area | triangle-area-standard",
+   "rank": 1
+  },
+  {
+   "q": "stewert theorem",
+   "want": "stewarts-theorem",
+   "rank": 1
+  },
+  {
+   "q": "recurrance relation",
+   "want": "linear-recurrence",
+   "rank": 1
+  },
+  {
+   "q": "pythagorean theorm",
+   "want": "pythagorean-theorem",
+   "rank": 1
+  },
+  {
+   "q": "how do i find the area of a triangle if i know all three sides",
+   "want": "herons-formula",
+   "rank": 1
+  },
+  {
+   "q": "what is the fastest way to count arrangements with repeated letters",
+   "want": "multiset-permutations",
+   "rank": 1
+  },
+  {
+   "q": "i need the formula for the sum of the interior angles of a polygon",
+   "want": "polygon-angle-sums",
+   "rank": 1
+  },
+  {
+   "q": "formula relating inradius circumradius and the distance between centers",
+   "want": "euler-distance-theorem | center-distance-formulas",
+   "rank": 1
+  },
+  {
+   "q": "technique where you set two variables to their sum and product",
+   "want": "sp-substitution",
+   "rank": 1
+  },
+  {
+   "q": "trick for when a polynomial has palindromic coefficients",
+   "want": "palindromic-polynomials",
+   "rank": 1
+  },
+  {
+   "q": "length of segment in triangle from one vertex to opposite side",
+   "want": "stewarts-theorem",
+   "rank": 1
+  },
+  {
+   "q": "cevian length",
+   "want": "stewarts-theorem",
+   "rank": 1
+  },
+  {
+   "q": "segment from a vertex to the midpoint of the opposite side",
+   "want": "apollonius-theorem | stewarts-theorem",
+   "rank": 4
+  },
+  {
+   "q": "perpendicular from a vertex to the opposite side",
+   "want": "orthocenter-properties | altitude-bisector-angle",
+   "rank": 2
+  },
+  {
+   "q": "radius of the circle passing through all three vertices",
+   "want": "law-of-sines | circumradius-area",
+   "rank": 2
+  },
+  {
+   "q": "radius of the circle touching all three sides",
+   "want": "inradius-area",
+   "rank": 3
+  },
+  {
+   "q": "permutation where nothing stays in its original place",
+   "want": "derangements",
+   "rank": 1
+  },
+  {
+   "q": "quadrilateral whose vertices lie on a circle",
+   "want": "cyclic-opposite-angles | ptolemys-theorem",
+   "rank": 0
+  },
+  {
+   "q": "area of triangle made from bases of altitudes connected",
+   "want": "orthic-triangle",
+   "rank": 1
+  },
+  {
+   "q": "triangle formed by joining the feet of the altitudes",
+   "want": "orthic-triangle",
+   "rank": 1
+  },
+  {
+   "q": "triangle made by where the incircle touches the sides",
+   "want": "contact-triangle",
+   "rank": 1
+  },
+  {
+   "q": "circle through the midpoints of the sides and the feet of the altitudes",
+   "want": "nine-point-circle",
+   "rank": 1
+  },
+  {
+   "q": "line through the circumcenter centroid and orthocenter",
+   "want": "euler-line-ratio",
+   "rank": 1
+  },
+  {
+   "q": "ring shaped region between two circles",
+   "want": "circle-basics",
+   "rank": 1
+  },
+  {
+   "q": "solid left when the top of a cone is cut off",
+   "want": "frustum-volume | cone-formulas",
+   "rank": 1
+  },
+  {
+   "q": "number with no repeated prime factor",
+   "want": "mobius-inversion | sigma-parity",
+   "rank": 1
+  },
+  {
+   "q": "smallest exponent that gives a remainder of one",
+   "want": "multiplicative-order",
+   "rank": 3
+  },
+  {
+   "q": "set of edges with no shared endpoints",
+   "want": "halls-marriage | konigs-theorem",
+   "rank": 3
+  },
+  {
+   "q": "route that uses every edge exactly once",
+   "want": "eulerian-paths",
+   "rank": 1
+  },
+  {
+   "q": "writing a number as a sum where the order does not matter",
+   "want": "partitions",
+   "rank": 2
+  },
+  {
+   "q": "radius of circle tangent to the three sides of a triangle",
+   "want": "inradius-area",
+   "rank": 1
+  },
+  {
+   "q": "circle tangent to all three sides",
+   "want": "inradius-area | incircle-tangent-lengths",
+   "rank": 1
+  },
+  {
+   "q": "circle tangent to one side and the extensions of the other two",
+   "want": "exradii",
+   "rank": 1
+  }
+ ]
+}

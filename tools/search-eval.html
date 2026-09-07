@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Search relevance eval</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         margin: 0; padding: 20px 24px 60px; max-width: 1100px; }
+  h1 { font-size: 19px; margin: 0 0 4px; }
+  .sub { color: #777; margin: 0 0 18px; }
+  #app { width: 0; height: 0; border: 0; position: absolute; visibility: hidden; }
+  button { font: inherit; padding: 6px 13px; border-radius: 7px; border: 1px solid #8884;
+           background: #8881; cursor: pointer; margin-right: 8px; }
+  button:hover { background: #8883; }
+  .cards { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 22px; }
+  .stat { border: 1px solid #8883; border-radius: 10px; padding: 10px 16px; min-width: 108px; }
+  .stat b { display: block; font-size: 22px; line-height: 1.2; }
+  .stat span { color: #777; font-size: 12px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+  th, td { text-align: left; padding: 5px 9px; border-bottom: 1px solid #8882; vertical-align: top; }
+  th { position: sticky; top: 0; background: Canvas; font-size: 12px; text-transform: uppercase;
+       letter-spacing: .04em; color: #777; }
+  td.q { max-width: 420px; }
+  .r1 { color: #16a34a; font-weight: 600; }
+  .r3 { color: #ca8a04; }
+  .rbad { color: #dc2626; font-weight: 600; }
+  .miss { color: #dc2626; font-weight: 700; }
+  .got { color: #888; font-size: 12px; }
+  .delta-better { color: #16a34a; font-weight: 700; }
+  .delta-worse { color: #dc2626; font-weight: 700; }
+  .grp { font-size: 11px; color: #777; text-transform: uppercase; }
+  #err { color: #dc2626; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Search relevance eval</h1>
+<p class="sub">Runs <code>tools/eval-queries.json</code> against the live search in
+<code>index.html?debug=1</code>. Not linked from the app.</p>
+
+<div>
+  <button id="run">Run</button>
+  <button id="save">Download as baseline</button>
+  <label style="margin-left:10px"><input type="checkbox" id="only-bad"> only show non-#1</label>
+</div>
+
+<div class="cards" id="stats"></div>
+<div id="err"></div>
+<div id="out"></div>
+
+<iframe id="app" src="../index.html?debug=1"></iframe>
+
+<script>
+const $ = s => document.querySelector(s);
+let CASES = null, BASE = null, LAST = null;
+
+function ready() {
+  return new Promise((res, rej) => {
+    const f = $("#app");
+    const check = () => {
+      const w = f.contentWindow;
+      if (w && w.__mathSearch && w.__mathSearch.searchFormulas) return res(w.__mathSearch);
+      if (Date.now() - t0 > 15000) return rej(new Error(
+        "index.html loaded but window.__mathSearch was never set.\n" +
+        "The hook is gated on ?debug=1 in js/app.js — check the iframe URL and that app.js parsed."));
+      setTimeout(check, 60);
+    };
+    const t0 = Date.now();
+    f.addEventListener("load", check);
+    if (f.contentDocument && f.contentDocument.readyState === "complete") check();
+  });
+}
+
+async function load() {
+  CASES = (await (await fetch("eval-queries.json")).json()).cases;
+  try { BASE = await (await fetch("eval-baseline.json")).json(); } catch (e) { BASE = null; }
+}
+
+function run(api) {
+  const rows = CASES.map(([q, want, group]) => {
+    // `want` is one id or several equally-acceptable ones; score the best-placed.
+    const accept = Array.isArray(want) ? want : [want];
+    let ids = [];
+    let err = null;
+    try { ids = api.topIds(q, 10); } catch (e) { err = e.message; }
+    let rank = 0;
+    for (const a of accept) {
+      const r = ids.indexOf(a) + 1;
+      if (r && (!rank || r < rank)) rank = r;      // 0 when none is in the top 10
+    }
+    return { q, want: accept.join(" | "), group, rank, got: ids.slice(0, 3), err };
+  });
+  const n = rows.length;
+  const top1 = rows.filter(r => r.rank === 1).length;
+  const top3 = rows.filter(r => r.rank >= 1 && r.rank <= 3).length;
+  const mrr = rows.reduce((s, r) => s + (r.rank ? 1 / r.rank : 0), 0) / n;
+  return { n, top1, top3, mrr, rows };
+}
+
+function pct(a, b) { return (100 * a / b).toFixed(1) + "%"; }
+
+function render(res) {
+  const byGroup = {};
+  res.rows.forEach(r => {
+    (byGroup[r.group] = byGroup[r.group] || { n: 0, top1: 0 });
+    byGroup[r.group].n++; if (r.rank === 1) byGroup[r.group].top1++;
+  });
+  const baseRank = {};
+  if (BASE) BASE.rows.forEach(r => baseRank[r.q] = r.rank);
+
+  let regressed = 0, improved = 0;
+  res.rows.forEach(r => {
+    if (!BASE || !(r.q in baseRank)) return;
+    const b = baseRank[r.q];
+    const cur = r.rank || 99, old = b || 99;
+    if (cur > old) regressed++; else if (cur < old) improved++;
+  });
+
+  $("#stats").innerHTML =
+    stat(pct(res.top1, res.n), "top-1 (" + res.top1 + "/" + res.n + ")") +
+    stat(pct(res.top3, res.n), "top-3") +
+    stat(res.mrr.toFixed(3), "MRR") +
+    (BASE ? stat(improved, "improved") + stat(regressed, "REGRESSED") : "") +
+    Object.entries(byGroup).map(([g, v]) => stat(pct(v.top1, v.n), g + " top-1")).join("");
+
+  const onlyBad = $("#only-bad").checked;
+  const rows = res.rows
+    .filter(r => !onlyBad || r.rank !== 1)
+    .sort((a, b) => (a.rank || 99) - (b.rank || 99) === 0 ? 0 : (b.rank || 99) - (a.rank || 99));
+
+  $("#out").innerHTML = "<table><thead><tr><th>rank</th><th>Δ</th><th>query</th>" +
+    "<th>expected</th><th>top 3 returned</th></tr></thead><tbody>" +
+    rows.map(r => {
+      const cls = r.rank === 1 ? "r1" : r.rank && r.rank <= 3 ? "r3" : r.rank ? "rbad" : "miss";
+      const label = r.err ? "ERR" : (r.rank || "—");
+      let delta = "";
+      if (BASE && (r.q in baseRank)) {
+        const cur = r.rank || 99, old = baseRank[r.q] || 99;
+        if (cur < old) delta = '<span class="delta-better">▲' + (old - cur) + "</span>";
+        else if (cur > old) delta = '<span class="delta-worse">▼' + (cur - old) + "</span>";
+      }
+      return "<tr><td class='" + cls + "'>" + label + "</td><td>" + delta +
+        "</td><td class='q'>" + esc(r.q) + "<div class='grp'>" + r.group + "</div></td><td>" +
+        esc(r.want) + "</td><td class='got'>" + r.got.map(esc).join("<br>") +
+        (r.err ? "<br><b>" + esc(r.err) + "</b>" : "") + "</td></tr>";
+    }).join("") + "</tbody></table>";
+}
+
+const stat = (v, l) => "<div class='stat'><b>" + v + "</b><span>" + l + "</span></div>";
+const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+async function main() {
+  try {
+    await load();
+    const api = await ready();
+    LAST = run(api);
+    render(LAST);
+  } catch (e) { $("#err").textContent = e.message; }
+}
+
+$("#run").onclick = main;
+$("#only-bad").onchange = () => LAST && render(LAST);
+$("#save").onclick = () => {
+  if (!LAST) return;
+  const blob = new Blob([JSON.stringify(
+    { when: new Date().toISOString(), top1: LAST.top1, top3: LAST.top3, n: LAST.n,
+      mrr: +LAST.mrr.toFixed(4),
+      rows: LAST.rows.map(r => ({ q: r.q, want: r.want, rank: r.rank })) }, null, 1)],
+    { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "eval-baseline.json"; a.click();
+};
+main();
+</script>
+</body>
+</html>

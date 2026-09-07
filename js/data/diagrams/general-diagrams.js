@@ -241,12 +241,45 @@
     parts.push(dot([x0, y0], GLD, 5), dot([x0 + n * cell, y0 - n * cell], GLD, 5));
     parts.push(txt([x0 - 4, y0 + 18], "(0,0)", DIM, 11.5));
     parts.push(txt([x0 + n * cell + 6, y0 - n * cell - 10], "(n, n)", DIM, 11.5));
-    parts.push(txt([x0 + n * cell - 60, y0 - n * cell + 2], "diagonal", GLD, 11.5));
+    parts.push(txt([x0 + n * cell - 64, y0 - n * cell - 2], "diagonal", GLD, 11.5));
     parts.push(cap(430, 330, "paths from corner to corner that never cross above the diagonal: counted by Cₙ = C(2n, n)/(n + 1) — here n = 4"));
     return wrap(430, 330, parts);
   })()];
 
   // Stars and bars.
+  // Geometric probability: the meeting problem. Two people each arrive uniformly
+  // between 5:00 and 6:00 and wait 15 minutes. Arrival times are the two axes, so
+  // every outcome is a point of the square and "they meet" is |x - y| <= 15, a band
+  // about the diagonal. The complement is two corner triangles of leg 45, so the
+  // answer is 1 - 45^2/60^2 = 7/16, read straight off the picture.
+  DIAGRAMS["geometric-probability"] = [(() => {
+    const X0 = 78, Y0 = 40, S = 240;          // square: 240px for 60 minutes
+    const px = u => X0 + S * u / 60;          // person A's arrival -> x
+    const py = v => Y0 + S - S * v / 60;      // person B's arrival -> y (SVG y is down)
+    const W = 15;                             // minutes each will wait
+    const band = [[px(0), py(W)], [px(60 - W), py(60)], [px(60), py(60)],
+                  [px(60), py(60 - W)], [px(W), py(0)], [px(0), py(0)]];
+    const triA = [[px(0), py(W)], [px(60 - W), py(60)], [px(0), py(60)]];
+    const triB = [[px(W), py(0)], [px(60), py(60 - W)], [px(60), py(0)]];
+    return wrap(430, 330, [
+      poly(band, "none", 0, ACCS),
+      poly(triA, "none", 0, GLDS), poly(triB, "none", 0, GLDS),
+      rect(X0, Y0, S, S, DIM, 2),
+      seg([px(0), py(0)], [px(60), py(60)], FNT, 1.4, "4 4"),
+      seg([px(0), py(W)], [px(60 - W), py(60)], ACC, 2),
+      seg([px(W), py(0)], [px(60), py(60 - W)], ACC, 2),
+      txt([px(30), py(30) + 5], "they meet", ACC, 13),
+      txt([px(12), py(50)], "B late", GLD, 11),
+      txt([px(48), py(10)], "A late", GLD, 11),
+      txt([X0 - 8, Y0 + S + 5], "5:00", DIM, 11, "end"),
+      txt([X0 + S, Y0 + S + 20], "6:00", DIM, 11),
+      txt([X0 - 8, Y0 + 5], "6:00", DIM, 11, "end"),
+      txt([X0 + S / 2, Y0 + S + 34], "A arrives", DIM, 12),
+      `<text x="${X0 - 30}" y="${Y0 + S / 2}" fill="${DIM}" font-size="12" text-anchor="middle" transform="rotate(-90 ${X0 - 30} ${Y0 + S / 2})">B arrives</text>`,
+      cap(430, 330, "Two people each arrive at a uniformly random time between 5:00 and 6:00 and wait 15 minutes. Each axis is one arrival time, so every outcome is a point of the square. They meet exactly when the arrivals differ by at most 15 minutes, the shaded band about the diagonal; the two gold corner triangles are the misses, each with legs 45. So P = 1 &minus; 45&sup2;/60&sup2; = 7/16, with no integration anywhere.")
+    ]);
+  })()];
+
   DIAGRAMS["stars-and-bars"] = [(() => {
     const y = 150, x0 = 60, gap = 36;
     const items = "**|***|**";  // x1=2, x2=3, x3=2 summing to 7

@@ -126,10 +126,11 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "quadratic-formula": { q: String.raw`Solve $x^2 - 6x + 2 = 0$.`, s: String.raw`$\Delta = 36 - 8 = 28$: $x = \frac{6 \pm \sqrt{28}}{2} = 3 \pm \sqrt7$.` },
 "vietas-quadratic": { q: String.raw`Without solving, find the sum and product of the roots of $x^2 - 7x + 12$.`, s: String.raw`Sum $= 7$, product $= 12$ (the roots are $3$ and $4$).` },
 "vietas-general": { q: String.raw`$x^3 - 6x^2 + 11x - 6$ has roots $r, s, t$. Find $r + s + t$, $rs + rt + st$, and $rst$.`, s: String.raw`$6$, $11$, and $6$ — read off the coefficients with alternating signs (roots are $1, 2, 3$).` },
-"factor-remainder-theorem": { q: String.raw`Find the remainder when $x^3 - 2x^2 + 5$ is divided by $x - 2$.`, s: String.raw`$P(2) = 8 - 8 + 5 = 5$.` },
+"shifted-polynomial-construction": { q: String.raw`A cubic $f$ satisfies $f(1) = f(3) = f(5) = 10$ and $f(0) = 4$. Find $f(6)$.`, s: String.raw`Set $g(x) = f(x) - 10$. It is a cubic vanishing at $1, 3, 5$, so $g(x) = c(x-1)(x-3)(x-5)$ and $f(x) = c(x-1)(x-3)(x-5) + 10$. From $f(0) = 4$: $c(-1)(-3)(-5) = -6$, so $-15c = -6$ and $c = \frac{2}{5}$. Then $f(6) = \frac{2}{5}(5)(3)(1) + 10 = 6 + 10 = \boxed{16}$.` },
+"factor-remainder-theorem": { q: String.raw`Find the remainder when $x^3 - 2x^2 + 5$ is divided by $x - 2$.`, s: String.raw`The remainder theorem gives it directly: $P(2) = 8 - 8 + 5 = 5$.` },
 "rational-root-theorem": { q: String.raw`List the possible rational roots of $2x^3 - 3x^2 - 11x + 6$ and find one.`, s: String.raw`Candidates $\pm1, \pm2, \pm3, \pm6, \pm\frac{1}{2}, \pm\frac{3}{2}$; testing gives $x = 3$.` },
 "coefficient-extraction": { q: String.raw`Find the sum of the even-position coefficients of $(1 + x)^5$.`, s: String.raw`$\frac{P(1) + P(-1)}{2} = \frac{32 + 0}{2} = 16$.` },
-"int-poly-divisibility": { q: String.raw`Can an integer-coefficient polynomial satisfy $P(1) = 2$ and $P(3) = 5$?`, s: String.raw`No: $3 - 1 = 2$ must divide $P(3) - P(1) = 3$, which it doesn't.` },
+"symmetric-polynomial-strategies": { q: String.raw`Let $r, s, t$ be the roots of $x^3 - 2x + 5$. Find $(r^2+1)(s^2+1)(t^2+1)$.`, s: String.raw`Factor each term over $\mathbb{C}$: $r^2+1 = (r-i)(r+i)$, so the product is $P(i)P(-i)$ for the monic $P(x) = x^3 - 2x + 5$. Then $P(i) = -i - 2i + 5 = 5 - 3i$ and $P(-i) = i + 2i + 5 = 5 + 3i$, giving $(5-3i)(5+3i) = 25 + 9 = \boxed{34}$ — no root was ever found.` },
 "newtons-sums": { q: String.raw`The roots of $x^2 - 3x + 2$ are $r, s$. Find $r^2 + s^2$ via Newton's sums.`, s: String.raw`$p_1 = 3$; $p_2 = e_1 p_1 - 2e_2 = 9 - 4 = 5$.` },
 "conjugate-root-theorems": { q: String.raw`A rational-coefficient cubic has root $2 + \sqrt3$. What quadratic factor must it have?`, s: String.raw`The conjugate $2 - \sqrt3$ is also a root: factor $x^2 - 4x + 1$.` },
 "palindromic-polynomials": { q: String.raw`Reduce $x^4 + x^3 - 4x^2 + x + 1 = 0$ to a quadratic.`, s: String.raw`Divide by $x^2$ and set $y = x + \frac{1}{x}$: $y^2 + y - 6 = 0$, so $y = 2$ or $-3$.` },
@@ -163,6 +164,7 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "rearrangement": { q: String.raw`Pair $(1,2,3)$ with $(4,5,6)$ to maximize the sum of products.`, s: String.raw`Same order: $4 + 10 + 18 = 32$ (reversed gives the minimum, $28$).` },
 "trivial-inequality": { q: String.raw`Find the minimum of $x^2 - 6x + 11$.`, s: String.raw`$(x-3)^2 + 2 \ge 2$, achieved at $x = 3$.` },
 "abs-triangle-inequality": { q: String.raw`$|z| = 5$ and $|w| = 3$. What values can $|z + w|$ take?`, s: String.raw`Anything in $[2, 8]$, by the triangle inequality and its reverse.` },
+"log-substitution": { q: String.raw`Find the product of all real $x$ satisfying $(\log_{10} x)^2 - 3\log_{10} x + 2 = 0$.`, s: String.raw`Let $u = \log_{10} x$, giving $u^2 - 3u + 2 = 0$, so $u = 1$ or $u = 2$ and $x = 10$ or $100$. The product is $10^{u_1+u_2} = 10^3 = \boxed{1000}$ — Vieta's sum of the roots in $u$ answers it without solving for $x$ at all. Both roots are positive, so neither is extraneous.` },
 "log-rules": { q: String.raw`Compute $\log_6 2 + \log_6 3$.`, s: String.raw`$= \log_6 6 = 1$.` },
 "change-of-base": { q: String.raw`Compute $\log_2 3 \cdot \log_3 4$.`, s: String.raw`The chain collapses: $\log_2 4 = 2$.` },
 "log-swap-identity": { q: String.raw`Simplify $4^{\log_2 3}$.`, s: String.raw`Swap: $3^{\log_2 4} = 3^2 = 9$.` },
@@ -179,6 +181,8 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "half-angle": { q: String.raw`Find $\cos 22.5^\circ$ exactly.`, s: String.raw`$\sqrt{\frac{1 + \cos 45^\circ}{2}} = \frac{\sqrt{2 + \sqrt2}}{2}$.` },
 "product-sum": { q: String.raw`Compute $\sin 75^\circ \sin 15^\circ$.`, s: String.raw`$\frac{1}{2}[\cos 60^\circ - \cos 90^\circ] = \frac{1}{4}$.` },
 "special-trig-values": { q: String.raw`Evaluate $4\sin 18^\circ + 1$.`, s: String.raw`$\sin 18^\circ = \frac{\sqrt5 - 1}{4}$, so the expression is $\sqrt5$.` },
+"even-power-sin-cos-sums": { q: String.raw`If $\sin^4\theta + \cos^4\theta = \frac{5}{8}$, find $\sin^6\theta + \cos^6\theta$.`, s: String.raw`Let $p = \sin^2\theta\cos^2\theta$. Then $\frac58 = 1 - 2p$ gives $p = \frac{3}{16}$, and $\sin^6\theta+\cos^6\theta = 1 - 3p = 1 - \frac{9}{16} = \boxed{\frac{7}{16}}$ — no angle is ever found.` },
+"cosecant-cotangent-square-sums": { q: String.raw`Evaluate $\csc^2\frac{\pi}{7} + \csc^2\frac{2\pi}{7} + \cdots + \csc^2\frac{6\pi}{7}$.`, s: String.raw`This is the full sum for $n = 7$, so it equals $\frac{n^2-1}{3} = \frac{48}{3} = \boxed{16}$. The matching cotangent sum is $\frac{6\cdot 5}{3} = 10$, smaller by exactly $n-1 = 6$.` },
 "triple-angle": { q: String.raw`$\sin\theta = \frac{1}{3}$. Find $\sin 3\theta$.`, s: String.raw`$3 \cdot \frac{1}{3} - 4 \cdot \frac{1}{27} = \frac{23}{27}$.` },
 "trig-telescoping-product": { q: String.raw`Compute $\cos 20^\circ \cos 40^\circ \cos 80^\circ$.`, s: String.raw`$\frac{\sin 160^\circ}{2^3 \sin 20^\circ} = \frac{1}{8}$.` },
 "arctan-telescoping": { q: String.raw`Compute $\sum_{n=1}^{\infty} \arctan\frac{1}{n^2+n+1}$.`, s: String.raw`Each term is $\arctan(n+1) - \arctan n$: the sum telescopes to $\frac{\pi}{2} - \frac{\pi}{4} = \frac{\pi}{4}$.` },
@@ -276,6 +280,9 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "pascals-identity": { q: String.raw`Verify Pascal's identity for $\binom{7}{3}$.`, s: String.raw`$\binom{6}{2} + \binom{6}{3} = 15 + 20 = 35 = \binom{7}{3}$. ✓` },
 "binomial-row-sums": { q: String.raw`Sum row 5 of Pascal's triangle, then with alternating signs.`, s: String.raw`$1+5+10+10+5+1 = 32 = 2^5$; alternating: $0$.` },
 "hockey-stick": { q: String.raw`Compute $\binom{2}{2} + \binom{3}{2} + \binom{4}{2} + \binom{5}{2}$.`, s: String.raw`Hockey stick: $\binom{6}{3} = 20$.` },
+"alternating-squared-binomials": { q: String.raw`Evaluate $\sum_{k=0}^{10} (-1)^k \binom{10}{k}^2$ and $\sum_{k=0}^{11} (-1)^k \binom{11}{k}^2$.`, s: String.raw`Both are the coefficient of $x^m$ in $(1-x^2)^m$. For $m = 10 = 2\cdot 5$ the term comes from $t = 5$, giving $(-1)^5\binom{10}{5} = \boxed{-252}$. For $m = 11$ odd there is no $t$ with $2t = 11$, so the sum is $\boxed{0}$ with no computation.` },
+"markovs-inequality": { q: String.raw`A nonnegative random variable has mean $12$. What is the largest possible value of $P(X \ge 40)$?`, s: String.raw`Markov gives $P(X \ge 40) \le \frac{12}{40} = \frac{3}{10}$. It is attained: let $X = 40$ with probability $\frac{3}{10}$ and $X = 0$ otherwise, so $E[X] = 12$ and $P(X \ge 40) = \boxed{\frac{3}{10}}$ exactly — the bound is sharp.` },
+"forced-difference-of-squares": { q: String.raw`Factor $x^4 + 4$ over the integers.`, s: String.raw`The outer terms are $(x^2)^2$ and $2^2$, so a perfect square $(x^2+2)^2$ would need the cross term $4x^2$, which is absent. Add and subtract it: $x^4 + 4 = (x^2+2)^2 - 4x^2 = (x^2+2)^2 - (2x)^2 = \boxed{(x^2-2x+2)(x^2+2x+2)}$. The shortfall $4x^2$ was a perfect square, which is exactly why this quartic factors.` },
 "vandermonde": { q: String.raw`From 5 men and 4 women, count 3-person committees by number of men, and identify the total.`, s: String.raw`$\binom{5}{0}\binom{4}{3} + \binom{5}{1}\binom{4}{2} + \binom{5}{2}\binom{4}{1} + \binom{5}{3}\binom{4}{0} = 4+30+40+10 = 84 = \binom{9}{3}$.` },
 "committee-chair": { q: String.raw`Compute $\sum_{k} k\binom{4}{k}$.`, s: String.raw`$n \cdot 2^{n-1} = 4 \cdot 8 = 32$.` },
 "multinomial-theorem": { q: String.raw`Find the coefficient of $a^2b^2c^2$ in $(a+b+c)^6$.`, s: String.raw`$\frac{6!}{2!\,2!\,2!} = 90$.` },
@@ -320,7 +327,7 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "total-expectation": { q: String.raw`Roll a die, then flip that many fair coins. Expected heads?`, s: String.raw`$\sum \frac{1}{6} \cdot \frac{k}{2} = \frac{7}{4}$.` },
 "polyhedron-walks": { q: String.raw`A particle random-walks on a tetrahedron's edges. Find $P(\text{back at start after 2 steps})$.`, s: String.raw`$\frac{1}{4} + \frac{3}{4} \cdot \frac{1}{9} = \frac{1}{3}$.` },
 "gamblers-ruin": { q: String.raw`Win probability $\frac{2}{3}$ per step, start at $1$, stop at $0$ or $3$. Find $P(\text{reach } 3)$.`, s: String.raw`$\frac{1 - (1/2)^1}{1 - (1/2)^3} = \frac{4}{7}$.` },
-"pigeonhole": { q: String.raw`Why must two of any 13 people share a birth month?`, s: String.raw`13 pigeons, 12 holes.` },
+"pigeonhole": { q: String.raw`Five points are placed inside a unit square. Show two of them are within $\frac{\sqrt2}{2}$ of each other.`, s: String.raw`Cut the square into four $\tfrac12 \times \tfrac12$ sub-squares (the boxes). Five points into four boxes forces two into one sub-square, whose diameter is $\sqrt{(\tfrac12)^2+(\tfrac12)^2} = \frac{\sqrt2}{2}$.` },
 "handshake-lemma": { q: String.raw`Can 7 people each shake exactly 3 hands?`, s: String.raw`No: the degree sum $21$ is odd, but it must equal twice the number of handshakes.` },
 "double-counting": { q: String.raw`Five clubs of 4 students each; every student is in exactly 2 clubs. How many students?`, s: String.raw`Count memberships: $\frac{5 \cdot 4}{2} = 10$.` },
 "ramsey-33": { q: String.raw`Among any 6 people, what is guaranteed?`, s: String.raw`Three mutual friends or three mutual strangers — and a friendship pentagon shows 5 people can avoid both.` }
@@ -393,7 +400,6 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 
 window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "first-order-recurrence": { q: String.raw`$a_0 = 10$ and $a_n = \frac{1}{2}a_{n-1} + 3$. Find a closed form and $\lim a_n$.`, s: String.raw`Fixed point: $L = \frac{3}{1 - 1/2} = 6$. Then $a_n - 6 = \left(\frac{1}{2}\right)^n (10 - 6)$, so $a_n = 4\left(\frac{1}{2}\right)^n + 6$ and $a_n \to 6$.` },
-"solving-recurrences": { q: String.raw`Solve $a_n = 5a_{n-1} - 6a_{n-2}$ with $a_0 = 3$, $a_1 = 8$.`, s: String.raw`Characteristic equation $x^2 = 5x - 6$ gives $x = 2, 3$, so $a_n = A \cdot 2^n + B \cdot 3^n$. From $A + B = 3$ and $2A + 3B = 8$: $B = 2$, $A = 1$. Thus $a_n = 2^n + 2 \cdot 3^n$ (check $a_2 = 4 + 18 = 22 = 5 \cdot 8 - 6 \cdot 3$ ✓).` },
 "trig-bash": { q: String.raw`In $\triangle ABC$, $a = 7$, $b = 8$, $c = 9$. Find $\cos C$ and the area.`, s: String.raw`Law of Cosines: $\cos C = \frac{7^2 + 8^2 - 9^2}{2 \cdot 7 \cdot 8} = \frac{32}{112} = \frac{2}{7}$. Then $\sin C = \frac{3\sqrt{5}}{7}$, so $[ABC] = \frac{1}{2}(7)(8)\frac{3\sqrt5}{7} = 12\sqrt5$.` },
 "complex-bash": { q: String.raw`Rotate the point $z = 3 + i$ by $90^\circ$ counterclockwise about $p = 1 + i$.`, s: String.raw`$z \mapsto p + i(z - p) = (1 + i) + i(2) = 1 + 3i$ — multiplying by $i$ is the $90^\circ$ turn.` },
 "sum-of-three-squares": { q: String.raw`Is $28$ a sum of three squares? What about $29$?`, s: String.raw`$28 = 4^1(8 \cdot 0 + 7)$ is exactly the excluded form, so no — it needs four squares ($25 + 1 + 1 + 1$). But $29$ is not of that form: $29 = 25 + 4 + 0$. ✓` },
@@ -423,7 +429,6 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 "fundamental-theorem-algebra": { q: String.raw`A degree-$7$ polynomial has complex coefficients. How many roots does it have (with multiplicity)? If instead its coefficients are real, must it have a real root?`, s: String.raw`Exactly $7$ complex roots (FTA). With real coefficients, non-real roots come in conjugate pairs, so an odd degree ($7$) forces at least one real root.` },
 "common-angle-values": { q: String.raw`Evaluate $\sin 60^\circ + \cos 30^\circ + \tan 45^\circ$.`, s: String.raw`$\frac{\sqrt3}{2} + \frac{\sqrt3}{2} + 1 = \sqrt3 + 1$.` },
 "reduction-identities": { q: String.raw`Simplify $\sin(180^\circ - x) + \cos(90^\circ - x) + \sin(-x)$.`, s: String.raw`$\sin x + \sin x - \sin x = \sin x$ — supplement, cofunction, and odd-function rules.` },
-"pigeonhole-principle": { q: String.raw`Five points are placed inside a unit square. Show two of them are within $\frac{\sqrt2}{2}$ of each other.`, s: String.raw`Cut the square into four $\tfrac12 \times \tfrac12$ sub-squares (the boxes). Five points into four boxes forces two into one sub-square, whose diameter is $\sqrt{(\tfrac12)^2+(\tfrac12)^2} = \frac{\sqrt2}{2}$.` },
 "tangent-line-trick": { q: String.raw`For positive reals with $x + y + z = 1$, prove $\frac1x + \frac1y + \frac1z \ge 9$.`, s: String.raw`Tangent to $\frac1x$ at $x = \frac13$: $\frac1x \ge 6 - 9x$ (since $\frac1x - (6-9x) = \frac{(3x-1)^2}{x} \ge 0$). Sum: $\sum \frac1x \ge 18 - 9(1) = 9$.` },
 "barycentric-coordinates": { q: String.raw`Point $P$ has normalized barycentric coordinates $(\tfrac15 : \tfrac{3}{10} : \tfrac12)$ in $\triangle ABC$. What fraction of $[ABC]$ is $[PBC]$?`, s: String.raw`The weight on $A$ is exactly $[PBC]/[ABC]$, so $[PBC] = \frac15 [ABC]$ (and $[PCA] = \frac{3}{10}[ABC]$, $[PAB] = \frac12[ABC]$, summing to $[ABC]$).` },
 "affine-transformations": { q: String.raw`On the ellipse $\frac{x^2}{9} + \frac{y^2}{4} = 1$, let $P, Q, R$ be the rightmost, topmost, and leftmost points. What fraction of the ellipse's area is $\triangle PQR$?`, s: String.raw`Scale $y \mapsto \tfrac32 y$ to turn the ellipse into a circle of radius $3$; $P, Q, R$ become $(3,0), (0,3), (-3,0)$, an inscribed triangle of area $9$ against circle area $9\pi$. The ratio $\frac{9}{9\pi} = \frac1\pi$ is affine-invariant, so $\triangle PQR$ is $\frac1\pi$ of the ellipse.` },
@@ -556,3 +561,29 @@ window.MATH_EXAMPLES = Object.assign(window.MATH_EXAMPLES, {
 
 "max-rectangle-in-triangle": { q: String.raw`A triangle has area $40$. What is the largest possible area of a rectangle inscribed in it with one side on a base?`, s: String.raw`Half the triangle's area, $20$ — the maximum is achieved when the rectangle's top edge lies on the midline (width half the base, height half the altitude).` }
 });
+
+window.MATH_EXAMPLES["sqrt-approximation"] = {
+  q: String.raw`Without a calculator, decide whether $\sqrt{2024}$ is closer to $44$ or to $45$, and estimate it to three decimal places.`,
+  s: String.raw`Take $a=44$, since $44^2=1936$ and $45^2=2025$. Then $b=2024-1936=88$.<br><br>
+The midpoint between $44$ and $45$ corresponds to $44.5^2=1980.25$, and $2024>1980.25$, so $\sqrt{2024}$ is closer to $45$. (Indeed $2025=45^2$, so the root is just under $45$.)<br><br>
+First-order estimate: $44+\frac{88}{88}=45$ — an overestimate, as always.<br><br>
+One more step: $44+\cfrac{88}{88+\frac{88}{88}}=44+\frac{88}{89}\approx44.9888$.<br><br>
+The bracket confirms it: $44+\frac{88}{89}\le\sqrt{2024}\le44+\frac{88}{88}$, i.e. $44.9888\le\sqrt{2024}\le45$. The true value is $44.98889$, so the answer is $\approx 44.989$.`
+};
+
+window.MATH_EXAMPLES["double-summation"] = {
+  q: String.raw`Evaluate $\displaystyle\sum_{n=1}^{100}\ \sum_{d\mid n} d$, the total of all divisor sums up to $100$.`,
+  s: String.raw`Swapping the order is the whole solution. The double sum runs over pairs $(n,d)$ with $d\mid n$ and $n\le100$. Fix $d$ instead of $n$: the values of $n$ are $d,2d,\dots$, so there are $\left\lfloor\frac{100}{d}\right\rfloor$ of them.<br><br>
+$\displaystyle\sum_{n=1}^{100}\sum_{d\mid n} d=\sum_{d=1}^{100} d\left\lfloor\frac{100}{d}\right\rfloor.$<br><br>
+That replaces "factor every $n$" with "count multiples", which is a routine computation. Grouping the $d$ that share a value of $\left\lfloor\frac{100}{d}\right\rfloor$ makes it faster still, and the total is $8299$.<br><br>
+The same swap is the standard first move on any sum of the form $\sum_{n\le N}\sum_{d\mid n} f(d)$.`
+};
+
+window.MATH_EXAMPLES["fermat-two-squares"] = {
+  q: String.raw`A right triangle has integer legs and a hypotenuse of $61$. Find its legs, and explain why no right triangle has integer legs and hypotenuse $59$.`,
+  s: String.raw`$61\equiv1\pmod4$, so by Fermat's two-square theorem it is a sum of two squares, and in exactly one way: $61=36+25=6^2+5^2$.<br><br>
+Taking $m=6$, $n=5$, the triple generated is<br>
+$m^2-n^2=36-25=11,\qquad 2mn=2\cdot6\cdot5=60,\qquad m^2+n^2=61.$<br><br>
+Check: $11^2+60^2=121+3600=3721=61^2$. Because the representation $61=6^2+5^2$ is unique, this is the only such triangle — the legs are $\mathbf{11}$ and $\mathbf{60}$.<br><br>
+For $59$: it is prime and $59\equiv3\pmod4$. A sum of two squares is $0$, $1$ or $2$ modulo $4$, never $3$, so $59$ is not $a^2+b^2$ — and hence no right triangle has integer legs and hypotenuse $59$.`
+};

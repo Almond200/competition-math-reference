@@ -44,7 +44,6 @@
   add("square-of-sum", "2024 AIME II, Problem 11");
 
   // Number Theory
-  add("int-poly-divisibility", "2025 AIME II, Problem 2");
   add("perfect-square-divisors", "2023 AIME I, Problem 4", "2023 AMC 10B, Problem 15");
   add("eulers-theorem", "2024 AMC 10B, Problem 18", "2024 AMC 12B, Problem 14");
   add("chicken-mcnugget", "2023 AMC 12B, Problem 16");
@@ -104,7 +103,7 @@
   add("piecewise-graph-counting", "2021 AIME I, Problem 8", "2024 AIME I, Problem 12");
   add("floor-basics", "2020 AIME II, Problem 14");
   add("power-sums", "2020 AIME II, Problem 10");
-  add("int-poly-divisibility", "2020 AIME II, Problem 10");
+  add("factor-remainder-theorem", "2020 AIME II, Problem 10");
   add("roots-of-unity", "2022 AIME I, Problem 4", "2021 AMC 12A, Problem 22");
   add("sophie-germain", "2020 AMC 10B, Problem 22");
   add("generating-functions", "2022 AIME II, Problem 13");
