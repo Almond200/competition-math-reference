@@ -811,6 +811,9 @@
         // it is what lets a plainly-worded question reach the right card.
         entry.bodyWords = new Set(indexWordsOf(
           ((window.MATH_DETAILS || {})[f.id] || "").replace(/\$[^$]*\$/g, " ").replace(/^##\s*/gm, "")
+            // Index what the reader sees. Without this a [[card-id|display]] link feeds the
+            // target's *id* into this card's body words, which it never displays.
+            .replace(/\[\[([\w-]+)(?:\|([^\]]*))?\]\]/g, (m, id, label) => label || id.replace(/-/g, " "))
         ));
         entry.mathFrags = mathFragments(f.latex);
         entry.nameLower = f.name.toLowerCase();

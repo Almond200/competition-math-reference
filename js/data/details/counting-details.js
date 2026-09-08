@@ -63,7 +63,7 @@ The birthday problem is the canonical case. Asking for the chance that two of $k
 - $n!\binom{n+1}{k}k!$ — the opposite condition, $k$ items no two adjacent, dropped into the $n+1$ gaps
 
 ## Why it works
-Gluing forced-adjacent items into a super-object preserves the bijection with valid arrangements: each block arrangement times each internal order is one valid seating. The gap method inverts it: placing forbidden-adjacent items into separate gaps between the others guarantees separation.
+Gluing forced-adjacent items into a super-object preserves the bijection with valid arrangements: each block arrangement times each internal order is one valid seating. [[gap-method|The gap method]] inverts it: placing forbidden-adjacent items into separate gaps between the others guarantees separation.
 
 ## How to use it
 "Together" → glue (multiply by internal orders). "Apart" → arrange the unrestricted items, then choose gaps: $k$ non-adjacent items into $n$ others' $n+1$ gaps gives $\binom{n+1}{k} \cdot k!$ for distinct items. Mixed conditions: glue first, then gap.
@@ -77,7 +77,7 @@ A monotone path is a word in $\{R, U\}$ with exactly $m$ R's and $n$ U's; choosi
 ## How to use it
 Every monotone lattice path is a string of $m$ R's and $n$ U's, so the count is a single binomial coefficient. Everything harder is built from three moves on top of that.
 
-Forced waypoints multiply: paths through $P$ equal paths to $P$ times paths from $P$, because the two halves are independent. Forbidden points subtract, using inclusion-exclusion when there are several. A diagonal barrier is the [[reflection-principle|reflection principle]], which is where the Catalan numbers come from.
+Forced waypoints multiply: paths through $P$ equal paths to $P$ times paths from $P$, because the two halves are independent. Forbidden points subtract, using inclusion-exclusion when there are several. A diagonal barrier is the [[reflection-principle|reflection principle]], which is where the [[catalan-numbers|Catalan numbers]] come from.
 
 When the formulas start tangling — several forbidden cells, or an awkward region — abandon them and write the count into each lattice node, each node being the sum of the node below and the node to its left. That block-by-block recursion is slower but never wrong, and on a small grid it is often faster than getting the inclusion-exclusion right.
 
@@ -166,7 +166,7 @@ Recognising the shape is the whole skill: a sum of products of two binomial coef
 
 The most-quoted case is the self-convolution $\sum_k\binom nk^2=\binom{2n}{n}$, which looks different only because the symmetry $\binom nk=\binom n{n-k}$ has already been applied to one factor.
 
-It also runs in reverse: when a problem hands you $\binom{m+n}{r}$ and you need to split it by a two-group structure, expanding into the convolution is often what makes the counting argument work. Generating functions give the same identity as the coefficient of $x^r$ in $(1+x)^m(1+x)^n$, which is the quickest proof if you already have that machinery.
+It also runs in reverse: when a problem hands you $\binom{m+n}{r}$ and you need to split it by a two-group structure, expanding into the convolution is often what makes the counting argument work. [[generating-function-method|Generating functions]] give the same identity as the coefficient of $x^r$ in $(1+x)^m(1+x)^n$, which is the quickest proof if you already have that machinery.
 
 ## On contests
 AIME identity evaluations and probability normalizations (hypergeometric distributions sum to 1 by Vandermonde). If a sum has two binomials whose bottom indices add to a constant — this is it.`,
@@ -182,7 +182,7 @@ Operationally it is an absorption rule: it removes a factor of $k$ from a weight
 For a factor of $k^2$, do not apply it twice directly. Write $k^2=k(k-1)+k$, absorb each piece separately, and the sum becomes $n(n-1)2^{n-2}+n2^{n-1}$. The same trick handles any polynomial weight by expressing it in falling factorials first.
 
 ## On contests
-Weighted binomial sums on AMC 12/AIME ($\sum k\binom{n}{k}$, $\sum k^2\binom{n}{k} = n(n+1)2^{n-2}$), and expected-size-of-random-subset arguments ($= \frac{n}{2}$, this identity divided by $2^n$).`,
+[[weighted-binomial-sums|Weighted binomial sums]] on AMC 12/AIME ($\sum k\binom{n}{k}$, $\sum k^2\binom{n}{k} = n(n+1)2^{n-2}$), and expected-size-of-random-subset arguments ($= \frac{n}{2}$, this identity divided by $2^n$).`,
 
 "multinomial-theorem": String.raw`## Why it works
 Expanding $(x_1 + \cdots + x_m)^n$ picks one variable from each factor; the coefficient of a monomial counts the arrangements of that multiset of picks — the multinomial coefficient.
@@ -205,7 +205,7 @@ The parity of $\binom nk$ depends only on the binary digits: it is odd exactly w
 
 That single rule answers the standard questions immediately. Rows that are entirely odd are $n=2^m-1$, where every bit is set; rows with exactly two odd entries are $n=2^m$, where only the leading bit is.
 
-Drawing Pascal's triangle mod $2$ produces the Sierpinski triangle, and the picture is worth keeping in mind — the self-similar structure is exactly the binary submask condition, and it makes questions about blocks of even entries easy to see. For odd primes, the same reasoning is Lucas' theorem in base $p$.
+Drawing Pascal's triangle mod $2$ produces the Sierpinski triangle, and the picture is worth keeping in mind — the self-similar structure is exactly the binary submask condition, and it makes questions about blocks of even entries easy to see. For odd primes, the same reasoning is [[lucas-theorem|Lucas' theorem]] in base $p$.
 
 ## On contests
 "How many entries of row 100 are odd" ($100 = 1100100_2$, so $2^3 = 8$) and divisibility-pattern problems. Mod 4 or higher powers needs more than Lucas — don't overextend the tool.`,
@@ -227,7 +227,7 @@ Among the highest-yield formulas at every level: dice-sum counts, coin distribut
 Violating a cap $x_i \le m$ means $x_i \ge m+1$ — substitute $x_i' = x_i - (m+1)$ and count freely; inclusion-exclusion alternates over which caps are violated since violations can overlap. With a common cap $m$ on all $k$ variables this closes up as $\sum_j(-1)^j\binom kj\binom{n-j(m+1)+k-1}{k-1}$, and the terms vanish once $j(m+1)\gt n$, which is why the sum is short in practice.
 
 ## How to use it
-Handle the upper bound by violation rather than by construction. Count everything with plain stars and bars, then subtract the cases where a chosen variable exceeds $m$ — force that overflow by pre-assigning it $m+1$ and re-counting the remainder, which is again a stars-and-bars problem.
+Handle the upper bound by violation rather than by construction. Count everything with plain [[stars-and-bars|stars and bars]], then subtract the cases where a chosen variable exceeds $m$ — force that overflow by pre-assigning it $m+1$ and re-counting the remainder, which is again a stars-and-bars problem.
 
 Add back the double violations, subtract the triple ones, and so on. The sum terminates quickly because $j$ variables cannot all overflow unless $j(m+1)\le n$, so in practice only two or three terms are non-zero.
 
@@ -241,7 +241,7 @@ Each row of the table is a different bijection, and the four cases differ only i
 
 Distinct balls into distinct boxes is a free choice per ball, giving $k^n$ assignments. Requiring no empty box turns it into a surjection, and inclusion-exclusion over which boxes go unused gives $\sum_{i=0}^{k}(-1)^i\binom ki(k-i)^n$. Requiring at most one ball per box turns it into an injection, so the count is the falling factorial $k(k-1)\cdots(k-n+1)$.
 
-Identical balls into distinct boxes is stars and bars: lay the $n$ balls in a row and insert $k-1$ bars to cut them into $k$ groups, so every arrangement of $n$ stars and $k-1$ bars is exactly one distribution. With every box nonempty, drop one ball into each box first and distribute the remaining $n-k$ freely, which is $\binom{(n-k)+k-1}{k-1}=\binom{n-1}{k-1}$. With at most one per box you are only choosing which boxes are occupied, so it is $\binom kn$.
+Identical balls into distinct boxes is [[stars-and-bars|stars and bars]]: lay the $n$ balls in a row and insert $k-1$ bars to cut them into $k$ groups, so every arrangement of $n$ stars and $k-1$ bars is exactly one distribution. With every box nonempty, drop one ball into each box first and distribute the remaining $n-k$ freely, which is $\binom{(n-k)+k-1}{k-1}=\binom{n-1}{k-1}$. With at most one per box you are only choosing which boxes are occupied, so it is $\binom kn$.
 
 Unlabelled boxes mean partitioning the balls into groups with no order among the groups. For distinct balls that is the Stirling number of the second kind $S(n,k)$, and summing over the number of groups gives the Bell number. This also explains the surjection formula: take an unlabelled partition into $k$ blocks and glue labels onto the boxes in $k!$ ways, so the number of onto maps is $k!\,S(n,k)$.
 
@@ -277,7 +277,7 @@ Use for unions of overlapping conditions, or flip to count "none of the conditio
 Divisibility unions, derangement-style forbidden positions, surjection counts, and seating with forbidden adjacencies. On AIME, PIE with symmetric terms is the default for "avoid all of these patterns" problems.`,
 
 "derangements": String.raw`## Why it works
-PIE over the events "element $i$ is fixed": $D_n = \sum_j (-1)^j\binom{n}{j}(n-j)! = n!\sum \frac{(-1)^j}{j!}$ — the truncated $e^{-1}$ series, whence the nearest-integer form. The recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$ conditions on where element 1 goes and whether the swap closes.
+[[pie|PIE]] over the events "element $i$ is fixed": $D_n = \sum_j (-1)^j\binom{n}{j}(n-j)! = n!\sum \frac{(-1)^j}{j!}$ — the truncated $e^{-1}$ series, whence the nearest-integer form. The recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$ conditions on where element 1 goes and whether the swap closes.
 
 ## How to use it
 Recognise the setup as "no object in its own place" — hats returned to the wrong owners, letters in wrong envelopes, a permutation with no fixed point.
@@ -297,7 +297,7 @@ The skill is recognition rather than computation: whenever a structure is built 
 
 To confirm a guess, compute the first few values by hand and compare against $1,1,2,5,14$. That check is faster than finding the bijection and almost always settles it.
 
-Two derivations are worth keeping. The subtraction form comes from the reflection principle — all paths minus the bad ones. The convolution recurrence comes from splitting at the first return to the diagonal, and it is the one that generalises when the problem is Catalan-like but not exactly Catalan.
+Two derivations are worth keeping. The subtraction form comes from [[reflection-principle|the reflection principle]] — all paths minus the bad ones. The convolution recurrence comes from splitting at the first return to the diagonal, and it is the one that generalises when the problem is Catalan-like but not exactly Catalan.
 
 ## On contests
 $1, 2, 5, 14, 42, 132, 429, 1430$ should be recognizable on sight. AIME problems rarely say "Catalan" — they describe a non-crossing or non-negative-partial-sum condition and expect the identification.`,
@@ -363,7 +363,7 @@ For "at least $d$ apart" rather than merely non-adjacent, pre-place $d-1$ spacer
 Seat selections, lighting non-adjacent lamps, and committee-with-feuds problems. The circular formula handles round tables — deriving it live is error-prone, so know it.`,
 
 "partitions": String.raw`## Why it works
-No closed form; the structure lives in bijections. Conjugation (flip the Ferrers diagram) proves partitions into $\le k$ parts = partitions into parts $\le k$. Euler's odd = distinct theorem comes from binary-splitting parts.
+No closed form; the structure lives in [[bijection-method|bijections]]. Conjugation (flip the Ferrers diagram) proves partitions into $\le k$ parts = partitions into parts $\le k$. Euler's odd = distinct theorem comes from binary-splitting parts.
 
 ## How to use it
 Distinguish partitions from compositions first, since the two counts are wildly different: compositions have the clean $2^{n-1}$, partitions have no closed form and must be built up.
@@ -373,7 +373,7 @@ For small $n$, generate $p(n)$ by listing in decreasing order to avoid duplicate
 The conjugation trick is the one that turns hard restrictions into easy ones. Reflecting a Young diagram swaps rows with columns, so "partitions of $n$ into at most $k$ parts" and "partitions of $n$ into parts of size at most $k$" are the same count — often one side is far easier to enumerate.
 
 ## On contests
-Casework enumeration of small partitions (distributing identical objects to identical boxes), and composition counts. AIME occasionally rewards the conjugation trick on restricted counts.`,
+[[casework-method|Casework]] enumeration of small partitions (distributing identical objects to identical boxes), and composition counts. AIME occasionally rewards the conjugation trick on restricted counts.`,
 
 "surjections": String.raw`## Why it works
 Inclusion–exclusion over which outputs are missed: $\sum_{j=0}^{k}(-1)^j\binom{k}{j}(k-j)^n$ subtracts the assignments that avoid $j$ chosen outputs, alternating to correct for double-counted overlaps. It equals $k!\,S(n,k)$ because a surjection is an unordered partition of the $n$ inputs into $k$ nonempty blocks — that count is $S(n,k)$, a Stirling number of the second kind — followed by a bijection matching the $k$ blocks to the $k$ labeled outputs, which adds a factor of $k!$.
@@ -383,10 +383,10 @@ The requirement that every output is used destroys the independence between inpu
 
 Run the exclusion over which outputs are missed: subtract the functions avoiding one chosen output, add back those avoiding two, and so on. Each term is a plain function count into a smaller codomain.
 
-The Stirling form is often faster when $k$ is small, since $k!\,S(n,k)$ separates the count into "how are the inputs grouped" and "which output does each group take". It is also the entry in the twelvefold way for distinguishable balls into distinguishable boxes with none empty.
+The Stirling form is often faster when $k$ is small, since $k!\,S(n,k)$ separates the count into "how are the inputs grouped" and "which output does each group take". It is also the entry in [[balls-boxes-table|the twelvefold way]] for distinguishable balls into distinguishable boxes with none empty.
 
 ## On contests
-"Each of 3 mailboxes gets at least one of 6 letters," "every color is used," "no group left empty" — all recurring AMC/AIME shapes. The PIE formula plus fluency with the small cases handles essentially all of them.`,
+"Each of 3 mailboxes gets at least one of 6 letters," "every color is used," "no group left empty" — all recurring AMC/AIME shapes. The [[pie|PIE]] formula plus fluency with the small cases handles essentially all of them.`,
 
 "stirling-first-kind": String.raw`## Why it works
 Permutations decompose uniquely into disjoint cycles; $c(n,k)$ counts those with exactly $k$ cycles. Recursion: element $n$ starts its own cycle ($c(n-1,k-1)$) or inserts into any of $n-1$ positions inside existing cycles ($(n-1)c(n-1,k)$).
@@ -402,7 +402,7 @@ The row sum is $n!$, which is the quickest sanity check on a computed row, and t
 Cycle-structure problems (dance circles, function iteration orbits) and probability questions about random permutations' cycles — e.g. probability 1..n form one cycle is $\frac{1}{n}$.`,
 
 "necklace-formula": String.raw`## Why it works
-Burnside specialized to the cyclic group: rotation by $d$ has $\gcd(n,d)$ cycles, and grouping rotations by $g = \gcd$ collects $\varphi(n/g)$ rotations each, giving $\frac{1}{n}\sum_{d\mid n}\varphi(d)k^{n/d}$.
+[[burnsides-lemma|Burnside]] specialized to the cyclic group: rotation by $d$ has $\gcd(n,d)$ cycles, and grouping rotations by $g = \gcd$ collects $\varphi(n/g)$ rotations each, giving $\frac{1}{n}\sum_{d\mid n}\varphi(d)k^{n/d}$.
 
 ## How to use it
 This is Burnside specialised to rotations, so use it directly when the objects are arranged in a cycle and rotations are considered identical.
@@ -416,7 +416,7 @@ Circular binary strings up to rotation, bead necklaces, and AIME's occasional "d
 
 
 "basic-probability": String.raw`## Why it works
-With equally likely outcomes, probability is proportional counting. The union formula is PIE scaled by the sample-space size.
+With equally likely outcomes, probability is proportional counting. The union formula is [[pie|PIE]] scaled by the sample-space size.
 
 ## How to use it
 The first thing to check is that your outcomes really are equally likely, because the counting formula is meaningless otherwise. Listing "sum of two dice is $2,3,\dots,12$" as eleven outcomes is the standard way to go wrong; the $36$ ordered pairs are the equally likely ones.
@@ -436,7 +436,7 @@ Read $P(A\mid B)$ as "throw away every outcome outside $B$, then measure $A$ wit
 
 The rearranged form is what you use going forwards: a sequence of dependent choices multiplies as $P(\text{first})\cdot P(\text{second}\mid\text{first})\cdots$, which is how without-replacement draws are computed step by step.
 
-Two traps are worth naming. $P(A\mid B)$ and $P(B\mid A)$ are different numbers, and confusing them is exactly the error Bayes' theorem exists to correct. And independence is a claim to verify, not to assume from the story — "the two draws feel unrelated" is not evidence, whereas checking $P(A\cap B)=P(A)P(B)$ is.
+Two traps are worth naming. $P(A\mid B)$ and $P(B\mid A)$ are different numbers, and confusing them is exactly the error [[bayes-theorem|Bayes' theorem]] exists to correct. And independence is a claim to verify, not to assume from the story — "the two draws feel unrelated" is not evidence, whereas checking $P(A\cap B)=P(A)P(B)$ is.
 
 ## On contests
 AMC/AIME "given that" problems reward direct restricted counting. Watch the classic traps: "at least one boy" vs "the older is a boy" condition different spaces.`,
@@ -465,7 +465,7 @@ The standard move is decomposition: write the quantity as a sum of indicators, o
 Compute $E[X]=\sum x_ip_i$ directly only when the distribution is short. If the values run over a long or infinite range, either use the indicator decomposition or the tail-sum formula, both of which avoid enumerating the distribution at all.
 
 ## On contests
-AIME expected-value problems are almost always linearity-of-indicators in disguise; recognizing "count = sum of indicators" replaces heavy casework with one-line sums.`,
+AIME expected-value problems are almost always linearity-of-indicators in disguise; recognizing "count = sum of indicators" replaces heavy [[casework-method|casework]] with one-line sums.`,
 
 "geometric-distribution": String.raw`## Why it works
 Self-similarity: after one failure the situation resets, so $E = 1 + (1-p)E$, giving $E = \frac{1}{p}$. The series view sums $\sum k p(1-p)^{k-1}$ (arithmetico-geometric), whose terms are the distribution itself: the first success falls exactly on trial $k$ with probability $P(X=k)=(1-p)^{k-1}p$.
@@ -481,7 +481,7 @@ Watch what is being counted. "Trials until the first success" includes the succe
 "Expected rolls until a 6" ($=6$), coupon-collector variants (expected rolls to see every face: $14.7$), and first-passage questions. The self-similar equation is faster and safer than series summation.`,
 
 "turn-based-games": String.raw`## Why it works
-Sum the geometric series over rounds, or self-similarity: $P = p + (1-p)(1-q)P$ — either the first player wins now, or both miss and the game restarts identically.
+Sum the [[geometric-series|geometric series]] over rounds, or self-similarity: $P = p + (1-p)(1-q)P$ — either the first player wins now, or both miss and the game restarts identically.
 
 ## How to use it
 Condition on the first round rather than summing the series: either the first player succeeds immediately, or both fail and the position resets exactly, giving $P=p+(1-p)(1-q)P$. Solving takes one line and generalises to variants the closed form does not cover.
@@ -568,7 +568,7 @@ $\mathrm{Var}(X) = E[X^2] - E[X]^2$ is algebra on the definition; independence m
 ## How to use it
 The contrast with expectation is the point worth internalising: $E[X+Y]=E[X]+E[Y]$ always, but the corresponding statements for products and for variance need independence. Applying them to dependent variables is the standard error.
 
-Compute variance as $E[X^2]-E[X]^2$, which usually means finding $E[X^2]$ by the same indicator or casework method used for $E[X]$. For an indicator, $E[X^2]=E[X]$ since $0$ and $1$ square to themselves, which simplifies sums of indicators considerably.
+Compute variance as $E[X^2]-E[X]^2$, which usually means finding $E[X^2]$ by the same indicator or [[casework-method|casework]] method used for $E[X]$. For an indicator, $E[X^2]=E[X]$ since $0$ and $1$ square to themselves, which simplifies sums of indicators considerably.
 
 When the variables are dependent, the correction term is the covariance: $\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)+2\operatorname{Cov}(X,Y)$.
 
@@ -687,7 +687,7 @@ Object.assign(window.MATH_DETAILS, {
 Differentiating $(1+x)^n = \sum \binom{n}{k}x^k$ brings down a factor of $k$; multiplying by $x$ realigns the powers; setting $x = 1$ sums. Twice through gives $k(k-1)$ sums, and $k^2 = k(k-1) + k$ assembles the $k^2$ version. Combinatorially: $k^2\binom{n}{k}$ counts committees with a chair and a (possibly identical) secretary.
 
 ## How to use it
-The derivative pipeline evaluates any $\sum k^m \binom{n}{k} x^k$; the combinatorial story (chair/secretary casework: same person or different) is faster for small $m$ and less error-prone under pressure. For alternating versions, differentiate first and then substitute $x = -1$.
+The derivative pipeline evaluates any $\sum k^m \binom{n}{k} x^k$; the combinatorial story (chair/secretary [[casework-method|casework]]: same person or different) is faster for small $m$ and less error-prone under pressure. For alternating versions, differentiate first and then substitute $x = -1$.
 
 ## On contests
 Expected values over random subsets ($E[|S|^2]$ for uniform random subsets needs exactly $\sum k^2\binom{n}{k}/2^n = \frac{n(n+1)}{4}$) and AIME identity evaluations. The committee-chair-secretary story generalizes to any polynomial weight.`,
@@ -738,7 +738,7 @@ By symmetry, $n$ uniform points plus the two interval endpoints split $[0,1]$ in
 The distribution function route ($P(\max \le x) = x^n$, $P(\min \ge x) = (1-x)^n$) answers probability questions; the gap-symmetry route answers expectation questions instantly. For the range: $E[\max - \min] = \frac{n-1}{n+1}$.
 
 ## On contests
-"Expected value of the largest of three spins," waiting-point problems, and geometric probability hybrids (the broken-stick setup is order statistics on two points). The $\frac{k}{n+1}$ pattern is worth having on instant recall.`,
+"Expected value of the largest of three spins," waiting-point problems, and [[geometric-probability|geometric probability]] hybrids (the broken-stick setup is order statistics on two points). The $\frac{k}{n+1}$ pattern is worth having on instant recall.`,
 
 "total-expectation": String.raw`## Why it works
 Group the outcomes by which case $A_i$ occurred and average within cases first: the inner averages are the conditional expectations, and recombining with weights $P(A_i)$ reproduces the overall average. It is associativity of weighted averages, elevated to a principle.
@@ -748,7 +748,7 @@ Choose the partition that makes each conditional expectation easy, and condition
 
 Wald's identity is the case worth recognising separately: when a random number of independent pieces are summed, the expected total is the product of the two expectations, provided $N$ does not depend on the values of the pieces. That proviso matters, and dropping it is the standard error.
 
-The technique pairs naturally with state recursions: the law of total expectation writes one equation per state, and solving the small system gives every expectation at once. Whichever partition you pick, check it is disjoint and exhaustive — the same requirement as ordinary casework, and the usual source of a wrong weighted average.
+The technique pairs naturally with state recursions: the law of total expectation writes one equation per state, and solving the small system gives every expectation at once. Whichever partition you pick, check it is disjoint and exhaustive — the same requirement as ordinary [[casework-method|casework]], and the usual source of a wrong weighted average.
 
 ## On contests
 The organizing principle behind nearly every AIME expected-value problem: condition on the first step, write the tower equation, solve. Misapplying it (conditioning on a non-partition) is the error to guard against — cases must be exclusive and exhaustive.`,
@@ -765,7 +765,7 @@ The organizing principle behind nearly every AIME expected-value problem: condit
 A one-to-one correspondence pairs the two sets off perfectly, so they have the same size — even when one is a mess and the other is a textbook family. Counting the easy set is counting the hard set.
 
 ## How to use it
-Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ stars and bars (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
+Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ [[stars-and-bars|stars and bars]] (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
 
 ## On contests
 The elegant path on AMC/AIME counting: any time the answer to a strange-looking count is a clean binomial, a bijection is the intended solution. Also the safest way to handle "sequences with constraints" — transform the constraint away rather than casing on it.`,
@@ -801,7 +801,7 @@ Object.assign(window.MATH_DETAILS, {
 The multiplication principle: if a sequence of decisions builds each object exactly once, and step $i$ always offers $c_i$ options no matter what came before, the total is $\prod c_i$. The two ways it breaks are exactly the two things to watch: a step whose option count depends on earlier choices (fix: reorder the steps or split into cases), and an object built more than once (fix: divide by the number of times each is built). Digit conditions are the cleanest case, because they are independent across positions, so the count factors into a product instead of an enumeration.
 
 ## How to use it
-Order the decisions from most constrained to least, so the restricted slot's count stays uniform. For "at least one" constraints, construction usually loses to complementary counting; for identical objects or unordered selections, construct the ordered version and divide, by $k!$ for unordered, $n$ for rotations, $2$ for reflections. The reflex check before multiplying is "does this step's count ever depend on what I picked earlier?"
+Order the decisions from most constrained to least, so the restricted slot's count stays uniform. For "at least one" constraints, construction usually loses to [[complementary-counting|complementary counting]]; for identical objects or unordered selections, construct the ordered version and divide, by $k!$ for unordered, $n$ for rotations, $2$ for reflections. The reflex check before multiplying is "does this step's count ever depend on what I picked earlier?"
 
 For counting integers by a digit rule, the slots are the digit positions. At a fixed length, multiply the choices per slot with the leading digit avoiding $0$. Up to a bound $N$, sweep the position where the number first drops below $N$: earlier digits match $N$, that digit is strictly smaller, and the rest are free, then sum over positions. This is the digit-DP idea, and it scales to AIME-sized bounds where listing cannot. Treat "digit sum $=k$" with [[stars-and-bars|stars and bars]] across the slots, and remember that complementary counting, total minus the ones that do contain a $7$, is often shorter than the direct build.
 
@@ -864,14 +864,14 @@ The intended tool for "given that [evidence], find the probability of [cause]" �
 Multiplying $\left(\sum_i x^{a_i}\right)\left(\sum_j x^{b_j}\right)$ produces a term $x^{a_i + b_j}$ for every pair of choices, so the coefficient of $x^N$ in the product counts exactly the combinations summing to $N$. Independent decisions multiply as factors and the exponents do the addition for you, which is to say that multiplying polynomials convolves their coefficient sequences. A generating function is bookkeeping for "ways per total".
 
 ## How to use it
-Model each choice as a factor whose exponents are its allowed contributions: a die is $x + x^2 + \cdots + x^6$, an unlimited supply of value-$a$ coins is $\frac{1}{1 - x^a} = 1 + x^a + x^{2a} + \cdots$, a bounded part $0 \le k \le m$ is $1 + x + \cdots + x^m$. Multiply, then extract the coefficient of $x^N$ by expansion, by a known series such as $\frac{1}{(1-x)^k} \to \binom{n+k-1}{k-1}$, or by partial fractions when you want a closed form. Splitting a rational generating function into pieces $\frac{c}{1-rx}$ makes each one a geometric series, so $a_n$ becomes a sum of $r^n$ terms, which is the generating-function proof of linear-recurrence closed forms.
+Model each choice as a factor whose exponents are its allowed contributions: a die is $x + x^2 + \cdots + x^6$, an unlimited supply of value-$a$ coins is $\frac{1}{1 - x^a} = 1 + x^a + x^{2a} + \cdots$, a bounded part $0 \le k \le m$ is $1 + x + \cdots + x^m$. Multiply, then extract the coefficient of $x^N$ by expansion, by a known series such as $\frac{1}{(1-x)^k} \to \binom{n+k-1}{k-1}$, or by partial fractions when you want a closed form. Splitting a rational generating function into pieces $\frac{c}{1-rx}$ makes each one a [[geometric-series|geometric series]], so $a_n$ becomes a sum of $r^n$ terms, which is the generating-function proof of linear-recurrence closed forms.
 
 Global tricks: substitute $x = 1$ to total all coefficients, differentiate then set $x = 1$ for a weighted sum, and use a roots-of-unity filter to select one residue class of exponents.
 
-Everything above uses ordinary generating functions, which count unlabeled totals. Exponential generating functions, where the count sits on $\frac{x^n}{n!}$, handle labeled or ordered structures instead; multiplying EGFs interleaves labels, which is why $e^x$ builds permutations and $\frac{e^x + e^{-x}}{2}$ builds even-size subsets.
+Everything above uses ordinary generating functions, which count unlabeled totals. [[exponential-generating-functions|Exponential generating functions]], where the count sits on $\frac{x^n}{n!}$, handle labeled or ordered structures instead; multiplying EGFs interleaves labels, which is why $e^x$ builds permutations and $\frac{e^x + e^{-x}}{2}$ builds even-size subsets.
 
 ## On contests
-The systematic route for coin, stamp and dice-sum counts and for constrained integer solutions, and the natural home for the roots-of-unity filter on AIME "count the subsets whose sum is divisible by $k$" problems. It also covers dice-sum distributions, including the famous relabel-two-dice problem, partition-with-conditions counts, and it is the unifying view behind stars and bars and the PIE identities. It trades cleverness for a reliable model-multiply-extract pipeline, so reach for it when casework on the count would explode.`
+The systematic route for coin, stamp and dice-sum counts and for constrained integer solutions, and the natural home for the roots-of-unity filter on AIME "count the subsets whose sum is divisible by $k$" problems. It also covers dice-sum distributions, including the famous relabel-two-dice problem, partition-with-conditions counts, and it is the unifying view behind [[stars-and-bars|stars and bars]] and the [[pie|PIE]] identities. It trades cleverness for a reliable model-multiply-extract pipeline, so reach for it when [[casework-method|casework]] on the count would explode.`
 
 });
 
@@ -902,7 +902,7 @@ An olympiad workhorse for existence and impossibility proofs, especially graph a
 Object.assign(window.MATH_DETAILS, {
 
 "sprague-grundy": String.raw`## Why it works
-In Nim the XOR ("Nim-sum") of the pile sizes is a handle you control: if it's nonzero, some pile has a leading bit you can clear to zero the whole XOR (a move to a losing-for-opponent position); if it's zero, every move breaks it. Sprague–Grundy generalizes this by assigning each position a value $g = \operatorname{mex}$ of its options' values — the least nonnegative integer they miss. A position with $g = 0$ can only move to $g \ne 0$ and vice versa, exactly Nim's win/loss logic, and independent games combine because the XOR of Grundy values behaves like one Nim position.
+In [[losing-positions|Nim]] the XOR ("Nim-sum") of the pile sizes is a handle you control: if it's nonzero, some pile has a leading bit you can clear to zero the whole XOR (a move to a losing-for-opponent position); if it's zero, every move breaks it. Sprague–Grundy generalizes this by assigning each position a value $g = \operatorname{mex}$ of its options' values — the least nonnegative integer they miss. A position with $g = 0$ can only move to $g \ne 0$ and vice versa, exactly Nim's win/loss logic, and independent games combine because the XOR of Grundy values behaves like one Nim position.
 
 ## How to use it
 For a single game type, tabulate $g(0), g(1), \dots$ via $g(n) = \operatorname{mex}\{g(\text{reachable})\}$ until the (usually periodic) pattern emerges; $g = 0$ marks the losing positions. When a game splits into independent parts — several piles, a board that separates — compute each part's Grundy value and XOR them: the whole is a loss iff the XOR is $0$, and the winning move is the one that zeroes it (treat each part as a Nim pile of size $g$).
@@ -992,7 +992,7 @@ Burnside counts orbits by averaging fixed points; Pólya refines "fixed" into a 
 Compute the cycle index $Z_G = \frac{1}{|G|}\sum_g \prod_k t_k^{c_k(g)}$. Substitute $t_k = m$ for a plain count (that's Burnside), or $t_k = x^k + y^k + \cdots$ to get a generating function whose coefficients count colorings with a prescribed number of each color — e.g. bracelets with exactly three red beads.
 
 ## On contests
-Needed only for "count colorings with a fixed color distribution, up to symmetry" — rare and olympiad-tier. For plain orbit counts, Burnside's lemma is enough.`,
+Needed only for "count colorings with a fixed color distribution, up to symmetry" — rare and olympiad-tier. For plain orbit counts, [[burnsides-lemma|Burnside's lemma]] is enough.`,
 
 "probability-generating-functions": String.raw`## Why it works
 $G_X(s) = E[s^X] = \sum_k P(X=k)s^k$ stores the whole distribution. Differentiating and evaluating at $s = 1$ pulls down factors of $k$: $G'(1) = E[X]$ and $G''(1) = E[X(X-1)]$, giving the variance. Independence multiplies PGFs since $E[s^{X+Y}] = E[s^X]\,E[s^Y]$.
@@ -1001,10 +1001,10 @@ $G_X(s) = E[s^X] = \sum_k P(X=k)s^k$ stores the whole distribution. Differentiat
 For a sum of independent nonnegative-integer variables, multiply their PGFs and expand to read the distribution — a single die is $\frac{s + s^2 + \cdots + s^6}{6}$, so $n$ dice is that to the $n$-th power. Get moments from the derivatives at $1$, and recover $P(X=k)$ as the coefficient of $s^k$.
 
 ## On contests
-An AIME/olympiad convenience for sums of independent counts and for extracting $E[X]$ and $\mathrm{Var}(X)$ together — essentially ordinary generating functions in probabilistic dress.`,
+An AIME/olympiad convenience for sums of independent counts and for extracting $E[X]$ and $\mathrm{Var}(X)$ together — essentially ordinary [[generating-function-method|generating functions]] in probabilistic dress.`,
 
 "konigs-theorem": String.raw`## Why it works
-Any vertex cover must contain an endpoint of every matched edge, so cover $\ge$ matching always. In bipartite graphs, an augmenting-path argument (equivalently max-flow/min-cut on the bipartite network) constructs a cover of exactly the maximum matching's size, giving equality. It is the dual of Hall's theorem.
+Any vertex cover must contain an endpoint of every matched edge, so cover $\ge$ matching always. In bipartite graphs, an augmenting-path argument (equivalently max-flow/min-cut on the bipartite network) constructs a cover of exactly the maximum matching's size, giving equality. It is the dual of [[halls-marriage|Hall's]] theorem.
 
 ## How to use it
 Use it to convert between two bounds of very different difficulty. Exhibiting a matching of size $k$ bounds the cover from below, and exhibiting a cover of size $k$ bounds the matching from above; when the two agree, both are optimal and you have proved it.
@@ -1064,7 +1064,7 @@ Object.assign(window.MATH_DETAILS, {
 "transfer-matrix-method": String.raw`## Key forms
 - $M_{ij}=1$ when state $i$ may be followed by state $j$ — the adjacency matrix of allowed transitions
 - $(M^n)_{ij}$ — counts length-$n$ sequences from $i$ to $j$, since multiplication sums over intermediate states
-- $\operatorname{tr}(M^n)$ — counts the closed ones, the version for circular arrangements
+- $\operatorname{tr}(M^n)$ — counts the closed ones, the version for [[circular-permutations|circular arrangements]]
 - $\det(xI-M)$ — its characteristic polynomial is the linear recurrence these counts satisfy
 
 ## Why it works
@@ -1086,7 +1086,7 @@ For a sum over all subsets, the shortcut is that each element appears in exactly
 
 The sum-parity split needs one odd element, and the reason is a bijection: toggling that element in or out flips the parity of the sum and pairs the even-sum subsets with the odd-sum ones exactly. With no odd element every subset sum is even and the split fails, which is the case to check before quoting the result.
 
-The size-parity split is different and always holds — it is the binomial theorem at $x=1$, $y=-1$.
+The size-parity split is different and always holds — it is the [[binomial-theorem|binomial theorem]] at $x=1$, $y=-1$.
 
 ## On contests
 AMC/AIME "sum over all subsets" and "how many subsets have even sum" problems collapse to one line; the same appearance-counting idea — each element or pair is counted a fixed number of times — generalizes to summing any additive statistic over a family.`,
@@ -1112,9 +1112,9 @@ Object.assign(window.MATH_DETAILS, {
 Weighting the $n$-th term by $\frac{1}{n!}$ makes the product of two EGFs reindex as $c_n=\sum_k\binom{n}{k}a_k b_{n-k}$ — exactly "split the $n$ labels between two labeled structures." So EGF multiplication is the labeled analogue of the choose operation, where ordinary (unlabeled) GFs would undercount.
 
 ## How to use it
-Use EGFs when the objects are labelled and ordinary generating functions fail — that is, whenever the count involves choosing which labels go to which part, since that is exactly what the $\binom nk$ in the product supplies.
+Use EGFs when the objects are labelled and ordinary [[generating-function-method|generating functions]] fail — that is, whenever the count involves choosing which labels go to which part, since that is exactly what the $\binom nk$ in the product supplies.
 
-The dictionary is short: $e^x$ builds one structure per label, $\frac{1}{1-x}$ as an EGF builds linear orders, and exponentiating an EGF partitions the labels into an unordered collection of that structure. Derangements, set partitions, and labelled trees all come out of applying that exponential rule.
+The dictionary is short: $e^x$ builds one structure per label, $\frac{1}{1-x}$ as an EGF builds linear orders, and exponentiating an EGF partitions the labels into an unordered collection of that structure. [[derangements|Derangements]], set partitions, and labelled trees all come out of applying that exponential rule.
 
 Extract $a_n$ by reading the coefficient and multiplying back by $n!$ — forgetting that final factorial is the standard slip.
 
@@ -1132,7 +1132,7 @@ The representation is a bijection between integers and binary strings with no tw
 Contest uses are usually about that uniqueness: showing a Fibonacci-sum representation is forced, or converting between an integer and its Fibonacci digits.
 
 ## On contests
-Occasional AIME and olympiad appearances (Fibonacci representations, Wythoff and Beatty problems); the greedy algorithm together with uniqueness is essentially the whole toolkit.`,
+Occasional AIME and olympiad appearances (Fibonacci representations, Wythoff and [[beatty-theorem|Beatty]] problems); the greedy algorithm together with uniqueness is essentially the whole toolkit.`,
 
 "moser-circle": String.raw`## Why it works
 Apply [[eulers-formula|Euler's formula]] $V-E+F=2$ to the planar graph of points, chord crossings, and arcs: there are $\binom{n}{2}$ chords and $\binom{n}{4}$ interior crossings (one per choice of 4 points, assuming no three chords meet inside), and bookkeeping the edges and faces yields $R(n)=\binom{n}{4}+\binom{n}{2}+1$.
@@ -1203,7 +1203,7 @@ Spot the shape first: a sum of squared binomials with alternating signs is one c
 More generally, whenever a binomial sum has the form $\sum_k (-1)^k \binom{m}{k}\binom{m}{r-k}$, it is the coefficient of $x^r$ in $(1-x^2)^m$: zero when $r$ is odd, and $(-1)^{r/2}\binom{m}{r/2}$ when $r$ is even. The squared case is $r = m$.
 
 ## On contests
-An AIME-level identity that shows up when a problem manufactures $\sum(-1)^k\binom{2n}{k}^2$ out of a counting argument or a product of two generating functions. The takeaway worth carrying is the technique rather than the closed form: multiply the two expansions whose product simplifies, then compare a single coefficient.`,
+An AIME-level identity that shows up when a problem manufactures $\sum(-1)^k\binom{2n}{k}^2$ out of a counting argument or a product of two [[generating-function-method|generating functions]]. The takeaway worth carrying is the technique rather than the closed form: multiply the two expansions whose product simplifies, then compare a single coefficient.`,
 
 "markovs-inequality": String.raw`## Why it works
 Split the expectation at the threshold. Because $X \ge 0$, throwing away the part below $a$ only decreases the average:
@@ -1218,7 +1218,7 @@ Use it whenever you need to show something cannot happen too often, or that a go
 - Bounding a tail. If the average score is $60$, at most a quarter of the students can have scored $240$ or more, whatever the distribution.
 - Proving existence. If $E[X] \lt 1$ for a nonnegative integer count $X$, then $P(X = 0) \gt 0$, so some outcome has no bad events at all — the first-moment method behind many probabilistic-method arguments.
 
-The bound is deliberately crude, using only the mean, so it is the right tool when you know almost nothing about the distribution and the wrong one when you need a sharp estimate. Its existence form is what the probabilistic method uses: if $E[X] \lt a$ then $P(X \lt a) \gt 0$, so some outcome beats the average.
+The bound is deliberately crude, using only the mean, so it is the right tool when you know almost nothing about the distribution and the wrong one when you need a sharp estimate. Its existence form is what [[probabilistic-method|the probabilistic method]] uses: if $E[X] \lt a$ then $P(X \lt a) \gt 0$, so some outcome beats the average.
 
 ## On contests
 Rare on AMC and AIME as a named result, but the reasoning appears constantly in disguise: "the average is $m$, so some term is at least $m$" is the one-line version, and its contrapositive settles many "show some configuration exists" olympiad problems. Pair it with linearity of expectation, which computes the mean, and Markov converts that mean into a guarantee.`,
@@ -1231,7 +1231,7 @@ Rare on AMC and AIME as a named result, but the reasoning appears constantly in 
 The addition principle: if every object belongs to exactly one case, the total is the sum of the case counts. All the craft is in choosing the splitting feature so that "exactly one" holds and each case becomes strictly easier than the original.
 
 ## How to use it
-Split on the most constrained element: the largest value, the leading digit, where the special person sits, how many of some type appear. Before summing, run the two sanity checks — can an object satisfy two cases (overlap)? can it satisfy none (gap)? If the case count balloons past five or six, that's the signal to switch: complementary counting, a bijection, or a recursion usually compresses it. Symmetric cases can be counted once and multiplied.
+Split on the most constrained element: the largest value, the leading digit, where the special person sits, how many of some type appear. Before summing, run the two sanity checks — can an object satisfy two cases (overlap)? can it satisfy none (gap)? If the case count balloons past five or six, that's the signal to switch: [[complementary-counting|complementary counting]], a bijection, or a recursion usually compresses it. Symmetric cases can be counted once and multiplied.
 
 ## On contests
 The single most-used counting technique at every level. MATHCOUNTS problems are often pure two-case splits; AMC problems reward finding the split that makes cases symmetric; AIME problems layer casework inside other techniques — the errors are almost always an overlap or a forgotten case, so the discipline of naming the cases explicitly is the whole game.`,
@@ -1245,7 +1245,7 @@ The single most-used counting technique at every level. MATHCOUNTS problems are 
 Take any path that touches the forbidden line and reflect everything after the first touch across that line: the result is a path to the mirror image of the endpoint. The map is reversible (paths to the mirrored endpoint must cross the line), so bad paths biject with unrestricted paths to a reflected target — countable by plain binomials.
 
 ## How to use it
-Recipe: total paths minus $\binom{\cdot}{\cdot}$ to the reflected endpoint. Compute the reflection of the endpoint across the barrier line (for $y = x + c$ barriers, swap-and-shift coordinates). Iterated barriers (two walls) need alternating reflections with inclusion-exclusion. The ballot problem and [[catalan-numbers|Catalan]] formula are the two canonical outputs.
+Recipe: total paths minus $\binom{\cdot}{\cdot}$ to the reflected endpoint. Compute the reflection of the endpoint across the barrier line (for $y = x + c$ barriers, swap-and-shift coordinates). Iterated barriers (two walls) need alternating reflections with inclusion-exclusion. [[ballot-problem|The ballot problem]] and [[catalan-numbers|Catalan]] formula are the two canonical outputs.
 
 ## On contests
 Vote-count and never-trailing problems, queue problems (people with 5- and 10-dollar bills), and lattice paths avoiding a diagonal. When a path constraint says "never above/below," reflect before attempting recursion — the closed form is one subtraction.`

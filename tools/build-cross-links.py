@@ -96,7 +96,7 @@ def build_table(cards, cfg):
     cards; those go to `ambiguous` as a worklist for a later context-aware pass.
     """
     deny = {d.lower() for d in cfg.get("deny", [])}
-    claims = {}
+    claims, surface = {}, {}
     for cid, forms in cfg.get("aliases", {}).items():
         if cid not in cards:
             continue
@@ -104,10 +104,14 @@ def build_table(cards, cfg):
             if f.lower() in deny:
                 continue
             claims.setdefault(f.lower(), set()).add(cid)
+            surface.setdefault(f.lower(), f)
     table, ambiguous = {}, {}
     for a, ids in claims.items():
         if len(ids) == 1:
-            table[a] = next(iter(ids))
+            # carry the ORIGINAL casing: the key is lowercased for ambiguity detection, and
+            # matching a case-sensitive acronym against that key searched for "lte", which
+            # never matches "LTE" -- the exact miss this pass exists to fix.
+            table[a] = (next(iter(ids)), surface[a])
         else:
             ambiguous[a] = sorted(ids)
     return table, ambiguous
@@ -148,15 +152,25 @@ def find_candidates(host, body, table, cfg, cards):
         for m in re.finditer(r"(?<![\w-])" + re.escape(p) + r"(?![\w-])", body, re.I):
             skip.append((m.start(), m.end()))
 
-    found, taken = [], set()
+    reject = set(cfg.get("reject", []))
+    # Targets this card already links. Without this the once-per-host-per-target rule holds
+    # only WITHIN a run: on the next run the applied link is hidden inside a [[...]] skip
+    # span, so a second mention further down looks unlinked and a duplicate is proposed.
+    found = []
+    taken = set(re.findall(r"\[\[([\w-]+)[|\]]", body))
     for alias in sorted(table, key=len, reverse=True):
-        tgt = table[alias]
-        if tgt == host or tgt in taken:
+        tgt, form = table[alias]
+        if tgt == host or tgt in taken or (host + " -> " + tgt) in reject:
             continue
-        flags = 0 if any(cs.lower() == alias for cs in case_sensitive) else re.I
-        pat = re.compile(r"(?<![\w-])" + re.escape(alias) + r"(?![\w-])", flags)
+        cs = any(c.lower() == alias for c in case_sensitive)
+        pat = re.compile(r"(?<![\w-])" + re.escape(form if cs else alias) + r"(?![\w-])",
+                         0 if cs else re.I)
         for m in pat.finditer(body):
             if in_span(m.start(), m.end(), skip):
+                continue
+            # linkifyCards splits on $...$ before looking for [[...]], so a link whose text
+            # straddles math would never match its regex and would render as literal markup.
+            if "$" in m.group(0):
                 continue
             found.append({"host": host, "target": tgt, "alias": alias,
                           "start": m.start(), "end": m.end(), "text": m.group(0)})

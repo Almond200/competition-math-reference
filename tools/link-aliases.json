@@ -2014,7 +2014,8 @@
   "Markov",
   "Markovs",
   "Quadratic",
-  "Sphere"
+  "Sphere",
+  "no two adjacent"
  ],
  "protect": [
   "Cauchy–Binet",
@@ -2028,6 +2029,29 @@
   "Gauss–Bonnet",
   "Pascal's triangle",
   "Pascal’s triangle",
-  "Pascal triangle"
+  "Pascal triangle",
+  "Brahmagupta–Fibonacci",
+  "Brahmagupta-Fibonacci",
+  "Legendre symbol",
+  "Legendre symbols",
+  "Frobenius map",
+  "Chebyshev polynomial",
+  "Chebyshev/Dickson",
+  "Lagrange's four-square",
+  "Apollonius circles"
+ ],
+ "reject": [
+  "bertrands-postulate -> chebyshev-sum-inequality",
+  "markovs-inequality -> chebyshev-sum-inequality",
+  "reciprocal-power-sums -> chebyshev-sum-inequality",
+  "freshmans-dream -> chicken-mcnugget",
+  "gaussian-integers -> brahmaguptas-formula",
+  "gauss-lemma-qr -> legendres-formula",
+  "jacobi-symbol -> legendres-formula",
+  "quadratic-reciprocity -> legendres-formula",
+  "sum-of-three-squares -> legendres-formula",
+  "sum-of-three-squares -> lagranges-identity",
+  "apollonius-circle -> apollonius-theorem",
+  "mobius-inversion -> floor-multiples"
  ]
 }
