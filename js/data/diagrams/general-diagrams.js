@@ -332,6 +332,24 @@
     parts.push(txt([x0 + a * cell, y0 - b * cell - 12], "(8, 5)", DIM, 11.5));
     parts.push(cap(440, 300, "gcd(8, 5) = 1, so no interior lattice points on the segment"));
     return wrap(440, 300, parts);
+  })(), (() => {
+    // The gcd > 1 case, which the first panel cannot show: the segment breaks into gcd
+    // identical steps, so gcd - 1 lattice points fall strictly inside it.
+    const x0 = 58, y0 = 250, cell = 36, a = 9, b = 6, g = 3;
+    const parts = [];
+    for (let i = 0; i <= a; i++) parts.push(seg([x0 + i * cell, y0 - b * cell], [x0 + i * cell, y0], FNT, 0.8));
+    for (let j = 0; j <= b; j++) parts.push(seg([x0, y0 - j * cell], [x0 + a * cell, y0 - j * cell], FNT, 0.8));
+    parts.push(seg([x0, y0], [x0 + a * cell, y0 - b * cell], ACC, 2.2));
+    for (let k = 1; k < g; k++) {
+      const p = [x0 + (a / g) * k * cell, y0 - (b / g) * k * cell];
+      parts.push(dot(p, GRN, 5));
+      parts.push(txt([p[0] + 4, p[1] - 10], "(" + (a / g) * k + "," + (b / g) * k + ")", GRN, 11.5));
+    }
+    parts.push(dot([x0, y0], GLD, 5), dot([x0 + a * cell, y0 - b * cell], GLD, 5));
+    parts.push(txt([x0 - 6, y0 + 18], "(0,0)", DIM, 11.5));
+    parts.push(txt([x0 + a * cell - 10, y0 - b * cell - 12], "(9, 6)", DIM, 11.5));
+    parts.push(cap(440, 300, "gcd(9, 6) = 3, so the segment passes through 3 - 1 = 2 interior points"));
+    return wrap(440, 300, parts);
   })()];
 
   // Guard: warn on any NaN coordinates.
@@ -493,6 +511,28 @@
       txt(add(m.pt(x1, y1), [30, -8]), "(x₁, y₁)", ACC, 11.5),
       txt(add(m.pt(5.1, f(5.1)), [8, 14]), "slope m = −3/4", DIM, 11.5),
       cap(440, 300, "y = −¾x + 3 · y − y₁ = m(x − x₁) · 3x + 4y = 12 · x/4 + y/3 = 1, all the same line")
+    ]);
+  })()];
+
+  // Harmonic addition: two sinusoids of the same frequency add to a third of that frequency,
+  // with the amplitude a hypotenuse. Drawn for 3sin + 4cos so the amplitude is exactly 5 and
+  // the dashed bounds land on a round number the reader can check by eye.
+  DIAGRAMS["harmonic-addition"] = [(() => {
+    const m = frame(0, 2 * Math.PI, -5.8, 5.8, 52, 26, 350, 210);
+    const a = 3, b = 4, R = 5, phi = Math.atan2(b, a);
+    return wrap(430, 300, [
+      seg(m.pt(0, R), m.pt(2 * Math.PI, R), GLD, 1.3, "5 4"),
+      seg(m.pt(0, -R), m.pt(2 * Math.PI, -R), GLD, 1.3, "5 4"),
+      axes(m),
+      plot(X => a * Math.sin(X), m, 0, 2 * Math.PI, 160, FNT, 1.6),
+      plot(X => b * Math.cos(X), m, 0, 2 * Math.PI, 160, FNT, 1.6),
+      plot(X => R * Math.sin(X + phi), m, 0, 2 * Math.PI, 200, ACC, 2.6),
+      txt(m.pt(2 * Math.PI, R), "R = 5", GLD, 12, "end"),
+      txt(add(m.pt(Math.PI / 2 - phi, R), [0, -9]), "peak", ACC, 11.5),
+      dot(m.pt(Math.PI / 2 - phi, R), ACC, 3.5),
+      txt(add(m.pt(1.05, a * Math.sin(1.05)), [-16, -6]), "3 sin θ", FNT, 11.5),
+      txt(add(m.pt(0.35, b * Math.cos(0.35)), [20, -8]), "4 cos θ", FNT, 11.5),
+      cap(430, 300, "3 sin θ + 4 cos θ is one wave of amplitude √(3²+4²) = 5, so its max is 5")
     ]);
   })()];
 

@@ -214,22 +214,22 @@
 
   DIAGRAMS["trapezoid-parallelogram-areas"] = [(() => {
     const p = [210, 60], q = [340, 165], r = [210, 270], s = [80, 165];
-    return wrap(420, 310, [
+    return wrap(430, 310, [
       poly([p, q, r, s], DIM, 2, ACCS),
       seg(p, r, GLD, 1.8, "5 4"), seg(q, s, GLD, 1.8, "5 4"),
       rightAngle([210, 165], p, q, 11, GLD),
       txt([222, 120], "d₁", GLD), txt([280, 155], "d₂", GLD),
-      cap(420, 310, "perpendicular diagonals ⇒ A = ½ d₁d₂")
+      cap(430, 310, "perpendicular diagonals ⇒ A = ½ d₁d₂")
     ]);
   })(), (() => {
     const a1 = [130, 80], a2 = [300, 80], b1 = [70, 240], b2 = [360, 240];
     const F = [a1[0], 240];
-    return wrap(430, 300, [
+    return wrap(430, 310, [
       poly([a1, a2, b2, b1], DIM, 2, ACCS),
       seg(a1, F, GLD, 1.8, "5 4"), rightAngle(F, a1, b2, 10, GLD),
       txt(add(mid(a1, a2), [0, -10]), "b₁", DIM, 12.5), txt(add(mid(b1, b2), [0, 18]), "b₂", DIM, 12.5),
       txt(add(mid(a1, F), [-12, 0]), "h", GLD, 12.5),
-      cap(430, 300, "trapezoid: A = ½(b₁ + b₂)h — average the parallel sides, times the height")
+      cap(430, 310, "trapezoid: A = ½(b₁ + b₂)h — average the parallel sides, times the height")
     ]);
   })()];
 
@@ -588,8 +588,8 @@
       seg(Aa, Bb, ACC, 2), seg(Cc, Dd, GRN, 2),
       dot(P, "var(--text)", 4.5), txt(add(P, [12, -6]), "P", "var(--text)"),
       dot(Aa, ACC, 4), dot(Bb, ACC, 4), dot(Cc, GRN, 4), dot(Dd, GRN, 4),
-      txt(away(Aa, cen, 14), "A", ACC, 12), txt(away(Bb, cen, 14), "B", ACC, 12),
-      txt(away(Cc, cen, 14), "C", GRN, 12), txt(away(Dd, cen, 14), "D", GRN, 12),
+      txt(away(Aa, cen, 14), "A", ACC), txt(away(Bb, cen, 14), "B", ACC),
+      txt(away(Cc, cen, 14), "C", GRN), txt(away(Dd, cen, 14), "D", GRN),
       cap(430, 330, "P inside: the two chord pieces still balance, PA · PB = PC · PD (intersecting chords)")
     ]);
   })()];
@@ -598,12 +598,12 @@
     const cen = [210, 155], R = 120, y = 215;
     const half = Math.sqrt(R * R - (y - cen[1]) ** 2);
     const p = [cen[0] - half, y], q = [cen[0] + half, y], m = [cen[0], y];
-    return wrap(420, 310, [
+    return wrap(420, 330, [
       circ(cen, R, FNT, 1.5), seg(p, q, ACC, 2.5), dot(cen, DIM, 3.5),
       seg(cen, m, GLD, 2, "4 3"), rightAngle(m, cen, q, 10, GLD),
       seg(cen, q, DIM, 1.8), txt(add(mid(cen, q), [4, -8]), "R"),
       txt(add(mid(cen, m), [12, 0]), "d", GLD),
-      cap(420, 310, "chord = 2√(R² − d²)")
+      cap(420, 330, "chord = 2√(R² − d²)")
     ]);
   })(), (() => {
     // Regular n-gon diagonals are just chords: dₖ = 2R sin(kπ/n).
@@ -617,6 +617,25 @@
       seg(V[0], V[3], GRN, 2), txt(add(mid(V[0], V[3]), [-14, -4]), "d₃", GRN, 12.5),
       ...V.map(p => dot(p, DIM, 3)),
       cap(420, 330, "a regular n-gon's diagonals are chords of its circumcircle: dₖ = 2R sin(kπ/n) — here n = 8, so d₂ = R√2 and d₃ = 2R sin(67.5°)")
+    ]);
+  })()];
+
+  // Thales: the right angle is forced by the diameter, and holds wherever C sits on the arc.
+  DIAGRAMS["thales-theorem"] = [(() => {
+    const O = [215, 178], R = 125;
+    const A = onC(O, R, 180), B = onC(O, R, 0);
+    const C = onC(O, R, -58), C2 = onC(O, R, -132);
+    return wrap(440, 330, [
+      circ(O, R, FNT, 1.5),
+      seg(A, B, GLD, 2.2),
+      seg(A, C2, FNT, 1.2), seg(B, C2, FNT, 1.2), rightAngle(C2, A, B, 13, FNT),
+      seg(A, C, ACC, 2), seg(B, C, ACC, 2), rightAngle(C, A, B, 15, ACC),
+      seg(O, C, FNT, 1.1, "4 3"),
+      dot(O, DIM, 4), dot(A, GLD, 4.5), dot(B, GLD, 4.5), dot(C, ACC, 4.5), dot(C2, FNT, 4),
+      txt(add(A, [-15, 5]), "A", GLD), txt(add(B, [15, 5]), "B", GLD),
+      txt(add(C, [10, 16]), "C", ACC), txt(add(C2, [-12, 16]), "C\u2032", FNT),
+      txt(add(O, [0, 18]), "O", DIM, 12),
+      cap(440, 330, "AB is a diameter, so every C on the circle sees it at a right angle")
     ]);
   })()];
 
@@ -740,7 +759,7 @@
     const phi = Math.acos((r1c + r2c) / d);
     const n = rotv(u, -phi);
     const T1 = add(c1, mul(n, r1c)), T2 = sub(c2, mul(n, r2c));
-    return wrap(440, 320, [
+    return wrap(430, 330, [
       circ(c1, r1c, FNT, 1.5), circ(c2, r2c, FNT, 1.5),
       dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, ORG, 1.6, "5 4"),
       txt(add(mid(c1, c2), [30, 14]), "d", ORG),
@@ -748,7 +767,7 @@
       seg(c1, T1, GLD, 1.8), seg(c2, T2, PUR, 1.8),
       txt(add(mid(c1, T1), [-12, -2]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 2]), "r₂", PUR, 12),
       txt(add(mid(T1, T2), [-16, -6]), "t", ACC),
-      cap(440, 320, "t² = d² − (r₁ + r₂)²  (internal tangent — it crosses the center line, so the radii add)")
+      cap(430, 330, "t² = d² − (r₁ + r₂)²  (internal tangent — it crosses the center line, so the radii add)")
     ]);
   })(), (() => {
     // Externally tangent circles: the tangent-length belt is 2√(r₁r₂).
@@ -756,14 +775,14 @@
     const c1 = [140, 200], c2 = [c1[0] + r1c + r2c, 200];
     const [T1, T2] = extTangent(c1, r1c, c2, r2c);
     const K = [c1[0] + r1c, 200];
-    return wrap(430, 310, [
+    return wrap(430, 330, [
       circ(c1, r1c, FNT, 1.5), circ(c2, r2c, FNT, 1.5),
       dot(c1, DIM, 3), dot(c2, DIM, 3), dot(K, GRN, 4),
       seg(c1, T1, GLD, 1.6), seg(c2, T2, GLD, 1.6),
       txt(add(mid(c1, T1), [-12, 0]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 0]), "r₂", GLD, 12),
       seg(T1, T2, ACC, 2.2), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
       txt(add(mid(T1, T2), [0, -10]), "2√(r₁r₂)", ACC, 12),
-      cap(430, 310, "circles tangent at the green point (d = r₁ + r₂): the external tangent segment collapses to t = 2√(r₁r₂) — the workhorse for chains of tangent circles")
+      cap(430, 330, "circles tangent at the green point (d = r₁ + r₂): the external tangent segment collapses to t = 2√(r₁r₂) — the workhorse for chains of tangent circles")
     ]);
   })()];
 
@@ -1222,7 +1241,7 @@
       circ(O, R, FNT, 1.4, "none", "6 5"), poly([a, b, c, d], DIM, 2),
       seg(a, c, ACC, 1.7, "5 4"), seg(b, d, GLD, 1.7, "5 4"),
       txt(away(a, O, 15), "A"), txt(away(b, O, 15), "B"), txt(away(c, O, 15), "C"),
-      txt(add(d, [-6, -12]), "D", GLD),
+      txt(add(d, [-17, 6]), "D", GLD),
       cap(440, 340, "D off the circle ⇒ AB·CD + BC·DA > AC·BD (strict)")
     ]);
   })()];
@@ -1427,6 +1446,36 @@
   })()];
 
   // ---------- Entries from the 2023-2025 contest sweep ----------
+
+  // The ellipse through the minimising point is the smallest one that reaches the line, so it
+  // touches. Drawn with the reflection construction beside it, since they are the same fact.
+  DIAGRAMS["ellipse-tangent-line"] = [(() => {
+    const yAx = 268, F1 = [132, 168], F2 = [318, 120];
+    const F1r = [F1[0], 2 * yAx - F1[1]];                 // F1 reflected over the line
+    const T = (() => {                                    // where F1'F2 crosses the line
+      const t = (yAx - F1r[1]) / (F2[1] - F1r[1]);
+      return [F1r[0] + t * (F2[0] - F1r[0]), yAx];
+    })();
+    const k = dist(T, F1) + dist(T, F2);                  // the minimal focal sum
+    const C = mid(F1, F2), a = k / 2, c = dist(F1, F2) / 2, b = Math.sqrt(a * a - c * c);
+    const ang = Math.atan2(F2[1] - F1[1], F2[0] - F1[0]) * 180 / Math.PI;
+    const pts = [];
+    for (let i = 0; i <= 180; i++) {
+      const th = i * Math.PI / 90, ca = Math.cos(rad(ang)), sa = Math.sin(rad(ang));
+      const x = a * Math.cos(th), y = b * Math.sin(th);
+      pts.push([C[0] + x * ca - y * sa, C[1] + x * sa + y * ca]);
+    }
+    return wrap(440, 330, [
+      seg([40, yAx], [410, yAx], DIM, 1.8),
+      `<polyline points="${pts.map(pf).join(" ")}" fill="none" stroke="${ACC}" stroke-width="2"/>`,
+      seg(F1r, F2, GLD, 1.5, "5 4"), seg(F1, F1r, FNT, 1.1, "3 3"),
+      seg(F1, T, GLD, 2), seg(F2, T, GLD, 2),
+      dot(F1, DIM, 4.5), dot(F2, DIM, 4.5), dot(T, ACC, 5), dot(F1r, FNT, 4),
+      txt(add(F1, [-14, -8]), "F\u2081", DIM), txt(add(F2, [14, -8]), "F\u2082", DIM),
+      txt(add(T, [0, 20]), "T", ACC), txt(add(F1r, [-16, 6]), "F\u2081\u2032", FNT, 12),
+      cap(440, 330, "the smallest ellipse reaching the line touches it, and T minimises PF\u2081 + PF\u2082")
+    ]);
+  })()];
 
   DIAGRAMS["conic-sections"] = [(() => {
     const cen = [215, 145], a = 150, b = 88, c = Math.sqrt(a * a - b * b);
@@ -1659,13 +1708,46 @@ DIAGRAMS["trig-ceva"] = [(() => {
 
   // ---------- Gap-scan additions ----------
 
+  // The 共角定理 / bird's-head family. One theorem, three figures: the ratio is the product of
+  // the two adjacent side ratios whenever the angles are equal OR supplementary, because
+  // sin(180 - t) = sin t. All three panels share a canvas so they render at one scale.
   DIAGRAMS["shared-angle-area-ratio"] = [(() => {
     const X = lerp(A, B, 0.55), Y = lerp(A, C, 0.7);
     return wrap(430, 320, [
       poly([A, X, Y], "none", 0, ACCS), ABC(),
       seg(X, Y, ACC, 2), dot(X, ACC, 3.8), dot(Y, ACC, 3.8),
       txt(add(X, [-16, 0]), "X", ACC), txt(add(Y, [16, 0]), "Y", ACC),
-      cap(430, 320, "[AXY] / [ABC] = (AX/AB) · (AY/AC) — same angle at A")
+      cap(430, 320, "shared angle at A: [AXY] / [ABC] = (AX/AB) · (AY/AC)")
+    ]);
+  })(), (() => {
+    // Supplementary: X sits on BA produced, so angle XAY = 180 - angle BAC. This is the
+    // figure the "bird's head" name describes, and the case readers most often miss.
+    const A2 = [212, 132], B2 = [92, 288], C2 = [352, 288];
+    const X = lerp(B2, A2, 1.32), Y = lerp(A2, C2, 0.62);
+    return wrap(430, 320, [
+      poly([A2, X, Y], "none", 0, GLDS), poly([A2, B2, C2], DIM, 2),
+      seg(B2, X, GLD, 1.6, "5 4"),
+      seg(X, Y, GLD, 2), seg(A2, Y, GLD, 2),
+      dot(A2, DIM, 4), dot(X, GLD, 3.8), dot(Y, GLD, 3.8),
+      txt(add(A2, [-14, 6]), "A", DIM, 13.5), txt(add(B2, [-14, 6]), "B", DIM, 13.5), txt(add(C2, [14, 6]), "C", DIM, 13.5),
+      txt(add(X, [2, -12]), "X", GLD), txt(add(Y, [14, 6]), "Y", GLD),
+      cap(430, 320, "X on BA produced: angle XAY is supplementary, and the same product still works")
+    ]);
+  })(), (() => {
+    // Vertical angles at a crossing point: equal angles, so the same product again.
+    const P = [214, 175];
+    const u = norm([-118, -88]), v = norm([124, -74]);
+    const Aa = add(P, mul(u, 128)), Bb = add(P, mul(u, -104));
+    const Cc = add(P, mul(v, 132)), Dd = add(P, mul(v, -96));
+    return wrap(430, 320, [
+      poly([P, Aa, Cc], "none", 0, ACCS), poly([P, Bb, Dd], "none", 0, GLDS),
+      seg(Aa, Bb, DIM, 1.8), seg(Cc, Dd, DIM, 1.8),
+      seg(Aa, Cc, ACC, 2), seg(Bb, Dd, GLD, 2),
+      dot(P, "var(--text)", 4.5), txt(add(P, [13, -6]), "P", "var(--text)"),
+      dot(Aa, ACC, 3.8), dot(Cc, ACC, 3.8), dot(Bb, GLD, 3.8), dot(Dd, GLD, 3.8),
+      txt(add(Aa, [-14, -4]), "A", ACC), txt(add(Cc, [14, -4]), "C", ACC),
+      txt(add(Bb, [14, 10]), "B", GLD), txt(add(Dd, [-14, 10]), "D", GLD),
+      cap(430, 320, "vertical angles at P: [PAC] / [PBD] = (PA/PB) · (PC/PD)")
     ]);
   })()];
 
@@ -2647,9 +2729,9 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg(cen, Bp, GLD, 1.8), seg(cen, Cp, GLD, 1.8),
       angleArc(Ap, Bp, Cp, 26, ACC), txt(add(Ap, [0, 30]), "θ", ACC, 13),
       angleArc(cen, Bp, Cp, 28, GLD), txt(add(cen, [0, 46]), "2θ", GLD, 13),
-      dot(cen, DIM, 3.5), txt(add(cen, [-4, -10]), "O", DIM, 12),
+      dot(cen, DIM, 3.5), txt(add(cen, [-4, -10]), "O", DIM),
       dot(Ap, "var(--text)", 4.5), dot(Bp, DIM, 3.5), dot(Cp, DIM, 3.5),
-      txt(add(Ap, [0, -12]), "A", "var(--text)", 12.5), txt(add(Bp, [-14, 4]), "B", DIM, 12), txt(add(Cp, [14, 4]), "C", DIM, 12),
+      txt(add(Ap, [0, -12]), "A", "var(--text)"), txt(add(Bp, [-14, 4]), "B", DIM), txt(add(Cp, [14, 4]), "C", DIM),
       cap(440, 340, "the inscribed angle at A is half the central angle at O subtending the same arc BC")
     ]);
   })()];

@@ -128,11 +128,3 @@ Longer content goes in the id-keyed side files: `## Why it works`, `## How to us
 `## On contests` in `js/data/details/`, a `{ q, s }` pair in `examples-supplement.js`. On a
 method or pattern card a leading `## Key forms` block is pulled out and rendered under the
 description; each bullet may carry an explanation after a ` — `, shown as gray subtext.
-
-## Conventions
-
-- Never add new `##` subsections to a write-up. Fold content into the existing ones.
-- No bold inside body paragraphs.
-- Key forms lists the shapes a technique takes, not examples of it.
-- Commas rather than em dashes in prose. The ` — ` inside a Key forms bullet is a
-  structural separator, not punctuation.

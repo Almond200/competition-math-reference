@@ -77,7 +77,11 @@ def load_cards():
         for i, (st, cid) in enumerate(idx):
             en = idx[i + 1][0] if i + 1 < len(idx) else len(src)
             blob = src[st:en]
-            name = re.search(r'name: "([^"]+)"', blob)
+            # A card whose title contains maths writes it as String.raw`...` rather than a
+            # quoted string. Matching only the quoted form dropped those cards from the whole
+            # pipeline: no semantic vector, and -- since build-cross-links reuses this loader --
+            # no alias either, so nothing could ever link to them.
+            name = re.search(r'name: "([^"]+)"', blob) or re.search(r"name: String\.raw`([^`]*)`", blob)
             if not name:
                 continue                      # section shells carry no name
             kw = re.search(r"keywords: \[([^\]]*)\]", blob)

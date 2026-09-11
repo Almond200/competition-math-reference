@@ -110,7 +110,6 @@ window.MATH_SECTIONS.push({
           name: "Euler's Totient Function",
           latex: String.raw`\varphi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right)`,
           description: String.raw`Counts integers in $[1, n]$ coprime to $n$. Multiplicative: $\varphi(mn) = \varphi(m)\varphi(n)$ when $\gcd(m,n) = 1$; $\varphi(p^k) = p^k - p^{k-1}$.`,
-          example: String.raw`$\varphi(36) = 36\left(1 - \frac{1}{2}\right)\left(1 - \frac{1}{3}\right) = 36 \cdot \frac{1}{2} \cdot \frac{2}{3} = 12$: the twelve numbers up to 36 sharing no factor with it.`,
           keywords: ["phi", "totient", "coprime count", "multiplicative"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -156,7 +155,6 @@ window.MATH_SECTIONS.push({
           name: "Perfect-Square Divisors",
           latex: String.raw`\#\{\text{square divisors of } \textstyle\prod p_i^{e_i}\} = \prod \left(\left\lfloor \tfrac{e_i}{2} \right\rfloor + 1\right)`,
           description: String.raw`A divisor is a perfect square iff every exponent in it is even — so count the even choices $0, 2, 4, \dots$ for each prime independently. Same idea with multiples of 3 for cube divisors.`,
-          example: String.raw`$720 = 2^4 \cdot 3^2 \cdot 5$: square divisors have exponents from $\{0,2,4\} \times \{0,2\} \times \{0\}$, giving $3 \cdot 2 \cdot 1 = 6$: namely $1, 4, 16, 9, 36, 144$.`,
           keywords: ["square divisors", "cube divisors", "even exponents", "count divisors condition"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -166,7 +164,6 @@ window.MATH_SECTIONS.push({
           name: "Counting Pairs by LCM / GCD Conditions",
           latex: String.raw`\#\{(a,b) : \operatorname{lcm}(a,b) = \textstyle\prod p_i^{e_i}\} = \prod (2e_i + 1)`,
           description: String.raw`Work prime by prime: $\operatorname{lcm}$ fixes $\max$ of the exponents, so for each prime one of the two exponents equals $e_i$ and the other is free — $2e_i + 1$ ordered choices. The blueprint for any gcd/lcm system: convert to $\min/\max$ conditions on exponents.`,
-          example: String.raw`$\operatorname{lcm}(a,b) = 72 = 2^3 3^2$: $(2 \cdot 3 + 1)(2 \cdot 2 + 1) = 35$ ordered pairs. The same per-prime max/min analysis cracks the classic AIME problem counting triples with three pairwise lcm conditions.`,
           keywords: ["lcm pairs", "gcd lcm system", "max min exponents", "ordered pairs"],
           importance: "medium",
           level: ["AIME"]
@@ -199,7 +196,6 @@ window.MATH_SECTIONS.push({
           name: "Fermat's Little Theorem",
           latex: String.raw`a^{p-1} \equiv 1 \pmod{p} \quad (p \nmid a)`,
           description: String.raw`For prime $p$. Equivalently $a^p \equiv a \pmod p$ for all $a$. The engine behind reducing huge exponents mod a prime.`,
-          example: String.raw`$2^{100} \bmod 7$: since $2^6 \equiv 1$, reduce the exponent mod $6$: $100 = 6 \cdot 16 + 4$, so $2^{100} \equiv 2^4 = 16 \equiv 2 \pmod 7$.`,
           keywords: ["fermat", "prime modulus", "exponent reduction", "a to p minus 1"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -209,9 +205,8 @@ window.MATH_SECTIONS.push({
           name: "Euler's Theorem",
           latex: String.raw`a^{\varphi(n)} \equiv 1 \pmod{n} \quad (\gcd(a, n) = 1)`,
           description: String.raw`Generalizes Fermat to composite moduli. To find last digits of $a^{big}$, reduce the exponent mod $\varphi(n)$ (when $\gcd(a,n)=1$).`,
-          example: String.raw`Last two digits of $3^{100}$: $\varphi(100) = 40$, and $100 \equiv 20 \pmod{40}$, so $3^{100} \equiv 3^{20} = (3^{10})^2 = 59049^2 \equiv 49^2 = 2401 \equiv 01 \pmod{100}$.`,
           keywords: ["euler", "totient exponent", "last digits", "composite modulus"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -219,7 +214,6 @@ window.MATH_SECTIONS.push({
           name: "Carmichael Function λ(n)",
           latex: String.raw`\lambda(p^k) = \varphi(p^k) \text{ (odd } p\text{)}, \quad \lambda(2^k) = 2^{k-2} \text{ for } k \ge 3, \quad \lambda(n) = \operatorname{lcm}\left(\lambda(p_i^{a_i})\right)`,
           description: String.raw`The smallest exponent $m$ with $a^m \equiv 1 \pmod{n}$ for every $a$ coprime to $n$ — often much smaller than $\varphi(n)$, so exponents reduce further. Note $\lambda(2) = 1$, $\lambda(4) = 2$, and the lcm (not product) across prime powers.`,
-          example: String.raw`$n = 1000$: $\lambda = \operatorname{lcm}(\lambda(8), \lambda(125)) = \operatorname{lcm}(2, 100) = 100$, versus $\varphi(1000) = 400$ — exponents mod $1000$ reduce mod $100$, a $4\times$ saving on power-tower problems.`,
           keywords: ["carmichael", "lambda", "universal exponent", "smaller than phi", "power towers"],
           importance: "low",
           level: ["AIME"]
@@ -229,7 +223,6 @@ window.MATH_SECTIONS.push({
           name: "Wilson's Theorem",
           latex: String.raw`(p-1)! \equiv -1 \pmod{p}`,
           description: String.raw`Holds iff $p$ is prime. Corollary for factorial-mod-prime manipulations: $(p-2)! \equiv 1 \pmod p$.`,
-          example: String.raw`$p = 7$: $6! = 720 = 7 \cdot 103 - 1 \equiv -1 \pmod 7$. ✓`,
           keywords: ["wilson", "factorial mod prime", "primality", "half factorial"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -239,7 +232,6 @@ window.MATH_SECTIONS.push({
           name: "Chinese Remainder Theorem",
           latex: String.raw`\begin{cases} x \equiv a_1 \pmod{n_1} \\ x \equiv a_2 \pmod{n_2} \\ \;\;\vdots \\ x \equiv a_k \pmod{n_k} \end{cases} \implies x \text{ unique} \pmod{n_1 n_2 \cdots n_k}`,
           description: String.raw`With pairwise coprime moduli, there is a unique solution mod $n_1 n_2 \cdots n_k$. Solve big-modulus problems by splitting into prime-power pieces and recombining.`,
-          example: String.raw`$x \equiv 2 \pmod 3$ and $x \equiv 3 \pmod 5$: numbers that are $3 \bmod 5$ are $3, 8, 13, \dots$ — and $8 \equiv 2 \pmod 3$, so $x \equiv 8 \pmod{15}$.`,
           keywords: ["crt", "system of congruences", "coprime moduli", "unique solution"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -259,7 +251,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`a \cdot a^{-1} \equiv 1 \pmod{n}`,
           description: String.raw`Exists iff $\gcd(a, n) = 1$; find it via the extended Euclidean algorithm or $a^{-1} \equiv a^{\varphi(n) - 1}$. Division mod $n$ means multiplying by an inverse.`,
           keywords: ["inverse", "division mod n", "extended euclid", "modular multiplicative inverse", "inverse modulo n", "division modulo n"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -347,7 +339,7 @@ window.MATH_SECTIONS.push({
           id: "freshmans-dream",
           name: "Freshman's Dream (mod p)",
           latex: String.raw`(a + b)^p \equiv a^p + b^p \pmod p, \qquad (a_1 + \cdots + a_n)^p \equiv a_1^p + \cdots + a_n^p \pmod p`,
-          description: String.raw`The "mistake" that's actually true mod a prime: every middle binomial coefficient $\binom{p}{k}$ ($0 < k < p$) is divisible by $p$, so all cross terms vanish and the $p$-th power distributes over a sum. Iterating gives $(a+b)^{p^m} \equiv a^{p^m} + b^{p^m}$. It is the one-line proof of Fermat's little theorem ($n^p \equiv n$ by induction) and the reason the "Frobenius map" $x \mapsto x^p$ is a ring homomorphism in characteristic $p$.`,
+          description: String.raw`The "mistake" that's actually true mod a prime: every middle binomial coefficient $\binom{p}{k}$ ($0 \lt  k \lt  p$) is divisible by $p$, so all cross terms vanish and the $p$-th power distributes over a sum. Iterating gives $(a+b)^{p^m} \equiv a^{p^m} + b^{p^m}$. It is the one-line proof of Fermat's little theorem ($n^p \equiv n$ by induction) and the reason the "Frobenius map" $x \mapsto x^p$ is a ring homomorphism in characteristic $p$.`,
           keywords: ["freshman's dream", "freshmans dream", "(a+b)^p", "binomial mod p", "frobenius endomorphism", "characteristic p", "power distributes mod p"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -380,7 +372,6 @@ window.MATH_SECTIONS.push({
           name: "Legendre's Formula",
           latex: String.raw`v_p(n!) = \sum_{i=1}^{\infty} \left\lfloor \frac{n}{p^i} \right\rfloor = \frac{n - s_p(n)}{p - 1}`,
           description: String.raw`The exponent of prime $p$ in $n!$, where $s_p(n)$ is the digit sum of $n$ in base $p$. Trailing zeros of $n!$ = $v_5(n!)$.`,
-          example: String.raw`Trailing zeros of $100!$: $\left\lfloor\frac{100}{5}\right\rfloor + \left\lfloor\frac{100}{25}\right\rfloor = 20 + 4 = 24$ zeros (powers of 5 are scarcer than powers of 2).`,
           keywords: ["factorial", "prime exponent", "trailing zeros", "valuation"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -390,7 +381,6 @@ window.MATH_SECTIONS.push({
           name: "Counting a Prime's Factors in $n!$",
           latex: String.raw`v_p(n!) = \left\lfloor \frac{n}{p} \right\rfloor + \left\lfloor \frac{n}{p^2} \right\rfloor + \left\lfloor \frac{n}{p^3} \right\rfloor + \cdots \quad \text{(stop when } p^k > n\text{)}`,
           description: String.raw`The hands-on procedure behind Legendre's formula: divide $n$ by $p$, then $p^2$, then $p^3$, flooring each time, and add. Each term counts one extra factor from the multiples of that power. Trailing zeros of $n!$ = the count for $p = 5$ (fives are scarcer than twos); for binomial coefficients, subtract: $v_p\binom{n}{k} = v_p(n!) - v_p(k!) - v_p((n-k)!)$.`,
-          example: String.raw`How many factors of $3$ in $30!$? $\;\lfloor\frac{30}{3}\rfloor + \lfloor\frac{30}{9}\rfloor + \lfloor\frac{30}{27}\rfloor = 10 + 3 + 1 = 14$, so $3^{14} \| 30!$. And $30!$ ends in $\lfloor\frac{30}{5}\rfloor + \lfloor\frac{30}{25}\rfloor = 7$ zeros.`,
           keywords: ["factors of prime in factorial", "how many times divides factorial", "trailing zeros recipe", "divide and floor", "largest power dividing factorial"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -409,7 +399,6 @@ window.MATH_SECTIONS.push({
           name: "Lucas' Theorem",
           latex: String.raw`\binom{m}{n} \equiv \prod_{i} \binom{m_i}{n_i} \pmod{p}`,
           description: String.raw`Compare base-$p$ digits: $\binom{m}{n}$ mod $p$ is the product of digit-wise binomials. $\binom{m}{n}$ is odd iff the binary digits of $n$ are a submask of $m$'s.`,
-          example: String.raw`$\binom{10}{4} \bmod 3$: in base 3, $10 = (101)_3$ and $4 = (011)_3$. Digit-wise: $\binom{1}{0}\binom{0}{1}\binom{1}{1} = 1 \cdot 0 \cdot 1 = 0$ — and indeed $3 \mid 210$.`,
           keywords: ["binomial mod p", "base p digits", "odd binomial", "pascal parity"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -465,7 +454,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`n(n+1)(n+2)\cdots(n+k-1) \equiv 0 \pmod{k!} \qquad \big(= k!\,\tbinom{n+k-1}{k}\big)`,
           description: String.raw`The product of any $k$ consecutive integers is a multiple of $k!$ — it equals $k!\binom{n+k-1}{k}$, and a binomial coefficient is always a whole number. So two consecutive integers give an even product, three give a multiple of $6$, and so on. It's the quick reason binomial coefficients like $\binom{n}{3}$ come out as integers, and a handy divisibility hammer.`,
           keywords: ["consecutive integers product", "divisible by k factorial", "binomial coefficient integer", "product of k consecutive", "n(n+1)(n+2)", "always integer"],
-          importance: "low",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         }
       ]
@@ -478,7 +467,6 @@ window.MATH_SECTIONS.push({
           name: "Chicken McNugget (Frobenius) Theorem",
           latex: String.raw`g(a,b) = ab - a - b, \qquad \#\{\text{non-representable}\} = \frac{(a-1)(b-1)}{2}`,
           description: String.raw`For coprime positive $a, b$: the largest integer not expressible as $ax + by$ with $x, y \ge 0$ is $ab - a - b$. Sylvester's count: exactly $\frac{(a-1)(b-1)}{2}$ nonnegative integers are non-representable.`,
-          example: String.raw`Stamps worth $5$ and $8$: the largest amount you cannot make is $5 \cdot 8 - 5 - 8 = 27$, and $\frac{4 \cdot 7}{2} = 14$ amounts are impossible in total ($1, 2, 3, 4, 6, 7, 9, 11, 12, 14, 17, 19, 22, 27$).`,
           keywords: ["frobenius", "sylvester", "sylvester formula", "coin problem", "postage stamp", "non-representable", "coprime"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -601,7 +589,6 @@ window.MATH_SECTIONS.push({
           name: "Terminating Decimals",
           latex: String.raw`\frac{m}{n} \text{ (lowest terms) terminates} \iff n = 2^a 5^b`,
           description: String.raw`A fraction's decimal expansion ends exactly when the reduced denominator has no prime factors besides 2 and 5; it then has $\max(a, b)$ decimal digits.`,
-          example: String.raw`How many $\frac{k}{1000}$-style fractions terminate? All of them ($1000 = 2^3 5^3$). But $\frac{k}{120}$ terminates only when the reduced denominator drops the factor of 3 — i.e. when $3 \mid k$.`,
           keywords: ["terminating decimal", "2 and 5", "denominator", "decimal digits"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -625,7 +612,6 @@ window.MATH_SECTIONS.push({
           name: "Farey Sequences & Mediants",
           latex: String.raw`\frac{a}{b}, \frac{c}{d} \text{ Farey neighbors} \iff bc - ad = 1; \qquad \text{mediant} = \frac{a + c}{b + d}`,
           description: String.raw`$F_n$ lists reduced fractions in $[0,1]$ with denominator $\le n$ in order. The mediant of two neighbors is the first fraction to appear between them (in $F_{b+d}$). $|F_n| \approx \frac{3n^2}{\pi^2}$.`,
-          example: String.raw`$\frac{1}{3}$ and $\frac{2}{5}$ are neighbors in $F_5$: $\;bc - ad = 3 \cdot 2 - 1 \cdot 5 = 1$. ✓ Their mediant $\frac{1+2}{3+5} = \frac{3}{8}$ is the very first fraction to appear between them (in $F_8$).`,
           keywords: ["farey", "mediant", "neighbors", "stern brocot", "fractions between"],
           importance: "lowest",
           level: ["AIME", "Olympiad"]
@@ -671,7 +657,6 @@ window.MATH_SECTIONS.push({
           name: "Floor-Sum Reciprocity",
           latex: String.raw`\sum_{k=1}^{q-1} \left\lfloor \frac{kp}{q} \right\rfloor = \frac{(p-1)(q-1)}{2} \qquad (\gcd(p, q) = 1)`,
           description: String.raw`The floors count lattice points under the diagonal of a $p \times q$ rectangle — and by symmetry the diagonal (which hits no interior lattice point when $\gcd = 1$) splits the $(p-1)(q-1)$ interior points evenly. Equivalently $\lfloor \frac{kp}{q} \rfloor + \lfloor \frac{(q-k)p}{q} \rfloor = p - 1$ pairs terms.`,
-          example: String.raw`$p = 5, q = 7$: $\lfloor\frac{5}{7}\rfloor + \lfloor\frac{10}{7}\rfloor + \cdots + \lfloor\frac{30}{7}\rfloor = 0+1+2+2+3+4 = 12 = \frac{4 \cdot 6}{2}$. ✓`,
           keywords: ["floor sum", "lattice points under line", "reciprocity", "diagonal"],
           importance: "lowest",
           level: ["AIME", "Olympiad"]
@@ -681,27 +666,6 @@ window.MATH_SECTIONS.push({
           name: "Lattice Points on a Segment",
           latex: String.raw`\#\{\text{lattice points strictly between } (0,0) \text{ and } (a, b)\} = \gcd(a, b) - 1, \qquad \#\{\text{grid squares crossed}\} = m + n - \gcd(m, n)`,
           description: String.raw`Pairs with Pick's Theorem for lattice-polygon problems: total boundary points on the segment including endpoints is $\gcd(a,b) + 1$.`,
-          example: String.raw`From $(0,0)$ to $(9,6)$: $\gcd(9,6) = 3$, so the segment passes through $3 - 1 = 2$ interior lattice points — $(3,2)$ and $(6,4)$, the multiples of $\left(\frac{9}{3}, \frac{6}{3}\right)$.`,
-          diagram: String.raw`<svg viewBox="0 0 420 305" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Segment from (0,0) to (9,6) passing through lattice points (3,2) and (6,4)">
-  <g fill="var(--border-light)">
-    <circle cx="30" cy="270" r="2.5"/><circle cx="70" cy="270" r="2.5"/><circle cx="110" cy="270" r="2.5"/><circle cx="150" cy="270" r="2.5"/><circle cx="190" cy="270" r="2.5"/><circle cx="230" cy="270" r="2.5"/><circle cx="270" cy="270" r="2.5"/><circle cx="310" cy="270" r="2.5"/><circle cx="350" cy="270" r="2.5"/><circle cx="390" cy="270" r="2.5"/>
-    <circle cx="30" cy="230" r="2.5"/><circle cx="70" cy="230" r="2.5"/><circle cx="110" cy="230" r="2.5"/><circle cx="150" cy="230" r="2.5"/><circle cx="190" cy="230" r="2.5"/><circle cx="230" cy="230" r="2.5"/><circle cx="270" cy="230" r="2.5"/><circle cx="310" cy="230" r="2.5"/><circle cx="350" cy="230" r="2.5"/><circle cx="390" cy="230" r="2.5"/>
-    <circle cx="30" cy="190" r="2.5"/><circle cx="70" cy="190" r="2.5"/><circle cx="110" cy="190" r="2.5"/><circle cx="150" cy="190" r="2.5"/><circle cx="190" cy="190" r="2.5"/><circle cx="230" cy="190" r="2.5"/><circle cx="270" cy="190" r="2.5"/><circle cx="310" cy="190" r="2.5"/><circle cx="350" cy="190" r="2.5"/><circle cx="390" cy="190" r="2.5"/>
-    <circle cx="30" cy="150" r="2.5"/><circle cx="70" cy="150" r="2.5"/><circle cx="110" cy="150" r="2.5"/><circle cx="150" cy="150" r="2.5"/><circle cx="190" cy="150" r="2.5"/><circle cx="230" cy="150" r="2.5"/><circle cx="270" cy="150" r="2.5"/><circle cx="310" cy="150" r="2.5"/><circle cx="350" cy="150" r="2.5"/><circle cx="390" cy="150" r="2.5"/>
-    <circle cx="30" cy="110" r="2.5"/><circle cx="70" cy="110" r="2.5"/><circle cx="110" cy="110" r="2.5"/><circle cx="150" cy="110" r="2.5"/><circle cx="190" cy="110" r="2.5"/><circle cx="230" cy="110" r="2.5"/><circle cx="270" cy="110" r="2.5"/><circle cx="310" cy="110" r="2.5"/><circle cx="350" cy="110" r="2.5"/><circle cx="390" cy="110" r="2.5"/>
-    <circle cx="30" cy="70" r="2.5"/><circle cx="70" cy="70" r="2.5"/><circle cx="110" cy="70" r="2.5"/><circle cx="150" cy="70" r="2.5"/><circle cx="190" cy="70" r="2.5"/><circle cx="230" cy="70" r="2.5"/><circle cx="270" cy="70" r="2.5"/><circle cx="310" cy="70" r="2.5"/><circle cx="350" cy="70" r="2.5"/><circle cx="390" cy="70" r="2.5"/>
-    <circle cx="30" cy="30" r="2.5"/><circle cx="70" cy="30" r="2.5"/><circle cx="110" cy="30" r="2.5"/><circle cx="150" cy="30" r="2.5"/><circle cx="190" cy="30" r="2.5"/><circle cx="230" cy="30" r="2.5"/><circle cx="270" cy="30" r="2.5"/><circle cx="310" cy="30" r="2.5"/><circle cx="350" cy="30" r="2.5"/><circle cx="390" cy="30" r="2.5"/>
-  </g>
-  <line x1="30" y1="270" x2="390" y2="30" stroke="var(--text-dim)" stroke-width="2"/>
-  <circle cx="30" cy="270" r="6" fill="var(--gold)"/>
-  <circle cx="390" cy="30" r="6" fill="var(--gold)"/>
-  <circle cx="150" cy="190" r="5.5" fill="var(--accent)"/>
-  <circle cx="270" cy="110" r="5.5" fill="var(--accent)"/>
-  <text x="34" y="292" fill="var(--gold)" font-size="13">(0,0)</text>
-  <text x="352" y="22" fill="var(--gold)" font-size="13">(9,6)</text>
-  <text x="158" y="207" fill="var(--accent)" font-size="13">(3,2)</text>
-  <text x="278" y="127" fill="var(--accent)" font-size="13">(6,4)</text>
-</svg>`,
           keywords: ["lattice", "segment", "visible points", "gcd", "squares crossed by diagonal", "diagonal of grid"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -711,7 +675,6 @@ window.MATH_SECTIONS.push({
           name: "Lattice Points on a Circle",
           latex: String.raw`\#\{(a,b) \in \mathbb{Z}^2 : a^2 + b^2 = n\} = 4\left(d_1(n) - d_3(n)\right)`,
           description: String.raw`Counting all ordered, signed representations: $d_1$ and $d_3$ count divisors of $n$ congruent to $1$ and $3$ mod $4$. Consequence of unique factorization in the Gaussian integers; the count is $0$ exactly when some prime $\equiv 3 \pmod 4$ divides $n$ to an odd power.`,
-          example: String.raw`$n = 25$: divisors $1, 5, 25$ are all $\equiv 1 \pmod 4$, so $4(3 - 0) = 12$ points — indeed $(\pm5, 0), (0, \pm5), (\pm3, \pm4), (\pm4, \pm3)$. ✓`,
           keywords: ["lattice points circle", "sum of two squares count", "representations", "gaussian integers"],
           importance: "lowest",
           level: ["AIME", "Olympiad"]

@@ -83,7 +83,22 @@ def seed_aliases(cards):
         if m:
             sur = m.group(1)
             forms |= {sur, sur + "'s", sur + "’s", sur + "s"}
-        forms = {f for f in forms if len(f) >= 3}
+        # A compound name only ever yielded the whole string, so "Radical Axis & Radical
+        # Center" never matched the prose's "radical axis". Split on the joiners and keep the
+        # multi-word halves; single words ("GCD", "LCM", "Linearity") are dropped as far too
+        # generic to link on.
+        for part in re.split(r"\s+(?:&|/|and)\s+", base):
+            part = part.strip()
+            w = part.split()
+            # A split half that opens with a pronoun or a stray initial is not a term:
+            # "Pedal Triangle & Its Area" gave "Its Area", and "R, r & s Identities" gave
+            # "s Identities", both of which then matched ordinary prose.
+            if len(w) >= 2 and len(w[0]) > 1 and w[0].lower() not in ("its", "the", "a", "an", "their"):
+                forms.add(part)
+        # A name containing maths cannot be matched in prose anyway -- the matcher skips
+        # spans inside $...$ and rejects any hit containing one -- so emitting it produces a
+        # dead alias. Those cards get hand-written surface forms instead.
+        forms = {f for f in forms if len(f) >= 3 and "$" not in f}
         if forms:
             out[cid] = sorted(forms)
     return out
@@ -97,7 +112,10 @@ def build_table(cards, cfg):
     """
     deny = {d.lower() for d in cfg.get("deny", [])}
     claims, surface = {}, {}
-    for cid, forms in cfg.get("aliases", {}).items():
+    merged = {k: list(v) for k, v in cfg.get("aliases", {}).items()}
+    for cid, extra in cfg.get("aliasesExtra", {}).items():
+        merged.setdefault(cid, []).extend(extra)
+    for cid, forms in merged.items():
         if cid not in cards:
             continue
         for f in forms:
@@ -105,8 +123,14 @@ def build_table(cards, cfg):
                 continue
             claims.setdefault(f.lower(), set()).add(cid)
             surface.setdefault(f.lower(), f)
+    # An ambiguous alias can be settled by hand once someone has read the occurrences.
+    # `resolve` records that judgement so it survives the next --seed.
+    resolve = {k.lower(): v for k, v in cfg.get("resolve", {}).items()}
     table, ambiguous = {}, {}
     for a, ids in claims.items():
+        if a in resolve and resolve[a] in ids:
+            table[a] = (resolve[a], surface[a])
+            continue
         if len(ids) == 1:
             # carry the ORIGINAL casing: the key is lowercased for ambiguity detection, and
             # matching a case-sensitive acronym against that key searched for "lte", which
@@ -146,8 +170,13 @@ def find_candidates(host, body, table, cfg, cards):
     for p in protect:
         for m in re.finditer(r"(?<![\w-])" + re.escape(p) + r"(?![\w-])", body, re.I):
             skip.append((m.start(), m.end()))
-    # the host's own names are protected too, so a card never links to itself
+    # The host's own names AND its own aliases are masked, so a card never links to itself --
+    # and, more subtly, a bare surname sitting inside the host's own term cannot leak out to
+    # some other card. "Newton's forward form" in finite-differences, "Newton's inequality" in
+    # maclaurin-inequality and "Newton's line" in newtons-line all matched bare "Newton's" and
+    # were linked to Newton's sums until their own aliases were masked here.
     own = [cards[host]["name"], re.sub(r"\s*\([^)]*\)", "", cards[host]["name"]).strip()]
+    own += cfg.get("aliases", {}).get(host, []) + cfg.get("aliasesExtra", {}).get(host, [])
     for p in own:
         for m in re.finditer(r"(?<![\w-])" + re.escape(p) + r"(?![\w-])", body, re.I):
             skip.append((m.start(), m.end()))
@@ -250,7 +279,11 @@ def main():
         seeded = seed_aliases(cards)
         cfg.setdefault("deny", [])
         cfg.setdefault("protect", [])
+        # `aliases` is GENERATED and replaced wholesale on every seed. Hand-written surface
+        # forms belong in `aliasesExtra`, which is merged on top and never regenerated --
+        # putting them here instead silently loses them on the next --seed.
         cfg["aliases"] = seeded
+        cfg.setdefault("aliasesExtra", {})
         acro = sorted({f for forms in seeded.values() for f in forms if _ACRONYM.match(f)})
         cfg["caseSensitive"] = acro
         _, amb = build_table(cards, cfg)

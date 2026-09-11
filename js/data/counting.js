@@ -78,7 +78,6 @@ window.MATH_SECTIONS.push({
           name: "Subset-Sum Facts",
           latex: String.raw`\sum_{S\subseteq A}\ \sum_{x\in S} x \;=\; 2^{\,n-1}\sum_{x\in A} x`,
           description: String.raw`An $n$-element set has $2^n$ subsets, and each element lies in exactly half of them ($2^{n-1}$), so the sum of all subset sums is $2^{n-1}$ times the total of $A$. If $A$ has at least one odd element, exactly half the subsets ($2^{n-1}$) have an even sum — pairing each subset with its symmetric difference against that odd element is a bijection between even-sum and odd-sum subsets. (The separate subset-size parity fact — equally many even- and odd-sized subsets — is the $x=1,\,y=-1$ binomial identity.)`,
-          example: String.raw`$A=\{1,2,3\}$: the sum of all subset sums is $2^{2}(1+2+3)=24$, and exactly $2^{2}=4$ of the $8$ subsets have an even sum ($\varnothing,\ \{2\},\ \{1,3\},\ \{1,2,3\}$).`,
           keywords: ["subset sums", "sum over all subsets", "even sum subsets", "power set", "sum of subset sums", "number of subsets", "each element in half"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -111,7 +110,6 @@ window.MATH_SECTIONS.push({
           name: "Hockey Stick Identity",
           latex: String.raw`\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}, \qquad \binom{r}{r} + \binom{r+1}{r} + \binom{r+2}{r} + \cdots + \binom{n}{r} = \binom{n+1}{r+1}`,
           description: String.raw`Summing down a diagonal of Pascal's triangle. Proof: repeatedly absorb terms with Pascal's rule.`,
-          example: String.raw`$\binom{2}{2} + \binom{3}{2} + \binom{4}{2} + \binom{5}{2} = 1 + 3 + 6 + 10 = 20 = \binom{6}{3}$ — the triangular numbers stack into a tetrahedral number.`,
           keywords: ["hockey stick", "diagonal sum", "christmas stocking", "hockey stick identity", "christmas stocking identity", "diagonal sum in pascal"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -121,7 +119,6 @@ window.MATH_SECTIONS.push({
           name: "Vandermonde's Identity",
           latex: String.raw`\sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k} = \binom{m+n}{r}, \qquad \binom{m}{0}\binom{n}{r} + \binom{m}{1}\binom{n}{r-1} + \cdots + \binom{m}{r}\binom{n}{0} = \binom{m+n}{r}`,
           description: String.raw`Choose $r$ from a group of $m + n$ by splitting on how many come from the first group. Special case: $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$.`,
-          example: String.raw`Pick 3 people from 5 men and 4 women. Split by the number of men chosen: $\binom{5}{0}\binom{4}{3} + \binom{5}{1}\binom{4}{2} + \binom{5}{2}\binom{4}{1} + \binom{5}{3}\binom{4}{0} = 4 + 30 + 40 + 10 = 84 = \binom{9}{3}$. Every committee is counted exactly once on each side.`,
           keywords: ["vandermonde", "convolution", "sum of squares of binomials", "central binomial"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -140,7 +137,6 @@ window.MATH_SECTIONS.push({
           name: "Committee–Chair Identity",
           latex: String.raw`k\binom{n}{k} = n\binom{n-1}{k-1}, \qquad \sum_{k=0}^{n} k\binom{n}{k} = n \cdot 2^{n-1}`,
           description: String.raw`Pick a committee with a chair two ways: committee first or chair first. Differentiating $(1+x)^n$ gives the sum version.`,
-          example: String.raw`$n = 4$: $\;1\binom{4}{1} + 2\binom{4}{2} + 3\binom{4}{3} + 4\binom{4}{4} = 4 + 12 + 12 + 4 = 32 = 4 \cdot 2^3$. ✓`,
           keywords: ["absorption", "k choose", "weighted sum", "committee"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -168,7 +164,6 @@ window.MATH_SECTIONS.push({
           name: "Weighted Binomial Sums",
           latex: String.raw`\sum_{k=0}^{n} k\binom{n}{k} = n \cdot 2^{n-1}, \qquad \sum_{k=0}^{n} k^2\binom{n}{k} = n(n+1)2^{n-2}, \qquad \sum_k k(k-1)\binom{n}{k} = n(n-1)2^{n-2}`,
           description: String.raw`Differentiate $(1+x)^n$ once (then set $x = 1$) for the first sum; differentiate twice, or split $k^2 = k(k-1) + k$ and absorb twice, for the second. The same machinery evaluates $\sum k(k-1)\binom{n}{k} = n(n-1)2^{n-2}$ and beyond.`,
-          example: String.raw`$n = 3$: $\;\sum k^2\binom{3}{k} = 0 + 1\cdot3 + 4\cdot3 + 9\cdot1 = 24 = 3 \cdot 4 \cdot 2^{1}$. ✓`,
           keywords: ["k squared binomial", "derivative trick", "weighted sum", "absorption twice"],
           importance: "lower",
           level: ["AIME"]
@@ -183,7 +178,6 @@ window.MATH_SECTIONS.push({
           name: "Stars and Bars",
           latex: String.raw`x_1 + \cdots + x_k = n: \quad \binom{n + k - 1}{k - 1} \;\text{(} x_i \ge 0\text{)}, \qquad \binom{n - 1}{k - 1} \;\text{(} x_i \ge 1\text{)}`,
           description: String.raw`Nonnegative or positive integer solutions; equivalently distributing $n$ identical balls into $k$ labeled boxes. For $x_i \ge a_i$, substitute $y_i = x_i - a_i$ first.`,
-          example: String.raw`$x + y + z = 5$ with $x, y, z \ge 0$: $\binom{5+2}{2} = 21$. Each solution is a row of 5 stars and 2 bars, e.g. $\star\star\,|\,\star\,|\,\star\star \leftrightarrow (2,1,2)$ — and there are $\binom{7}{2}$ ways to place the bars among 7 symbols.`,
           keywords: ["identical balls", "boxes", "integer solutions", "distribute", "sticks and stones"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -201,7 +195,7 @@ window.MATH_SECTIONS.push({
           id: "balls-boxes-table",
           name: "Balls in Boxes (The Twelvefold Way)",
           latex: String.raw`\begin{array}{l|cc} \textbf{balls}\to\textbf{boxes} & \textbf{any} & \textbf{no empty box} \\ \hline \text{dist}\to\text{dist} & k^n & k!\,S(n,k) \\ \text{ident}\to\text{dist} & \dbinom{n+k-1}{k-1} & \dbinom{n-1}{k-1} \\ \text{dist}\to\text{ident} & \sum_{j=1}^{k} S(n,j) & S(n,k) \\ \text{ident}\to\text{ident} & p_{\le k}(n) & p_k(n) \end{array}`,
-          description: String.raw`The complete map for distributing $n$ balls into $k$ boxes (the "Twelvefold Way"), split by whether the balls are distinguishable, whether the boxes are, and whether empty boxes are allowed. Here $S(n,k)$ is the Stirling number of the second kind, $B_n=\sum_j S(n,j)$ the Bell number, and $p_k(n)$ / $p_{\le k}(n)$ count partitions of $n$ into exactly / at most $k$ positive parts. Reading the table: dist→dist any assignment is $k^n$, onto (no box empty) is the surjection count $k!\,S(n,k)=\sum_{i=0}^{k}(-1)^i\binom{k}{i}(k-i)^n$; ident→dist is stars and bars $\binom{n+k-1}{k-1}$, each box $\ge 1$ is $\binom{n-1}{k-1}$; dist→ident is $S(n,k)$ (exactly $k$ nonempty groups) or the Bell number $B_n$ (any number of boxes); ident→ident is integer partitions, which have no closed form — enumerate. To handle constraints: a minimum $m_i$ per box — hand out the minimums first and distribute the remaining $n-\sum m_i$ with no restriction (substitute $x_i\mapsto x_i-m_i$); an upper cap $x_i\le c$ — inclusion–exclusion, subtracting cases where a box overflows (give it $c+1$ first, then alternate signs); at most one ball per box — just choose the boxes, $\binom{k}{n}$ (identical balls) or $\binom{k}{n}n!=k(k-1)\cdots(k-n+1)$ (distinct balls).`,
+          description: String.raw`The complete map for distributing $n$ balls into $k$ boxes, the Twelvefold Way, split by whether the balls are distinguishable, whether the boxes are, and whether empty boxes are allowed. Each of the twelve cells is a formula you already know under a different name.`,
           keywords: ["twelvefold way", "balls in boxes", "distributions", "distinguishable", "indistinguishable", "identical objects", "stars and bars", "stirling numbers second kind", "bell number", "integer partitions", "surjections onto", "minimum per box", "upper bound cap per box", "inclusion exclusion distribution", "at most one per box", "no empty box", "distribute objects"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -216,7 +210,6 @@ window.MATH_SECTIONS.push({
           name: "Derangements",
           latex: String.raw`D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!} = \left[\frac{n!}{e}\right] \;(\text{nearest integer})`,
           description: String.raw`Permutations with no fixed point. $D_1 = 0, D_2 = 1, D_3 = 2, D_4 = 9, D_5 = 44$; recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$. As $n \to \infty$, $P(\text{derangement}) \to \frac{1}{e}$.`,
-          example: String.raw`$n = 3$: of the $6$ orderings of $123$, only $231$ and $312$ move every element. Formula: $3!\left(1 - 1 + \frac{1}{2} - \frac{1}{6}\right) = 2$. ✓`,
           keywords: ["no fixed point", "hat check", "wrong envelopes", "subfactorial", "exactly k fixed points"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -235,7 +228,6 @@ window.MATH_SECTIONS.push({
           name: "Choosing Non-Adjacent Objects",
           latex: String.raw`\text{in a row: } \binom{n-k+1}{k}, \qquad \text{in a circle: } \frac{n}{n-k}\binom{n-k}{k}`,
           description: String.raw`Ways to choose $k$ of $n$ positions with no two adjacent. Row proof: place the $n - k$ unchosen objects, then drop the $k$ chosen ones into the $n - k + 1$ gaps.`,
-          example: String.raw`Choose 3 of 8 chairs in a row, no two adjacent: $\binom{6}{3} = 20$. Around a circular table: $\frac{8}{5}\binom{5}{3} = 16$.`,
           keywords: ["no two adjacent", "nonadjacent", "gap method", "circular selection", "spacing"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -245,7 +237,6 @@ window.MATH_SECTIONS.push({
           name: "Catalan Numbers",
           latex: String.raw`C_n = \frac{1}{n+1}\binom{2n}{n} = \binom{2n}{n} - \binom{2n}{n+1}`,
           description: String.raw`$1, 1, 2, 5, 14, 42, 132, \dots$ Counts balanced parenthesizations, monotone lattice paths not crossing the diagonal, triangulations of an $(n{+}2)$-gon, and binary trees. Recurrence: $C_{n+1} = \sum C_i C_{n-i}$.`,
-          example: String.raw`$C_3 = \frac{1}{4}\binom{6}{3} = 5$: the five ways to balance 3 pairs of parentheses are ((())), (()()), (())(), ()(()), ()()().`,
           keywords: ["catalan", "balanced parentheses", "dyck paths", "triangulations", "ballot"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -254,8 +245,7 @@ window.MATH_SECTIONS.push({
           id: "ballot-problem",
           name: "The Ballot Problem",
           latex: String.raw`P(A \text{ always strictly ahead}) = \frac{a - b}{a + b}`,
-          description: String.raw`If A gets $a$ votes and B gets $b < a$, this is the probability A leads throughout the count. Proved by the reflection principle — the same trick behind Catalan path-counting.`,
-          example: String.raw`$a = 2, b = 1$: the three count orders are AAB (A always ahead ✓), ABA (tied after two votes ✗), BAA (✗). Probability $\frac{1}{3} = \frac{2-1}{2+1}$. ✓`,
+          description: String.raw`If A gets $a$ votes and B gets $b \lt  a$, this is the probability A leads throughout the count. Proved by the reflection principle — the same trick behind Catalan path-counting.`,
           keywords: ["ballot", "reflection principle", "always ahead", "random walk"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -315,7 +305,6 @@ window.MATH_SECTIONS.push({
           name: "Stirling Numbers of the Second Kind & Bell Numbers",
           latex: String.raw`S(n, k) = k \cdot S(n-1, k) + S(n-1, k-1), \qquad B_n = \sum_k S(n, k)`,
           description: String.raw`$S(n,k)$ = ways to partition $n$ labeled objects into $k$ nonempty unlabeled groups; $B_n$ = all set partitions ($1, 1, 2, 5, 15, 52, 203, \dots$). Surjections $n \to k$: $k!\, S(n,k)$.`,
-          example: String.raw`$S(3,2) = 3$: split $\{1,2,3\}$ into two nonempty groups as $\{1,2\}\{3\}$, $\{1,3\}\{2\}$, or $\{2,3\}\{1\}$. Then $B_3 = S(3,1) + S(3,2) + S(3,3) = 1 + 3 + 1 = 5$.`,
           keywords: ["set partitions", "stirling", "bell", "surjections", "onto functions"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -398,7 +387,6 @@ window.MATH_SECTIONS.push({
           name: "Expected Value & Linearity",
           latex: String.raw`E[X] = \sum x_i\, p_i, \qquad E[X + Y] = E[X] + E[Y] \;\;\textbf{always}`,
           description: String.raw`Linearity needs no independence — the key to hard expected-value problems. Decompose $X$ into indicator variables: $E[X] = \sum P(\text{event}_i)$.`,
-          example: String.raw`Expected number of fixed points of a random permutation of $n$ items: each position is fixed with probability $\frac{1}{n}$, so $E = n \cdot \frac{1}{n} = 1$ — regardless of $n$, even though the events are dependent.`,
           keywords: ["expectation", "linearity", "indicator variables", "average"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -435,7 +423,6 @@ window.MATH_SECTIONS.push({
           name: "Turn-Based Game Probabilities",
           latex: String.raw`P(\text{first player wins}) = \frac{p}{p + q - pq}`,
           description: String.raw`Players alternate turns; the first succeeds with probability $p$ per turn, the second with $q$. Either sum the geometric series $p + (1-p)(1-q)p + \cdots$ or condition on the first round. With $q = p$: $\frac{1}{2-p}$ — the first player always has the edge.`,
-          example: String.raw`Alternating die rolls, first 6 wins: $p = q = \frac{1}{6}$ gives $P = \frac{1/6}{1/6 + 1/6 - 1/36} = \frac{6}{11}$ for the player who rolls first.`,
           keywords: ["alternating turns", "first player wins", "geometric series game", "coin game", "dice game"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -481,7 +468,6 @@ window.MATH_SECTIONS.push({
           name: "Order Statistics on $[0, 1]$",
           latex: String.raw`E[\max] = \frac{n}{n+1}, \qquad E[\min] = \frac{1}{n+1}, \qquad E[\text{gap}] = \frac{1}{n+1}, \qquad P(\max \le x) = x^n, \qquad E[\max - \min] = \frac{n - 1}{n + 1}, \qquad \text{discrete: } k \text{ draws from } \{1, \dots, n\} \Rightarrow E[\max] = \frac{k(n+1)}{k+1}`,
           description: String.raw`Choose $n$ numbers independently and uniformly from $[0,1]$: sorted, they sit on average at $\frac{1}{n+1}, \frac{2}{n+1}, \dots, \frac{n}{n+1}$ — the $n+1$ gaps are exchangeable, so each expects $\frac{1}{n+1}$. Also $P(\max \le x) = x^n$ and $E[\max - \min] = \frac{n-1}{n+1}$.`,
-          example: String.raw`Three random reals in $[0,1]$: the expected largest is $\frac{3}{4}$, the expected smallest $\frac{1}{4}$, and the expected middle one $\frac{2}{4} = \frac{1}{2}$.`,
           keywords: ["expected maximum", "expected minimum", "uniform random", "sorted", "gaps", "spacings", "expected range"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -491,7 +477,6 @@ window.MATH_SECTIONS.push({
           name: "Law of Total Expectation",
           latex: String.raw`E[X] = \sum_i P(A_i)\, E[X \mid A_i], \qquad E[\text{total}] = E[N] \cdot E[X]`,
           description: String.raw`Partition the sample space into cases $A_i$: the overall expectation is the probability-weighted average of the case expectations. For a random number $N$ of i.i.d. contributions, Wald's identity gives $E[\text{total}] = E[N] \cdot E[X]$.`,
-          example: String.raw`Roll a die, then flip that many coins: $E[\text{heads}] = \sum_{k=1}^{6}\frac{1}{6}\cdot\frac{k}{2} = \frac{1}{2}\cdot\frac{7}{2} = \frac{7}{4}$.`,
           keywords: ["conditional expectation", "tower rule", "casework expectation", "weighted average", "first step", "wald"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -565,7 +550,6 @@ window.MATH_SECTIONS.push({
           name: "Cayley's Formula",
           latex: String.raw`\#\{\text{trees on } n \text{ labeled vertices}\} = n^{\,n-2}`,
           description: String.raw`The number of distinct trees (connected, cycle-free networks) on $n$ distinguishable vertices. Proved by the Prüfer bijection: each tree corresponds to a unique sequence of $n-2$ vertex labels, and vice versa.`,
-          example: String.raw`$n = 4$: $4^2 = 16$ labeled trees — the $4$ star-shaped ones plus the $12$ paths ($\frac{4!}{2}$ orderings up to reversal). ✓`,
           keywords: ["labeled trees", "cayley", "prufer", "spanning trees", "networks"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
@@ -575,7 +559,6 @@ window.MATH_SECTIONS.push({
           name: "Eulerian Paths & Circuits",
           latex: String.raw`\text{circuit} \iff \text{all degrees even}; \quad \text{path} \iff \text{exactly two odd}`,
           description: String.raw`For a connected graph: a route tracing every edge exactly once and returning to the start exists iff every vertex has even degree; a one-way trace exists iff exactly two vertices are odd (they must be the endpoints). The classic "draw without lifting your pencil" criterion.`,
-          example: String.raw`The Königsberg bridge graph has four odd-degree vertices, so no walk crosses every bridge exactly once. A five-pointed star traces in one closed stroke because every vertex has even degree (points have degree 2, crossings degree 4).`,
           keywords: ["eulerian", "trace without lifting", "even degree", "bridges", "draw one stroke"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -585,7 +568,6 @@ window.MATH_SECTIONS.push({
           name: "Regions from Lines and Circles",
           latex: String.raw`R_{\text{lines}} = \frac{n^2 + n + 2}{2}, \qquad R_{\text{circles}} = n^2 - n + 2`,
           description: String.raw`Maximum regions from $n$ lines (no two parallel, no three concurrent) or $n$ circles (each pair meeting twice). Incremental principle: each new curve adds one region per crossing plus one — which is also how region-counting problems with expected values decompose.`,
-          example: String.raw`$n = 4$ lines: $\frac{16 + 4 + 2}{2} = 11$ regions; $4$ circles: $16 - 4 + 2 = 14$ regions.`,
           keywords: ["regions", "lazy caterer", "pancake", "lines divide plane", "circles divide plane"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -603,7 +585,7 @@ window.MATH_SECTIONS.push({
           id: "halls-marriage",
           name: "Hall's Marriage Theorem",
           latex: String.raw`\text{a matching saturates } X \iff |N(S)| \ge |S| \text{ for every } S \subseteq X`,
-          description: String.raw`A set of "applicants" $X$ can each be matched to a distinct "job" they're connected to iff no group of applicants collectively wants fewer jobs than its size — Hall's condition. The obstruction is always a single deficient set $S$ with $|N(S)| < |S|$. It is the go-to existence tool for systems of distinct representatives, Latin-square completions, and "can we pair these up?" problems; a regular bipartite graph always satisfies it, so it has a perfect matching.`,
+          description: String.raw`A set of "applicants" $X$ can each be matched to a distinct "job" they're connected to iff no group of applicants collectively wants fewer jobs than its size — Hall's condition. The obstruction is always a single deficient set $S$ with $|N(S)| \lt  |S|$. It is the go-to existence tool for systems of distinct representatives, Latin-square completions, and "can we pair these up?" problems; a regular bipartite graph always satisfies it, so it has a perfect matching.`,
           keywords: ["halls theorem", "marriage theorem", "bipartite matching", "system of distinct representatives", "hall condition", "perfect matching"],
           importance: "low",
           level: ["Olympiad"]

@@ -20,7 +20,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`\text{slice through the axis of symmetry} \Rightarrow \text{2D circles and lines}`,
           description: String.raw`Spheres, cylinders, cones, and tori that are tangent to each other become tangent circles and lines in the plane through their common axis of symmetry. Solve the 2D picture (center distances = sums/differences of radii, similar triangles), then rotate back.`,
-          example: String.raw`(2024 AIME II #8) A torus (tube radius $3$, center-circle radius $6$) rests inside a sphere of radius $11$: in the axial cross-section the tube center sits at distance $11 - 3 = 8$ from the sphere's center, so by similar triangles the tangency circle has radius $6 \cdot \frac{11}{8} = \frac{33}{4}$; resting outside gives $6 \cdot \frac{11}{14} = \frac{33}{7}$. The difference is $\frac{99}{28}$, answer $127$.`,
           keywords: ["cross section", "torus", "sphere tangent", "axial slice", "3d to 2d", "method"],
           importance: "medium",
           level: ["AIME"]
@@ -64,7 +63,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`OP \cdot OP^* = r^2, \qquad P^*Q^* = \frac{r^2 \cdot PQ}{OP \cdot OQ}`,
-          description: String.raw`Inversion centered at $O$ with radius $r$ sends $P$ to $P^*$ on ray $OP$ with $OP\cdot OP^* = r^2$. Its rulebook: lines through $O$ map to themselves; lines not through $O$ map to circles through $O$ (and back); circles not through $O$ map to circles; it is conformal (preserving angles, and hence tangency) and swaps a circle's inside and outside. Distances scale by $P^*Q^* = \frac{r^2\,PQ}{OP\cdot OQ}$, the basis of "inversion distance" computations. Centering $O$ at a busy point where many circles and lines meet collapses tangency and concyclicity into straight-line problems; inverting at a point of tangency even turns a chain of mutually tangent circles into a row of parallel lines (the Steiner-chain trick). Drag the point in the interactive tool below to watch it happen.`,
+          description: String.raw`Inversion centred at $O$ with radius $r$ sends $P$ to the point $P^*$ on ray $OP$ with $OP \cdot OP^* = r^2$. It is conformal, so it preserves angles and tangency, and it trades lines for circles through $O$.`,
           keywords: ["inversion properties", "inverse point", "op op* = r^2", "line to circle", "conformal", "inversion distance formula", "circle preserving", "inversive geometry", "inversion"],
           importance: "low",
           level: ["Olympiad"]
@@ -87,7 +86,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`m_B \cdot BD = m_C \cdot DC, \qquad m_D = m_B + m_C`,
           description: String.raw`Balance the triangle like a seesaw: assign masses inversely proportional to the segments a cevian creates; the cevian intersection ratios then read off directly ($AP : PD = m_D : m_A$). The fastest tool for "cevians divide the sides in given ratios, find a ratio" problems.`,
-          example: String.raw`$BD : DC = 2 : 1$ and $AF : FB = 1 : 1$. Put $m_B = 1, m_C = 2$ (so $m_D = 3$), and $m_A = m_B = 1$. On cevian $AD$: $AP : PD = m_D : m_A = 3 : 1$.`,
           keywords: ["mass points", "cevian ratios", "balance", "method", "lever"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -99,7 +97,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`AB \mapsto CD: \text{ center } X = \text{second intersection of } \odot(APC),\, \odot(BPD)`,
           description: String.raw`A rotation-plus-scaling carrying one segment to another. Its center lies on both circles through matched endpoint pairs (where $P = AC \cap BD$ or $AB \cap CD$). Explains "two circles + two lines" AIME configurations and computes cleanly with complex numbers: $z \mapsto a + k e^{i\theta}(z - a)$.`,
-          example: String.raw`If $\frac{XA}{XC} = \frac{XB}{XD}$ and $\angle AXB = \angle CXD$, then $\triangle XAB \sim \triangle XCD$ — spotting this similar-triangle pair around a common vertex is the practical form of the method.`,
           keywords: ["spiral similarity", "rotation scaling", "similar triangles common vertex", "complex numbers", "method"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -111,7 +108,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`X \mapsto P + k(X-P);\ \ \text{three external similitude centers are collinear}`,
           description: String.raw`A homothety (dilation) about $P$ with ratio $k$ scales every figure by $k$ and maps each circle to a circle; two circles always admit an external (and usually internal) center of similitude where their common tangents cross. Monge: for three circles, the three external centers are collinear. Homothety centered at a tangency point is the standard move for tangent-circle configurations.`,
-          example: String.raw`Circles of radii $2$ and $6$ with centers $8$ apart: the external similitude center sits on the center line at distance $4$ before the small center (dividing externally in ratio $2:6$), and both external tangents pass through it.`,
           keywords: ["homothety", "dilation", "similitude center", "monge", "external tangents", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -123,7 +119,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`a = y + z, \quad b = z + x, \quad c = x + y \qquad (x, y, z > 0)`,
           description: String.raw`Sides of a triangle are exactly the numbers expressible this way — $x, y, z$ are the incircle tangent lengths ($x = s - a$, etc.). The substitution turns the triangle inequality into mere positivity, and simplifies Heron to $A = \sqrt{xyz(x+y+z)}$ — ideal for triangle inequalities and integer-sided triangle counts.`,
-          example: String.raw`Counting triangles with perimeter $12$: $x + y + z = 6$ with $x, y, z > 0$ (integers or half-integers of matching parity) — for integer sides, count positive integer solutions up to symmetry: $(1,1,4), (1,2,3), (2,2,2)$ give sides $(5,5,2), (4,5,3), (4,4,4)$: exactly $3$ triangles.`,
           keywords: ["ravi", "tangent length substitution", "triangle inequality free", "heron simplified", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -189,7 +184,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{parallelism, midpoints, and area ratios are preserved} \qquad \text{ellipse} \xrightarrow{\text{scale}} \text{circle}, \;\; \text{triangle} \xrightarrow{\text{affine}} \text{equilateral}`,
-          description: String.raw`An affine map (a linear map plus a translation) preserves collinearity, parallelism, ratios of lengths along a line, midpoints, and multiplies every area by the same constant — so ratios of areas are unchanged. Two high-yield uses: scale one axis to squash an ellipse (with its tangency, midpoint, or area conditions) into a circle, solve the easy circle problem, then read the affine-invariant answer straight back; and map any triangle to an equilateral (or right-isosceles) one, since an area-ratio question cannot tell them apart. It does not preserve angles, absolute lengths, distances, or circles-staying-circles, so only apply it to affine-invariant quantities. Affine maps are exactly the Möbius transformations with $c = 0$, and the wider family does preserve angles and circles, at the cost of the area ratios.`,
+          description: String.raw`A linear map plus a translation. It preserves collinearity, parallelism, ratios of lengths along a line, and midpoints, and multiplies every area by one constant, so ratios of areas survive. Angles, absolute lengths and circles do not.`,
           keywords: ["affine transformation", "shear", "scaling", "stretch", "ellipse to circle", "area ratio invariant", "map to equilateral", "wlog equilateral", "method"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -251,7 +246,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\sqrt{a^2+b} \approx a + \frac{b}{2a}, \qquad \sqrt{a^2+b} \approx a + \cfrac{b}{2a + \cfrac{b}{2a}}, \qquad a + \frac{b}{2a+1} \le \sqrt{a^2+b} \le a + \frac{b}{2a}`,
           description: String.raw`Write the number as $a^2+b$ with $a$ the nearest integer below the root. Then $\sqrt{a^2+b}=a+\frac{b}{a+\sqrt{a^2+b}}$, and feeding the estimate back into itself gives successively better values: $a+\frac{b}{2a}$ to first order, then $a+\frac{b}{2a+b/(2a)}$, which is usually correct to four or five digits. The two one-step estimates $a+\frac{b}{2a+1}$ and $a+\frac{b}{2a}$ bracket the true value whenever $0 \le b \le 2a+1$.`,
           keywords: ["newton's method for roots", "approximate square root", "estimate a square root", "square root approximation", "sqrt estimate", "nearest integer to a square root", "babylonian method", "which is closer", "estimate a radical", "bounding a square root", "method"],
-          importance: "low",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
@@ -261,9 +256,8 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`p_k = e_1 p_{k-1} - e_2 p_{k-2} + \cdots + (-1)^{k-1} k\, e_k, \qquad p_1 = e_1, \qquad p_2 = e_1 p_1 - 2e_2, \qquad p_3 = e_1 p_2 - e_2 p_1 + 3e_3, \qquad p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 - 4e_4`,
           description: String.raw`Relates power sums $p_k = \sum r_i^k$ of a polynomial's roots to the elementary symmetric polynomials $e_i$ (from Vieta). E.g. $p_2 = e_1 p_1 - 2e_2$, $p_3 = e_1 p_2 - e_2 p_1 + 3e_3$.`,
-          example: String.raw`For $x^2 - 3x + 2$ (roots $1, 2$): $e_1 = 3$, $e_2 = 2$, so $p_1 = 3$ and $p_2 = e_1 p_1 - 2e_2 = 9 - 4 = 5 = 1^2 + 2^2$. ✓ No need to find the roots at all.`,
           keywords: ["power sums", "sum of squares of roots", "sum of cubes of roots", "symmetric"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -274,7 +268,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{every symmetric } f(r_1, \dots, r_n) \text{ is a polynomial in } e_1, \dots, e_n, \qquad \prod_{i=1}^{n} (a - r_i) = \frac{P(a)}{a_n}, \qquad \sum_{i=1}^{n} \frac{1}{a - r_i} = \frac{P'(a)}{P(a)}`,
           description: String.raw`If an expression in the roots is unchanged by permuting them, it is computable from the coefficients alone — you never have to find the roots. Vieta supplies $e_1, \dots, e_n$, Newton's sums convert those to power sums, and any product over the roots is read off by evaluating $P$ at a well-chosen point (including a complex one).`,
           keywords: ["fundamental theorem of symmetric polynomials", "symmetric polynomial", "symmetric function of the roots", "elementary symmetric polynomials", "complex number evaluation trick", "plug in a value", "evaluate the polynomial at", "product over the roots", "never find the roots", "expressions in the roots", "method"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
         },
         {
@@ -284,7 +278,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`P(x) = \sum_{i} y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j}`,
           description: String.raw`The unique degree-$\le n{-}1$ polynomial through $n$ given points. Also: the finite-difference trick — a degree-$n$ polynomial has constant $n$-th differences.`,
-          example: String.raw`Through $(1,1), (2,4), (3,9)$: $P(x) = 1\cdot\frac{(x-2)(x-3)}{(1-2)(1-3)} + 4\cdot\frac{(x-1)(x-3)}{(2-1)(2-3)} + 9\cdot\frac{(x-1)(x-2)}{(3-1)(3-2)}$, which simplifies to $x^2$ — each basis term is $1$ at its own point and $0$ at the others.`,
           keywords: ["interpolation", "points determine polynomial", "finite differences", "lagrange polynomial", "polynomial through given points", "interpolating polynomial"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -296,7 +289,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\text{roots } r_i + k: P(x - k); \qquad \text{roots } kr_i: P\!\left(\tfrac{x}{k}\right); \qquad \text{roots } \tfrac{1}{r_i}: x^n P\!\left(\tfrac{1}{x}\right)`,
           description: String.raw`To build the polynomial whose roots are a function of the old roots, substitute the inverse function into $P$. Reversing the coefficients gives reciprocal roots; for squared roots, compute $P(\sqrt{x})P(-\sqrt{x})$ (or pair Vieta with Newton's sums).`,
-          example: String.raw`$P(x) = x^2 - 5x + 6$ (roots $2, 3$): reciprocal roots — reverse coefficients to $6x^2 - 5x + 1$ (roots $\frac{1}{2}, \frac{1}{3}$ ✓); roots shifted by $1$ — $P(x-1) = x^2 - 7x + 12$ (roots $3, 4$ ✓).`,
           keywords: ["shift roots", "scale roots", "reciprocal roots", "reverse coefficients", "substitute"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -330,7 +322,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`xy + ax + by + ab = (x + b)(y + a)`,
           description: String.raw`Add a constant to complete a product. Standard for solving $xy + ax + by = c$ over integers: factor and enumerate divisor pairs.`,
-          example: String.raw`Solve $xy + 3x + 2y = 18$ over positive integers: add $6$ to both sides to get $(x+2)(y+3) = 24$. Factor pairs of $24$ with $x + 2 \ge 3$, $y + 3 \ge 4$: $(3,8), (4,6), (6,4)$ give $(x,y) = (1,5), (2,3), (4,1)$.`,
           keywords: ["sfft", "complete the rectangle", "integer solutions", "diophantine"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -353,7 +344,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\Delta a_n = a_{n+1} - a_n; \qquad \deg P = k \iff \Delta^k P \text{ is a nonzero constant}`,
           description: String.raw`A degree-$k$ polynomial has constant $k$-th differences (and the constant is $k! \cdot$ leading coefficient). Given consecutive values $P(1), P(2), \dots$, build the difference table and extend it rightward to evaluate further values — no interpolation formula needed.`,
-          example: String.raw`Values $2, 3, 10, 29, 66$: differences $1, 7, 19, 37$; second differences $6, 12, 18$; third $6, 6$ — constant, so the source is a cubic, and extending the table gives the next value $66 + (37 + 24) = 127$.`,
           keywords: ["difference table", "constant differences", "extend sequence", "polynomial degree"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -388,7 +378,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`u = \log_b x \implies x = b^{\,u}, \qquad t = \log_a b \implies \log_b a = \frac{1}{t}`,
           description: String.raw`A log equation is usually an ordinary algebraic equation wearing a disguise. Name the repeated logarithm — $u = \log_b x$, or $t = \log_a b$ for a base-swap pair — and the problem turns into a polynomial or rational equation in that one variable. Solve it there, then convert back with $x = b^{\,u}$ and check every root against the original domain.`,
           keywords: ["log substitution", "substitute for a logarithm", "let u equal log x", "quadratic in log", "log equation", "disguised quadratic", "solve logarithmic equations", "convert back and check domain", "method"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -420,7 +410,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\sqrt{a^2 - x^2}:\ x = a\sin\theta \qquad \sqrt{a^2 + x^2}:\ x = a\tan\theta \qquad \sqrt{x^2 - a^2}:\ x = a\sec\theta`,
           description: String.raw`Match the radical to the substitution that clears it, and a Pythagorean identity does the rest: $x = a\sin\theta$ turns $\sqrt{a^2-x^2}$ into $a\cos\theta$, $x = a\tan\theta$ turns $\sqrt{a^2+x^2}$ into $a\sec\theta$, and $x = a\sec\theta$ turns $\sqrt{x^2-a^2}$ into $a\tan\theta$; $x = a\cot\theta$ serves the second case when the answer wants a cotangent. Beyond radicals the same move handles three other shapes: iterations such as $x \mapsto 2x^2-1$ become angle doubling, symmetric conditions like $a+b+c=abc$ become an angle sum through $a = \tan A$, and the Weierstrass substitution $t = \tan\frac\theta2$ runs the whole thing backwards to rationalize a trigonometric expression.`,
-          example: String.raw`$\underbrace{\sqrt{2 + \sqrt{2 + \cdots + \sqrt{2}}}}_{n \text{ radicals}} = 2\cos\frac{\pi}{2^{n+1}}$ — e.g. $\sqrt{2} = 2\cos\frac{\pi}{4}$, $\sqrt{2+\sqrt2} = 2\cos\frac{\pi}{8}$.`,
           keywords: ["substitute cosine", "sqrt 1 minus x squared", "sqrt 1 plus x squared", "sqrt x squared minus 1", "x = a sin theta", "x = a tan theta", "x = a sec theta", "angle doubling", "triple angle 4x^3 - 3x", "tangent double angle", "a + b + c = abc tangent", "nested radicals", "chebyshev", "weierstrass substitution", "half angle radical", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -432,7 +421,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\text{try } (0,0), \; (x, 0), \; (x, x), \; (x, -x), \; (x, 1) \text{ in order}`,
           description: String.raw`For an equation holding for all reals, plug in structured values: $(0,0)$ pins $f(0)$; $(x, 0)$ relates $f(x)$ to constants; $(x, x)$ and $(x, -x)$ produce doubling laws and parity. Cosine-flavored equations like $f(a+b) + f(a-b) = 2f(a)f(b)$ (2023 AMC 12B #22) yield to exactly this sequence.`,
-          example: String.raw`For $f(a+b) + f(a-b) = 2f(a)f(b)$, not identically zero: $a = b = 0$ gives $2f(0) = 2f(0)^2$, so $f(0) \in \{0, 1\}$; if $f(0) = 0$, setting $b = 0$ gives $2f(a) = 0$ for all $a$ — excluded. So $f(0) = 1$, and $a = 0$ then gives $f(b) + f(-b) = 2f(b)$: $f$ is even. (Solutions behave like $\cos kx$ and $\cosh kx$.)`,
           keywords: ["functional equation", "plug in zero", "substitution", "f(x+y)", "parity", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -526,7 +514,6 @@ window.MATH_SECTIONS.push({
           subject: "number-theory",
           latex: String.raw`f(a) \equiv 0 \!\!\pmod{p}, \; f'(a) \not\equiv 0 \!\!\pmod{p} \implies \text{unique lift mod } p^2`,
           description: String.raw`Write $x = a + pt$ and expand: $f(a + pt) \equiv f(a) + pt\,f'(a) \pmod{p^2}$, a linear congruence in $t$. Each simple root mod $p$ lifts to exactly one root mod $p^2$ (and onward to $p^3, \dots$). The standard tool for "divisible by $p^2$" power congruences.`,
-          example: String.raw`(2024 AIME I #13) $n^4 \equiv -1 \pmod{p}$ needs $8 \mid p - 1$, so the least prime is $p = 17$ (e.g. $2^4 = 16 \equiv -1$). Lifting $n = 2 + 17t$ into $n^4 \equiv -1 \pmod{289}$ gives a linear condition on $t$, and the least positive solution overall is $m = 110$.`,
           keywords: ["hensel", "lift mod p squared", "p squared divides", "linear congruence", "simple root", "lifting solutions mod p"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -538,7 +525,6 @@ window.MATH_SECTIONS.push({
           subject: "number-theory",
           latex: String.raw`v_p(a^n - b^n) = v_p(a - b) + v_p(n), \qquad v_2(a^n - b^n) = v_2(a - b) + v_2(a + b) + v_2(n) - 1`,
           description: String.raw`For odd prime $p \mid a - b$ with $p \nmid a, b$. For $p = 2$ (with $4 \mid a - b$, or adjust): $v_2(a^n - b^n) = v_2(a-b) + v_2(a+b) + v_2(n) - 1$ for even $n$.`,
-          example: String.raw`Largest power of $3$ dividing $4^9 - 1$: $v_3(4^9 - 1^9) = v_3(4-1) + v_3(9) = 1 + 2 = 3$. Check: $4^9 - 1 = 262143 = 27 \cdot 9709$. ✓`,
           keywords: ["lte", "valuation of difference of powers", "largest power dividing", "lifting the exponent lemma", "v_p of a^n minus b^n", "p-adic valuation of a difference"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -584,7 +570,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\gcd \to \min(e_i, f_i), \quad \operatorname{lcm} \to \max(e_i, f_i), \quad \text{product} \to e_i + f_i, \quad \text{square} \to \text{all } e_i \text{ even}`,
           description: String.raw`Every divisibility, gcd, lcm, perfect-power, and divisor-count condition is secretly a statement about prime exponents, one prime at a time. Write each number as $\prod p^{e_i}$, translate the conditions into min / max / sum / parity constraints on the exponents, and solve prime by prime — the primes never interact, so a hard multi-number condition splits into independent tiny problems.`,
           keywords: ["exponent tracking", "prime factorization method", "min max exponents", "gcd lcm exponents", "perfect power parity", "method"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -621,7 +607,6 @@ window.MATH_SECTIONS.push({
           subject: "counting",
           latex: String.raw`|A_1 \cup \cdots \cup A_n| = \sum |A_i| - \sum |A_i \cap A_j| + \sum |A_i \cap A_j \cap A_k| - \cdots`,
           description: String.raw`Two sets: $|A \cup B| = |A| + |B| - |A \cap B|$. Three sets: add singles, subtract pairs, add the triple.`,
-          example: String.raw`How many of $1, \dots, 30$ are divisible by 2, 3, or 5? $\;15 + 10 + 6 - 5 - 3 - 2 + 1 = 22$ (subtract the pairwise overlaps $6, 10, 15$; add back multiples of $30$).`,
           keywords: ["inclusion exclusion", "union", "overlap", "venn"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -634,7 +619,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`p_{\text{state}} = \sum_{\text{moves}} P(\text{move}) \cdot p_{\text{next state}}`,
           description: String.raw`Name a probability variable per state, write one equation per state by conditioning on the first step, and solve the linear system. Handles random walks, games to $n$ wins, and gambler's ruin ($P = \frac{a}{a+b}$ for a fair walk).`,
           keywords: ["markov", "markov chain", "random walk", "random walk on a graph", "state collapse", "recursive probability", "gambler's ruin", "first step", "expected steps to return", "absorbing state", "cube corner walk", "method"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -790,7 +775,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`\min_{P \in \ell}\, (AP + PB) = A'B, \quad A' = \text{reflection of } A \text{ over } \ell`,
           description: String.raw`To minimize a broken path touching a line (or several), reflect an endpoint across the line and measure straight. Bounce problems (billiards, light rays, ant-on-a-box) unfold the same way — reflect the room instead of bending the path.`,
-          example: String.raw`$A = (0, 3)$, $B = (6, 1)$, $P$ on the $x$-axis: reflect $A$ to $(0, -3)$; the minimum of $AP + PB$ is $\sqrt{6^2 + 4^2} = \sqrt{52} = 2\sqrt{13}$, achieved where segment $A'B$ crosses the axis.`,
           keywords: ["reflection", "shortest path", "minimize distance", "billiard", "unfold", "method", "pattern"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -802,7 +786,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`\text{box } a\le b\le c,\ \text{opposite corners}:\quad \min = \sqrt{(a+b)^2 + c^2}`,
           description: String.raw`A path forced to stay on a solid's surface is straightened by unfolding (developing) the surface into a plane — the shortest surface path becomes a straight segment, measured with the distance formula. A box unfolds several ways, so try each pairing and keep the smallest: for opposite corners of an $a\le b\le c$ box the minimum is $\sqrt{(a+b)^2+c^2}$. A cylinder unrolls into a rectangle (a helix becomes a straight line) and a cone into a circular sector. It is the 3D cousin of reflecting to straighten a wall-bouncing path.`,
-          example: String.raw`A $1\times 2\times 3$ box, corner to opposite corner across the faces: the three unfoldings give $\sqrt{(1+2)^2+3^2}=\sqrt{18}=3\sqrt2$, $\sqrt{(1+3)^2+2^2}=\sqrt{20}$, and $\sqrt{(2+3)^2+1^2}=\sqrt{26}$; the shortest is $3\sqrt2\approx4.24$ (the through-space diagonal $\sqrt{14}$ is not allowed on the surface).`,
           keywords: ["shortest path surface", "unfold", "net", "spider and fly", "ant on a box", "geodesic", "develop surface", "cylinder unroll", "cone sector", "shortest route on a box", "method", "pattern"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -814,7 +797,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`\text{rotate } 60^\circ \text{ (equilateral) or } 90^\circ \text{ (square) about a vertex}`,
           description: String.raw`Given the distances from an interior point to the vertices of an equilateral triangle or square, rotate the figure about a vertex: one distance carries to a new position, creating an equilateral (or isosceles right) triangle from two of the distances — and a triangle whose sides are all three known lengths.`,
-          example: String.raw`$P$ inside equilateral $\triangle ABC$ with $PA = 3, PB = 4, PC = 5$: rotating $60^\circ$ about $B$ produces a $3$-$4$-$5$ right triangle plus an equilateral one, revealing $\angle APB = 150^\circ$ — from which the side and area of $ABC$ follow.`,
           keywords: ["rotation", "point inside square", "point inside equilateral", "distances to vertices", "method", "distances from a special point", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -826,7 +808,6 @@ window.MATH_SECTIONS.push({
           subject: "geometry",
           latex: String.raw`\text{distance(center, line)} = r \qquad\text{or}\qquad \Delta = 0`,
           description: String.raw`When a system "has exactly one solution" and its pieces are a circle and a line (or two circles, or a curve and a line), uniqueness means tangency: set the distance from the center to the line equal to the radius, or set the discriminant of the combined equation to zero, and solve for the parameter.`,
-          example: String.raw`(2025 AIME I #8) $|25 + 20i - z| = 5$ is a circle at $(25, 20)$; $|z - 4 - k| = |z - 3i - k|$ is the perpendicular bisector of two points depending on $k$. Exactly one solution forces the line tangent: distance $= \frac{|8k - 73|}{10} = 5$, so $k = \frac{123}{8}$ or $\frac{23}{8}$, summing to $\frac{73}{4}$ — answer $77$.`,
           keywords: ["tangent", "unique solution", "discriminant zero", "distance equals radius", "exactly one intersection", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -865,7 +846,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\text{pair } f(x) \text{ with } f(1-x) \;\text{(or } k \text{ with } n-k\text{)}, \quad \sum_{k=1}^{n-1} f\!\left(\tfrac{k}{n}\right) = \tfrac{n-1}{2}\Big(f(x)+f(1-x)\Big) \text{ when that pair is constant}`,
           description: String.raw`When a sum's arguments are symmetric about a centre, pair the first term with the last, the second with the second-last, and look at what one pair gives. The pair is often constant, and then the whole sum is just (number of pairs) times that constant, but not always: it frequently reduces to a trigonometric expression, or to something that only simplifies once every pair is added. The method is the pairing itself, and the pair's value is what you go and find out. Gauss's $1+2+\cdots+n$ is the arithmetic case.`,
-          example: String.raw`$f(x) = \frac{9^x}{9^x + 3}$ pairs as $f(x) + f(1-x)$. Multiplying the second fraction top and bottom by $9^x$ turns it into $\frac{3}{3 + 9^x}$, so the pair sums to $\frac{9^x + 3}{9^x + 3} = 1$, a constant. With $1000$ terms that is $500$ pairs, giving $500$. Had the pair come out as, say, $\sec^2\theta$ instead, the pairing would still have been the right move; you would then sum those instead.`,
           keywords: ["pairing", "f(x) + f(1-x)", "pair first with last", "symmetric sum", "gauss trick", "sum symmetric about a centre", "k with n-k", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -888,7 +868,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`x^4 + ax^3 + bx^2 + ax + 1 = 0 \;\xrightarrow{\div x^2}\; y^2 + ay + (b - 2) = 0, \quad y = x + \tfrac{1}{x}`,
           description: String.raw`When coefficients read the same forwards and backwards, roots come in pairs $r, \frac{1}{r}$. Divide by the middle power of $x$ and substitute $y = x + \frac{1}{x}$ (using $x^2 + \frac{1}{x^2} = y^2 - 2$) to halve the degree.`,
-          example: String.raw`$x^4 + x^3 - 4x^2 + x + 1 = 0$: dividing by $x^2$ gives $y^2 + y - 6 = 0$ with $y = x + \frac{1}{x}$, so $y = 2$ or $-3$ — then solve two quadratics.`,
           keywords: ["palindromic", "reciprocal polynomial", "x plus 1 over x", "symmetric coefficients", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -901,7 +880,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`f(a_i) = k \;\forall i \implies f(x) = c\prod_i (x-a_i) + k, \qquad f(a_i) = g(a_i) \;\forall i \implies f(x) = \left(\prod_i (x-a_i)\right)Q(x) + g(x)`,
           description: String.raw`If a polynomial agrees with something simple at several points, subtract that thing. When $f$ takes the same value $k$ at $a_1,\dots,a_m$, the polynomial $f(x)-k$ vanishes at all of them, so it carries the factors $(x-a_i)$. The same works against any $g$: if $f(a_i) = g(a_i)$ for each $i$, then $f - g$ has those roots, so $f(x) = \left(\prod (x-a_i)\right)Q(x) + g(x)$.`,
           keywords: ["equal values", "same value at several points", "f(a) = f(b)", "subtract the constant", "shifted polynomial", "construct the polynomial", "known roots plus constant", "f(x) - k has roots", "reconstruct a polynomial", "f(a) = g(a)", "agrees with another polynomial", "subtract the interpolating polynomial", "f minus g has roots", "method", "pattern"],
-          importance: "high",
+          importance: "medium",
           level: ["AMC12", "AIME"]
         },
         {
@@ -911,7 +890,6 @@ window.MATH_SECTIONS.push({
           name: "Periodicity in Recursive Sequences",
           latex: String.raw`a_n \text{ eventually repeats with period } p:\ \ a_n = a_{\,n \bmod p}`,
           description: String.raw`Nonlinear recursions built from a fixed rational rule (like $t_n = \frac{5t_{n-1}+1}{25t_{n-2}}$ or $a_{n+1} = |a_n| - a_{n-1}$) are very often periodic: iterate by hand until the initial pair reappears, confirm one full extra cycle, then reduce the target index modulo the period. Watch for pre-periods (a few irregular terms before the cycle starts).`,
-          example: String.raw`$a_{n+1} = \frac{1}{1 - a_n}$ with $a_1 = 2$: the terms run $2, -1, \frac{1}{2}, 2, -1, \dots$ — period $3$. Since $2024 \equiv 2 \pmod 3$, $a_{2024} = a_2 = -1$.`,
           keywords: ["periodic", "cycle", "recursion repeats", "index mod period", "iterate", "periodic recurrence", "period of recursion", "cyclic sequence", "lyness cycle", "mobius map order", "recurrence period", "tan addition recurrence", "1/(1-x)", "recursive", "todd equation", "period 8 recurrence", "x_n over x_{n-1}", "multiplicative periodic recurrence", "period 6 cycle", "pattern"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -923,7 +901,6 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\#\text{solutions of } f(x) = c \;=\; \#\text{crossings of } y = f(x) \text{ with } y = c`,
           description: String.raw`For nested absolute values and piecewise functions, don't solve — draw. Build the graph by transformations (each $|\cdot|$ folds the picture upward; each subtraction shifts it), then slide the horizontal line and count crossings as the parameter varies. Corner heights tell you exactly where the count jumps.`,
-          example: String.raw`$||x| - 2| = c$: the W-shaped graph has valleys at height $0$ ($x = \pm2$) and a local peak at height $2$ ($x = 0$). So: $4$ solutions for $0 < c < 2$, $3$ at $c = 2$, $2$ for $c > 2$ or $c = 0$.`,
           keywords: ["absolute value graph", "count solutions", "W shape", "fold", "parameter", "method", "pattern"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -952,7 +929,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\overline{TWO} + \overline{TWO} = \overline{FOUR}: \quad \text{distinct digits, leading digit} \ne 0, \text{ carry } 0\text{ or }1 \text{ per column}`,
           description: String.raw`The puzzles where letters stand for distinct digits ($\text{TWO}+\text{TWO}=\text{FOUR}$). Definitive attack: work column by column from the right, carrying only $0$ or $1$ in an addition; no leading letter may be $0$; each letter is a distinct digit $0$–$9$. The carry bounds pin the high letters immediately — a four-letter sum of two three-letter numbers forces the leading letter to be $1$ (two three-digit numbers total under $2000$) — and from there each column is a small constraint you propagate.`,
           keywords: ["cryptarithm", "alphametic", "verbal arithmetic", "letters are digits", "carry column by column", "distinct digits", "method", "pattern"],
-          importance: "low",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
@@ -978,7 +955,6 @@ window.MATH_SECTIONS.push({
           subject: "counting",
           latex: String.raw`W = \{\,n : \text{some move reaches } L\,\}, \qquad L = \{\,n : \text{every move reaches } W\,\}`,
           description: String.raw`Two players alternate removing tokens from one pile under a fixed set of legal move sizes, and you are asked who wins from a given $n$. A position is winning for the player to move exactly when some legal move hands the opponent a losing one, and losing exactly when every move hands them a winning one. Label upward from $0$ by backward induction; the $W$/$L$ pattern is eventually periodic with period related to the move sizes, so the answer for large $n$ is a congruence.`,
-          example: String.raw`(2024 AIME I #3) Players remove $1$ or $4$ tokens; last token wins. Labeling from $n = 0$: the losing positions are $n \equiv 0, 2 \pmod 5$. The second player wins exactly at those $n$, and there are $404 + 405 = 809$ such $n \le 2024$.`,
           keywords: ["game", "nim", "p positions", "winning strategy", "periodic pattern", "take away", "method", "game analysis", "pattern"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -991,7 +967,7 @@ window.MATH_SECTIONS.push({
           latex: String.raw`\text{seat the } n \text{ others first} \Rightarrow n+1 \text{ gaps} \Rightarrow \text{drop the } k \text{ special items into distinct gaps: } \binom{n+1}{k}`,
           description: String.raw`For "arrange so that certain items are never adjacent," place the unrestricted items first, then slot the restricted ones into the gaps between and around them — at most one per gap guarantees no two touch. With $n$ others there are $n+1$ gaps, so choosing $k$ of them gives $\binom{n+1}{k}$ (times $k!$ and the others' arrangements when everything is distinct). The same move handles "at least $d$ apart" (pre-place the required spaces) and, with a small fix for the wrap-around, circular seatings.`,
           keywords: ["gap method", "no two adjacent", "non-adjacent arrangement", "insert into gaps", "spacing constraint", "seat no two together", "at least one apart", "method", "pattern"],
-          importance: "low",
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
@@ -1012,7 +988,6 @@ window.MATH_SECTIONS.push({
           subject: "counting",
           latex: String.raw`\#\{\text{paths crossing the barrier}\} = \#\{\text{paths to the reflected endpoint}\}`,
           description: String.raw`To count lattice paths (or $\pm1$ walks) that must avoid a boundary, count the bad ones instead: reflect the portion of each barrier-touching path after its first touch, giving a bijection with unrestricted paths to a mirrored endpoint. Subtract. This one bijection generates the Catalan numbers and the ballot theorem.`,
-          example: String.raw`Paths $(0,0) \to (5,3)$ in unit R/U steps that never go strictly above $y = x$: total $\binom{8}{3} = 56$ minus bad ones $\binom{8}{2} = 28$ (reflect across $y = x + 1$, landing at the mirror of the endpoint), leaving $28$.`,
           keywords: ["André's Reflection Principle", "reflection", "bad paths", "barrier", "bijection", "catalan proof", "ballot", "method", "Andre's reflection principle", "pattern"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -1024,7 +999,6 @@ window.MATH_SECTIONS.push({
           subject: "counting",
           latex: String.raw`\#\text{orbits} = \frac{1}{|G|} \sum_{g \in G} |\mathrm{Fix}(g)|`,
           description: String.raw`Distinct colorings under symmetry = average number of colorings fixed by each symmetry. E.g. colorings of a cube's faces with $k$ colors: $\frac{k^6 + 3k^4 + 12k^3 + 8k^2}{24}$.`,
-          example: String.raw`2-color the corners of a square, rotations only. Fixed colorings: identity $2^4 = 16$; rotations by $90^\circ$ and $270^\circ$ fix $2$ each; $180^\circ$ fixes $2^2 = 4$. Answer: $\frac{16 + 2 + 4 + 2}{4} = 6$ distinct colorings.`,
           keywords: ["burnside", "symmetry", "orbits", "colorings", "rotations", "necklace", "pattern"],
           importance: "medium",
           level: ["AIME", "Olympiad"]

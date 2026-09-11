@@ -4,6 +4,7 @@
   --bg-card: #1a2338;
   --bg-card-hover: #1f2a44;
   --border: #2a3654;
+  --scrollbar-dim: #151b2a;   /* --border under the 50% overlay */
   --border-light: #354467;
   --text: #e8ecf6;
   --text-dim: #9aa7c7;
@@ -28,6 +29,7 @@
   --bg-card: #ffffff;
   --bg-card-hover: #eef2fb;
   --border: #d7deed;
+  --scrollbar-dim: #6b6f77;   /* --border under the 50% overlay */
   --border-light: #c2cbe1;
   --text: #1b2333;
   --text-dim: #55607a;
@@ -831,6 +833,30 @@ body.nav-open .nav-backdrop { opacity: 1; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* An overlay dims the whole page, but the scrollbar is painted by the browser OUTSIDE the
+   overlay, so it keeps its full strength and becomes the brightest thing on screen the moment
+   a modal opens. Dim it to match. Driven by :has() rather than a class toggled in JS so it
+   cannot desync from the overlay actually being present — the modals are created and removed
+   as elements, with no single open/close chokepoint to hook.
+
+   NOTE the selectors are written BOTH with and without a descendant space. The page's own
+   scrollbar belongs to the root element, so it needs `html:has(...)::-webkit-scrollbar-thumb`
+   with no space; the spaced form only reaches scrollbars on descendants (the sidebar, the
+   database nav). Writing only the spaced form left the page scrollbar undimmed. */
+html:has(.modal-overlay)::-webkit-scrollbar-thumb,
+html:has(.modal-overlay) ::-webkit-scrollbar-thumb,
+body.nav-open::-webkit-scrollbar-thumb,
+body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
+
+/* Firefox has no ::-webkit-scrollbar, and `scrollbar-color` is the only lever there. It must
+   NOT be used where the webkit pseudo-elements exist: setting it makes Chrome fall back to its
+   standard 15px scrollbar instead of the 10px one styled above, and with `scrollbar-gutter:
+   stable` the reserved gutter changes with it, so the whole page visibly shifts sideways the
+   moment a modal opens. */
+@supports not selector(::-webkit-scrollbar) {
+  html:has(.modal-overlay), body.nav-open { scrollbar-color: var(--scrollbar-dim) transparent; }
+}
 
 /* ---------- Detail pages ---------- */
 

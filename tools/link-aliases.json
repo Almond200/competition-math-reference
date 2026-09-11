@@ -24,6 +24,7 @@
    "Alternating Sum of Squared Binomial Coefficients"
   ],
   "altitude-bisector-angle": [
+   "Altitude, Bisector",
    "Altitude, Bisector & Circumdiameter"
   ],
   "altitude-hypotenuse": [
@@ -33,10 +34,8 @@
   "am-gm": [
    "AM–GM Inequality"
   ],
-  "an-minus-bn": [
-   "General $a^n - b^n$ and $a^n + b^n$"
-  ],
   "angle-addition": [
+   "Angle Addition",
    "Angle Addition & Subtraction"
   ],
   "angle-between-lines": [
@@ -58,7 +57,6 @@
    "Angles from Chords, Secants, Tangents"
   ],
   "antisymmetric-factorization": [
-   "Antisymmetric $$ Factorizations",
    "a-b",
    "b-c",
    "c-a"
@@ -74,18 +72,21 @@
    "Apollonius’s"
   ],
   "arctan-telescoping": [
+   "Arctangent Addition",
    "Arctangent Addition & Telescoping"
   ],
   "area-method": [
    "Area Ratio from Base Ratios"
   ],
   "arithmetic-series": [
+   "Arithmetic Sequence",
    "Arithmetic Sequence & Series"
   ],
   "arithmetico-geometric": [
    "Arithmetico-Geometric Sum"
   ],
   "auxiliary-lines": [
+   "Auxiliary Lines",
    "Auxiliary Lines & Constructions"
   ],
   "average-speed": [
@@ -101,13 +102,11 @@
   "barycentric-coordinates": [
    "Barycentric Coordinates"
   ],
-  "base-conversion": [
-   "Base-$b$ Representation"
-  ],
   "base10-curiosities": [
    "Base-10 Curiosities"
   ],
   "basic-probability": [
+   "Basic Probability",
    "Basic Probability & Union"
   ],
   "bayes-theorem": [
@@ -156,6 +155,8 @@
    "Binomial Probability"
   ],
   "binomial-row-sums": [
+   "Alternating Sums",
+   "Row Sums",
    "Row Sums & Alternating Sums"
   ],
   "binomial-theorem": [
@@ -215,6 +216,7 @@
    "Carmichael Function λ"
   ],
   "carmichael-numbers": [
+   "Carmichael Numbers",
    "Carmichael Numbers & Pseudoprimes"
   ],
   "carnots-theorem": [
@@ -310,6 +312,7 @@
    "Length of a Chord"
   ],
   "circle-basics": [
+   "Circumference, Area, Arc",
    "Circumference, Area, Arc & Sector"
   ],
   "circle-equation": [
@@ -319,7 +322,9 @@
    "Circular Arrangements"
   ],
   "circular-segment": [
-   "Circular Segment & Lens Areas"
+   "Circular Segment",
+   "Circular Segment & Lens Areas",
+   "Lens Areas"
   ],
   "circumradius-area": [
    "Circumradius Formula"
@@ -355,9 +360,10 @@
    "Complex Number Bashing"
   ],
   "complex-basics": [
-   "Modulus, Conjugate & $i$ Powers"
+   "Modulus, Conjugate"
   ],
   "conditional-probability": [
+   "Conditional Probability",
    "Conditional Probability & Bayes"
   ],
   "cone-formulas": [
@@ -399,6 +405,7 @@
    "Sum of Coprime Residues"
   ],
   "cosecant-cotangent-square-sums": [
+   "Finite Sums of Squared Cosecants",
    "Finite Sums of Squared Cosecants and Cotangents"
   ],
   "cot-tan-telescoping": [
@@ -408,6 +415,7 @@
    "Grouping Method"
   ],
   "counting-functions": [
+   "Counting Functions",
    "Counting Functions & Injections"
   ],
   "cross-product-area": [
@@ -428,9 +436,6 @@
   "cryptarithms": [
    "Alphametics",
    "Cryptarithms"
-  ],
-  "cubes-minus-3abc": [
-   "$a^3 + b^3 + c^3 - 3abc$"
   ],
   "cyclic-opposite-angles": [
    "Cyclic Quadrilateral Opposite Angles"
@@ -468,6 +473,7 @@
    "Soddy–Gosset Theorem"
   ],
   "difference-of-squares": [
+   "Difference of Squares",
    "Difference of Squares & Cubes"
   ],
   "difference-of-squares-rep": [
@@ -480,6 +486,7 @@
    "Digit Manipulation"
   ],
   "digit-sum-mod-9": [
+   "Digit Sums mod 9",
    "Digit Sums mod 9 and 11"
   ],
   "dilworths-theorem": [
@@ -520,10 +527,8 @@
    "Eisenstein’s"
   ],
   "equal-chords-arcs": [
+   "Equal Chords, Arcs",
    "Equal Chords, Arcs & Distances"
-  ],
-  "equilateral-triangle-facts": [
-   "Equilateral Triangle of Side $s$"
   ],
   "erdos-ginzburg-ziv": [
    "Erdős–Ginzburg–Ziv Theorem"
@@ -555,6 +560,7 @@
    "Euler’s"
   ],
   "eulerian-paths": [
+   "Eulerian Paths",
    "Eulerian Paths & Circuits"
   ],
   "eulers-criterion": [
@@ -567,9 +573,11 @@
   "eulers-formula": [
    "Euler",
    "Euler's",
+   "Euler's Formula",
    "Euler's Formula & Polar Form",
    "Eulers",
-   "Euler’s"
+   "Euler’s",
+   "Polar Form"
   ],
   "eulers-polyhedron-formula": [
    "Euler",
@@ -593,6 +601,8 @@
    "Euler’s"
   ],
   "even-power-sin-cos-sums": [
+   "Cosine Sums",
+   "High-Power Sine",
    "High-Power Sine and Cosine Sums"
   ],
   "evenly-spaced-angle-products": [
@@ -602,9 +612,12 @@
    "Excentral Triangle"
   ],
   "expected-fixed-points": [
+   "Exactly-k Formula",
+   "Expected Fixed Points",
    "Expected Fixed Points & Exactly-k Formula"
   ],
   "expected-value": [
+   "Expected Value",
    "Expected Value & Linearity"
   ],
   "exponent-laws": [
@@ -626,16 +639,15 @@
   "extremal-principle": [
    "The Extremal Principle"
   ],
-  "factor-pair-counting": [
-   "Solving $xy = N$ Style Equations"
-  ],
   "factor-remainder-theorem": [
+   "Factor Theorems",
    "Remainder & Factor Theorems"
   ],
   "factorial-telescoping": [
    "Factorial Telescoping Sums"
   ],
   "farey-sequences": [
+   "Farey Sequences",
    "Farey Sequences & Mediants"
   ],
   "fermat-numbers": [
@@ -669,11 +681,9 @@
   "finite-differences": [
    "Finite Differences"
   ],
-  "first-order-recurrence": [
-   "First-Order Recurrence $a_n = r a_{n-1} + d$"
-  ],
   "floor-basics": [
-   "Floor & Fractional Part"
+   "Floor & Fractional Part",
+   "Fractional Part"
   ],
   "floor-multiples": [
    "Counting Multiples"
@@ -717,13 +727,11 @@
    "Quadratic Residues"
   ],
   "gaussian-integers": [
+   "Eisenstein Integers",
    "Gaussian & Eisenstein Integers"
   ],
   "gcd-lcm-product": [
    "GCD × LCM"
-  ],
-  "gcd-power-minus-one": [
-   "GCD of $a^m - 1$ and $a^n - 1$"
   ],
   "gcd-substitution": [
    "GCD Substitution"
@@ -744,9 +752,11 @@
    "Geometric Series"
   ],
   "gergonne-nagel-points": [
-   "Gergonne & Nagel Points"
+   "Gergonne & Nagel Points",
+   "Nagel Points"
   ],
   "golden-ratio-pentagon": [
+   "Golden Ratio",
    "Golden Ratio & the Regular Pentagon"
   ],
   "graph-coloring": [
@@ -772,12 +782,19 @@
    "Handshake Lemma"
   ],
   "handshakes-diagonals": [
+   "Handshakes, Games, Diagonals",
    "Handshakes, Games, Diagonals & Triangles"
   ],
+  "harmonic-addition": [
+   "Harmonic Addition",
+   "Linear Combination"
+  ],
   "harmonic-bundle": [
+   "Harmonic Bundles",
    "Harmonic Bundles & Conjugates"
   ],
   "harmonic-quadrilateral": [
+   "Harmonic Quadrilaterals",
    "Harmonic Quadrilaterals & the Symmedian in a Circle"
   ],
   "hellys-theorem": [
@@ -815,7 +832,8 @@
    "Hölder’s"
   ],
   "homothety-monge": [
-   "Homothety & Monge's Theorem"
+   "Homothety & Monge's Theorem",
+   "Monge's Theorem"
   ],
   "hypergeometric": [
    "Hypergeometric Distribution"
@@ -831,13 +849,16 @@
    "Incenter–Excenter Lemma"
   ],
   "incircle-excircle-touch": [
+   "Excircle Touch Points",
    "Incircle & Excircle Touch Points"
   ],
   "incircle-tangent-lengths": [
    "Incircle Tangent Lengths"
   ],
   "indicator-variables": [
-   "Indicator Variables & Linearity of Expectation"
+   "Indicator Variables",
+   "Indicator Variables & Linearity of Expectation",
+   "Linearity of Expectation"
   ],
   "infinite-nest": [
    "Infinite Nested Expressions"
@@ -861,9 +882,11 @@
    "Intercept Theorem"
   ],
   "invariants-coloring": [
+   "Coloring Arguments",
    "Invariants & Coloring Arguments"
   ],
   "inverse-trig-identities": [
+   "Inverse Trig Identities",
    "Inverse Trig Identities & Ranges"
   ],
   "inversion-properties": [
@@ -924,6 +947,8 @@
    "Lagrange’s"
   ],
   "last-digit-patterns": [
+   "Cubes mod 9",
+   "Last Digits of Squares",
    "Last Digits of Squares & Cubes mod 9"
   ],
   "lattice-points-circle": [
@@ -933,6 +958,7 @@
    "Lattice Points on a Segment"
   ],
   "law-cosines-60-120": [
+   "Law of Cosines at 60°",
    "Law of Cosines at 60° and 120°"
   ],
   "law-of-cosines": [
@@ -945,7 +971,9 @@
    "Law of Tangents"
   ],
   "lcm-pair-counting": [
-   "Counting Pairs by LCM / GCD Conditions"
+   "Counting Pairs by LCM",
+   "Counting Pairs by LCM / GCD Conditions",
+   "GCD Conditions"
   ],
   "legendres-formula": [
    "Legendre",
@@ -991,6 +1019,7 @@
    "Lucas' Theorem"
   ],
   "maclaurin-inequality": [
+   "Maclaurin's Inequalities",
    "Newton",
    "Newton's",
    "Newton's & Maclaurin's Inequalities",
@@ -1024,8 +1053,7 @@
    "Medial Triangle"
   ],
   "median-minimizes-abs": [
-   "Median Trick",
-   "Minimizing a Sum of $|x - a_i|$"
+   "Median Trick"
   ],
   "median-to-hypotenuse": [
    "Median to the Hypotenuse"
@@ -1064,6 +1092,7 @@
    "Mixtilinear Incircle"
   ],
   "mobius-inversion": [
+   "Möbius Function",
    "Möbius Function & Inversion"
   ],
   "mobius-transformations": [
@@ -1151,13 +1180,11 @@
   "number-of-divisors": [
    "Number of Divisors"
   ],
-  "order-statistics": [
-   "Order Statistics on $[0, 1]$"
-  ],
   "orthic-triangle": [
    "Orthic Triangle"
   ],
   "orthocenter-properties": [
+   "Orthocenter Reflections",
    "Orthocenter Reflections & Distances"
   ],
   "orthocentric-system": [
@@ -1188,6 +1215,7 @@
   "pascals-identity": [
    "Pascal",
    "Pascal's",
+   "Pascal's Identity",
    "Pascal's Identity & Symmetry",
    "Pascals",
    "Pascal’s"
@@ -1200,6 +1228,7 @@
    "Pascal’s"
   ],
   "pedal-triangle": [
+   "Pedal Triangle",
    "Pedal Triangle & Its Area"
   ],
   "pell-equation": [
@@ -1258,6 +1287,7 @@
    "Equation of a Plane from Its Intercepts"
   ],
   "plane-regions": [
+   "Regions from Lines",
    "Regions from Lines and Circles"
   ],
   "point-line-distance": [
@@ -1267,6 +1297,8 @@
    "Point-to-Plane Distance"
   ],
   "pole-polar": [
+   "Harmonic Division",
+   "Pole, Polar",
    "Pole, Polar & Harmonic Division"
   ],
   "polya-enumeration": [
@@ -1312,6 +1344,7 @@
    "Projection Formula"
   ],
   "proportion-properties": [
+   "Addendo, Componendo",
    "Addendo, Componendo & Dividendo"
   ],
   "ptolemy-equilateral": [
@@ -1341,6 +1374,7 @@
    "Pythagorean Triple Parametrization"
   ],
   "quadratic-formula": [
+   "Quadratic Formula",
    "Quadratic Formula & Discriminant"
   ],
   "quadratic-reciprocity": [
@@ -1350,14 +1384,16 @@
    "Quadrilateral Area from Diagonals"
   ],
   "radical-axis": [
-   "Radical Axis & Radical Center"
+   "Radical Axis",
+   "Radical Axis & Radical Center",
+   "Radical Center"
   ],
   "ramanujan-nested-radical": [
-   "Golden & Ramanujan Nested Radicals"
+   "Golden & Ramanujan Nested Radicals",
+   "Ramanujan Nested Radicals"
   ],
   "ramsey-33": [
-   "3,3",
-   "Ramsey Number $R = 6$"
+   "3,3"
   ],
   "ratio-lemma": [
    "The Ratio Lemma"
@@ -1374,9 +1410,6 @@
   "rearrangement": [
    "Rearrangement Inequality"
   ],
-  "reciprocal-power-sums": [
-   "Powers of $x + 1/x$"
-  ],
   "recognition-numbers": [
    "Numbers Worth Recognizing"
   ],
@@ -1387,7 +1420,9 @@
    "Recursive Counting"
   ],
   "reduction-identities": [
-   "Cofunction, Sign & Periodicity Identities"
+   "Cofunction, Sign",
+   "Cofunction, Sign & Periodicity Identities",
+   "Periodicity Identities"
   ],
   "reflection-coordinates": [
    "Reflecting a Point over a Line"
@@ -1398,20 +1433,8 @@
   "reflection-shortest-path": [
    "Reflection for Shortest Paths"
   ],
-  "regular-dodecagon": [
-   "Regular Dodecagon of Side $s$"
-  ],
-  "regular-hexagon-area": [
-   "Regular Hexagon of Side $s$"
-  ],
-  "regular-octahedron": [
-   "Regular Octahedron of Side $s$"
-  ],
   "regular-polygon-area": [
    "Regular Polygon Area"
-  ],
-  "regular-tetrahedron": [
-   "Regular Tetrahedron of Side $s$"
   ],
   "reims-theorem": [
    "Reim",
@@ -1480,6 +1503,7 @@
    "Simon’s"
   ],
   "shared-angle-area-ratio": [
+   "Bird's Head Model",
    "Shared-Angle Area Ratio"
   ],
   "shifted-polynomial-construction": [
@@ -1487,9 +1511,6 @@
   ],
   "shoelace-formula": [
    "Shoelace Formula"
-  ],
-  "sigma-parity": [
-   "Parity of $\\\\sigma$"
   ],
   "similar-figures-ratios": [
    "Similar Figure Ratios"
@@ -1504,6 +1525,7 @@
    "Distance Between Skew Lines"
   ],
   "smoothing-method": [
+   "Mixing Variables",
    "Smoothing & Mixing Variables"
   ],
   "solid-tactics": [
@@ -1542,6 +1564,7 @@
    "Sphere"
   ],
   "spieker-point": [
+   "Spieker Circle",
    "The Spieker Point & Spieker Circle"
   ],
   "spiral-similarity": [
@@ -1554,7 +1577,6 @@
    "Approximating Square Roots"
   ],
   "square-of-sum": [
-   "Expansions of $^2$",
    "a+b+c"
   ],
   "squares-mod-small": [
@@ -1567,9 +1589,12 @@
    "Stars and Bars"
   ],
   "stars-bars-upper-bound": [
+   "Bars with Upper Bounds",
    "Stars and Bars with Upper Bounds"
   ],
   "states-recursion-prob": [
+   "First-Step Analysis",
+   "Probability States, Markov Chains",
    "Probability States, Markov Chains & First-Step Analysis"
   ],
   "stewarts-theorem": [
@@ -1580,6 +1605,8 @@
    "Stewart’s"
   ],
   "stirling-bell": [
+   "Bell Numbers",
+   "Stirling Numbers of the Second Kind",
    "Stirling Numbers of the Second Kind & Bell Numbers"
   ],
   "stirling-first-kind": [
@@ -1592,13 +1619,12 @@
    "Sum of Divisors"
   ],
   "sum-of-three-squares": [
+   "Four Squares",
+   "Sums of Three",
    "Sums of Three and Four Squares"
   ],
   "sum-of-two-squares": [
    "Sum of Two Squares Theorem"
-  ],
-  "sum-zero-identities": [
-   "When $a+b+c=0$"
   ],
   "surface-shortest-path": [
    "Shortest Path on a Surface",
@@ -1642,6 +1668,7 @@
    "Terminating Decimals"
   ],
   "tetrahedron-centroid": [
+   "Tetrahedron Centroid",
    "Tetrahedron Centroid & Medians"
   ],
   "thues-lemma": [
@@ -1660,9 +1687,6 @@
    "Gauss's Totient Sum",
    "Gausss",
    "Gauss’s"
-  ],
-  "trailing-zeros": [
-   "Trailing Zeros of $n!$"
   ],
   "transfer-matrix-method": [
    "Transfer Matrix Method"
@@ -1683,6 +1707,7 @@
    "Angles at the Triangle Centers"
   ],
   "triangle-half-angle-identities": [
+   "Triangle Half-Angle, R, r",
    "Triangle Half-Angle, R, r & s Identities"
   ],
   "triangle-inequality": [
@@ -1743,6 +1768,7 @@
    "Vandermonde’s"
   ],
   "variance-independence": [
+   "Products of Independent Variables",
    "Variance & Products of Independent Variables"
   ],
   "varignons-theorem": [
@@ -1784,9 +1810,6 @@
    "Vivianis",
    "Viviani’s"
   ],
-  "vp-factorial": [
-   "Counting a Prime's Factors in $n!$"
-  ],
   "weierstrass-substitution": [
    "Weierstrass Substitution"
   ],
@@ -1794,6 +1817,7 @@
    "Weighted AM–GM"
   ],
   "weighted-average": [
+   "Weighted Averages",
    "Weighted Averages & Mixtures"
   ],
   "weighted-binomial-sums": [
@@ -1831,164 +1855,60 @@
    "Zsygmondy’s"
   ]
  },
- "ambiguous": {
-  "euler": [
-   "euler-distance-theorem",
-   "euler-quadrilateral",
-   "eulers-criterion",
-   "eulers-formula",
-   "eulers-polyhedron-formula",
-   "eulers-theorem",
-   "eulers-totient"
+ "aliasesExtra": {
+  "area-method": [
+   "the area method"
   ],
-  "euler's": [
-   "euler-distance-theorem",
-   "euler-quadrilateral",
-   "eulers-criterion",
-   "eulers-formula",
-   "eulers-polyhedron-formula",
-   "eulers-theorem",
-   "eulers-totient"
+  "crt": [
+   "CRT"
   ],
-  "eulers": [
-   "euler-distance-theorem",
-   "euler-quadrilateral",
-   "eulers-criterion",
-   "eulers-formula",
-   "eulers-polyhedron-formula",
-   "eulers-theorem",
-   "eulers-totient"
+  "denesting-radicals": [
+   "denest",
+   "denesting",
+   "denesting radicals"
   ],
-  "euler’s": [
-   "euler-distance-theorem",
-   "euler-quadrilateral",
-   "eulers-criterion",
-   "eulers-formula",
-   "eulers-polyhedron-formula",
-   "eulers-theorem",
-   "eulers-totient"
+  "fermat-numbers": [
+   "Fermat number",
+   "Fermat numbers",
+   "Fermat prime",
+   "Fermat primes",
+   "Fermat pseudoprime",
+   "Fermat test"
   ],
-  "fermat": [
-   "fermat-two-squares",
-   "fermats-little-theorem"
+  "fermat-point": [
+   "Fermat isodynamic"
   ],
-  "fermat's": [
-   "fermat-two-squares",
-   "fermats-little-theorem"
+  "fermat-two-squares": [
+   "Fermat's two-squares theorem",
+   "two-squares theorem"
   ],
-  "fermats": [
-   "fermat-two-squares",
-   "fermats-little-theorem"
+  "finite-differences": [
+   "Newton's forward form"
   ],
-  "fermat’s": [
-   "fermat-two-squares",
-   "fermats-little-theorem"
+  "gcd-lcm-product": [
+   "GCD x LCM",
+   "gcd-lcm identity"
   ],
-  "gauss": [
-   "gauss-lemma-qr",
-   "totient-divisor-sum"
+  "maclaurin-inequality": [
+   "Newton's inequalities",
+   "Newton's inequality"
   ],
-  "gauss's": [
-   "gauss-lemma-qr",
-   "totient-divisor-sum"
+  "newtons-line": [
+   "Newton's line",
+   "Newton-Gauss line",
+   "Newton–Gauss collinearity"
   ],
-  "gausss": [
-   "gauss-lemma-qr",
-   "totient-divisor-sum"
+  "pigeonhole": [
+   "pigeonhole argument"
   ],
-  "gauss’s": [
-   "gauss-lemma-qr",
-   "totient-divisor-sum"
+  "regular-octahedron": [
+   "regular octahedron"
   ],
-  "minkowski": [
-   "minkowski-inequality",
-   "minkowski-lattice"
-  ],
-  "minkowski's": [
-   "minkowski-inequality",
-   "minkowski-lattice"
-  ],
-  "minkowskis": [
-   "minkowski-inequality",
-   "minkowski-lattice"
-  ],
-  "minkowski’s": [
-   "minkowski-inequality",
-   "minkowski-lattice"
-  ],
-  "newton": [
-   "maclaurin-inequality",
-   "newtons-sums"
-  ],
-  "newton's": [
-   "maclaurin-inequality",
-   "newtons-sums"
-  ],
-  "newtons": [
-   "maclaurin-inequality",
-   "newtons-sums"
-  ],
-  "newton’s": [
-   "maclaurin-inequality",
-   "newtons-sums"
-  ],
-  "pascal": [
-   "pascals-identity",
-   "pascals-theorem"
-  ],
-  "pascal's": [
-   "pascals-identity",
-   "pascals-theorem"
-  ],
-  "pascals": [
-   "pascals-identity",
-   "pascals-theorem"
-  ],
-  "pascal’s": [
-   "pascals-identity",
-   "pascals-theorem"
-  ],
-  "ptolemy": [
-   "ptolemys-inequality",
-   "ptolemys-theorem"
-  ],
-  "ptolemy's": [
-   "ptolemys-inequality",
-   "ptolemys-theorem"
-  ],
-  "ptolemys": [
-   "ptolemys-inequality",
-   "ptolemys-theorem"
-  ],
-  "ptolemy’s": [
-   "ptolemys-inequality",
-   "ptolemys-theorem"
-  ],
-  "quadratic residues": [
-   "gauss-lemma-qr",
-   "squares-mod-small"
-  ],
-  "vieta": [
-   "vietas-general",
-   "vietas-quadratic"
-  ],
-  "vieta's": [
-   "vietas-general",
-   "vietas-quadratic"
-  ],
-  "vieta's formulas": [
-   "vietas-general",
-   "vietas-quadratic"
-  ],
-  "vietas": [
-   "vietas-general",
-   "vietas-quadratic"
-  ],
-  "vieta’s": [
-   "vietas-general",
-   "vietas-quadratic"
+  "sos-method": [
+   "SOS"
   ]
  },
+ "ambiguous": {},
  "caseSensitive": [
   "EGF",
   "LTE",
@@ -1996,26 +1916,58 @@
   "SFFT"
  ],
  "deny": [
-  "Pythagorean Theorem",
-  "Quadratic Formula & Discriminant",
-  "Extended Law of Sines",
-  "Triangle Inequality",
-  "Law of Cosines",
-  "Pick",
-  "Picks",
-  "Pick's",
-  "Pick’s",
+  "& uvw / pqr",
+  "AIME",
+  "AM",
+  "AMC",
   "Cauchy",
-  "Cauchys",
   "Cauchy's",
+  "Cauchys",
   "Cauchy’s",
+  "Euler",
+  "Euler's",
+  "Eulers",
+  "Euler’s",
+  "Extended Law of Sines",
+  "GM",
+  "Gauss",
+  "Gauss's",
+  "Gausss",
+  "Gauss’s",
+  "HM",
   "Jensen",
   "Jensens",
+  "LCM",
+  "LYM",
+  "Law of Cosines",
+  "Linear Combination",
   "Markov",
   "Markovs",
+  "Minkowski",
+  "Minkowski's",
+  "Minkowskis",
+  "Minkowski’s",
+  "Pascal",
+  "Pascal's",
+  "Pascals",
+  "Pascal’s",
+  "Pick",
+  "Pick's",
+  "Picks",
+  "Pick’s",
+  "Pythagorean Theorem",
+  "QM",
+  "QR",
   "Quadratic",
+  "Quadratic Formula",
+  "Quadratic Formula & Discriminant",
+  "SSA",
   "Sphere",
-  "no two adjacent"
+  "Triangle Inequality",
+  "WLOG",
+  "XOR",
+  "no two adjacent",
+  "uvw / pqr"
  ],
  "protect": [
   "Cauchy–Binet",
@@ -2052,6 +2004,32 @@
   "sum-of-three-squares -> legendres-formula",
   "sum-of-three-squares -> lagranges-identity",
   "apollonius-circle -> apollonius-theorem",
-  "mobius-inversion -> floor-multiples"
- ]
+  "mobius-inversion -> floor-multiples",
+  "divisibility-rules -> binomial-row-sums",
+  "gergonne-nagel-points -> fermats-little-theorem",
+  "isogonal-conjugate -> fermats-little-theorem",
+  "carmichael-numbers -> fermats-little-theorem",
+  "quadratic-formula -> vietas-general",
+  "law-of-cosines -> ptolemys-theorem"
+ ],
+ "resolve": {
+  "fermat": "fermats-little-theorem",
+  "fermat's": "fermats-little-theorem",
+  "fermats": "fermats-little-theorem",
+  "fermat’s": "fermats-little-theorem",
+  "newton": "newtons-sums",
+  "newton's": "newtons-sums",
+  "newtons": "newtons-sums",
+  "newton’s": "newtons-sums",
+  "ptolemy": "ptolemys-theorem",
+  "ptolemy's": "ptolemys-theorem",
+  "ptolemys": "ptolemys-theorem",
+  "ptolemy’s": "ptolemys-theorem",
+  "quadratic residues": "squares-mod-small",
+  "vieta": "vietas-general",
+  "vieta's": "vietas-general",
+  "vieta's formulas": "vietas-general",
+  "vietas": "vietas-general",
+  "vieta’s": "vietas-general"
+ }
 }

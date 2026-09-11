@@ -233,7 +233,6 @@
 
   const state = {
     query: "",
-    starredOnly: false,          // ★ chip: show only starred within the active section
     sectionFilters: _loaded.sectionFilters,  // per-section { rarities:Set, levels:Set }
     activeSectionId: SECTIONS.length ? SECTIONS[0].id : null,
     adv: null,                   // advanced search: { sections:Set, subs:Set, topics:Set, desc:string } or null
@@ -282,6 +281,21 @@
 
   function wordsOf(text) {
     return text.split(/[\s,;:\-–—'’().\/]+/).map(normWord).filter(w => w.length > 1);
+  }
+
+  // Queries only. "tan(a+b)" used to tokenize to ["tan", "ab"]: the brackets are separators
+  // but "+" is not, so "a+b" survived into normWord, which strips non-alphanumerics and
+  // fused it into the junk token "ab". Nothing distinctive reached the ranker. The card
+  // keywords already spell the operator out ("sin a plus b", "cos a plus b"), so spelling it
+  // out on the query side too makes the two meet -- and doing it here rather than in wordsOf
+  // keeps it off the index, where every "+" in a LaTeX field would flood "plus" with
+  // occurrences and destroy its IDF.
+  function spellOperators(q) {
+    // "+" never occurs inside a word, so it can always be spelled out. "-" can (cross-ratio,
+    // power-of-a-point), so it is only spelled when it joins two SINGLE characters, which is
+    // the "a-b" / "x-y" shape and never a hyphenated term.
+    return q.replace(/\+/g, " plus ")
+            .replace(/(?<![\w-])([a-z0-9])\s*-\s*([a-z0-9])(?![\w-])/g, "$1 minus $2");
   }
 
   // Index-side tokenization keeps both the raw word and its stem, so queries
@@ -772,11 +786,46 @@
     return out;
   }
 
+  // A handful of cards are algebraic trigonometric identities that merely happen to be stated
+  // about a triangle. They stay filed in Geometry, but a reader browsing Algebra's trig
+  // identities should meet them too. This is listing, not duplication: the same formula
+  // OBJECT is pushed into the second subsection and the build below keeps only its first
+  // occurrence, so there is one entry, one id and one write-up to maintain. Geometry loads
+  // before Algebra, so the canonical section -- the breadcrumb and the "Back to" link --
+  // remains Geometry.
+  const ALSO_LISTED_IN = {
+    algebra: {
+      "Trigonometric Identities": [
+        "trig-area", "triangle-half-angle-identities",
+        "half-angle-tangent-identity", "triangle-sin2-sum-ratio"
+      ]
+    }
+  };
+  (() => {
+    const src = {};
+    SECTIONS.forEach(s => s.subsections.forEach(sub => sub.formulas.forEach(f => {
+      if (!src[f.id]) src[f.id] = f;
+    })));
+    Object.keys(ALSO_LISTED_IN).forEach(secId => {
+      const sec = SECTIONS.find(s => s.id === secId);
+      if (!sec) return;
+      Object.keys(ALSO_LISTED_IN[secId]).forEach(title => {
+        const sub = sec.subsections.find(x => x.title === title);
+        if (!sub) return;
+        ALSO_LISTED_IN[secId][title].forEach(id => {
+          const f = src[id];
+          if (f && sub.formulas.indexOf(f) === -1) sub.formulas.push(f);
+        });
+      });
+    });
+  })();
+
   const ALL = [];
   const BY_ID = {};
   SECTIONS.forEach(section => {
     section.subsections.forEach(sub => {
       sub.formulas.forEach(f => {
+        if (BY_ID[f.id]) return;      // a mirrored listing, already entered under its own section
         const entry = { formula: f, section, subsection: sub };
         if (EXTRA_TAGS[f.id]) f.keywords = f.keywords.concat(EXTRA_TAGS[f.id].filter(k => f.keywords.indexOf(k) === -1));
         entry.nameWords = new Set(indexWordsOf(f.name));
@@ -1124,12 +1173,29 @@
   // Clamps on both axes. `preferAbove` puts the box over the anchor, which is what a hover
   // preview wants so it never covers the text you are still reading; it falls back to below
   // when there is no room up there. The add-to-list menu keeps the opposite preference.
-  function positionFloat(el, anchor, w, preferAbove) {
-    const r = anchor.getBoundingClientRect();
+  // `at` is the pointer position, when the caller has one. An inline link that wraps across
+  // two lines has a bounding box spanning BOTH fragments — tall, and starting at the first
+  // line's left edge — so anchoring to it put the box up and to the side of the word the
+  // reader was actually pointing at. getClientRects() gives one rect per line fragment, so
+  // the fragment under the pointer is used instead.
+  function fragmentUnder(anchor, at) {
+    const rects = [...anchor.getClientRects()];
+    if (rects.length < 2 || !at) return anchor.getBoundingClientRect();
+    const hit = rects.find(r => at.y >= r.top - 1 && at.y <= r.bottom + 1
+                             && at.x >= r.left - 1 && at.x <= r.right + 1);
+    if (hit) return hit;
+    return rects.reduce((best, r) => {
+      const d = Math.abs((r.top + r.bottom) / 2 - at.y);
+      return d < best.d ? { d, r } : best;
+    }, { d: Infinity, r: rects[0] }).r;
+  }
+
+  function positionFloat(el, anchor, w, preferAbove, at) {
+    const r = fragmentUnder(anchor, at);
     const vw = document.documentElement.clientWidth;
     const vh = document.documentElement.clientHeight;
     el.style.width = w + "px";
-    let left = r.left + window.scrollX;
+    let left = (at ? at.x - w / 2 : r.left) + window.scrollX;
     if (left + w > window.scrollX + vw - 8) left = window.scrollX + vw - w - 8;
     el.style.left = Math.max(8 + window.scrollX, left) + "px";
     const h = el.offsetHeight || 160;
@@ -1190,6 +1256,10 @@
     "symmedian-lemoine", "harmonic-quadrilateral", "lemoine-point",
     "stars-and-bars", "grid-paths", "catalan-numbers", "am-gm", "jensens-inequality",
     "roots-of-unity", "floor-basics", "absolute-value-rules", "lattice-points-gcd",
+    // These three carried a hand-written `diagram:` field that the card face used directly.
+    // That field is gone, so they are listed here to keep their card-face figure — and going
+    // through this path means they now get `card-glance`, hence cropDiagramHeight.
+    "power-of-a-point", "inscribed-angle-theorem", "picks-theorem",
     "incenter-excenter-lemma", "orthocenter-properties", "fermat-point",
     "simson-line", "butterfly-theorem", "radical-axis", "miquels-theorem", "ptolemys-theorem",
     "cyclic-quad-diagonals", "varignons-theorem", "van-aubel", "napoleons-theorem",
@@ -1407,7 +1477,7 @@
   function searchFormulas(rawQuery) {
     let raw = rawQuery.trim();
     if (ABBREV[raw.toLowerCase()]) raw = ABBREV[raw.toLowerCase()];   // whole query is an abbreviation
-    const queryLower = raw.toLowerCase();
+    const queryLower = spellOperators(raw.toLowerCase());
     let tokens = wordsOf(queryLower).filter(t => !STOPWORDS.has(t));
     if (!tokens.length) tokens = wordsOf(queryLower);
     // expand any abbreviation that appears as its own token (mixed queries)
@@ -1854,14 +1924,16 @@
   // Cards preview only the diagram; examples and questions live on the detail
   // page. Only cards in CARD_DIAGRAM_IDS — configuration-heavy figures where the
   // picture is worth a glance — borrow their first detail diagram at a reduced
-  // size; formula-obvious cards stay text-only on the card face.
+  // size; formula-obvious cards stay text-only on the card face. There is one
+  // diagram source now: a handful of cards used to carry raw SVG in a `diagram:`
+  // field, which skipped the caption and crop passes and drew outside its own
+  // viewBox, so it was migrated into MATH_DIAGRAMS and the field removed.
   function extraHtml(f) {
     const glance = CARD_DIAGRAM_IDS.has(f.id) ? ((window.MATH_DIAGRAMS || {})[f.id] || [])[0] : null;
-    const dia = f.diagram || glance;
-    if (!dia) return "";
+    if (!glance) return "";
     return `
       <div class="card-extra">
-        <div class="diagram${glance && !f.diagram ? " card-glance" : ""}">${dia}</div>
+        <div class="diagram card-glance">${glance}</div>
       </div>`;
   }
 
@@ -2286,6 +2358,10 @@
     clearTimeout(cpTimer); clearTimeout(cpHide);
     cpHide = setTimeout(hideCardPreview, 260);
   }
+  // Where the pointer was when the hover began, so the box can be placed against the line
+  // fragment the reader is actually on rather than the link's whole bounding box.
+  let cpAt = null;
+
   function showCardPreview(a) {
     const e = BY_ID[a.dataset.card];
     if (!e || cpFor === a) return;
@@ -2324,11 +2400,13 @@
     renderMath(cpEl);
     const place = () => {
       if (!cpEl) return;
-      positionFloat(cpEl, a, thumb ? 420 : 330, true);
-      const ar = a.getBoundingClientRect(), br = cpEl.getBoundingClientRect();
+      positionFloat(cpEl, a, thumb ? 420 : 330, true, cpAt);
+      // The arrow must point at the SAME fragment the box was placed against, or on a link
+      // that wraps it aims at the union box's centre and misses the word entirely.
+      const ar = fragmentUnder(a, cpAt), br = cpEl.getBoundingClientRect();
       const arrow = cpEl.querySelector(".cp-arrow");
-      // Point the arrow at the word itself, which may sit anywhere along the box's width.
-      arrow.style.left = Math.min(Math.max(ar.left + ar.width / 2 - br.left, 14), br.width - 14) + "px";
+      const target = cpAt ? cpAt.x : ar.left + ar.width / 2;
+      arrow.style.left = Math.min(Math.max(target - br.left, 14), br.width - 14) + "px";
       cpEl.classList.toggle("cp-below", br.top > ar.top);
     };
     place();
@@ -2377,22 +2455,23 @@
     state.activeSectionId = entry.section.id;
     state.openGroup = null;
     const body = (window.MATH_DETAILS || {})[f.id];
-    // Key forms is a method-card feature: it lists the shapes a technique is
-    // applied in. A formula card already enumerates its formulas in the big box,
-    // so any stray block on one is dropped rather than rendered.
-    // Only method and pattern cards render a Key forms block. On any other card the
-    // block must be left in the body instead of being split out, or its content would be
-    // stripped and never shown (this was silently happening on eleven formula cards).
-    const isKeyFormsCard = f.type === "method" || f.type === "pattern";
-    const split = isKeyFormsCard ? splitKeyForms(body) : { formsHtml: () => "", rest: body };
+    // Any card that actually carries a "## Key forms" block renders it. This began as a
+    // method-only feature on the reasoning that a formula card already lists its formulas in
+    // the big box, but that is only true when the card has ONE formula: results with named
+    // variants (Cauchy-Schwarz and its Titu/Engel form, the QM-AM-GM-HM chain) need somewhere
+    // to enumerate them. splitKeyForms already returns the body untouched when there is no
+    // block, so a card without one is unaffected and nothing can be silently stripped.
+    const split = splitKeyForms(body);
     // Patterns will read "Recognize it" (what tips you off that you are looking at this
     // problem) once those blocks are rewritten; until then the existing content really is
     // key forms, so it keeps the honest heading.
     const formsHtml = split.formsHtml("Key forms");
     const rest = split.rest;
     const related = relatedEntries(entry, 6);
-    const hasDiagram = !!(f.diagram || ((window.MATH_DIAGRAMS || {})[f.id] || []).length);
-    const asyBtn = entry.section.id === "geometry" && hasDiagram
+    const hasDiagram = !!((window.MATH_DIAGRAMS || {})[f.id] || []).length;
+    // Not geometry-only: plenty of algebra and counting cards carry a computed figure,
+    // and the Asymptote export works off the rendered SVG regardless of subject.
+    const asyBtn = hasDiagram
       ? `<button class="copy-btn copy-asy-btn" title="Copy Asymptote code for the figure">copy asy</button>`
       : "";
     $content.innerHTML = `
@@ -2411,8 +2490,12 @@
         <div class="formula-display detail-formula" data-latex="${escapeAttr(f.latex)}"></div>
         <p class="card-desc detail-summary">${f.description}</p>
         ${formsHtml}
-        ${f.diagram ? `<div class="diagram">${f.diagram}</div>` : ""}
         ${(() => {
+          // The inline diagram used to render in its own block ABOVE the panel grid, so a
+          // card carrying both (inscribed-angle-theorem, pick's, lattice-points-gcd,
+          // power-of-a-point) stacked its figures vertically instead of sitting them in a
+          // row. One grid over both sources puts every figure on the card in the same row,
+          // with the body text below it.
           const panels = (window.MATH_DIAGRAMS || {})[f.id] || [];
           if (!panels.length) return "";
           const inner = panels.map(d => `<div class="diagram detail-diagram">${d}</div>`).join("");
@@ -2537,7 +2620,7 @@
   function renderSearchResults() {
     const { results, partial } = searchFormulas(state.query);
     const sorted = sortEntries(results);
-    const queryTokens = wordsOf(state.query.toLowerCase());
+    const queryTokens = wordsOf(spellOperators(state.query.toLowerCase()));
     const levelNote = "";
     const partialNote = partial
       ? ` <em>(no formula matched every keyword &mdash; showing closest matches)</em>`
@@ -2750,7 +2833,6 @@
       if (!advDraft.tags.size) return;
       state.adv = { tags: advDraft.tags };
       state.query = ""; $search.value = "";
-      state.starredOnly = false;
       stripHash();
       closeAdvanced();
       render();
@@ -2758,24 +2840,6 @@
     }
   }
 
-  // The "★ Starred" filter chip narrows the currently selected section down
-  // to just its starred formulas — it's a filter within the section, not a
-  // separate cross-section page.
-  function renderStarred(section) {
-    const entries = [];
-    section.subsections.forEach(sub => sub.formulas.forEach(f => {
-      if (inList("starred", f.id) && passesLevel(f)) entries.push(BY_ID[f.id]);
-    }));
-    $content.innerHTML = `
-      <div class="section-header">
-        <h2>${section.title} &mdash; Starred</h2>
-        <p class="section-blurb">${section.blurb}</p>
-      </div>
-      ${entries.length
-        ? `<div class="cards">${entries.map(e => cardHtml(e, false, null)).join("")}</div>`
-        : `<div class="empty-state"><div class="big">&#9734;</div>Nothing starred in this section yet. Click the &#9734; on any card, and it'll be waiting here.</div>`}`;
-    renderMath($content);
-  }
 
   // ---------- Topic view: every formula tagged with a topic, across sections ----------
   function renderTopic(topicId) {
@@ -3058,8 +3122,6 @@
       renderProblemDetail(route.slug);
     } else if (state.adv) {
       renderAdvancedResults();
-    } else if (state.starredOnly) {
-      if (section) renderStarred(section);
     } else if (state.query.trim()) {
       renderSearchResults();
     } else {
@@ -3135,11 +3197,10 @@
       if (link) closeDrawer();
       if (btn) {
         const secId = btn.dataset.section;
-        const onSection = getRoute().type === "home" && !state.query.trim() && !state.starredOnly;
+        const onSection = getRoute().type === "home" && !state.query.trim();
         const alreadyOpen = document.body.classList.contains("nav-open") && onSection && state.activeSectionId === secId;
         if (alreadyOpen) { closeDrawer(); window.scrollTo({ top: 0 }); return; }
         clearSearch();
-        clearStarredFilter();
         stripHash();
         state.activeSectionId = secId;
         state.openGroup = null;
@@ -3147,7 +3208,6 @@
         window.scrollTo({ top: 0 });
       } else if (link) {
         clearSearch();
-        clearStarredFilter();
         stripHash();
         state.activeSectionId = link.dataset.section;
         state.openGroup = null;
@@ -3174,7 +3234,7 @@
       el.querySelector(".nav-group-btn").setAttribute("aria-expanded", mine ? "true" : "false");
     });
     $sidebar.querySelectorAll(".nav-section").forEach(el => {
-      const isActive = onHome && !state.query.trim() && !state.starredOnly && !state.adv
+      const isActive = onHome && !state.query.trim() && !state.adv
                        && el.dataset.section === state.activeSectionId;
       el.classList.toggle("open", isActive);
       el.querySelector(".nav-section-btn").classList.toggle("active", isActive);
@@ -3187,22 +3247,14 @@
     state.adv = null;
   }
 
-  function clearStarredFilter() {
-    if (!state.starredOnly) return;
-    state.starredOnly = false;
-    syncFilterChips();
-  }
-
-  // ---------- Level filter chips (multi-select) + Starred chip ----------
+  // ---------- Level filter chips (multi-select) ----------
 
   function syncFilterChips() {
     if (!$levelFilters) return;
     const lv = activeFilter().levels;
     $levelFilters.querySelectorAll(".level-chip").forEach(c => {
       const l = c.dataset.level;
-      const on = l === "All" ? (lv.size === 0 && !state.starredOnly)
-        : l === "Starred" ? state.starredOnly
-        : lv.has(l);
+      const on = l === "All" ? lv.size === 0 : lv.has(l);
       c.classList.toggle("active", on);
     });
   }
@@ -3211,7 +3263,7 @@
     if (!$levelFilters) return;
     const chips = [`<button class="level-chip active" data-level="All">All Levels</button>`]
       .concat(LEVELS.map(l => `<button class="level-chip" data-level="${l}">${LEVEL_LABELS[l]}</button>`))
-      .concat([`<button class="level-chip star-chip" data-level="Starred">&#9733; Starred</button>`]);
+;
     $levelFilters.innerHTML = chips.join("");
 
     $levelFilters.addEventListener("click", e => {
@@ -3221,16 +3273,13 @@
       const lv = activeFilter().levels;
       if (level === "All") {
         lv.clear();
-        state.starredOnly = false;
-      } else if (level === "Starred") {
-        state.starredOnly = !state.starredOnly;
       } else {
         if (lv.has(level)) lv.delete(level);
         else lv.add(level);
       }
       saveSettings();
       syncFilterChips();
-      if (state.starredOnly || level === "Starred") stripHash();
+      stripHash();
       render();
       window.scrollTo({ top: 0 });
     });
@@ -3266,7 +3315,6 @@
   const $brand = document.getElementById("brand-home");
   if ($brand) $brand.addEventListener("click", () => {
     clearSearch();
-    clearStarredFilter();
     stripHash();
     state.activeSectionId = SECTIONS[0].id;
     state.openGroup = null;
@@ -3296,7 +3344,6 @@
   const $listsBtn = document.getElementById("lists-btn");
   if ($listsBtn) $listsBtn.addEventListener("click", () => {
     clearSearch();
-    clearStarredFilter();
     if (getRoute().type === "lists") return;
     if (location.hash === "#/lists") render(); else location.hash = "#/lists";
     window.scrollTo({ top: 0 });
@@ -3306,7 +3353,6 @@
   const $dbBtn = document.getElementById("db-btn");
   if ($dbBtn) $dbBtn.addEventListener("click", () => {
     clearSearch();
-    clearStarredFilter();
     if (getRoute().type === "problems") return;
     if (location.hash === "#/problems") render(); else location.hash = "#/problems";
     window.scrollTo({ top: 0 });
@@ -3342,7 +3388,7 @@
     const g = document.getElementById("settings-btn");
     if (!g) return;
     const af = activeFilter();
-    g.classList.toggle("has-filters", af.rarities.size < IMP_TIERS.length || af.levels.size > 0 || state.starredOnly);
+    g.classList.toggle("has-filters", af.rarities.size < IMP_TIERS.length || af.levels.size > 0);
   }
   // Keep the quick "Show" dropdown in step with the active section's rarity set:
   // all tiers -> Curated; exactly one -> that tier; anything else -> Custom.
@@ -3365,8 +3411,6 @@
     const af = activeFilter();
     settingsEl.querySelectorAll("[data-rarity]").forEach(b => b.classList.toggle("active", af.rarities.has(b.dataset.rarity)));
     settingsEl.querySelectorAll("#s-levels [data-level]").forEach(b => b.classList.toggle("active", af.levels.has(b.dataset.level)));
-    const sb = settingsEl.querySelector("#s-starred");
-    if (sb) sb.classList.toggle("active", state.starredOnly);
   }
   function afterFilterChange() {
     saveSettings(); syncSortSelect(); syncFilterChips(); render(); refreshSettingsControls();
@@ -3391,10 +3435,6 @@
         </div>
         <div class="settings-body">
           <div class="settings-group">
-            <div class="settings-group-title">View</div>
-            <div class="filter-chips"><button class="filter-chip${state.starredOnly ? " active" : ""}" id="s-starred">&#9733; Starred only</button></div>
-          </div>
-          <div class="settings-group">
             <div class="settings-group-title">Importance &mdash; ${escapeAttr(sec.title)}</div>
             <div class="filter-chips" id="s-rarity">${rarityChips}</div>
           </div>
@@ -3413,11 +3453,6 @@
   function onSettingsClick(e) {
     if (e.target === settingsEl || e.target.closest(".modal-close")) { closeSettings(); return; }
     const af = activeFilter();
-    if (e.target.closest("#s-starred")) {
-      state.starredOnly = !state.starredOnly;
-      stripHash();
-      afterFilterChange(); return;
-    }
     const rc = e.target.closest("[data-rarity]");
     if (rc) {
       const t = rc.dataset.rarity;
@@ -3428,12 +3463,11 @@
     const lc = e.target.closest("#s-levels [data-level]");
     if (lc) {
       const l = lc.dataset.level;
-      if (af.levels.has(l)) af.levels.delete(l); else { af.levels.add(l); state.starredOnly = false; }
+      if (af.levels.has(l)) af.levels.delete(l); else { af.levels.add(l); }
       afterFilterChange(); return;
     }
     if (e.target.closest("#s-reset")) {
       af.rarities = new Set(IMP_TIERS); af.levels.clear();
-      state.starredOnly = false;
       afterFilterChange(); return;
     }
   }
@@ -3471,7 +3505,8 @@
     if (!a) return;
     clearTimeout(cpTimer); clearTimeout(cpHide);
     if (cpFor === a) return;
-    cpTimer = setTimeout(() => showCardPreview(a), 400);
+    const at = { x: e.clientX, y: e.clientY };
+    cpTimer = setTimeout(() => { cpAt = at; showCardPreview(a); }, 400);
   });
   $content.addEventListener("mouseout", e => {
     const a = e.target.closest(".card-link");
@@ -3488,9 +3523,14 @@
   $content.addEventListener("click", e => {
     const asyBtn = e.target.closest(".copy-asy-btn");
     if (asyBtn) {
-      const svg = $content.querySelector(".detail .diagram svg");
-      if (svg) {
-        navigator.clipboard.writeText(svgToAsy(svg)).then(() => {
+      const svgs = [...$content.querySelectorAll(".detail .diagram svg")];
+      if (svgs.length) {
+        // Several figures go over as one paste, but a reader has to see where one ends and
+        // the next begins, so they are fenced rather than merely concatenated.
+        const asy = svgs.length === 1 ? svgToAsy(svgs[0]) : svgs.map((g, i) =>
+          `// ---------- figure ${i + 1} of ${svgs.length} ----------\n${svgToAsy(g)}`
+        ).join("\n\n");
+        navigator.clipboard.writeText(asy).then(() => {
           asyBtn.textContent = "copied!";
           asyBtn.classList.add("copied");
           setTimeout(() => {
@@ -3518,7 +3558,7 @@
       const id = starBtn.dataset.star;
       toggleMembership("starred", id);
       const route = getRoute();
-      if (state.starredOnly || route.type === "list" || route.type === "lists") {
+      if (route.type === "list" || route.type === "lists") {
         render();
       } else {
         syncStarButtons(id);

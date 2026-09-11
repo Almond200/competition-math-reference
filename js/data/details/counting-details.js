@@ -158,7 +158,11 @@ The same rewriting handles products: $k(k+1)=2\binom{k+1}{2}$ and $k(k+1)(k+2)=6
 ## On contests
 AIME sum evaluations and stars-and-bars cumulative counts ("solutions with $x_1 + \cdots \le n$" = hockey stick over exact sums). The largest-element conditioning is reusable everywhere.`,
 
-"vandermonde": String.raw`## Why it works
+"vandermonde": String.raw`## Key forms
+- $\sum_{k}\binom{n}{k}^2 = \binom{2n}{n}$ — the $m = n = r$ case, and by far the one that actually appears; choosing $k$ from the first $n$ and $n-k$ from the second is the same as choosing $n$ from all $2n$
+- $\binom{n}{k} = \binom{n}{n-k}$ — the symmetry the squared form leans on, since it turns $\binom{n}{k}\binom{n}{n-k}$ into $\binom{n}{k}^2$
+
+## Why it works
 Choose $r$ from a group of $m$ men and $n$ women: condition on how many men ($k$) are chosen. Generating-function view: matching the $x^r$ coefficient in $(1+x)^m(1+x)^n = (1+x)^{m+n}$.
 
 ## How to use it
@@ -248,7 +252,7 @@ Unlabelled boxes mean partitioning the balls into groups with no order among the
 With nothing labelled at all, a distribution is just a way to write $n$ as a sum of positive parts — an integer partition, which has no closed form. Use the recursion $p_k(n)=p_{k-1}(n-1)+p_k(n-k)$, splitting on whether the smallest part is $1$ or every part is at least $2$, or simply list them for small $n$.
 
 ## How to use it
-Answer two yes/no questions before writing a single number: are the balls distinguishable, and are the boxes distinguishable? Those pick the row. A third question — must every box be nonempty? — picks the column. Confusing identical with distinct is the most common counting mistake there is, and applying stars and bars to distinguishable objects, or $k^n$ to identical ones, is the classic way to lose the problem.
+Answer two yes/no questions before writing a single number: are the balls distinguishable, and are the boxes distinguishable? Those pick the row. A third question — must every box be nonempty? — picks the column. Confusing identical with distinct is the most common counting mistake there is, and applying stars and bars to distinguishable objects, or $k^n$ to identical ones, is the classic way to lose the problem. Constraints ride on top of the twelve cells rather than needing new formulas. A per-box minimum $m_i$: hand out the minimums first and distribute the remaining $n - \sum m_i$ freely, which is the substitution $x_i \mapsto x_i - m_i$. An upper cap $x_i \le c$: inclusion-exclusion, giving an offending box $c+1$ up front and alternating signs. At most one ball per box: just choose the boxes, $\binom{k}{n}$ for identical balls and $\binom{k}{n}n! = k(k-1)\cdots(k-n+1)$ for distinct ones.
 
 When box $i$ needs at least $m_i$ balls, give each box its minimum up front and distribute what remains with no restriction; formally the substitution $x_i\mapsto x_i-m_i$ turns every "at least $m_i$" into "at least $0$" and lands you back in plain stars and bars. For $20$ identical balls into $4$ distinct boxes with each box at least $3$, place $3$ in each box and distribute the remaining $8$ freely: $\binom{8+4-1}{3}=\binom{11}{3}=165$.
 
@@ -458,7 +462,7 @@ Coin/dice repetition problems throughout AMC. AIME variants weight the coin or c
 Expectation is a weighted average, and linearity holds because summation commutes with weighting — no independence needed anywhere in the proof. The same argument in one variable gives $E[aX+b]=aE[X]+b$, so expectation is linear in the variable as well as across variables.
 
 ## How to use it
-Linearity is the whole toolkit, and the reason is that it needs no independence — dependent, overlapping events add just as cleanly as independent ones. That is what makes hard problems tractable.
+Linearity is the whole toolkit, and the reason is that it needs no independence — dependent, overlapping events add just as cleanly as independent ones. That is what makes hard problems tractable. When the quantity is a count, write it as a sum of [[indicator-variables|indicator variables]] and apply linearity termwise, which is the single most common way expectation problems collapse.
 
 The standard move is decomposition: write the quantity as a sum of indicators, one for each thing that might happen, and add their probabilities. "Expected number of ..." problems become one-line computations this way, because you never need the distribution of the total, only the probability of each individual occurrence.
 
@@ -576,7 +580,7 @@ When the variables are dependent, the correction term is the covariance: $\opera
 Rare directly on AMC/AIME but appears in expected-square computations: $E[X^2] = \mathrm{Var} + (E[X])^2$ evaluates sums of squares over random processes cleanly.`,
 
 "expected-fixed-points": String.raw`## Why it works
-Write $X=\sum_{i=1}^{n}\mathbf 1[\text{position }i\text{ is fixed}]$. Each indicator has $P=\frac1n$ (position $i$ maps to $i$ with probability $1/n$), so $E[X]=n\cdot\frac1n=1$ for every $n$ — the events are dependent, but linearity of expectation ignores dependence entirely. For the full distribution, the number of permutations of $n$ with exactly $k$ fixed points is $\binom{n}{k}D_{n-k}$: choose which $k$ are fixed, then derange the other $n-k$. Dividing by $n!$ gives $P(X=k)=\frac{1}{k!}\cdot\frac{D_{n-k}}{(n-k)!}\to\frac{e^{-1}}{k!}$, a Poisson($1$) limit.
+Write $X=\sum_{i=1}^{n}\mathbf 1[\text{position }i\text{ is fixed}]$. Each indicator has $P=\frac1n$ (position $i$ maps to $i$ with probability $1/n$), so $E[X]=n\cdot\frac1n=1$ for every $n$ — the events are dependent, but [[indicator-variables|linearity of expectation]] ignores dependence entirely. For the full distribution, the number of permutations of $n$ with exactly $k$ fixed points is $\binom{n}{k}D_{n-k}$: choose which $k$ are fixed, then derange the other $n-k$. Dividing by $n!$ gives $P(X=k)=\frac{1}{k!}\cdot\frac{D_{n-k}}{(n-k)!}\to\frac{e^{-1}}{k!}$, a Poisson($1$) limit.
 
 ## How to use it
 The expectation is pure linearity: $n$ positions, each fixed with probability $\frac1n$, so the answer is $1$ regardless of $n$ — no distribution needed, and the dependence between positions is irrelevant.
@@ -602,7 +606,7 @@ Treat "probability" here as a density over a growing range rather than a genuine
 Mostly enrichment; finite coprime-pair counts on AIME go through the Möbius/inclusion-exclusion sum rather than the constant.`,
 
 "pigeonhole": String.raw`## Why it works
-If $n$ objects go into $k$ boxes and $n > k$, some box holds two or more — because if every box held at most one, the total would be at most $k < n$. The generalized form is the same counting-by-averages argument: with $n$ objects in $k$ boxes, some box holds at least $\lceil n/k \rceil$, since the maximum is never below the average.
+If $n$ objects go into $k$ boxes and $n > k$, some box holds two or more — because if every box held at most one, the total would be at most $k \lt  n$. The generalized form is the same counting-by-averages argument: with $n$ objects in $k$ boxes, some box holds at least $\lceil n/k \rceil$, since the maximum is never below the average.
 
 ## How to use it
 The whole difficulty is inventing the boxes. You control that design. Pick a feature that (a) has few possible values (the boxes) and (b) makes "two objects sharing a value" imply what you want. Classic box choices: remainders mod $m$ (two numbers with equal residue $\Rightarrow$ their difference is divisible by $m$); regions of a subdivided figure (two points in one region $\Rightarrow$ they are close); sum or subset (two subsets with equal sum). For "at least $r$" bounds, run it backward: to force some box to $r$, you need more than $k(r-1)$ objects.
@@ -633,7 +637,7 @@ Party-handshake parity questions and graph-flavored AMC problems; the double-cou
 One set of incidences, two partitions of it — the totals must match. Formally you are sizing a set of ordered pairs $S \subseteq A \times B$ two ways: sum over $a \in A$ of how many $b$ it pairs with, or sum over $b \in B$ of how many $a$. Both count $|S|$, so the expressions are equal. All the power is in choosing what to count — the identity is free once the right set of pairs is named.
 
 ## How to use it
-Name a set of pairs whose two row sums you can both evaluate, then equate them. The recurring choices are memberships (people × committees), incidences (points × lines, or students × problems solved), edge-endpoints (vertex × edge), and ordered outcomes (winner × loser in a tournament).
+Name a set of pairs whose two [[binomial-row-sums|row sums]] you can both evaluate, then equate them. The recurring choices are memberships (people × committees), incidences (points × lines, or students × problems solved), edge-endpoints (vertex × edge), and ordered outcomes (winner × loser in a tournament).
 
 Three shapes are worth recognising.
 
@@ -738,10 +742,10 @@ By symmetry, $n$ uniform points plus the two interval endpoints split $[0,1]$ in
 The distribution function route ($P(\max \le x) = x^n$, $P(\min \ge x) = (1-x)^n$) answers probability questions; the gap-symmetry route answers expectation questions instantly. For the range: $E[\max - \min] = \frac{n-1}{n+1}$.
 
 ## On contests
-"Expected value of the largest of three spins," waiting-point problems, and [[geometric-probability|geometric probability]] hybrids (the broken-stick setup is order statistics on two points). The $\frac{k}{n+1}$ pattern is worth having on instant recall.`,
+"[[expected-value|Expected value]] of the largest of three spins," waiting-point problems, and [[geometric-probability|geometric probability]] hybrids (the broken-stick setup is order statistics on two points). The $\frac{k}{n+1}$ pattern is worth having on instant recall.`,
 
 "total-expectation": String.raw`## Why it works
-Group the outcomes by which case $A_i$ occurred and average within cases first: the inner averages are the conditional expectations, and recombining with weights $P(A_i)$ reproduces the overall average. It is associativity of weighted averages, elevated to a principle.
+Group the outcomes by which case $A_i$ occurred and average within cases first: the inner averages are the conditional expectations, and recombining with weights $P(A_i)$ reproduces the overall average. It is associativity of [[weighted-average|weighted averages]], elevated to a principle.
 
 ## How to use it
 Choose the partition that makes each conditional expectation easy, and conditioning on the first step is almost always that choice — it turns a process into an equation relating $E[X]$ to itself.
@@ -816,7 +820,7 @@ The default engine for digit counts, seatings, and license-plate problems at MAT
 Expectation is linear: $E[X + Y] = E[X] + E[Y]$ with no independence assumption, because expectation is a sum over outcomes and sums reorder freely. An indicator $X_i$ (1 if event $i$ occurs, else 0) has $E[X_i] = P(X_i = 1)$, so any counting random variable $X = \sum X_i$ has expectation $\sum P(\text{event}_i)$ — each potential occurrence contributes its own probability, overlaps and all.
 
 ## How to use it
-Identify the atomic occurrences being counted — fixed points, adjacent pairs, satisfied people, monochromatic triangles — and write one indicator each. Compute a single $P(X_i = 1)$ (symmetry usually makes them all equal), multiply by how many there are. Never condition, never case. Classics: expected fixed points of a permutation $= n \cdot \frac{1}{n} = 1$; expected records $= H_n$; coupon-collector via a different decomposition. It computes expectations of dependent counts that would be hopeless by distribution.
+Identify the atomic occurrences being counted — fixed points, adjacent pairs, satisfied people, monochromatic triangles — and write one indicator each. Compute a single $P(X_i = 1)$ (symmetry usually makes them all equal), multiply by how many there are. Never condition, never case. Classics: [[expected-fixed-points|expected fixed points]] of a permutation $= n \cdot \frac{1}{n} = 1$; expected records $= H_n$; coupon-collector via a different decomposition. It computes expectations of dependent counts that would be hopeless by distribution. The whole method is linearity of expectation applied to a sum of $0$/$1$ terms, so it inherits every property of [[expected-value|expected value]], including that the indicators need not be independent.
 
 ## On contests
 The intended solution to most AIME "find the expected number of ..." problems, and the only humane one when events overlap. If a problem asks for an average over all configurations, translate it to an expectation and fire indicators — averages are expectations in disguise.`,
@@ -911,7 +915,7 @@ For a single game type, tabulate $g(0), g(1), \dots$ via $g(n) = \operatorname{m
 Multi-pile take-away and token games on AIME and olympiad. The single-pile version is the Losing Positions card; Sprague–Grundy is what you need once the game separates into independent components. Remember two facts: losing $\iff$ Nim-sum $0$, and games add by XOR of Grundy values.`,
 
 "erdos-szekeres": String.raw`## Why it works
-Tag each term $x_i$ with $(u_i, d_i)$: the lengths of the longest increasing and longest decreasing subsequences ending at $x_i$. If $i < j$ and $x_i < x_j$ then $u_j > u_i$; if $x_i > x_j$ then $d_j > d_i$ — so distinct terms always get distinct tags. With $mn + 1$ terms but only $mn$ tags satisfying $u \le m, d \le n$, pigeonhole forces some $u \ge m+1$ or $d \ge n+1$.
+Tag each term $x_i$ with $(u_i, d_i)$: the lengths of the longest increasing and longest decreasing subsequences ending at $x_i$. If $i \lt  j$ and $x_i \lt  x_j$ then $u_j > u_i$; if $x_i > x_j$ then $d_j > d_i$ — so distinct terms always get distinct tags. With $mn + 1$ terms but only $mn$ tags satisfying $u \le m, d \le n$, pigeonhole forces some $u \ge m+1$ or $d \ge n+1$.
 
 ## How to use it
 The proof is the technique worth carrying: attach to each term the pair (longest increasing run ending there, longest decreasing run ending there). Any two terms have different labels, because whichever comes first extends one of the other's runs.
@@ -937,7 +941,7 @@ The bound runs one way only — violating it disproves planarity, but satisfying
 AMC/AIME problems about maps, networks, and polyhedra, and olympiad graph theory. It is the corollary of [[eulers-polyhedron-formula|Euler's Polyhedron Formula]] (filed under Geometry) — the same identity read as a planar graph rather than a solid; keep the two linked in your head.`,
 
 "halls-marriage": String.raw`## Why it works
-The condition $|N(S)| \ge |S|$ for every $S \subseteq X$ is clearly necessary — a group of applicants adjacent to fewer jobs than its size can't all be matched. Sufficiency is the theorem: if no matching saturates $X$, an augmenting-path argument extracts a specific deficient set $S$ with $|N(S)| < |S|$. So the sole obstruction to a full matching is one bottleneck set.
+The condition $|N(S)| \ge |S|$ for every $S \subseteq X$ is clearly necessary — a group of applicants adjacent to fewer jobs than its size can't all be matched. Sufficiency is the theorem: if no matching saturates $X$, an augmenting-path argument extracts a specific deficient set $S$ with $|N(S)| \lt  |S|$. So the sole obstruction to a full matching is one bottleneck set.
 
 ## How to use it
 To prove a matching exists, verify Hall's condition; to prove none exists, exhibit one deficient set — a group of applicants collectively connected to fewer jobs than there are applicants. That asymmetry is what makes the theorem practical, since disproof needs only a single example.
@@ -1040,18 +1044,18 @@ The bipartite test is the one used most: two colours suffice precisely when ther
 The greedy bound is rarely tight — Brooks' theorem sharpens it to $\Delta$ for every connected graph except complete graphs and odd cycles, which is worth knowing when the bound looks one too large. Pair it with the clique bound $\chi(G)\ge\omega(G)$ from below: exhibiting a $k$-clique alongside a $k$-colouring settles $\chi=k$ exactly.
 
 ## On contests
-Scheduling, map, and conflict problems on AMC/AIME, plus olympiad coloring arguments. The everyday facts are the greedy $\Delta + 1$ bound and "bipartite ⟺ no odd cycle."`,
+Scheduling, map, and conflict problems on AMC/AIME, plus olympiad [[invariants-coloring|coloring arguments]]. The everyday facts are the greedy $\Delta + 1$ bound and "bipartite ⟺ no odd cycle."`,
 
 "probabilistic-method": String.raw`## Key forms
 - $E[X]\ge c\Rightarrow$ some outcome has $X\ge c$ — an average is always attained, so a bound on the mean proves existence
-- $\sum_iP(\text{bad}_i)<1\Rightarrow$ some outcome avoids every bad event — the union bound
-- $E[X]<1$ for an integer count $\Rightarrow P(X=0)>0$ — the first-moment form used for "no bad events" arguments
+- $\sum_iP(\text{bad}_i)\lt 1\Rightarrow$ some outcome avoids every bad event — the union bound
+- $E[X]\lt 1$ for an integer count $\Rightarrow P(X=0)>0$ — the first-moment form used for "no bad events" arguments
 
 ## Why it works
-An average is always achieved: if $E[X] \ge c$ then some outcome has $X \ge c$ (and some has $X \le c$), or the mean couldn't reach $c$. The union-bound form: if $\sum P(\text{bad}_i) < 1$, then with positive probability no bad event occurs, so a good object must exist. Both turn probability into pure existence.
+An average is always achieved: if $E[X] \ge c$ then some outcome has $X \ge c$ (and some has $X \le c$), or the mean couldn't reach $c$. The union-bound form: if $\sum P(\text{bad}_i) \lt  1$, then with positive probability no bad event occurs, so a good object must exist. Both turn probability into pure existence.
 
 ## How to use it
-To show an object with property $P$ exists, build one at random and prove $P(\text{fails}) < 1$; or define a quantity $X$ and show $E[X]$ is large enough to force a good outcome. Classics: random 2-colorings avoiding monochromatic structures (Ramsey lower bounds), and "some vertex beats the average degree."
+To show an object with property $P$ exists, build one at random and prove $P(\text{fails}) \lt  1$; or define a quantity $X$ and show $E[X]$ is large enough to force a good outcome. Classics: random 2-colorings avoiding monochromatic structures (Ramsey lower bounds), and "some vertex beats the average degree."
 
 ## On contests
 Olympiad existence proofs where an explicit construction is elusive — "show there is a subset / coloring / arrangement with …". It is [[expected-value|linearity of expectation]] aimed at guaranteeing rather than computing.`
@@ -1095,7 +1099,7 @@ AMC/AIME "sum over all subsets" and "how many subsets have even sum" problems co
 Write $X$ as a sum of indicators of its own tail: $X = \sum_{k\ge 1} \mathbf{1}[X \ge k]$, since a value of $X = m$ makes exactly the first $m$ indicators equal to $1$. Taking expectations and using linearity, $E[X] = \sum_{k\ge 1} E[\mathbf{1}[X\ge k]] = \sum_{k\ge 1} P(X\ge k)$. Equivalently, it is a swap of summation order: $\sum_k P(X\ge k) = \sum_k \sum_{m\ge k} P(X=m) = \sum_m m\, P(X=m)$. The continuous version replaces the sum by $\int_0^\infty P(X>t)\,dt$ — the "area above the CDF."
 
 ## How to use it
-Use it whenever $P(X\ge k)$ is easier to describe than $P(X=k)$, which happens far more often than not. Expected maxima are the flagship case: $P(\max<k)$ is a product over the independent draws, so the tail is one subtraction, while the exact distribution of the maximum requires a difference of two such products.
+Use it whenever $P(X\ge k)$ is easier to describe than $P(X=k)$, which happens far more often than not. Expected maxima are the flagship case: $P(\max\lt k)$ is a product over the independent draws, so the tail is one subtraction, while the exact distribution of the maximum requires a difference of two such products.
 
 The identity itself is a double count — summing $P(X\ge k)$ over $k$ counts each outcome once for every $k$ up to its value, which totals $X$.
 
@@ -1221,7 +1225,7 @@ Use it whenever you need to show something cannot happen too often, or that a go
 The bound is deliberately crude, using only the mean, so it is the right tool when you know almost nothing about the distribution and the wrong one when you need a sharp estimate. Its existence form is what [[probabilistic-method|the probabilistic method]] uses: if $E[X] \lt a$ then $P(X \lt a) \gt 0$, so some outcome beats the average.
 
 ## On contests
-Rare on AMC and AIME as a named result, but the reasoning appears constantly in disguise: "the average is $m$, so some term is at least $m$" is the one-line version, and its contrapositive settles many "show some configuration exists" olympiad problems. Pair it with linearity of expectation, which computes the mean, and Markov converts that mean into a guarantee.`,
+Rare on AMC and AIME as a named result, but the reasoning appears constantly in disguise: "the average is $m$, so some term is at least $m$" is the one-line version, and its contrapositive settles many "show some configuration exists" olympiad problems. Pair it with [[indicator-variables|linearity of expectation]], which computes the mean, and Markov converts that mean into a guarantee.`,
 
 "casework-method": String.raw`## Key forms
 - $\#(\text{total})=\sum_i\#(\text{case}_i)$ — valid only if the cases are disjoint and exhaustive, the two things to check first
