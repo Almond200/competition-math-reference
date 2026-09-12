@@ -1758,3 +1758,68 @@ select.tool-in { cursor: pointer; }
 .adv-tag-selected { display: flex; flex-wrap: wrap; gap: 7px; }
 .adv-tag-sel { cursor: pointer; }
 .adv-tag-x { opacity: 0.85; margin-left: 1px; }
+
+/* ---------- Contest navigator at the foot of a problem page ---------- */
+/* Modelled on the AoPS "See also" box: the sitting, its neighbours, and every problem number
+   in the paper. Numbers we have not tagged render as inert cells rather than being omitted,
+   so the strip shows coverage honestly instead of implying a short paper. */
+.contest-nav {
+  margin: 20px auto 0;   /* centred like the AoPS box it mirrors */
+  max-width: 560px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+.cn-head {
+  display: flex; align-items: baseline; justify-content: center;
+  font-size: 13.5px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+.cn-head a { color: var(--text); text-decoration: none; }
+.cn-head a:hover { color: var(--accent); }
+
+.cn-sides { display: grid; grid-template-columns: 1fr 1fr; }
+.cn-side {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 10px; text-decoration: none;
+  font-size: 13px;
+  color: var(--accent);
+}
+.cn-side + .cn-side { border-left: 1px solid var(--border); }
+.cn-side:hover { background: var(--bg-card-hover); }
+.cn-side-label { font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.02em; }
+.cn-side-ref { font-weight: 600; }
+.cn-side-off { color: var(--text-faint); cursor: default; }
+.cn-side-off:hover { background: none; }
+
+.cn-nums {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+.cn-num {
+  min-width: 22px; padding: 1px 5px;
+  text-align: center; border-radius: 5px;
+  font-size: 12px; text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--accent); background: var(--bg-card);
+}
+.cn-num:hover { border-color: var(--accent); }
+.cn-here { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.cn-missing { color: var(--text-faint); background: transparent; border-style: dashed; cursor: default; }
+
+.cn-foot {
+  padding: 5px 12px; text-align: center;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+}
+.cn-foot a { color: var(--text-dim); text-decoration: none; }
+.cn-foot a:hover { color: var(--accent); }
+
+@media (max-width: 560px) {
+  .cn-num { min-width: 20px; font-size: 11px; padding: 1px 4px; }
+}

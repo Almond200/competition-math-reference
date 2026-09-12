@@ -209,7 +209,7 @@ The parity of $\binom nk$ depends only on the binary digits: it is odd exactly w
 
 That single rule answers the standard questions immediately. Rows that are entirely odd are $n=2^m-1$, where every bit is set; rows with exactly two odd entries are $n=2^m$, where only the leading bit is.
 
-Drawing Pascal's triangle mod $2$ produces the Sierpinski triangle, and the picture is worth keeping in mind — the self-similar structure is exactly the binary submask condition, and it makes questions about blocks of even entries easy to see. For odd primes, the same reasoning is [[lucas-theorem|Lucas' theorem]] in base $p$.
+Drawing Pascal's triangle mod $2$ produces the Sierpinski triangle, and the picture is worth keeping in mind — the self-similar structure is exactly the binary submask condition, and it makes questions about blocks of even entries easy to see. For odd primes, the same reasoning is Lucas' theorem in base $p$.
 
 ## On contests
 "How many entries of row 100 are odd" ($100 = 1100100_2$, so $2^3 = 8$) and divisibility-pattern problems. Mod 4 or higher powers needs more than Lucas — don't overextend the tool.`,
@@ -301,7 +301,7 @@ The skill is recognition rather than computation: whenever a structure is built 
 
 To confirm a guess, compute the first few values by hand and compare against $1,1,2,5,14$. That check is faster than finding the bijection and almost always settles it.
 
-Two derivations are worth keeping. The subtraction form comes from [[reflection-principle|the reflection principle]] — all paths minus the bad ones. The convolution recurrence comes from splitting at the first return to the diagonal, and it is the one that generalises when the problem is Catalan-like but not exactly Catalan.
+Two derivations are worth keeping. The subtraction form comes from the reflection principle — all paths minus the bad ones. The convolution recurrence comes from splitting at the first return to the diagonal, and it is the one that generalises when the problem is Catalan-like but not exactly Catalan.
 
 ## On contests
 $1, 2, 5, 14, 42, 132, 429, 1430$ should be recognizable on sight. AIME problems rarely say "Catalan" — they describe a non-crossing or non-negative-partial-sum condition and expect the identification.`,
@@ -392,6 +392,23 @@ The Stirling form is often faster when $k$ is small, since $k!\,S(n,k)$ separate
 ## On contests
 "Each of 3 mailboxes gets at least one of 6 letters," "every color is used," "no group left empty" — all recurring AMC/AIME shapes. The [[pie|PIE]] formula plus fluency with the small cases handles essentially all of them.`,
 
+"permutation-cycle-structure": String.raw`## Key forms
+- $\operatorname{ord}(f) = \operatorname{lcm}$ of the cycle lengths — so $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$, which turns a condition on the function into a condition on a partition of $n$
+- $\dfrac{n!}{\prod_c c^{m_c} m_c!}$ functions have $m_c$ cycles of each length $c$ — divide by $c$ per cycle, since a cycle can be written starting anywhere, and by $m_c!$ because equal-length cycles are interchangeable
+- $f = f^{-1}$ means every cycle has length $1$ or $2$ — an involution, the $k = 2$ case, counted by $\sum_j \binom{n}{2j}(2j-1)!!$
+- a single $c$-cycle on a chosen set of $c$ elements can be written $(c-1)!$ ways — the [[circular-permutations|circular arrangement]] count, which is where the $c^{m_c}$ comes from
+
+## Why it works
+Start anywhere and iterate: $x,\ f(x),\ f(f(x)),\dots$ cannot go forever without repeating, and because $f$ is a bijection the first repeat must be $x$ itself rather than a collision partway along. So the orbit closes into a cycle. Delete it and repeat on what is left, and the whole set decomposes into disjoint cycles, uniquely up to the order you list them in.
+
+Applying $f$ once rotates every cycle by one step, and the cycles do not interact. A cycle of length $c$ is back where it started after exactly the multiples of $c$, so all of them are simultaneously home after $\operatorname{lcm}$ of the lengths — that is the order, and $f^{\,k}$ is the identity precisely when each $c$ divides $k$.
+
+## How to use it
+Whenever a problem constrains an iterate of $f$, translate it immediately into which cycle lengths are allowed, then case on the partitions of $n$ using only those parts and count each type with the formula. Read backwards it answers the reverse question too: the largest order available to a permutation of $n$ elements is the largest lcm of any partition of $n$, which is why the answer is usually far bigger than $n$ but far smaller than $n!$. The same decomposition is what makes a permutation's parity well defined, since a $c$-cycle is $c-1$ transpositions.
+
+## On contests
+The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are exactly the divisors of $k$; 2026 AIME I Problem 7 is that question with $k = 6$. [[derangements|Derangements]] ask the complementary question about fixed points, averaging over cycle structure is what [[burnsides-lemma|Burnside's lemma]] does, and counting by *number* of cycles rather than by type is [[stirling-first-kind|Stirling numbers of the first kind]].`,
+
 "stirling-first-kind": String.raw`## Why it works
 Permutations decompose uniquely into disjoint cycles; $c(n,k)$ counts those with exactly $k$ cycles. Recursion: element $n$ starts its own cycle ($c(n-1,k-1)$) or inserts into any of $n-1$ positions inside existing cycles ($(n-1)c(n-1,k)$).
 
@@ -440,7 +457,7 @@ Read $P(A\mid B)$ as "throw away every outcome outside $B$, then measure $A$ wit
 
 The rearranged form is what you use going forwards: a sequence of dependent choices multiplies as $P(\text{first})\cdot P(\text{second}\mid\text{first})\cdots$, which is how without-replacement draws are computed step by step.
 
-Two traps are worth naming. $P(A\mid B)$ and $P(B\mid A)$ are different numbers, and confusing them is exactly the error [[bayes-theorem|Bayes' theorem]] exists to correct. And independence is a claim to verify, not to assume from the story — "the two draws feel unrelated" is not evidence, whereas checking $P(A\cap B)=P(A)P(B)$ is.
+Two traps are worth naming. $P(A\mid B)$ and $P(B\mid A)$ are different numbers, and confusing them is exactly the error Bayes' theorem exists to correct. And independence is a claim to verify, not to assume from the story — "the two draws feel unrelated" is not evidence, whereas checking $P(A\cap B)=P(A)P(B)$ is.
 
 ## On contests
 AMC/AIME "given that" problems reward direct restricted counting. Watch the classic traps: "at least one boy" vs "the older is a boy" condition different spaces.`,
@@ -769,7 +786,7 @@ The organizing principle behind nearly every AIME expected-value problem: condit
 A one-to-one correspondence pairs the two sets off perfectly, so they have the same size — even when one is a mess and the other is a textbook family. Counting the easy set is counting the hard set.
 
 ## How to use it
-Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ [[stars-and-bars|stars and bars]] (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
+Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ stars and bars (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
 
 ## On contests
 The elegant path on AMC/AIME counting: any time the answer to a strange-looking count is a clean binomial, a bijection is the intended solution. Also the safest way to handle "sequences with constraints" — transform the constraint away rather than casing on it.`,
@@ -875,7 +892,7 @@ Global tricks: substitute $x = 1$ to total all coefficients, differentiate then 
 Everything above uses ordinary generating functions, which count unlabeled totals. [[exponential-generating-functions|Exponential generating functions]], where the count sits on $\frac{x^n}{n!}$, handle labeled or ordered structures instead; multiplying EGFs interleaves labels, which is why $e^x$ builds permutations and $\frac{e^x + e^{-x}}{2}$ builds even-size subsets.
 
 ## On contests
-The systematic route for coin, stamp and dice-sum counts and for constrained integer solutions, and the natural home for the roots-of-unity filter on AIME "count the subsets whose sum is divisible by $k$" problems. It also covers dice-sum distributions, including the famous relabel-two-dice problem, partition-with-conditions counts, and it is the unifying view behind [[stars-and-bars|stars and bars]] and the [[pie|PIE]] identities. It trades cleverness for a reliable model-multiply-extract pipeline, so reach for it when [[casework-method|casework]] on the count would explode.`
+The systematic route for coin, stamp and dice-sum counts and for constrained integer solutions, and the natural home for the roots-of-unity filter on AIME "count the subsets whose sum is divisible by $k$" problems. It also covers dice-sum distributions, including the famous relabel-two-dice problem, partition-with-conditions counts, and it is the unifying view behind stars and bars and the [[pie|PIE]] identities. It trades cleverness for a reliable model-multiply-extract pipeline, so reach for it when [[casework-method|casework]] on the count would explode.`
 
 });
 
@@ -906,7 +923,7 @@ An olympiad workhorse for existence and impossibility proofs, especially graph a
 Object.assign(window.MATH_DETAILS, {
 
 "sprague-grundy": String.raw`## Why it works
-In [[losing-positions|Nim]] the XOR ("Nim-sum") of the pile sizes is a handle you control: if it's nonzero, some pile has a leading bit you can clear to zero the whole XOR (a move to a losing-for-opponent position); if it's zero, every move breaks it. Sprague–Grundy generalizes this by assigning each position a value $g = \operatorname{mex}$ of its options' values — the least nonnegative integer they miss. A position with $g = 0$ can only move to $g \ne 0$ and vice versa, exactly Nim's win/loss logic, and independent games combine because the XOR of Grundy values behaves like one Nim position.
+In [[sprague-grundy|Nim]] the XOR ("Nim-sum") of the pile sizes is a handle you control: if it's nonzero, some pile has a leading bit you can clear to zero the whole XOR (a move to a losing-for-opponent position); if it's zero, every move breaks it. Sprague–Grundy generalizes this by assigning each position a value $g = \operatorname{mex}$ of its options' values — the least nonnegative integer they miss. A position with $g = 0$ can only move to $g \ne 0$ and vice versa, exactly Nim's win/loss logic, and independent games combine because the XOR of Grundy values behaves like one Nim position.
 
 ## How to use it
 For a single game type, tabulate $g(0), g(1), \dots$ via $g(n) = \operatorname{mex}\{g(\text{reachable})\}$ until the (usually periodic) pattern emerges; $g = 0$ marks the losing positions. When a game splits into independent parts — several piles, a board that separates — compute each part's Grundy value and XOR them: the whole is a loss iff the XOR is $0$, and the winning move is the one that zeroes it (treat each part as a Nim pile of size $g$).
@@ -928,7 +945,7 @@ Recognise the trigger as any problem asking to guarantee a monotone subsequence,
 Olympiad combinatorics, typically as a lemma ("among these $N$ values, some $k$ form a monotone chain"), and a natural companion to the [[pigeonhole|Pigeonhole Principle]]. The bound $mn+1$ is sharp — a grid of decreasing blocks of decreasing runs achieves $mn$ with no long monotone subsequence.`,
 
 "planar-graph-bound": String.raw`## Why it works
-[[eulers-formula|Euler's formula]] $v - e + f = 2$ holds for any connected planar drawing. Every face is bounded by at least $3$ edges and every edge borders exactly $2$ faces, so $2e \ge 3f$, i.e. $f \le \frac{2e}{3}$; substituting into Euler gives $e \le 3v - 6$. If the graph is triangle-free (in particular bipartite), every face needs $\ge 4$ edges, so $2e \ge 4f$ and $e \le 2v - 4$.
+[[eulers-polyhedron-formula|Euler's formula]] $v - e + f = 2$ holds for any connected planar drawing. Every face is bounded by at least $3$ edges and every edge borders exactly $2$ faces, so $2e \ge 3f$, i.e. $f \le \frac{2e}{3}$; substituting into Euler gives $e \le 3v - 6$. If the graph is triangle-free (in particular bipartite), every face needs $\ge 4$ edges, so $2e \ge 4f$ and $e \le 2v - 4$.
 
 ## How to use it
 Use the bound to prove non-planarity by counting: a graph with more edges than $3v-6$ allows cannot be drawn without crossings. This settles $K_5$ immediately, since $10\gt3\cdot5-6=9$.
@@ -938,7 +955,7 @@ For triangle-free graphs use the sharper form, because every face then needs at 
 The bound runs one way only — violating it disproves planarity, but satisfying it proves nothing. A useful corollary is that every planar graph has a vertex of degree at most $5$, which is the starting point for planar colouring arguments.
 
 ## On contests
-AMC/AIME problems about maps, networks, and polyhedra, and olympiad graph theory. It is the corollary of [[eulers-polyhedron-formula|Euler's Polyhedron Formula]] (filed under Geometry) — the same identity read as a planar graph rather than a solid; keep the two linked in your head.`,
+AMC/AIME problems about maps, networks, and polyhedra, and olympiad graph theory. It is the corollary of Euler's Polyhedron Formula (filed under Geometry) — the same identity read as a planar graph rather than a solid; keep the two linked in your head.`,
 
 "halls-marriage": String.raw`## Why it works
 The condition $|N(S)| \ge |S|$ for every $S \subseteq X$ is clearly necessary — a group of applicants adjacent to fewer jobs than its size can't all be matched. Sufficiency is the theorem: if no matching saturates $X$, an augmenting-path argument extracts a specific deficient set $S$ with $|N(S)| \lt  |S|$. So the sole obstruction to a full matching is one bottleneck set.
@@ -996,7 +1013,7 @@ Burnside counts orbits by averaging fixed points; Pólya refines "fixed" into a 
 Compute the cycle index $Z_G = \frac{1}{|G|}\sum_g \prod_k t_k^{c_k(g)}$. Substitute $t_k = m$ for a plain count (that's Burnside), or $t_k = x^k + y^k + \cdots$ to get a generating function whose coefficients count colorings with a prescribed number of each color — e.g. bracelets with exactly three red beads.
 
 ## On contests
-Needed only for "count colorings with a fixed color distribution, up to symmetry" — rare and olympiad-tier. For plain orbit counts, [[burnsides-lemma|Burnside's lemma]] is enough.`,
+Needed only for "count colorings with a fixed color distribution, up to symmetry" — rare and olympiad-tier. For plain orbit counts, Burnside's lemma is enough.`,
 
 "probability-generating-functions": String.raw`## Why it works
 $G_X(s) = E[s^X] = \sum_k P(X=k)s^k$ stores the whole distribution. Differentiating and evaluating at $s = 1$ pulls down factors of $k$: $G'(1) = E[X]$ and $G''(1) = E[X(X-1)]$, giving the variance. Independence multiplies PGFs since $E[s^{X+Y}] = E[s^X]\,E[s^Y]$.
@@ -1125,24 +1142,11 @@ Extract $a_n$ by reading the coefficient and multiplying back by $n!$ — forget
 ## On contests
 Advanced olympiad / Putnam counting; EGFs crack derangements, surjections, and set-partition and permutation-structure counts that ordinary generating functions handle badly.`,
 
-"zeckendorf-theorem": String.raw`## Why it works
-Greedily subtracting the largest Fibonacci number $\le n$ can never leave a remainder that needs two adjacent Fibonaccis, because $F_k+F_{k-1}=F_{k+1}$ would merge them into a larger term — which gives both existence and uniqueness of the non-consecutive representation.
-
-## How to use it
-The greedy algorithm is both the construction and the proof: taking the largest Fibonacci number at each step automatically leaves a remainder smaller than the previous term's predecessor, which is exactly the non-consecutive condition.
-
-The representation is a bijection between integers and binary strings with no two adjacent $1$s, which links this card to the Fibonacci tiling count — and explains why exactly $F_{n+2}$ integers have representations using only the first $n$ Fibonacci numbers.
-
-Contest uses are usually about that uniqueness: showing a Fibonacci-sum representation is forced, or converting between an integer and its Fibonacci digits.
-
-## On contests
-Occasional AIME and olympiad appearances (Fibonacci representations, Wythoff and [[beatty-theorem|Beatty]] problems); the greedy algorithm together with uniqueness is essentially the whole toolkit.`,
-
 "moser-circle": String.raw`## Why it works
 Apply [[eulers-formula|Euler's formula]] $V-E+F=2$ to the planar graph of points, chord crossings, and arcs: there are $\binom{n}{2}$ chords and $\binom{n}{4}$ interior crossings (one per choice of 4 points, assuming no three chords meet inside), and bookkeeping the edges and faces yields $R(n)=\binom{n}{4}+\binom{n}{2}+1$.
 
 ## How to use it
-The value of this card is as a warning: five data points agreeing with $2^{n-1}$ prove nothing, and the sequence breaks at exactly the moment most people stop checking.
+Treat the formula as a warning: five data points agreeing with $2^{n-1}$ prove nothing, and the sequence breaks at exactly the moment most people stop checking.
 
 The derivation is worth knowing because it explains the shape. Each interior crossing comes from choosing four points on the circle, giving $\binom n4$ vertices; each new chord adds one region plus one more for every crossing it makes. Applying Euler's formula to the resulting planar graph gives the closed form directly.
 

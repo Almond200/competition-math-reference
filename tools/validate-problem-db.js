@@ -48,6 +48,36 @@ Object.keys(DETAILS).forEach(function (cid) {
 });
 print("card cross-links: " + linkCount + " | dangling: " + (linkErrors.length ? linkErrors.join(", ") : "none"));
 
+// A strategy is written as a plain "..." JS string, so a LaTeX command needs its backslash
+// DOUBLED in the source. Written singly, the escape is consumed before KaTeX ever sees it:
+// \f becomes a formfeed, \t a tab, \b a backspace, and \c \g \p \s \m \a \l just lose the
+// backslash. The damage is invisible in the source and only shows as mangled maths on the
+// page, so it is checked here. Control characters are the tell.
+var latexErrors = [];
+DB.forEach(function (e) {
+  if (!e.strategy) return;
+  if (/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(e.strategy)) {
+    latexErrors.push(e.ref + ": control character in strategy (un-escaped LaTeX backslash)");
+  }
+  // a lone "$...$" span that contains a letter-run with no backslash where one is expected
+  var m = e.strategy.match(/\$[^$]*\$/g) || [];
+  m.forEach(function (span) {
+    if (/(?:^|[^\\a-zA-Z])(?:frac|sqrt|cdot|pmod|bmod|equiv|angle|triangle|varphi|mathrm|mathbb|tfrac|circ|times|prod|sum|leq|geq)(?![a-zA-Z])/.test(span)) {
+      latexErrors.push(e.ref + ": LaTeX command missing its backslash in " + span.slice(0, 40));
+    }
+    // A raw "<" followed by a letter is parsed as the START OF AN HTML TAG, because the
+    // strategy is inserted as HTML before KaTeX runs. The browser then silently swallows
+    // everything up to the next ">", so the sentence renders cut off halfway and the
+    // source looks perfectly fine. "\sum_{i<j}" is the case that got through. House
+    // convention is \lt / \gt inside maths -- enforced here, not left to review.
+    if (/<[A-Za-z/]/.test(span)) {
+      latexErrors.push(e.ref + ": raw '<' inside maths is read as an HTML tag and eats the "
+        + "rest of the line -- use \\lt: " + span.slice(0, 44));
+    }
+  });
+});
+if (latexErrors.length) { errors = errors.concat(latexErrors); }
+
 print("problems: " + DB.length + " | cards: " + Object.keys(CARDS).length + " | topics: " + Object.keys(TOPICS).length);
 if (errors.length) { print("VIOLATIONS (" + errors.length + "):"); errors.slice(0, 50).forEach(print); }
 else print("OK — 0 violations");

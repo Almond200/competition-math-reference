@@ -160,10 +160,24 @@ Trigger: fourth powers with coefficient 4 (or rewritable to it, e.g. $4^{n} = 4 
 ## On contests
 "Show $n^4 + 4$ is never prime for $n > 1$" and "compute $\frac{(10^4+324)(22^4+324)\cdots}{(4^4+324)(16^4+324)\cdots}$" (with $324 = 4 \cdot 3^4$, the factors telescope) — the latter is a famous AIME problem pattern.`,
 
+"largest-term-ratio": String.raw`## Key forms
+- $\dfrac{a_{k+1}}{a_k} \ge 1 \iff$ still climbing — the peak is the last $k$ where this holds, so one inequality replaces evaluating every term
+- $\dfrac{\binom{n}{k+1}}{\binom{n}{k}} = \dfrac{n-k}{k+1}$ — the reason binomial terms are the standard target: the factorials cancel completely
+- with a weight, $\dfrac{a_{k+1}}{a_k} = \dfrac{n-k}{k+1}\cdot r$ for terms $\binom{n}{k}r^k$ — solve $\frac{(n-k)r}{k+1} = 1$ and take the floor
+
+## Why it works
+A sequence of positive terms is unimodal exactly when its consecutive ratio is decreasing and crosses $1$ once. For binomial-type terms the ratio $\frac{n-k}{k+1}r$ falls steadily in $k$, so it starts above $1$ and ends below it, and the crossing point is the peak. Nothing has to be computed at full size, which matters when the terms themselves are astronomically large.
+
+## How to use it
+Write $\frac{a_{k+1}}{a_k}$, cancel, set it $\ge 1$ and solve for $k$; the answer is the largest integer satisfying it. Check whether the ratio equals $1$ exactly, since then two adjacent terms tie for the maximum. The same test decides where a term is largest in absolute value for an alternating sequence, once signs are stripped.
+
+## On contests
+The standard AIME shape is "which term of $\binom{n}{k}r^k$ is largest", where evaluating is hopeless and the ratio is a one-line computation — 1991 AIME Problem 3 is exactly this. It also settles where a [[binomial-probability|binomial probability]] peaks, which is the mode of the distribution.`,
+
 "sfft": String.raw`## Key forms
 - $xy+ax+by$ is one constant short of factoring, so adding $ab$ gives $(x+b)(y+a)$ — an equation $xy+ax+by=c$ becomes $(x+b)(y+a)=c+ab$, and integer solutions are read off from the factor pairs of the right side
 - when the $xy$ term carries a coefficient, multiply through first: $Axy+Bx+Cy=D$ becomes $(Ax+C)(Ay+B)=AD+BC$, keeping only the factors that make $x$ come out an integer — multiplying through first is what keeps the factorisation over the integers
-- the unit-fraction case is the one to recognise on sight: $\frac1x+\frac1y=\frac1n$ clears to $(x-n)(y-n)=n^2$, so the number of positive solutions is the [[number-of-divisors|number of divisors]] of $n^2$ — the divisor count of $n^2$ answers the whole question with no [[casework-method|casework]]
+- the unit-fraction case is the one to recognise on sight: $\frac1x+\frac1y=\frac1n$ clears to $(x-n)(y-n)=n^2$, so the number of positive solutions is the [[number-of-divisors|number of divisors]] of $n^2$, which answers the whole question with no [[casework-method|casework]]
 
 ## Why it works
 $xy + ax + by$ is one constant short of factoring as $(x + b)(y + a)$; add $ab$ to both sides and it does. The same accounting explains the general case: an equation that is linear in $x$ for each fixed $y$ (and vice versa) is a hyperbola, and every hyperbola with rational asymptotes can be written as a constant product after shifting both variables.
@@ -255,7 +269,7 @@ A proper rational function with a factored denominator is uniquely a sum of one 
 ## How to use it
 Split first, then look for the collapse. The cover-up method gets each coefficient fast: to find the weight on $\frac{1}{x+a}$, delete that factor and evaluate the rest at $x = -a$. Standard decompositions worth knowing on sight: $\frac{1}{k(k+1)} = \frac{1}{k} - \frac{1}{k+1}$; $\frac{1}{k(k+2)} = \frac{1}{2}\left(\frac{1}{k} - \frac{1}{k+2}\right)$, which is two interleaved telescopes; $\frac{k}{(k+1)!} = \frac{1}{k!} - \frac{1}{(k+1)!}$; and $\frac{1}{\sqrt{k} + \sqrt{k+1}} = \sqrt{k+1} - \sqrt{k}$ after rationalising. Products telescope the same way, as in $\prod\left(1 - \frac{1}{k^2}\right) = \prod\frac{(k-1)(k+1)}{k^2}$.
 
-The other payoff is [[generating-function-method|generating functions]]. Decomposing $\frac{P(x)}{\prod(1 - r_i x)}$ turns a rational [[generating-function-method|generating function]] into a sum of [[geometric-series|geometric series]], so the coefficient of $x^n$ becomes a sum of $r_i^n$ terms. That is the generating-function proof of the closed form for a linear recurrence.
+The other payoff is [[generating-function-method|generating functions]]. Decomposing $\frac{P(x)}{\prod(1 - r_i x)}$ turns a rational generating function into a sum of [[geometric-series|geometric series]], so the coefficient of $x^n$ becomes a sum of $r_i^n$ terms. That is the generating-function proof of the closed form for a linear recurrence.
 
 ## On contests
 One of the top-three AIME sum techniques, and the engine behind nearly every telescoping-sum problem on the AMC. The recognition cue is a denominator that is a product of terms in arithmetic progression, or any sum the calculator-free setting makes look impossible, since impossible usually means telescoping. Spotting that a summand wants to be split is often the entire insight. It is also the standard route to a closed-form $n$th term from a rational generating function.`,
@@ -470,7 +484,7 @@ AIME uses roots of unity for: polynomial evaluations at all roots (multiply the 
 For any $j \not\equiv 0 \pmod n$, the sum $\sum_{k} \omega^{jk}$ over all $n$-th roots vanishes ([[geometric-series|geometric series]]); for $j \equiv 0$ it is $n$. So averaging $f(\omega^j x)$ over $j$ kills all coefficients except those with exponent $\equiv r \pmod n$ after appropriate twisting.
 
 ## How to use it
-To sum every $n$-th binomial coefficient: average $(1 + \omega^j)^m$ over $j$, with a phase factor $\omega^{-jr}$ selecting residue class $r$. Compute $(1 + \omega^j)$ in [[pole-polar|polar]] form to evaluate. The $n = 2$ case is the even/odd coefficient split; $n = 3, 4$ cover nearly all contest instances.
+To sum every $n$-th binomial coefficient: average $(1 + \omega^j)^m$ over $j$, with a phase factor $\omega^{-jr}$ selecting residue class $r$. Compute $(1 + \omega^j)$ in [[eulers-formula|polar]] form to evaluate. The $n = 2$ case is the even/odd coefficient split; $n = 3, 4$ cover nearly all contest instances.
 
 ## On contests
 "How many subsets of $\{1..2000\}$ have size divisible by 4" and "sum of $\binom{n}{k}$ over $k \equiv 1 \pmod 3$" are canonical AIME applications. Real-part extraction via $2\cos$ finishes the arithmetic.`,
@@ -786,7 +800,7 @@ The two-term multiplicative rule is the additive one in disguise. Taking logarit
 Todd's equation $x_{n+1}=\frac{1+x_n+x_{n-1}}{x_{n-2}}$ is the third-order member of the same family as Lyness. It carries two independent invariants — quantities unchanged by the map — and their level sets are closed curves, which is what pins every orbit to period 8 regardless of the starting triple.
 
 ## How to use it
-Compute terms exactly (fractions, not decimals) until the initial state recurs; the number of steps is the period $p$. Then $a_n$ depends only on $n \bmod p$ — but align the offset carefully, especially with a pre-period. Recognizing one of the canonical maps above hands you the period before you compute. The Fibonacci case has its own name, the [[pisano-periods|Pisano periods]], and the modular case is [[periodicity-mod-m|periodicity mod m]].
+Compute terms exactly (fractions, not decimals) until the initial state recurs; the number of steps is the period $p$. Then $a_n$ depends only on $n \bmod p$ — but align the offset carefully, especially with a pre-period. Recognizing one of the canonical maps above hands you the period before you compute. The Fibonacci case has its own name, the [[pisano-periods|Pisano periods]], and the general modular case is [[periodicity-mod-m|hunting the cycle mod $m$]].
 
 ## On contests
 "Find $t_{2020}$" (2020 AIME II #6, period 5-ish after simplification) and endless AMC versions. Contest recursions asking about term two thousand-something are begging you to find a cycle — compute six to ten terms before trying anything clever. The Lyness 5-cycle, the period-6 $a_n-a_{n-1}$ and its multiplicative twin $\frac{x_n}{x_{n-1}}$, Todd's period-8 equation, and the period-9 $|a_n|-a_{n-1}$ are the famous named cases — recognising any of them hands you the period with no computation.`,
@@ -978,7 +992,7 @@ Object.assign(window.MATH_DETAILS, {
 - $x$ and $y$ are then the roots of $t^2-st+p=0$, so they are real exactly when $s^2\ge4p$ — the discriminant is what converts an algebra problem back into a statement about the original variables
 
 ## Why it works
-Every symmetric polynomial in $x$ and $y$ is a polynomial in the elementary symmetric functions $s = x + y$ and $p = xy$ (the two-variable [[symmetric-polynomial-strategies|fundamental theorem of symmetric polynomials]]). And [[vietas-general|Vieta]] runs backwards: knowing $s$ and $p$ means $x$ and $y$ are exactly the roots of $t^2 - st + p = 0$ — no information is lost.
+Every symmetric polynomial in $x$ and $y$ is a polynomial in the elementary symmetric functions $s = x + y$ and $p = xy$ (the two-variable case of the [[symmetric-polynomial-strategies|fundamental theorem]]). And [[vietas-general|Vieta]] runs backwards: knowing $s$ and $p$ means $x$ and $y$ are exactly the roots of $t^2 - st + p = 0$ — no information is lost.
 
 ## How to use it
 Convert with the ladder $x^2 + y^2 = s^2 - 2p$, $x^3 + y^3 = s^3 - 3sp$, $x^4 + y^4 = (s^2 - 2p)^2 - 2p^2$, and $(x - y)^2 = s^2 - 4p$ (the discriminant — check it's nonnegative if $x, y$ must be real). Solve the resulting system in $s, p$, then factor $t^2 - st + p$. Expressions like $\frac{1}{x} + \frac{1}{y} = \frac{s}{p}$ and $x^2y + xy^2 = sp$ convert just as fast. For three variables, the same collapse uses $e_1, e_2, e_3$ and [[newtons-sums|Newton's sums]].
@@ -1003,6 +1017,21 @@ For $ax^2 + bx + c$, factor the $a$ out of the first two terms first. The comple
 
 ## On contests
 The go-to for min/max of a quadratic without calculus, for finding a circle's center and radius, and for any "$x^2 + y^2 + \dots$" locus. It also rescues sums of squares: recognizing $a^2 - 2a + \dots \ge 0$ after completing the square is a standard inequality move (see the [[trivial-inequality|trivial inequality]]).`,
+
+"taxicab-region": String.raw`## Why it works
+Four shapes cover almost every appearance. $|x| + |y| \le c$ is a square on its corner, with vertices $(\pm c, 0)$ and $(0, \pm c)$, diagonals $2c$, side $c\sqrt2$ and area $2c^2$, holding $2c^2 + 2c + 1$ lattice points when $c$ is an integer. $\max(|x|,|y|) \le c$ is the same square untilted, of side $2c$ and area $4c^2$, and the two sit one $45^\circ$ rotation apart, which the identity $|x+y| + |x-y| = 2\max(|x|,|y|)$ makes exact. Stretching the axes turns the first into the rhombus $\left|\frac xa\right| + \left|\frac yb\right| \le 1$, with diagonals $2a$ and $2b$ and area $2ab$. And $|x-h| + |y-k| \le c$ is the corner square recentred at $(h,k)$, which is precisely the set of points within taxicab distance $c$ of it.
+
+The reason any of them is easy to find is a symmetry that deletes the bars outright. A relation in $|x|$ is unchanged when $x$ becomes $-x$, so it may be solved on $x \ge 0$, where $|x|$ is simply $x$ and no absolute value survives, and the answer mirrored across the $y$-axis; with bars on both variables, work the first quadrant and reflect into the other three. Equivalently, each bar wrapped around a variable mirrors the whole region across that axis, so a nested expression gives copies of a simpler region rather than a harder one.
+
+In the first quadrant the inequality is just $x + y \le c$, a right triangle with legs $c$. The four sign choices give four congruent copies glued along the axes, so the region is a square on its corner, whose diagonals are the two axis segments from $-c$ to $c$, both of length $2c$, and a square of diagonal $d$ has area $\frac{d^2}{2} = 2c^2$. The lattice count follows the same slicing: fix an integer $x$ with $|x| \le c$ and $y$ runs over $2(c-|x|)+1$ values, and summing that over $x = -c \ldots c$ gives $2c^2 + 2c + 1$.
+
+## How to use it
+Reach for the symmetry before the [[casework-method|casework]]. Four sign choices for $(\pm x, \pm y)$ would give four case splits; the symmetry says all four give congruent pieces, so one of them plus a reflection is the whole job — and inside that one piece there are no absolute values left to handle. It is the same reduction that folding a graph uses in one variable to halve a solution count, applied to area instead.
+
+Recognize the shape first and the arithmetic disappears, since the area and the lattice count are both formulas rather than summations. For a nested expression like $\big||x|-1\big| + \big||y|-1\big| \le 1$, read it outward: the inner shift moves the diamond's center, and each absolute value wrapped around a variable reflects the whole picture across that axis. If the copies are disjoint, multiply; if they overlap, the overlap is another region of the same kind. The general form $|x-h| + |y-k| \le c$ is the same square centered at $(h,k)$, which is exactly the set of points within taxicab distance $c$ of that center.
+
+## On contests
+A regular AMC shape, asked either as an area or as a lattice-point count, and the reason "taxicab distance" problems are tractable at all. [[picks-theorem|Pick's theorem]] would also get the area out of the lattice data, but it is the slower route here, because the closed form is already known. For what a single bar does to a graph, and for counting solutions by sliding a horizontal line, see [[abs-value-graphing|the transformation rules]]; for the algebra of one bar on the number line, [[absolute-value-rules|the absolute value rules]].`,
 
 "absolute-value-rules": String.raw`## Why it works
 $|x|$ is the distance from $x$ to $0$, so $|x - c|$ is the distance from $x$ to $c$. "Within $a$" becomes a two-sided band $-a \lt  x - c \lt  a$; "farther than $a$" becomes two rays. And $\sqrt{x^2} = |x|$ (not $x$) because the principal square root is never negative.
@@ -1181,7 +1210,7 @@ Any symmetric expression in $a,b,c$ can be written in $p=a+b+c$, $q=ab+bc+ca$, $
 Try SOS first: expand $\text{LHS}-\text{RHS}$ and group it as $S_a(b-c)^2+S_b(c-a)^2+S_c(a-b)^2$. If every $S\ge 0$ you are done; if not, use the ordered test — assuming $a\ge b\ge c$, it suffices that $S_b\ge 0$, $S_b+S_a\ge 0$, and $S_b+S_c\ge 0$. If the grouping is ugly, switch to $uvw$: convert to $p,q,r$, fix $p,q$, and verify the inequality only at the two boundary shapes $b=c$ and $c=0$, since the extremum lives there.
 
 ## On contests
-Olympiad three-variable symmetric inequalities are the home turf: many "prove for positive reals" problems fall to one clean SOS grouping or a two-case $uvw$ boundary check. Keep [[schurs-inequality|Schur's inequality]] $p^3 + 9r \ge 4pq$ on hand to close the stubborn residual case.`,
+Olympiad three-variable symmetric inequalities are the home turf: many "prove for positive reals" problems fall to one clean SOS grouping or a two-case $uvw$ boundary check. Keep Schur's inequality $p^3 + 9r \ge 4pq$ on hand to close the stubborn residual case.`,
 
 "max-product-fixed-sum": String.raw`## Why it works
 For a fixed sum, AM–GM makes the product largest when the parts are equal, so the ideal part is near $e\approx 2.718$ — and among integers $3$ beats $2$. Two local swaps pin the integer rule: a $1$ is always wasteful (merging it, $1+x \to (x+1)$, raises the product), and three $2$'s lose to two $3$'s (same sum $6$, but $8\lt 9$), so never keep more than two $2$'s.
@@ -1234,10 +1263,10 @@ Bars around the input and bars around the output act on different axes. Replacin
 ## How to use it
 Peel from the innermost bar. Sketch the plain function first, then apply one transformation per bar: mirror for a bar on the input, fold for a bar on the output. Corners appear exactly where the folded part meets the axis, which is at the roots of whatever sat inside the bars, so those roots are the points to mark.
 
-For "how many solutions does $||x|-a|=b$ have" questions, do not solve. Draw the left side, draw the horizontal line $y=b$, and count crossings, since the shape of the folded graph makes the count obvious as $b$ varies. When both variables carry bars, as in $|x|+|y|=k$, use the symmetry instead: the equation is unchanged under $x\to-x$ and $y\to-y$, so work out the first-quadrant piece, which is the segment $x+y=k$, then reflect it into the other three quadrants to get the full diamond.
+For "how many solutions does $||x|-a|=b$ have" questions, do not solve. Draw the left side, draw the horizontal line $y=b$, and count crossings, since the shape of the folded graph makes the count obvious as $b$ varies. When both variables carry bars the picture stops being a graph and becomes a region, which is a different job: see [[taxicab-region|the two-variable case]] for the shapes those cut out and the closed forms for their areas and lattice counts.
 
 ## On contests
-A recurring AMC and AIME setup, usually phrased as a count of solutions or as the area enclosed by an absolute-value equation. The count questions are decided entirely by how many times a horizontal line meets a folded graph, and the area questions almost always reduce to a diamond or a union of triangles once the symmetry is used.`,
+A recurring AMC and AIME setup, usually phrased as a count of solutions or as the area enclosed by an absolute-value equation. The count questions are decided entirely by how many times a horizontal line meets a folded graph. The area questions need the shapes a bar cuts out of the plane instead; the two together cover the topic, and the same problem often wants one of each.`,
 
 "first-order-recurrence": String.raw`## Why it works
 Solve $L = rL + d$ for the fixed point $L = \frac{d}{1-r}$, the one value the recurrence leaves alone. Now measure everything from there by setting $b_n = a_n - L$. Substituting gives $b_n = a_n - L = (ra_{n-1} + d) - (rL + d) = r(a_{n-1} - L) = r\,b_{n-1}$, so the shifted sequence is purely geometric. Hence $a_n - L = r^n(a_0 - L)$, and the constant $d$ has vanished into the change of origin.
@@ -1342,7 +1371,7 @@ Five evaluation tricks do most of the work, and all of them are the same identit
 - The complex number evaluation — a quadratic in $r_i$ factors over $\mathbb{C}$, and each factor is again an evaluation. In general $r^2 + c^2 = (r - ci)(r + ci)$, so $\prod_i (r_i^2 + c^2) = \prod_i(r_i - ci)\cdot\prod_i(r_i + ci) = \frac{P(ci)\,P(-ci)}{a_n^{2}}$, the two signs from $\prod(r_i - a) = (-1)^n P(a)/a_n$ cancelling. Setting $c = 1$ recovers the familiar $\prod(r_i^2+1) = P(i)P(-i)/a_n^2$. Any quadratic in $r_i$ yields to the same move once you know its two roots: $\prod(r_i^2 - c^2) = P(c)P(-c)/a_n^2$ needs no complex numbers at all, and $\prod(r_i^2 - r_i + 1)$ goes through the primitive sixth [[roots-of-unity|roots of unity]]. When the evaluation points are complex the answer still comes out real, which is a useful check.
 - Substituting to transform the roots — to work with $f(r_i)$ instead of $r_i$, build the polynomial whose roots are the $f(r_i)$ and apply everything above to it: roots $r_i + k$ come from $P(x-k)$, roots $kr_i$ from $P(x/k)$, and roots $1/r_i$ from reversing the coefficient list.
 - The logarithmic derivative — differentiating $\ln P$ gives $\sum \frac{1}{x - r_i} = \frac{P'(x)}{P(x)}$, which evaluates sums of reciprocals in one step: $\sum \frac{1}{1 - r_i} = \frac{P'(1)}{P(1)}$, and $\sum \frac{1}{r_i} = -\frac{P'(0)}{P(0)} = \frac{e_{n-1}}{e_n}$.
-- Roots of unity filtering — evaluating at the $n$th roots of unity and averaging isolates the coefficients whose index is divisible by $n$, the same evaluation idea aimed at coefficients rather than at roots.
+- [[roots-of-unity-filter|Filtering]] — evaluating at the $n$th roots of unity and averaging isolates the coefficients whose index is divisible by $n$, the same evaluation idea aimed at coefficients rather than at roots.
 
 ## On contests
 This is the organizing idea behind a large share of AIME algebra: the problem hands you a polynomial and asks for something about its roots that would be hopeless to compute directly. The tell is a symmetric expression plus ugly or irrational roots. Ask "is it symmetric?", then "is it a product?" — if it is a product, evaluate $P$ somewhere rather than expanding, and reach for $P(i)P(-i)$ the moment you see $r^2 + 1$. Olympiad use runs the other way as well, proving an integrality or divisibility claim by showing the quantity is a symmetric function of algebraic conjugates and therefore rational.`,
@@ -1462,7 +1491,7 @@ Homogenizing runs the same logic backwards. A constrained inequality is not homo
 ## How to use it
 Confirm homogeneity first: both sides the same degree, or degree $0$ for a pure ratio. Then pick the normalization that simplifies the most, $a+b+c=1$ for symmetric sums, $abc=1$ when the constraint is multiplicative, or a key length set to $1$ in geometry. Solve the constrained problem and the general case follows by scaling.
 
-To homogenize, find the degree you want every term to have, then multiply each lower-degree term by the constraint raised to the difference. Under $a+b+c=1$ a degree-$2$ target turns $\frac13$ into $\frac13(a+b+c)^2$, a constant $1$ into $(a+b+c)^2$, and a linear term $a$ into $a(a+b+c)$. Once every term matches in degree, [[muirheads-inequality|Muirhead]], [[schurs-inequality|Schur]] and bunching all become available, and the constraint can be forgotten entirely.
+To homogenize, find the degree you want every term to have, then multiply each lower-degree term by the constraint raised to the difference. Under $a+b+c=1$ a degree-$2$ target turns $\frac13$ into $\frac13(a+b+c)^2$, a constant $1$ into $(a+b+c)^2$, and a linear term $a$ into $a(a+b+c)$. Once every term matches in degree, Muirhead, Schur and bunching all become available, and the constraint can be forgotten entirely.
 
 ## On contests
 The standard opening move for olympiad inequalities: normalize, then apply [[am-gm|AM-GM]], Cauchy, or a bunching argument to the simpler form; or homogenize, then compare exponent sequences directly. On AIME it appears as "assume the perimeter is $1$" or "set the circumradius to $1$" to strip a nuisance parameter before computing. The only discipline required is checking homogeneity first, since applied to a non-homogeneous expression the whole argument collapses.`,

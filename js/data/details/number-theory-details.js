@@ -91,7 +91,7 @@ Inclusion-exclusion over the prime divisors, which factors neatly into $n\prod(1
 Compute via the product over distinct primes — exponents only matter through the leading $n$. It counts: fractions $\frac{k}{n}$ in lowest terms, generators of cyclic groups, and reduced residues (the things [[eulers-theorem|Euler's theorem]] exponentiates over). $\varphi$ is even for $n > 2$; $\sum_{d \mid n}\varphi(d) = n$.
 
 ## On contests
-Direct computation, counting reduced fractions (AIME: "how many $\frac{k}{2010}$ are reduced"), and as the exponent in [[eulers-theorem|Euler's theorem]] for last-digit problems. Also "for how many $n$ is $\varphi(n) = 12$"-type inverse questions — bounded [[casework-method|casework]] over possible prime factors.`,
+Direct computation, counting reduced fractions (AIME: "how many $\frac{k}{2010}$ are reduced"), and as the exponent in Euler's theorem for last-digit problems. Also "for how many $n$ is $\varphi(n) = 12$"-type inverse questions — bounded [[casework-method|casework]] over possible prime factors.`,
 
 "totient-divisor-sum": String.raw`## Why it works
 Classify $k \in \{1..n\}$ by $g = \gcd(k, n)$: the $k$ with $\gcd(k,n) = g$ correspond bijectively to reduced residues mod $\frac{n}{g}$, so there are $\varphi(\frac{n}{g})$ of them. Summing the class sizes over all divisors gives $n$.
@@ -142,7 +142,7 @@ Same template for cubes ($\lfloor\frac{e_i}{3}\rfloor + 1$) and for "divisors th
 Fix a prime $p$ with target exponent $e$: the pair's exponents $(x, y)$ must satisfy $\max(x,y) = e$, giving $2e + 1$ ordered choices ($x = e$ with $y$ free, or symmetric, minus the double count). Primes act independently.
 
 ## How to use it
-The general method outranks the formula: translate every gcd/lcm condition into per-prime min/max conditions on exponent tuples, count tuples per prime, multiply. Systems (three variables, three pairwise lcms) become small combinatorial counts per prime. It is the counting form of [[gcd-lcm-product|GCD x LCM]]: the identity $\min + \max = e + f$ is what lets each prime be handled independently.
+The general method outranks the formula: translate every gcd/lcm condition into per-prime min/max conditions on exponent tuples, count tuples per prime, multiply. Systems (three variables, three pairwise lcms) become small combinatorial counts per prime. It is the counting form of [[gcd-lcm-product|gcd–lcm product]]: the identity $\min + \max = e + f$ is what lets each prime be handled independently.
 
 ## On contests
 The AIME classic "how many ordered triples have $[x,y] = 1000$, $[y,z] = 2000$, $[z,x] = 2000$" is solved exactly this way (answer 70). Any lcm-constrained counting should trigger the per-prime reflex.`,
@@ -330,7 +330,7 @@ The multiples of $d$ up to $n$ are $d, 2d, \dots, \lfloor\frac{n}{d}\rfloor d$ �
 Combine with inclusion-exclusion for unions ("divisible by 3 or 5"), complements ("divisible by neither"), and exact conditions ("by 6 but not 9"). This plus [[legendres-formula|Legendre]] covers most "how many numbers up to $N$..." questions. Ranges: count up to $b$, subtract count up to $a - 1$.
 
 ## On contests
-Constant MATHCOUNTS/AMC presence, and the counting engine inside [[legendres-formula|Legendre's formula]], totient computations, and AIME lattice problems.`,
+Constant MATHCOUNTS/AMC presence, and the counting engine inside Legendre's formula, totient computations, and AIME lattice problems.`,
 
 "prime-divides-binomial": String.raw`## Why it works
 $\binom{p}{k} = \frac{p!}{k!(p-k)!}$: the numerator has one factor of $p$, and for $0 \lt  k \lt  p$ neither factorial below can cancel it.
@@ -456,7 +456,7 @@ Parametrize the segment: interior lattice points occur at parameter values $\fra
 Boundary counts for [[picks-theorem|Pick's theorem]]: each polygon edge contributes $\gcd(|\Delta x|, |\Delta y|)$ lattice points (counting one endpoint). "Visible from the origin" = primitive vectors = $\gcd = 1$, connecting to totient counts and the $\frac{6}{\pi^2}$ density.
 
 ## On contests
-Diagonal-through-grid problems ("how many unit squares does the diagonal of an $m \times n$ rectangle cross": $m + n - \gcd(m,n)$ — same primitive-step idea) and every [[picks-theorem|Pick's theorem]] application.`,
+Diagonal-through-grid problems ("how many unit squares does the diagonal of an $m \times n$ rectangle cross": $m + n - \gcd(m,n)$ — same primitive-step idea) and every Pick's theorem application.`,
 
 "wolstenholme": String.raw`## Why it works
 Pair the fractions $\frac{1}{k} + \frac{1}{p-k} = \frac{p}{k(p-k)}$: the harmonic sum mod $p^2$ reduces to $p\sum\frac{1}{k(p-k)}$, and the remaining sum vanishes mod $p$ by symmetry of inverses. The binomial form follows by expansion.
@@ -533,7 +533,7 @@ The multiplicative group mod $p^k$ is cyclic for odd $p$ (so $\lambda = \varphi$
 For "last $k$ digits of a huge power" problems, reduce the exponent mod $\lambda(10^k)$ instead of $\varphi(10^k)$: $\lambda(1000) = 100$ versus $\varphi(1000) = 400$. For power towers, iterate down the tower with $\lambda$ at each level. Remember the special cases $\lambda(2) = 1$, $\lambda(4) = 2$ and the lcm (not product) combination rule. Since $\lambda(n)\mid\varphi(n)$ always, using $\lambda$ can only sharpen [[eulers-theorem|Euler's theorem]], never weaken it — and the true order of any particular $a$ divides $\lambda(n)$ in turn.
 
 ## On contests
-AIME tower-of-exponents problems reward $\lambda$ heavily — a $4\times$ smaller modulus at each level compounds. [[eulers-theorem|Euler's theorem]] is never wrong, just slower; $\lambda$ is the sharp version of the same idea.`
+AIME tower-of-exponents problems reward $\lambda$ heavily — a $4\times$ smaller modulus at each level compounds. Euler's theorem is never wrong, just slower; $\lambda$ is the sharp version of the same idea.`
 
 });
 
@@ -578,10 +578,10 @@ Object.assign(window.MATH_DETAILS, {
 Among $1, 2, \dots, n$ there are $\lfloor \frac{n}{p} \rfloor$ multiples of $p$, each contributing at least one factor; the multiples of $p^2$ contribute a second (already counted once, so add them again); and so on. Each number ends up counted exactly as many times as its own power of $p$ — no [[double-counting|double counting]], no misses.
 
 ## How to use it
-Run the divisions mechanically and stop as soon as $p^k$ exceeds $n$ — usually three or four terms. Standard applications: trailing zeros of $n!$ (use $p = 5$), "does $p^k$ divide $n!$" (compare with the sum), and prime powers in binomial coefficients (compute for all three factorials and subtract, or count base-$p$ carries via [[kummers-theorem|Kummer]]). For huge $n$, the digit-sum shortcut $v_p(n!) = \frac{n - s_p(n)}{p-1}$ on [[legendres-formula|Legendre's]] page skips the divisions entirely.
+Run the divisions mechanically and stop as soon as $p^k$ exceeds $n$ — usually three or four terms. Standard applications: trailing zeros of $n!$ (use $p = 5$), "does $p^k$ divide $n!$" (compare with the sum), and prime powers in binomial coefficients (compute for all three factorials and subtract, or count base-$p$ carries via [[kummers-theorem|Kummer]]). For huge $n$, the digit-sum shortcut $v_p(n!) = \frac{n - s_p(n)}{p-1}$ from [[legendres-formula|Legendre's formula]] skips the divisions entirely.
 
 ## On contests
-"How many zeros does $2025!$ end in" and "find the largest $k$ with $7^k \mid 100!$" appear from MATHCOUNTS through AIME, and the subtraction version handles every "is $\binom{n}{k}$ divisible by $p$" question. This is the computational recipe; see [[legendres-formula|Legendre's Formula]] for the closed form and theory.`
+"How many zeros does $2025!$ end in" and "find the largest $k$ with $7^k \mid 100!$" appear from MATHCOUNTS through AIME, and the subtraction version handles every "is $\binom{n}{k}$ divisible by $p$" question. This is the computational recipe; see Legendre's Formula for the closed form and theory.`
 
 });
 
@@ -609,7 +609,7 @@ Object.assign(window.MATH_DETAILS, {
 Dividing $a$ and $b$ by their gcd leaves quotients with no common factor — that's what "greatest" means. Everything about the pair then splits cleanly: $\operatorname{lcm}(a,b) = dxy$ because $x$ and $y$ share nothing, $ab = d^2xy = \gcd \cdot \operatorname{lcm}$ falls out immediately, and any equation in $a, b$ becomes an equation in $d$ and the coprime pair $(x, y)$.
 
 ## How to use it
-Write $a = dx$, $b = dy$ the moment a problem mentions gcd or lcm — before doing anything else. Given $\gcd$ and $\operatorname{lcm}$, the pairs $(x, y)$ are the coprime factorizations of $\frac{\operatorname{lcm}}{\gcd}$, and there are exactly $2^{\omega}$ ordered ones ($\omega$ = number of distinct primes of $\frac{\operatorname{lcm}}{\gcd}$), since each prime's whole block goes entirely to $x$ or entirely to $y$. Sum conditions like $a + b = d(x + y)$ hand you a factor of the sum for free. It is the working form of [[gcd-lcm-product|GCD x LCM]]: reducing a pair to coprime cofactors is what the identity licenses.
+Write $a = dx$, $b = dy$ the moment a problem mentions gcd or lcm — before doing anything else. Given $\gcd$ and $\operatorname{lcm}$, the pairs $(x, y)$ are the coprime factorizations of $\frac{\operatorname{lcm}}{\gcd}$, and there are exactly $2^{\omega}$ ordered ones ($\omega$ = number of distinct primes of $\frac{\operatorname{lcm}}{\gcd}$), since each prime's whole block goes entirely to $x$ or entirely to $y$. Sum conditions like $a + b = d(x + y)$ hand you a factor of the sum for free. It is the working form of [[gcd-lcm-product|gcd–lcm product]]: reducing a pair to coprime cofactors is what the identity licenses.
 
 ## On contests
 The standard opener for "gcd + lcm + one more condition" problems at every level: count the pairs, minimize the sum, match a given product. MATHCOUNTS uses it with concrete numbers; AIME versions layer it with divisor counting — after substituting, everything reduces to prime-block bookkeeping on $xy$.`,
@@ -631,7 +631,7 @@ The first thing to try on "show no solutions exist" and on narrowing AIME Diopha
 "digit-manipulation": String.raw`## Key forms
 - write the number as its place-value polynomial, $\overline{abc}=100a+10b+c$, which turns a digit condition into an ordinary equation in the digits — once it is an equation the digit constraints are just bounds, and the problem stops being about digits
 - a number plus its reversal always factors through $11$ and a number minus its reversal through $9$: $\overline{ab}+\overline{ba}=11(a+b)$ and $\overline{ab}-\overline{ba}=9(a-b)$, while for three digits $\overline{abc}-\overline{cba}=99(a-c)$ drops the middle digit entirely — spotting the factor immediately is usually the intended shortcut
-- the bounds do most of the work, since $1\le a\le9$ and $0\le b,c\le9$ leave only a handful of candidates once one digit is isolated — always isolate a digit before [[casework-method|casework]], since the range collapses fast once one is pinned
+- the bounds do most of the work, since $1\le a\le9$ and $0\le b,c\le9$ leave only a handful of candidates once one digit is pinned, so isolate a digit before starting any [[casework-method|casework]]
 
 ## Why it works
 Base-10 notation is the polynomial $\overline{abc} = 100a + 10b + c$. Reversal identities follow at once: $\overline{ab} + \overline{ba} = 11(a+b)$ and $\overline{ab} - \overline{ba} = 9(a - b)$, which is why digit-reversal problems always run through 9 and 11.
@@ -660,7 +660,7 @@ The closer for "find all $n$ making this a perfect square" — squeeze for large
 Object.assign(window.MATH_DETAILS, {
 
 "vieta-jumping": String.raw`## Key forms
-- if a symmetric condition is quadratic in each variable separately, fixing the others makes the remaining one a root of a quadratic, and [[vietas-general|Vieta]] hands you the second root for free: $a'=kb-a$ from the sum, and $a'=\frac{b^2-N}{a}$ from the product — the second root is free information, and it is the entire engine of the descent
+- if a symmetric condition is quadratic in each variable separately, fixing the others makes the remaining one a root of a quadratic, and [[vietas-general|Vieta]] hands you the second root for free: $a'=kb-a$ from the sum, and $a'=\frac{b^2-N}{a}$ from the product, which is the entire engine of the descent
 - the two expressions do different jobs — the sum shows $a'$ is an integer, and the product controls its sign and size
 - start from the solution minimising $a+b$ and jump: either the new solution is smaller, contradicting minimality, or you land on a degenerate case whose evaluation reveals what the constant must be — both outcomes are useful, since the contradiction proves impossibility and the degenerate case gives the answer
 
@@ -704,7 +704,7 @@ An olympiad and hard-AIME tool for "last digit of $F_{2024}$" or "for which $n$ 
 By unique factorization, a positive integer is exactly its vector of prime exponents. Multiplication adds these vectors, gcd takes the coordinatewise minimum, lcm the maximum, a perfect $k$-th power means every coordinate is divisible by $k$, and $d(n)$ multiplies the $(e_i + 1)$. Crucially, distinct primes never interact — so a condition on the whole number decomposes into one independent condition per prime.
 
 ## How to use it
-Write each unknown as $\prod p^{e_i}$ and rewrite every hypothesis as a per-prime constraint: gcd/lcm become $\min$/$\max$ equations, "is a perfect square" becomes "all exponents even," a divisibility becomes an inequality. Solve each prime's tiny problem separately and multiply the counts. For "count the pairs/triples with these gcd and lcm" problems, each prime contributes a small independent factor — usually $2$ (which of two numbers holds the max) or a short [[casework-method|casework]] — and the answer is their product. Working one prime at a time is what makes [[gcd-lcm-product|GCD x LCM]] and the lcm pair counts fall out, since min and max are decided independently per prime.
+Write each unknown as $\prod p^{e_i}$ and rewrite every hypothesis as a per-prime constraint: gcd/lcm become $\min$/$\max$ equations, "is a perfect square" becomes "all exponents even," a divisibility becomes an inequality. Solve each prime's tiny problem separately and multiply the counts. For "count the pairs/triples with these gcd and lcm" problems, each prime contributes a small independent factor — usually $2$ (which of two numbers holds the max) or a short [[casework-method|casework]] — and the answer is their product. Working one prime at a time is what makes [[gcd-lcm-product|gcd–lcm product]] and the lcm pair counts fall out, since min and max are decided independently per prime.
 
 ## On contests
 The standard AIME approach to gcd/lcm counting and to "how many divisors of $N$ satisfy ...". It also settles perfect-power questions (make all exponents divisible by $k$) and divisor-count problems. The reflex: the moment a problem mixes gcd, lcm, products, or powers, switch to exponent vectors and work one prime at a time.`
@@ -753,6 +753,19 @@ The foundation under every modular problem — last-digit and remainder question
 
 Object.assign(window.MATH_DETAILS, {
 
+"zeckendorf-theorem": String.raw`## Why it works
+Greedily subtracting the largest Fibonacci number $\le n$ can never leave a remainder that needs two adjacent Fibonaccis, because $F_k+F_{k-1}=F_{k+1}$ would merge them into a larger term — which gives both existence and uniqueness of the non-consecutive representation.
+
+## How to use it
+The greedy algorithm is both the construction and the proof: taking the largest Fibonacci number at each step automatically leaves a remainder smaller than the previous term's predecessor, which is exactly the non-consecutive condition.
+
+The representation is a bijection between integers and binary strings with no two adjacent $1$s, which ties the count to the Fibonacci tiling count — and explains why exactly $F_{n+2}$ integers have representations using only the first $n$ Fibonacci numbers.
+
+Contest uses are usually about that uniqueness: showing a Fibonacci-sum representation is forced, or converting between an integer and its Fibonacci digits.
+
+## On contests
+Occasional AIME and olympiad appearances (Fibonacci representations, Wythoff and [[beatty-theorem|Beatty]] problems); the greedy algorithm together with uniqueness is essentially the whole toolkit.`,
+
 "beatty-theorem": String.raw`## Why it works
 The count of Beatty terms $\lfloor n\alpha\rfloor \le N$ is about $N/\alpha$, and similarly $N/\beta$ for the other sequence. Since $\frac1\alpha + \frac1\beta = 1$, the two counts add to $N$ for every $N$ — and irrationality prevents any collision — so together they hit each integer exactly once.
 
@@ -794,7 +807,7 @@ Olympiad number theory and "why the Fermat test fails" discussions. Keep it dist
 Object.assign(window.MATH_DETAILS, {
 
 "extended-euclidean-algorithm": String.raw`## Key forms
-- the [[euclidean-algorithm|Euclidean algorithm]] runs on $\gcd(a,b)=\gcd(b,\,a\bmod b)$; the extended version also tracks how each remainder is built from $a$ and $b$, producing [[bezouts-identity|Bézout's]] $\gcd(a,b)=ax+by$ — the tracking costs nothing extra, so run the extended version by default
+- the [[euclidean-algorithm|Euclidean algorithm]] runs on $\gcd(a,b)=\gcd(b,\,a\bmod b)$; the extended version also tracks how each remainder is built from $a$ and $b$, producing [[bezouts-identity|Bézout's identity]] $\gcd(a,b)=ax+by$ — the tracking costs nothing extra, so run the extended version by default
 - the Bézout coefficient is exactly the [[modular-inverse|modular inverse]]: if $\gcd(a,b)=1$ then $ax+by=1$ gives $ax\equiv1\pmod b$, so $x\equiv a^{-1}$ — this is how an inverse is computed by hand when the modulus is too large to guess
 - the same coefficients settle solvability: $ax\equiv c\pmod b$ has a solution exactly when $\gcd(a,b)\mid c$, and then it has exactly $\gcd(a,b)$ solutions modulo $b$ — check the divisibility first, since it decides whether to look for solutions at all
 
@@ -805,7 +818,7 @@ Each remainder in the Euclidean algorithm is an integer combination of the origi
 For a modular inverse $a^{-1} \bmod m$: run the algorithm on $(a, m)$; when the gcd is $1$, the coefficient of $a$, reduced mod $m$, is the inverse. To solve $ax + by = c$: find $g = \gcd(a,b)$ with coefficients $(x_0, y_0)$ — solvable iff $g \mid c$ — then $(x, y) = \frac{c}{g}(x_0, y_0)$, with the general solution adding $t\left(\frac{b}{g}, -\frac{a}{g}\right)$. On paper the back-substitution chain (or a coefficient table) is quickest.
 
 ## On contests
-The workhorse behind modular inverses on AIME and olympiad, and the constructive companion to [[bezouts-identity|Bézout's identity]] — reach for it whenever you need an actual $(x, y)$, not just their existence. [[crt|CRT]] reconstruction and solving $ax \equiv c \pmod m$ both rely on it.`
+The workhorse behind modular inverses on AIME and olympiad, and the constructive companion to Bézout's identity — reach for it whenever you need an actual $(x, y)$, not just their existence. [[crt|CRT]] reconstruction and solving $ax \equiv c \pmod m$ both rely on it.`
 
 });
 
@@ -828,6 +841,9 @@ List residues from the start until a state repeats, noting where the repeat begi
 
 "sigma-parity": String.raw`## Why it works
 $\sigma$ is multiplicative, so $\sigma(n)$ is odd iff every prime-power factor contributes an odd amount. For an odd prime $p$, the factor $1 + p + \cdots + p^e$ is a sum of $e+1$ odd terms, so it is odd iff $e+1$ is odd, i.e. $e$ is even. The factor from $2^a$ is $1 + 2 + \cdots + 2^a = 2^{a+1}-1$, which is always odd and never affects the parity. So $\sigma(n)$ is odd exactly when every odd prime appears to an even power — meaning the odd part of $n$ is a perfect square. Writing $n = 2^a m^2$ ($m$ odd), that happens for any $a$, and $2^a m^2$ is itself a square when $a$ is even and twice a square when $a$ is odd. Hence $\sigma(n)$ odd $\iff n$ is a square or twice a square.
+
+## How to use it
+Test the shape, do not compute the sum. Strip the factors of $2$ from $n$; if what remains is a perfect square then $\sigma(n)$ is odd, and otherwise it is even. Read backwards, the same criterion generates the candidates: if a problem needs $\sigma(n)$ odd, $n$ must be $m^2$ or $2m^2$, which is a far smaller search than the divisors themselves. For a product, apply it to each factor separately, since $\sigma$ is multiplicative and the parities multiply.
 
 ## On contests
 It is the fast filter for "$\sigma(n)$ is odd/even" and a clean parity handle on sum-of-divisors problems — the same shape as the better-known $d(n)$ odd $\iff n$ a perfect square (there the count of divisors, not their sum, forces the pairing). Combined with $\sigma$ being multiplicative, it also settles parity of $\sigma$ for products quickly.`
@@ -935,7 +951,7 @@ Unique factorization makes $v_p$ additive — the power of $p$ in a product is t
 Take $v_p$ of both sides of a divisibility statement or equation to turn it into linear arithmetic on exponents: $p^k \mid N \iff v_p(N)\ge k$, a perfect square needs every $v_p$ even, and "how many factors of $p$" becomes a sum. The equality case of the ultrametric bound is exactly the engine behind [[lte|Lifting the Exponent]].
 
 ## On contests
-The backbone of AIME and olympiad prime-power problems, and the language in which LTE, [[legendres-formula|Legendre's formula]], and [[kummers-theorem|Kummer's theorem]] are all phrased — reach for it whenever only the power of one prime matters.`,
+The backbone of AIME and olympiad prime-power problems, and the language in which LTE, Legendre's formula, and [[kummers-theorem|Kummer's theorem]] are all phrased — reach for it whenever only the power of one prime matters.`,
 
 "fermat-two-squares": String.raw`## Key forms
 - $p\equiv1\pmod 4\iff p=a^2+b^2$ for an odd prime $p$ — and the pair $\{a,b\}$ is unique

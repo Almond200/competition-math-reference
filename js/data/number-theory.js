@@ -29,6 +29,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
+          id: "floor-multiples",
+          name: "Counting Multiples",
+          latex: String.raw`\#\{k \le n : d \mid k\} = \left\lfloor \frac{n}{d} \right\rfloor`,
+          description: String.raw`Combine with inclusion-exclusion to count multiples of $a$ or $b$: $\lfloor n/a \rfloor + \lfloor n/b \rfloor - \lfloor n/\operatorname{lcm}(a,b) \rfloor$.`,
+          keywords: ["count multiples", "floor", "inclusion exclusion", "count multiples up to n", "how many multiples", "floor division counting"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
           id: "bezouts-identity",
           name: "Bézout's Identity",
           latex: String.raw`\exists\, x, y \in \mathbb{Z}: \; ax + by = \gcd(a, b)`,
@@ -413,15 +422,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12"]
         },
         {
-          id: "floor-multiples",
-          name: "Counting Multiples",
-          latex: String.raw`\#\{k \le n : d \mid k\} = \left\lfloor \frac{n}{d} \right\rfloor`,
-          description: String.raw`Combine with inclusion-exclusion to count multiples of $a$ or $b$: $\lfloor n/a \rfloor + \lfloor n/b \rfloor - \lfloor n/\operatorname{lcm}(a,b) \rfloor$.`,
-          keywords: ["count multiples", "floor", "inclusion exclusion", "count multiples up to n", "how many multiples", "floor division counting"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
           id: "prime-divides-binomial",
           name: "Prime Divides Its Binomial Coefficients",
           latex: String.raw`p \;\Big|\; \binom{p}{k} \quad \text{for } 0 < k < p`,
@@ -506,15 +506,6 @@ window.MATH_SECTIONS.push({
           keywords: ["thue lemma", "pigeonhole congruence", "small solution", "two squares proof", "sum of two squares"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "factor-pair-counting",
-          name: "Solving $xy = N$ Style Equations",
-          latex: String.raw`\#\{(x, y) \in \mathbb{Z}_{>0}^2 : xy = N\} = d(N)`,
-          description: String.raw`Rearrange Diophantine equations into a product of factors equal to a constant (often via SFFT), then count divisor pairs — including negative ones when allowed.`,
-          keywords: ["factor pairs", "divisor counting", "sfft applications", "count factor pairs", "factor pairs of n", "divisor pair counting"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "difference-of-squares-rep",
@@ -705,6 +696,15 @@ window.MATH_SECTIONS.push({
           keywords: ["beatty theorem", "rayleigh theorem", "beatty sequence", "complementary sequences", "partition integers", "floor n alpha", "irrational density"],
           importance: "lowest",
           level: ["Olympiad"]
+        },
+        {
+          id: "zeckendorf-theorem",
+          name: "Zeckendorf's Theorem",
+          latex: String.raw`n = F_{k_1} + F_{k_2} + \cdots + F_{k_r}, \qquad k_1 \gg k_2 \gg \cdots \;(k_i \ge k_{i+1} + 2)`,
+          description: String.raw`Every positive integer has a unique representation as a sum of non-consecutive Fibonacci numbers (no two adjacent $F_i$). You build it greedily: repeatedly subtract the largest Fibonacci number $\le n$. This gives a canonical "Fibonacci base," underlies Fibonacci nim and Wythoff's game, and turns "represent $n$ with Fibonacci numbers" counting problems into digit arguments on the Zeckendorf string.`,
+          keywords: ["zeckendorf", "fibonacci representation", "non consecutive fibonacci", "fibonacci base", "greedy fibonacci", "wythoff", "unique representation"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "carmichael-numbers",

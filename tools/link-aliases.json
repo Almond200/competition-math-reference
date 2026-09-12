@@ -12,7 +12,7 @@
    "Absolute Value Triangle Inequality"
   ],
   "abs-value-graphing": [
-   "Graphing Absolute Value Equations"
+   "Graphing Absolute Value Transformations"
   ],
   "absolute-value-rules": [
    "Absolute Value Rules"
@@ -526,6 +526,10 @@
    "Eisensteins",
    "Eisenstein’s"
   ],
+  "ellipse-tangent-line": [
+   "Ellipse Tangent to a Line",
+   "Minimum Focal Sum"
+  ],
   "equal-chords-arcs": [
    "Equal Chords, Arcs",
    "Equal Chords, Arcs & Distances"
@@ -821,6 +825,9 @@
    "Herons",
    "Heron’s"
   ],
+  "hexagon-diagonals": [
+   "Diagonals of a Regular Hexagon"
+  ],
   "hockey-stick": [
    "Hockey Stick Identity"
   ],
@@ -945,6 +952,9 @@
    "Lagrange's Identity",
    "Lagranges",
    "Lagrange’s"
+  ],
+  "largest-term-ratio": [
+   "Largest Term by the Consecutive Ratio"
   ],
   "last-digit-patterns": [
    "Cubes mod 9",
@@ -1243,6 +1253,10 @@
   "periodicity-mod-m": [
    "Cycle-Hunting",
    "Periodicity mod m"
+  ],
+  "permutation-cycle-structure": [
+   "Permutation Cycle Structure",
+   "Permutation Cycle Structure & Order"
   ],
   "permutations-combinations": [
    "Permutations & Combinations"
@@ -1655,11 +1669,18 @@
    "Alternate Segment",
    "Tangent–Chord Angle"
   ],
+  "tangent-circles": [
+   "Tangent Circles",
+   "Tangent Circles & the Line of Centers"
+  ],
   "tangent-facts": [
    "Tangent Line Facts"
   ],
   "tangent-line-trick": [
    "Tangent Line Trick"
+  ],
+  "taxicab-region": [
+   "Absolute-Value Regions in the Plane"
   ],
   "telescoping": [
    "Telescoping Sums"
@@ -1670,6 +1691,9 @@
   "tetrahedron-centroid": [
    "Tetrahedron Centroid",
    "Tetrahedron Centroid & Medians"
+  ],
+  "thales-theorem": [
+   "Thales' Theorem"
   ],
   "thues-lemma": [
    "Thue",
@@ -1967,7 +1991,10 @@
   "WLOG",
   "XOR",
   "no two adjacent",
-  "uvw / pqr"
+  "uvw / pqr",
+  "cross-section",
+  "cross-sections",
+  "Nim"
  ],
  "protect": [
   "Cauchy–Binet",
@@ -2010,7 +2037,8 @@
   "isogonal-conjugate -> fermats-little-theorem",
   "carmichael-numbers -> fermats-little-theorem",
   "quadratic-formula -> vietas-general",
-  "law-of-cosines -> ptolemys-theorem"
+  "law-of-cosines -> ptolemys-theorem",
+  "sprague-grundy -> losing-positions"
  ],
  "resolve": {
   "fermat": "fermats-little-theorem",

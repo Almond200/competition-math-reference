@@ -286,8 +286,12 @@ The one-seventh triangle is folklore (AMC has asked it directly). For asymmetric
 "vivianis-theorem": String.raw`## Why it works
 Connect $P$ to the three vertices, splitting the equilateral triangle (side $s$) into three triangles with bases $s$ and heights $d_1, d_2, d_3$. Total area: $\frac{s}{2}(d_1 + d_2 + d_3) = \frac{s}{2}h$, so the distances sum to the altitude $h$.
 
+Read the same decomposition with signed areas and it stops needing $P$ inside. Take the distance to a side as positive when $P$ is on the same side of that line as the opposite vertex and negative when it is beyond, and $[PAB] + [PBC] + [PCA] = [ABC]$ holds for every point of the plane, so $d_1 + d_2 + d_3 = h$ does too. Outside the triangle there are two regions to picture: across one side, where that single distance turns negative, and past a vertex, where two of them do. Dragging $P$ in the figure below walks through both.
+
+Nothing in the argument needs the sides to be equal either. On a general triangle the three pieces have bases $a$, $b$, $c$, so $a\,d_a + b\,d_b + c\,d_c = 2[ABC]$, a constant. Viviani is what that collapses to when the three bases are the same and the common factor cancels.
+
 ## How to use it
-Any "sum of distances from an interior point to the sides" question in an equilateral triangle is answered without locating the point. Extends to regular polygons (sum of distances to all sides is constant = $n \times$ apothem) and to equiangular polygons.
+Any "sum of distances from an interior point to the sides" question in an equilateral triangle is answered without locating the point, and the weighted form answers the same question on a scalene triangle just as cheaply, since $2[ABC]$ is computable from the side lengths alone. Use the signed reading whenever a problem places its point outside or leaves the position unspecified, because then no case analysis is needed at all. Extends to regular polygons (sum of distances to all sides is constant = $n \times$ apothem) and to equiangular polygons.
 
 ## On contests
 Shows up as a quick AMC insight ("the sum is constant — compute it at the center or a vertex"). In coordinate form it underlies barycentric thinking: the three normalized distances are the [[barycentric-coordinates|barycentric coordinates]].`,
@@ -431,7 +435,7 @@ The "two tangents from a point" figure runs from MATHCOUNTS through AIME. Keep t
 Slide one radius along the tangent to form a right triangle whose legs are the tangent length and $r_1 - r_2$ (external) or $r_1 + r_2$ (internal), and whose hypotenuse is the center distance $d$. Pythagoras finishes.
 
 ## How to use it
-Existence checkpoints come free: internal tangents exist iff $d \ge r_1 + r_2$ (circles separate); external iff $d \ge |r_1 - r_2|$. For two externally tangent circles, the external tangent between touch points has length $2\sqrt{r_1 r_2}$ — a beautiful special case that shows up on its own.
+Existence checkpoints come free: internal tangents exist iff $d \ge r_1 + r_2$ (circles separate); external iff $d \ge |r_1 - r_2|$. For two externally [[tangent-circles|tangent circles]], the external tangent between touch points has length $2\sqrt{r_1 r_2}$ — a beautiful special case that shows up on its own.
 
 ## On contests
 The $2\sqrt{r_1 r_2}$ fact powers "chain of tangent circles between two lines/circles" problems (curvatures in geometric or arithmetic progression). AMC pulley/belt problems and AIME tangent-chain problems both start with these right triangles.`,
@@ -443,7 +447,7 @@ A heavy but elementary computation with the tangency conditions (center distance
 Solve the quadratic as $k_4 = k_1 + k_2 + k_3 \pm 2\sqrt{k_1k_2 + k_2k_3 + k_3k_1}$. Conventions: enclosing circle → negative curvature; straight line → curvature 0 (two lines + circle configurations become trivial). The two $\pm$ roots satisfy $k_4 + k_4' = 2(k_1+k_2+k_3)$ — handy for Apollonian gasket chains.
 
 ## On contests
-AIME's favorite "four tangent circles" shortcut — problems that would take a page of center-distance algebra fall in three lines. Circles tangent to two parallel lines and each other: use curvature 0 twice.`,
+AIME's favorite "four [[tangent-circles|tangent circles]]" shortcut — problems that would take a page of center-distance algebra fall in three lines. Circles tangent to two parallel lines and each other: use curvature 0 twice.`,
 
 "caseys-theorem": String.raw`## Why it works
 Generalizes [[ptolemys-theorem|Ptolemy]] by replacing vertices with circles tangent to the host circle; each tangent length $t_{ij}$ plays the role of a side/diagonal. Provable by inversion centered on the host circle, which turns the statement into ordinary Ptolemy.
@@ -578,7 +582,7 @@ Project the vector from any point on the line to $(x_0, y_0)$ onto the unit norm
 Normalize the line to $Ax + By + C = 0$ first. For parallel lines, the distance between them is $\frac{|C_1 - C_2|}{\sqrt{A^2+B^2}}$. Tangency conditions become "distance from center = radius" — the cleanest way to handle circles tangent to lines in coordinates.
 
 ## On contests
-Standard for AMC coordinate problems involving tangent circles and for computing triangle altitudes when vertices are coordinatized (altitude = distance from vertex to opposite side's line).`,
+Standard for AMC coordinate problems involving [[tangent-circles|tangent circles]] and for computing triangle altitudes when vertices are coordinatized (altitude = distance from vertex to opposite side's line).`,
 
 "circle-equation": String.raw`## Why it works
 A circle is the locus at distance $r$ from $(h, k)$; squaring the distance formula gives the equation. The general form $x^2 + y^2 + Dx + Ey + F = 0$ is the same thing pre-completion; it is a real circle iff $D^2 + E^2 - 4F > 0$.
@@ -632,7 +636,7 @@ Archimedes: the sphere sits inside its circumscribing cylinder with exactly $\fr
 Spherical caps and zones occasionally matter: cap volume $\frac{\pi h^2(3r - h)}{3}$, cap/zone lateral area $2\pi r h$ (only the height matters — a striking fact). Derive from the full formulas when needed.
 
 ## On contests
-Spheres inscribed in / circumscribed about solids: the whole game is finding the right cross-section, reducing 3D to a 2D incircle/circumcircle picture. Ratio problems (sphere in cylinder in cube...) reward remembering Archimedes' $\frac{2}{3}$.`,
+Spheres inscribed in / circumscribed about solids: the whole game is finding the right [[cross-section-method|cross-section]], reducing 3D to a 2D incircle/circumcircle picture. Ratio problems (sphere in cylinder in cube...) reward remembering Archimedes' $\frac{2}{3}$.`,
 
 "cone-formulas": String.raw`## Why it works
 Unroll the lateral surface: it is a sector of radius $\ell$ (slant height) with arc length $2\pi r$, so its area is $\frac{1}{2}(\text{arc})(\text{radius}) = \pi r \ell$. The volume is the pyramid rule with a circular base.
@@ -696,6 +700,19 @@ Every equilateral configuration reduces to these; know them without derivation. 
 
 ## On contests
 Constant use. Also worth caching: an equilateral triangle inscribed in a circle of radius $R$ has side $R\sqrt{3}$, and one circumscribed about a circle of radius $r$ has side $2r\sqrt{3}$ — consistent with $R = 2r$ for the same triangle.`,
+
+"hexagon-diagonals": String.raw`## Why it works
+Six equilateral triangles of side $s$ meet at the center, so the distance from the center to every vertex is $s$. Opposite vertices are therefore $s + s = 2s$ apart, and that segment passes through the center, which is what makes the long diagonal a diameter of the circumcircle.
+
+For the short diagonal take $A$, $B$, $C$ consecutive. The interior angle of a regular hexagon is $120^\circ$, so triangle $ABC$ is isosceles with legs $AB = BC = s$ and apex $120^\circ$. Dropping the perpendicular from $B$ splits it into two $30$-$60$-$90$ triangles with hypotenuse $s$, each contributing $\frac{s\sqrt3}{2}$, so $AC = s\sqrt3$. The same half-diagonal is the hexagon's apothem, which is why the area, the apothem and the short diagonal are all the same computation.
+
+Both lengths are the $n = 6$ cases of the general chord $d_k = 2R\sin\frac{k\pi}{n}$ with $R = s$: $k = 2$ gives $2s\sin 60^\circ = s\sqrt3$ and $k = 3$ gives $2s\sin 90^\circ = 2s$.
+
+## How to use it
+Read the ratio off rather than re-deriving it: side, short diagonal and long diagonal stand in the ratio $1 : \sqrt3 : 2$, the same triple as a $30$-$60$-$90$ triangle. That makes a hexagon problem a scaling exercise, and it is why hexagons pair so often with equilateral triangles and with $\sqrt3$ answers. Two facts fall out immediately: the three long diagonals concur at the center and cut the hexagon into six equilateral triangles, while the six short diagonals outline a smaller regular hexagon whose side is $\frac{s\sqrt3}{3}$, so its area is one third of the original.
+
+## On contests
+A staple of MATHCOUNTS and early AMC geometry, usually as "the distance between two vertices" where the only question is which diagonal is meant. It also supplies the lengths in hexagonal-lattice and tiling problems, where the short diagonal is the spacing between next-nearest centers. When a problem gives a hexagon and a length, decide first whether that length is a side, a short diagonal or a long one, since the three differ only by the factor $\sqrt3$ or $2$.`,
 
 "regular-hexagon-area": String.raw`## Why it works
 Center-to-vertex segments cut it into 6 equilateral triangles of side $s$, so the area is $6 \times \frac{s^2\sqrt3}{4}$.
@@ -839,7 +856,7 @@ Translate "unique solution / just touches / exactly one intersection" into an eq
 
 "cross-section-method": String.raw`## Key forms
 - slice through the common axis of symmetry and the 3D tangency problem becomes a 2D one — spheres become circles, cylinders become parallel line pairs, cones become triangles, and no information is lost because solids of revolution touch along circles centred on that axis
-- in the slice, tangent circles satisfy $d=r_1+r_2$ externally and $d=|r_1-r_2|$ internally, and similar triangles scale the radii — then reinterpret the lengths you find as radii of tangency circles when rotating back
+- in the slice, [[tangent-circles|tangent circles]] satisfy $d=r_1+r_2$ externally and $d=|r_1-r_2|$ internally, and similar triangles scale the radii — then reinterpret the lengths you find as radii of tangency circles when rotating back
 
 ## Why it works
 Solids of revolution sharing an axis of symmetry intersect and touch along circles centered on that axis. The plane through the axis captures every radius and center distance faithfully, so 3D tangency conditions become 2D circle/line tangency in that slice — no information is lost for distances measured through the axis.
@@ -875,7 +892,7 @@ Olympiad inequality problems and the occasional AIME-adjacent bound; also a good
 "symmedian-lemoine": String.raw`## Why it works
 Reflecting the median over the angle bisector swaps the roles of the two adjacent sides, which turns the median's even split into the $c^2 : b^2$ ratio. Trig [[cevas-theorem|Ceva]] makes this precise: the median's two angles satisfy $\frac{\sin\angle BAM}{\sin\angle MAC} = \frac{c}{b}$ by the [[ratio-lemma|ratio lemma]], and reflecting inverts that quotient, so the symmedian's split carries the square.
 
-The distance form explains the same thing without any trigonometry. Comparing areas, $[ABE] = \frac12 \cdot AB \cdot d(E, AB)$ and $[ACE] = \frac12 \cdot AC \cdot d(E, AC)$, while $\frac{[ABE]}{[ACE]} = \frac{BE}{EC}$ because the two triangles share the apex $A$. Setting those equal to $\frac{c^2}{b^2}$ gives $\frac{d(E,AB)}{d(E,AC)} = \frac{c}{b}$, and since that ratio is the same at every point of the [[cevas-theorem|cevian]], it characterises the whole line.
+The distance form explains the same thing without any trigonometry. Comparing areas, $[ABE] = \frac12 \cdot AB \cdot d(E, AB)$ and $[ACE] = \frac12 \cdot AC \cdot d(E, AC)$, while $\frac{[ABE]}{[ACE]} = \frac{BE}{EC}$ because the two triangles share the apex $A$. Setting those equal to $\frac{c^2}{b^2}$ gives $\frac{d(E,AB)}{d(E,AC)} = \frac{c}{b}$, and since that ratio is the same at every point of the cevian, it characterises the whole line.
 
 ## How to use it
 Four equivalent conditions, and recognising any one gives the others for free:
@@ -923,7 +940,7 @@ Olympiad tool; on AIME its degenerate forms occasionally shortcut collinearity c
 
 "homothety-monge": String.raw`## Key forms
 - a homothety $X\mapsto P+k(X-P)$ scales every length by $|k|$ about the centre $P$ and preserves directions, so circles map to circles and tangent lines to tangent lines — which is why it transports a whole tangency configuration at once
-- two circles have an external centre of similitude dividing $O_1O_2$ externally in ratio $r_1:r_2$, and an internal one dividing it internally; at a point where two circles are tangent, the homothety centred there maps one circle to the other — these two points are where tangent lines and tangent circles keep concurring, so mark them early
+- two circles have an external centre of similitude dividing $O_1O_2$ externally in ratio $r_1:r_2$, and an internal one dividing it internally; at a point where two circles are tangent, the homothety centred there maps one circle to the other — these two points are where tangent lines and [[tangent-circles|tangent circles]] keep concurring, so mark them early
 - Monge's theorem: the three external centres of similitude of three circles are collinear, because composing the homothety from circle 1 to 2 with the one from 2 to 3 gives the map from 1 to 3, and composed centres lie on a line — a collinearity you get for free, and the standard way to prove three points line up in a tangent-circle configuration
 
 ## Why it works
@@ -1133,7 +1150,7 @@ The engine of AMC shaded-region problems: two unit circles through each other's 
 Apply the law of cosines to the two triangles sharing diagonal $p$, using $\cos B = -\cos D$, and solve — the result packages into the paired products. Dividing the two diagonal formulas gives the elegant ratio; multiplying them recovers Ptolemy.
 
 ## How to use it
-Given four sides of a cyclic quadrilateral, both diagonals follow with no trigonometry: compute the three products $(ab+cd)$, $(ac+bd)$, $(ad+bc)$ once, then $p^2$ and $q^2$ are quotients. Pairs with [[brahmaguptas-formula|Brahmagupta]] (area) and Parameshvara (circumradius) — the same three products appear in all of them. The same three products drive [[ptolemys-theorem|Ptolemy's theorem]], which is the relation to reach for when the diagonals themselves are wanted rather than their ratio.
+Given four sides of a cyclic quadrilateral, both diagonals follow with no trigonometry: compute the three products $(ab+cd)$, $(ac+bd)$, $(ad+bc)$ once, then $p^2$ and $q^2$ are quotients. Pairs with [[brahmaguptas-formula|Brahmagupta]] (area) and Parameshvara (circumradius), which are built from the same three products. Those products also drive [[ptolemys-theorem|Ptolemy's theorem]], which is the relation to reach for when the diagonals themselves are wanted rather than their ratio.
 
 ## On contests
 The missing step in "cyclic quadrilateral with sides given — find the diagonal" AIME problems, where Ptolemy alone gives only the product $pq$. Knowing the ratio formula turns one equation into two.`,
@@ -1182,8 +1199,8 @@ Object.assign(window.MATH_DETAILS, {
 - coordinatise when right angles are present, putting one at the origin — boxes, right prisms and pyramids then become vector arithmetic where incidence and distance are mechanical
 - $\frac{x}{a}+\frac{y}{b}+\frac{z}{c}=1$ — the plane through the axis intercepts $(a,0,0)$, $(0,b,0)$, $(0,0,c)$, which is the fastest way to write a cutting plane, and it slices off a corner tetrahedron of volume $\frac{abc}{6}$
 - $d=\frac{|Ax_0+By_0+Cz_0-D|}{\sqrt{A^2+B^2+C^2}}$ — the distance from a point to the plane $Ax+By+Cz=D$, the workhorse for heights of pyramids and for sphere-plane tangency
-- slice through the plane of symmetry when the problem involves spheres, cones or tangency, since the slice carries all the radius and centre-distance information and reduces the problem to plane geometry — the slice is a plane figure you already know how to handle, and nothing about the tangency is lost in it
-- unfold the surface when a path must stay on it, because flattening preserves surface distances and turns the shortest path into a straight segment — check the competing unfoldings, since the shortest route often crosses a different face than expected
+- take a [[cross-section-method|cross-section]] through the plane of symmetry when the problem involves spheres, cones or tangency, since the slice carries all the radius and centre-distance information and reduces the problem to a plane figure, losing nothing about the tangency
+- [[surface-shortest-path|unfold the net]] when a path must stay on the surface, because flattening preserves surface distances and turns the shortest path into a straight segment — check the competing unfoldings, since the shortest route often crosses a different face than expected
 - compute one volume two different ways to extract an awkward distance, since $h=\frac{3V}{A}$ recovers a height from a face area once the volume is known by another route — the most-missed of the four, and the fastest route to any distance that is awkward to see directly
 
 ## Why it works
@@ -1251,7 +1268,7 @@ Pick the unknown that touches the most constraints and call it $\theta$. Then sw
 - Mark every isosceles pair. The equal sides are often not drawn as such: two radii of the same circle, two tangents from one external point, or two sides revealed equal by an earlier step.
 - Transfer angles across every pair of parallel lines.
 - Around each circle, apply the inscribed-angle transfer: all angles standing on one arc are equal, an angle in a semicircle is right, and a [[tangent-chord-angle|tangent–chord angle]] equals the inscribed angle beyond the chord.
-- In each cyclic quadrilateral, trade opposite angles for their supplements, or use the exterior-angle form, which avoids the supplement bookkeeping entirely.
+- In each [[cyclic-opposite-angles|cyclic quadrilateral]], trade opposite angles for their supplements, or use the exterior-angle form, which avoids the supplement bookkeeping entirely.
 
 Write each derived angle on the figure as you go. The chase ends in one of two ways: the target appears in terms of $\theta$, or a single angle acquires two different expressions, which is an equation for $\theta$.
 
@@ -1301,10 +1318,10 @@ Mostly a conceptual unlock: it justifies "the slant doesn't matter" so you can r
 "barycentric-coordinates": String.raw`## Key forms
 - every point is a unique weighted average $P=\alpha A+\beta B+\gamma C$ with $\alpha+\beta+\gamma=1$, and the weights are the signed area ratios $[PBC]:[PCA]:[PAB]$ — a vertex's weight is the area of the sub-triangle opposite it
 - unnormalised triples $(x:y:z)$ name the same point for any nonzero scaling, so divide by $x+y+z$ to get actual coordinates — and $x+y+z=0$ names no point at all, which is the line at infinity
-- the named centres, all worth memorising: centroid $(1:1:1)$, incentre $(a:b:c)$, excentre opposite $A$ is $(-a:b:c)$, [[symmedian-lemoine|symmedian]] point $(a^2:b^2:c^2)$, orthocentre $(\tan A:\tan B:\tan C)$, circumcentre $(a^2S_A:b^2S_B:c^2S_C)$ with $S_A=\frac{b^2+c^2-a^2}{2}$, Nagel point $(s-a:s-b:s-c)$, Gergonne point $\left(\frac{1}{s-a}:\frac{1}{s-b}:\frac{1}{s-c}\right)$, Spieker centre $(b+c:c+a:a+b)$ — these are the whole payoff, since a named point that would take a paragraph to locate synthetically is one triple here
+- the named centres, all worth memorising: centroid $(1:1:1)$, incentre $(a:b:c)$, excentre opposite $A$ is $(-a:b:c)$, [[lemoine-point|symmedian point]] $(a^2:b^2:c^2)$, orthocentre $(\tan A:\tan B:\tan C)$, circumcentre $(a^2S_A:b^2S_B:c^2S_C)$ with $S_A=\frac{b^2+c^2-a^2}{2}$, Nagel point $(s-a:s-b:s-c)$, Gergonne point $\left(\frac{1}{s-a}:\frac{1}{s-b}:\frac{1}{s-c}\right)$, Spieker centre $(b+c:c+a:a+b)$ — these are the whole payoff, since a named point that would take a paragraph to locate synthetically is one triple here
 - a point on side $BC$ has first coordinate $0$, and $D=(0:m:n)$ divides it with $BD:DC=n:m$ — the coordinate you can write down without computing anything
 - a line is $ux+vy+wz=0$, so three points are collinear, or equivalently three cevians concurrent, exactly when a $3\times3$ determinant vanishes — this is the step that turns a synthetic incidence claim into a determinant you can simply compute
-- the two conjugates are one-liners here: [[isogonal-conjugate|isogonal conjugate]] of $(x:y:z)$ is $\left(\frac{a^2}{x}:\frac{b^2}{y}:\frac{c^2}{z}\right)$ and isotomic is $\left(\frac1x:\frac1y:\frac1z\right)$, which is why incentre and circumcentre, or centroid and [[lemoine-point|symmedian point]], keep pairing up — which is why incentre and circumcentre, or centroid and symmedian point, keep appearing in pairs
+- the two conjugates are one-liners here: [[isogonal-conjugate|isogonal conjugate]] of $(x:y:z)$ is $\left(\frac{a^2}{x}:\frac{b^2}{y}:\frac{c^2}{z}\right)$ and isotomic is $\left(\frac1x:\frac1y:\frac1z\right)$, which is why incentre and circumcentre, or centroid and symmedian point, keep pairing up
 - for normalised $P_i$, the ratio $\frac{[P_1P_2P_3]}{[ABC]}$ is the determinant of the three coordinate rows — an area ratio with no geometry at all
 - distances and circles need the displacement conventions, so barycentrics shine on incidence and ratio problems and are heavy for metric ones — check which kind of problem you have before committing, since a metric question is usually faster in ordinary coordinates
 
@@ -1325,7 +1342,7 @@ An olympiad-level bludgeon: when a configuration is saturated with cevians, name
 
 "coordinate-bash": String.raw`## Key forms
 - $d=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$ for distance, and $M=\left(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2}\right)$ for the midpoint — the point dividing $P_1P_2$ in ratio $k:1$ is $\frac{P_1+kP_2}{1+k}$
-- slopes settle direction: parallel lines have equal slopes and perpendicular ones satisfy $m_1m_2=-1$, though $\mathbf u\cdot\mathbf v=0$ is safer since it survives vertical lines — the [[vector-dot-product|dot product]] is the safer habit, since a vertical line has no slope and silently breaks the product rule
+- slopes settle direction: parallel lines have equal slopes and perpendicular ones satisfy $m_1m_2=-1$, though the [[vector-dot-product|dot product]] test $\mathbf u\cdot\mathbf v=0$ is the safer habit, since a vertical line has no slope and silently breaks the product rule
 - $[\,P_1\dots P_n\,]=\frac12\left|\sum_i(x_iy_{i+1}-x_{i+1}y_i)\right|$ — the [[shoelace-formula|shoelace formula]], with the vertices taken in order around the polygon
 - $\frac{|ax_0+by_0+c|}{\sqrt{a^2+b^2}}$ gives the distance from a point to the line $ax+by+c=0$, and dropping the absolute value tells you which side the point is on — the sign you discard is free information, and it is what tells you which side of the line the point is on
 - $(x-h)^2+(y-k)^2=r^2$ is the circle, and comparing the two sides decides whether a point lies inside, on, or outside it — comparing the two sides is the standard test for whether a point is inside, on, or outside
@@ -1343,7 +1360,7 @@ The reliable fallback across AMC and AIME when no clever synthetic step appears 
 "auxiliary-lines": String.raw`## Key forms
 - drop a perpendicular to create a height, a distance, or a right triangle — the first thing to try on a trapezoid or any figure with an unknown height
 - draw the radius to a point of tangency, which is always perpendicular to the tangent line, turning a tangency condition into a right angle — a right angle appears out of nothing, which is why this is the first line to try near any circle
-- extend a [[cevas-theorem|cevian]] to meet a line through a vertex parallel to the opposite side, which manufactures the similar triangles that convert the cevian's ratio into lengths — the parallel is the construction that converts a ratio you cannot see into similar triangles you can
+- extend a [[cevas-theorem|cevian]] to meet a line through a vertex parallel to the opposite side, which manufactures the similar triangles that convert a ratio you cannot see into lengths you can
 - translate a diagonal, or double a median past its midpoint to complete a parallelogram — both moves fuse two separated lengths into a single triangle where the law of cosines applies
 - reflect a point across a line to straighten a bent path, or rotate a piece to complete a near-symmetry — the two constructions behind most minimisation problems
 
@@ -1468,7 +1485,7 @@ Object.assign(window.MATH_DETAILS, {
 Each formula is a short angle chase from that center's defining property. Circumcenter: the inscribed-angle theorem says the arc $BC$ subtends $\angle A$ at the circumference and twice that, $2A$, at the center $O$. Incenter: in $\triangle BIC$ the angles at $B$ and $C$ are the halves $\frac{B}{2}, \frac{C}{2}$, so $\angle BIC = 180^\circ - \frac{B+C}{2} = 180^\circ - \frac{180^\circ - A}{2} = 90^\circ + \frac{A}{2}$. Orthocenter: $\angle BHC$ is the supplement of $\angle A$ because the two altitude feet make $BHC A$ concyclic-adjacent, giving $180^\circ - A$.
 
 ## How to use it
-Reach for these whenever a problem places $O$, $I$, or $H$ and asks about an angle — they collapse a configuration to arithmetic in the vertex angles. The [[incenter-excenter-lemma|incenter]] one, $\angle BIC = 90^\circ + \frac{A}{2}$, is the most used: it pins the incenter's position and pairs perfectly with the [[incenter-excenter-lemma|incenter–excenter lemma]]. The excenter opposite $A$ satisfies the companion $\angle BI_AC = 90^\circ - \frac{A}{2}$. Sign-check with an equilateral triangle ($A = 60^\circ$): $\angle BOC = 120^\circ$, $\angle BIC = 120^\circ$, $\angle BHC = 120^\circ$ — all equal, as symmetry demands.
+Reach for these whenever a problem places $O$, $I$, or $H$ and asks about an angle — they collapse a configuration to arithmetic in the vertex angles. The [[incenter-excenter-lemma|incenter]] one, $\angle BIC = 90^\circ + \frac{A}{2}$, is the most used: it pins the incenter's position and pairs perfectly with the incenter–excenter lemma. The excenter opposite $A$ satisfies the companion $\angle BI_AC = 90^\circ - \frac{A}{2}$. Sign-check with an equilateral triangle ($A = 60^\circ$): $\angle BOC = 120^\circ$, $\angle BIC = 120^\circ$, $\angle BHC = 120^\circ$ — all equal, as symmetry demands.
 
 ## On contests
 Staples of AMC/AIME configuration problems and a routine first step in olympiad angle chases. Memorize the incenter formula cold; derive the other two on the spot from the inscribed-angle theorem and the altitude-supplement fact if you blank.`
@@ -1601,7 +1618,7 @@ Olympiad "geometry of numbers." Niche, but the standard move when you must produ
 Object.assign(window.MATH_DETAILS, {
 
 "median-to-hypotenuse": String.raw`## Why it works
-Thales' theorem: the hypotenuse subtends a right angle, so all three vertices lie on a circle with the hypotenuse as diameter. Its center — the midpoint $M$ of the hypotenuse — is therefore equidistant from every vertex, and that common distance is the radius $R = \tfrac{c}{2}$. The median $CM$ is simply one of those radii.
+[[thales-theorem|Thales' theorem]]: the hypotenuse subtends a right angle, so all three vertices lie on a circle with the hypotenuse as diameter. Its center — the midpoint $M$ of the hypotenuse — is therefore equidistant from every vertex, and that common distance is the radius $R = \tfrac{c}{2}$. The median $CM$ is simply one of those radii.
 
 ## How to use it
 The instant you see a right angle, drop in the circumcircle: the right-angle vertex sits on a circle whose diameter is the opposite side. That collapses "median to the hypotenuse," "distance from the right-angle vertex to the hypotenuse midpoint," and "circumradius" into the single value $\tfrac{c}{2}$. The converse is a right-angle detector: if a median equals half the side it hits, the opposite angle is $90^\circ$.
@@ -1628,10 +1645,10 @@ When a bisector or its length meets the circumcircle, extend it to the arc midpo
 A recurring AIME configuration — the answer usually falls out of $AB\cdot AC = AL\cdot AD$ combined with the bisector-length formula. The arc-midpoint fact $DB = DC$ also seeds many olympiad angle chases and incenter-excenter arguments.`,
 
 "isogonal-conjugate": String.raw`## Why it works
-Reflecting each [[cevas-theorem|cevian]] over its angle bisector is an involution on the directions through a vertex, and the trigonometric form of [[cevas-theorem|Ceva]] is symmetric under swapping each angle's two parts. So if $AP, BP, CP$ concur, the three reflected cevians satisfy the very same concurrency condition and meet at one point $P^*$. The shared pedal circle follows because the reflections send the six perpendicular feet onto a common circle centered at the midpoint of $PP^*$.
+Reflecting each [[cevas-theorem|cevian]] over its angle bisector is an involution on the directions through a vertex, and the trigonometric form of Ceva is symmetric under swapping each angle's two parts. So if $AP, BP, CP$ concur, the three reflected cevians satisfy the very same concurrency condition and meet at one point $P^*$. The shared pedal circle follows because the reflections send the six perpendicular feet onto a common circle centered at the midpoint of $PP^*$.
 
 ## How to use it
-Recognize a pair rather than compute it: if a point is built by reflecting cevians over bisectors, its conjugate is often a familiar center. Swap a hard point for an easy one using $O \leftrightarrow H$, $G \leftrightarrow K$ ([[lemoine-point|[[symmedian-lemoine|symmedian]] point]]), incenter self-conjugate, and Fermat $\leftrightarrow$ isodynamic. The common pedal circle turns "these six feet are concyclic" into a one-word reason.
+Recognize a pair rather than compute it: if a point is built by reflecting cevians over bisectors, its conjugate is often a familiar center. Swap a hard point for an easy one using $O \leftrightarrow H$, $G \leftrightarrow K$ ([[lemoine-point|symmedian point]]), incenter self-conjugate, and Fermat $\leftrightarrow$ isodynamic. The common pedal circle turns "these six feet are concyclic" into a one-word reason.
 
 ## On contests
 Olympiad geometry, where naming an isogonal pair collapses a concurrency or collinearity to a known center. The symmedian — the isogonal of the median — is the most frequent special case at AIME level.`,
@@ -1649,13 +1666,13 @@ Simson-line problems and "area of the triangle formed by the three feet" questio
 Each altitude foot sees the opposite side at a right angle, so pairs of feet are concyclic with the vertices; a short angle chase then yields the orthic angles $\pi - 2A$ and shows each orthic side is antiparallel to the matching side of $ABC$. The perimeter identity is $a\cos A = R\sin 2A$ summed with $\sin 2A + \sin 2B + \sin 2C = 4\sin A\sin B\sin C$, and the area factor $2\cos A\cos B\cos C$ comes from removing the three corner triangles.
 
 ## How to use it
-Treat $H$ as the [[incenter-excenter-lemma|incenter]] of the orthic triangle: the altitudes of $ABC$ are its angle bisectors, which explains the reflect-$H$ facts and the Fagnano minimal-perimeter property. Use the perimeter $= \dfrac{2[ABC]}{R} = 4R\sin A\sin B\sin C$ and area $= 2\cos A\cos B\cos C\,[ABC]$ directly (the perimeter form is just $[ABC] = 2R^2\sin A\sin B\sin C$ rearranged, which lives on the [[trig-area|trigonometric area]] card), and recall the orthic triangle is inscribed in the [[nine-point-circle|nine-point circle]] (radius $\tfrac R2$). Turned inside out, the same configuration is the [[excentral-triangle|excentral triangle]]: $ABC$ is the orthic triangle of its own excentres. It is inscribed in the [[nine-point-circle|nine-point circle]] of radius $\frac R2$, each of its sides is antiparallel to the matching side of $ABC$, and it is the least-perimeter inscribed triangle, which is Fagnano's problem.
+Treat $H$ as the [[incenter-excenter-lemma|incenter]] of the orthic triangle: the altitudes of $ABC$ are its angle bisectors, which explains the reflect-$H$ facts and the Fagnano minimal-perimeter property. Use the perimeter $= \dfrac{2[ABC]}{R} = 4R\sin A\sin B\sin C$ and area $= 2\cos A\cos B\cos C\,[ABC]$ directly (the perimeter form is just $[ABC] = 2R^2\sin A\sin B\sin C$ rearranged; see [[trig-area|the trig-area formula]]), and recall the orthic triangle is inscribed in the [[nine-point-circle|nine-point circle]] (radius $\tfrac R2$). Turned inside out, the same configuration is the [[excentral-triangle|excentral triangle]]: $ABC$ is the orthic triangle of its own excentres. It is inscribed in the nine-point circle of radius $\frac R2$, each of its sides is antiparallel to the matching side of $ABC$, and it is the least-perimeter inscribed triangle, which is Fagnano's problem.
 
 ## On contests
 The least-perimeter inscribed triangle (Fagnano) and the reflect-$H$-onto-the-circumcircle facts are the recurring AIME/olympiad uses. For an obtuse triangle, note that $H$ becomes an excenter of the orthic triangle instead — a frequent trap.`,
 
 "medial-triangle": String.raw`## Why it works
-The midpoints halve every side, so each of the four small triangles is similar to $ABC$ with ratio $\tfrac12$ (SAS on the midsegments) — hence quarter area and half perimeter apiece. The medial triangle is the image of $ABC$ under the [[homothety-monge|homothety]] centered at the centroid $G$ with ratio $-\tfrac12$, which is why $G$ is shared and the orientation flips.
+The midpoints halve every side, so each of the four small triangles is similar to $ABC$ with ratio $\tfrac12$ (SAS on the midsegments) — hence quarter area and half perimeter apiece. The medial triangle is the image of $ABC$ under the [[homothety-monge|homothety]] centred at the centroid $G$ with ratio $-\tfrac12$, which is why $G$ is shared and the orientation flips.
 
 ## How to use it
 Pass to the medial triangle to shrink a problem by a fixed factor, or read off incoming structure: its circumcircle is the [[nine-point-circle|nine-point circle]], its [[incenter-excenter-lemma|incenter]] is the [[spieker-point|Spieker point]], and the homothety $(G, -\tfrac12)$ sends centers of $ABC$ to centers of the medial triangle. The four-congruent-triangles picture also proves midsegment and area-quartering claims at a glance.
@@ -1717,6 +1734,15 @@ Compute $d_1$ from the three lengths, then the chord is $2\sqrt{R^2 - d_1^2}$; y
 
 ## On contests
 A recurring AIME computation — "two circles meet; find their common chord" — and the workhorse behind lens/overlap-area problems, where the chord splits the lens into two circular segments.`,
+
+"tangent-circles": String.raw`## Why it works
+At a point of tangency the two circles share a tangent line, and each center lies on the perpendicular to that line through the touch point, by [[tangent-facts|the radius-tangent property]]. One perpendicular, so both centers and the touch point are collinear. Reading off that line gives the two cases directly: if the centers sit on opposite sides of $T$ the distance is $R + r$; if on the same side, one circle contains the other and the distance is the difference $|R - r|$.
+
+## How to use it
+Whenever a problem says "tangent", immediately write the center-distance equation, which is usually the only algebra the tangency contributes. In a chain or packing of mutually tangent circles you get one equation per tangent pair, and the unknown radii fall out; combining them with the [[pythagorean-theorem|Pythagorean theorem]] on the triangle of centers handles most configurations without coordinates. Internal tangency is the case people drop: check which circle contains which before choosing $R + r$ or $R - r$. Nothing in the argument is two-dimensional, so tangent spheres obey the same rule — a ball of radius $r$ rolling inside a sphere of radius $R$ keeps its center on a sphere of radius $R - r$, which is how a 3-D tangency problem collapses to one length. For four mutually tangent circles, [[descartes-circle-theorem|Descartes' circle theorem]] packages the whole system into one curvature identity.
+
+## On contests
+A staple of AMC 10/12 circle problems and the opening line of most AIME circle-packing setups. It also supplies the existence conditions quoted by [[common-chord-length|the common-chord formula]] and [[common-tangent-lengths|common tangent lengths]]: two circles meet in two points exactly when $|R-r| \lt d \lt R+r$, and the tangent cases are the boundary.`,
 
 "incircle-excircle-touch": String.raw`## Why it works
 Equal tangents from a vertex fix the incircle contact distances: the two tangents from $B$ are equal, forcing the touch point on $BC$ to be $s-b$ from $B$. The $A$-excircle (opposite $A$) touches $BC$ with the roles of $b$ and $c$ swapped, at $s-c$ from $B$. Since $(s-b) + (s-c) = a$, those two points average to $\tfrac a2$ — the midpoint $M$ of $BC$ — so they are reflections of each other in $M$, a distance $(s-b) - (s-c) = |b-c|$ apart.
@@ -1786,7 +1812,7 @@ When a perpendicular is dropped from a vertex to an internal or external [[angle
 A compact olympiad lemma for "foot of the perpendicular to a bisector" configurations and for proving the $\frac{|b-c|}{2}$ midline fact; the reflect-and-double reflex converts angle data into length data without trigonometry.`,
 
 "isotomic-conjugate": String.raw`## Why it works
-Reflecting each [[cevas-theorem|cevian]] foot over its side's midpoint is an involution on that side, so by the isotomic form of [[cevas-theorem|Ceva's theorem]] the reflected cevians concur exactly when the originals do — defining the conjugate $P^*$. In normalized barycentrics it is just $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.
+Reflecting each [[cevas-theorem|cevian]] foot over its side's midpoint is an involution on that side, so by the isotomic form of Ceva's theorem the reflected cevians concur exactly when the originals do — defining the conjugate $P^*$. In normalized barycentrics it is just $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.
 
 ## How to use it
 Use the pairing to transfer results for free: the centroid is self-conjugate, and the Gergonne and [[gergonne-nagel-points|Nagel points]] are an isotomic pair, so a fact about one hands you the other. Compute with [[barycentric-coordinates|barycentric]] reciprocals, and pair it with isogonal conjugation when a problem mixes "reflect over the midpoint" and "reflect over the bisector."
@@ -1807,10 +1833,10 @@ Standard at AIME and olympiad level for incircle-tangency lengths and Gergonne-p
 Internal and external bisectors are perpendicular, so the [[incenter-excenter-lemma|incenter]] $I$ is the orthocenter of $I_AI_BI_C$ and $ABC$ is exactly its orthic (altitude-feet) triangle. That perpendicularity also yields the angles $\frac{\pi}{2}-\frac{A}{2}$, the sides $4R\cos\frac{A}{2}$ (so $I_AI_B=4R\cos\frac C2$), and circumradius $2R$. Its area follows as $2Rs=\frac{abc}{2r}=8R^2\cos\frac A2\cos\frac B2\cos\frac C2$.
 
 ## How to use it
-Flip the usual orthic relationship: treat $ABC$ as the [[orthic-triangle|orthic triangle]] of the excenters to import the full orthocentric toolkit (reflections, the [[nine-point-circle|nine-point circle]]). In particular the circumcircle of $ABC$ is [[nine-point-circle|the nine-point circle]] of the excentral triangle, tying the two figures together. Equivalently $ABC$ is the orthic triangle of this one, so every orthic-triangle fact transfers by renaming.
+Flip the usual orthic relationship: treat $ABC$ as the [[orthic-triangle|orthic triangle]] of the excenters to import the full orthocentric toolkit (reflections, the [[nine-point-circle|nine-point circle]]). In particular the circumcircle of $ABC$ is the nine-point circle of the excentral triangle, tying the two figures together. Equivalently $ABC$ is the orthic triangle of this one, so every orthic-triangle fact transfers by renaming.
 
 ## On contests
-An olympiad configuration for excenter and bisector problems; spotting "$ABC$ is the [[orthic-triangle|orthic triangle]] of its excenters" unlocks every orthocenter fact you already know.`,
+An olympiad configuration for excenter and bisector problems; spotting "$ABC$ is the orthic triangle of its excenters" unlocks every orthocenter fact you already know.`,
 
 "reims-theorem": String.raw`## Why it works
 Two circles meet at $P,Q$; a line through $P$ hits them at $A,C$ and a line through $Q$ hits them at $B,D$. Inscribed angles on the shared chords give $\angle BAP = \angle BQP$ and $\angle DCP = \angle DQP$; since $A,P,C$ and $B,Q,D$ are each collinear, those are corresponding angles for $AB$ and $CD$ cut by transversal $AC$, forcing $AB \parallel CD$. Reversing the chase gives the converse.
@@ -1879,7 +1905,7 @@ Everywhere in olympiad projective configurations, especially pole–polar and Ap
 - inversion about $O$ with radius $r$ sends $P$ to the point $P^*$ on ray $OP$ with $OP\cdot OP^*=r^2$, so it swaps the inside and outside of the circle and is its own inverse — swapping inside for outside is what turns a hard configuration into an easy one, and back again at the end
 - it maps the family of lines and circles to itself: a line through $O$ stays put, a line missing $O$ becomes a circle through $O$ and back again, and a circle missing $O$ becomes a circle — which is why inverting at a busy point straightens circles into lines
 - distances transform by $P^*Q^*=\frac{r^2\,PQ}{OP\cdot OQ}$, and since the map is conformal it preserves angles and tangency — so incidence survives and can be read back after solving the easy picture
-- choosing the centre is the whole art: invert where many circles meet, and a chain of mutually tangent circles becomes equal circles stacked between two parallel lines — invert at the busiest point, since every circle through the centre straightens into a line
+- choosing the centre is the whole art: invert where many circles meet, and a chain of mutually [[tangent-circles|tangent circles]] becomes equal circles stacked between two parallel lines — invert at the busiest point, since every circle through the centre straightens into a line
 
 ## Why it works
 Inversion fixes each ray from $O$ and sends $P$ to $P^*$ with $OP\cdot OP^* = r^2$ — an involution whose similar triangles $OPQ \sim OQ^*P^*$ give the distance rule $P^*Q^* = \frac{r^2\,PQ}{OP\cdot OQ}$. It preserves the class of "lines and circles" (generalized circles), and being conformal it preserves angles and tangency, so incidence survives the map.
@@ -1894,7 +1920,7 @@ The heavy artillery for tangent-circle chains — Steiner chains, Descartes / Ap
 Four lines in general position give four triangles (three lines at a time); repeated use of the Miquel-point lemma forces their four circumcircles through one common point $M$. Equivalently $M$ is the center of the [[spiral-similarity|spiral similarity]] carrying one pair of opposite sides onto the other.
 
 ## How to use it
-When four lines (two pairs of opposite sides plus the diagonals) appear, find $M$ as the second intersection of two of the four circumcircles — it is usually the hidden center that makes a spiral-similarity or concyclicity claim fall out. The three diagonal midpoints are collinear on the associated [[newtons-line|Newton–Gauss line]]. Two further facts make the configuration worth recognising: the four circumcentres together with $M$ lie on one circle, and this is the four-line cousin of the triangle Miquel theorem, where the points are chosen on the sides of a single triangle instead.
+When four lines (two pairs of opposite sides plus the diagonals) appear, find $M$ as the second intersection of two of the four circumcircles — it is usually the hidden center that makes a spiral-similarity or concyclicity claim fall out. The three diagonal midpoints are collinear on the associated [[newtons-line|Newton–Gauss line]]. Two further facts make the configuration worth recognising: the four circumcenters together with $M$ lie on one circle, and this is the four-line cousin of the triangle Miquel theorem, where the points are chosen on the sides of a single triangle instead.
 
 ## On contests
 A staple olympiad configuration; recognizing a complete quadrilateral and naming its [[miquels-theorem|Miquel]] point is frequently the decisive first step.`,
@@ -1988,7 +2014,7 @@ From there, pick whichever of the three forms matches the question. If you need 
 Running it backwards is the olympiad use. To prove a given line is a symmedian, it suffices to prove the quadrilateral it cuts is harmonic, and that is often easier than chasing the reflection over the bisector.
 
 ## On contests
-2024 AIME I #10 and 2020 AIME II #15 are both this configuration, with the tangents at $B$ and $C$ meeting and a line from $A$ crossing the circle. Recognising the symmedian gives the ratio structure at once, and even without the name, [[power-of-a-point|power of a point]] plus these similar triangles recovers everything. At olympiad level the harmonic form is the more common one, usually as a step toward a projective or inversive finish.`,
+2024 AIME I #10 and 2020 AIME II #15 are both this configuration, with the tangents at $B$ and $C$ meeting and a line from $A$ crossing the circle. Recognising the symmedian gives the ratio structure at once, and even without the name, power of a point plus these similar triangles recovers everything. At olympiad level the harmonic form is the more common one, usually as a step toward a projective or inversive finish.`,
 
 "lemoine-point": String.raw`## Why it works
 Each [[symmedian-lemoine|symmedian]] is the locus of points whose distances to the two sides at its vertex are in the ratio of those sides. The $A$-symmedian gives $\frac{d_c}{d_b} = \frac{c}{b}$, the $B$-symmedian gives $\frac{d_a}{d_c} = \frac{a}{c}$, and the third is then forced. A point on all three therefore has $d_a : d_b : d_c = a : b : c$, and since the three loci are the reflections of the three medians in the three bisectors, they concur exactly because the medians do; concurrency is preserved by isogonal conjugation.
@@ -2002,9 +2028,9 @@ Everything about $K$ in five lines:
 - $d_a : d_b : d_c = a : b : c$ — its distances to the three sides are proportional to those sides, which follows from each symmedian being the locus of a fixed distance ratio
 - $K$ minimises $d_a^2 + d_b^2 + d_c^2$ over the whole plane — the property it is usually defined by, and the reason it turns up in optimisation problems
 - $K$ is the centroid of its own pedal triangle — the cleanest proof of that minimisation
-- $K$ is the [[isogonal-conjugate|isogonal conjugate]] of the centroid $G$ — another way of saying the [[symmedian-lemoine|symmedians]] are the reflections of the medians
+- $K$ is the [[isogonal-conjugate|isogonal conjugate]] of the centroid $G$ — another way of saying the symmedians are the reflections of the medians
 
-Reach for the [[barycentric-coordinates|barycentric coordinates]] first. $(a^2 : b^2 : c^2)$ makes any incidence or ratio question about $K$ a short computation, and it is how the point is usually identified in a configuration that never names it.
+Reach for the barycentric coordinates first. $(a^2 : b^2 : c^2)$ makes any incidence or ratio question about $K$ a short computation, and it is how the point is usually identified in a configuration that never names it.
 
 The distance property is the one to recognise in disguise. A problem asking for the point minimising the sum of squared distances to the three sides, or describing a point whose distances to the sides are proportional to the sides, is describing $K$ whether or not it says so.
 
@@ -2014,7 +2040,7 @@ Remember the conjugate pairing, since $K$ and $G$ swap under isogonal conjugatio
 Rare, and almost always olympiad rather than AIME. When it appears it is either as the concurrency point in a configuration full of symmedians, or as the answer to a minimisation phrased in terms of distances to the sides. In both cases the barycentric coordinates are the shortest route.`,
 
 "spieker-point": String.raw`## Why it works
-The [[medial-triangle|medial triangle]] is the image of $ABC$ under the [[homothety-monge|homothety]] centred at $G$ with ratio $-\frac12$. Homothety carries [[incenter-excenter-lemma|incentre]] to incentre, so the incentre $I$ of $ABC$ maps to the incentre of the [[medial-triangle|medial triangle]], which is the Spieker point $S$. The same map scales the inradius by $\frac12$, so the Spieker circle has radius $\frac r2$.
+The [[medial-triangle|medial triangle]] is the image of $ABC$ under the [[homothety-monge|homothety]] centered at $G$ with ratio $-\frac12$. Homothety carries [[incenter-excenter-lemma|incentre]] to incentre, so the incentre $I$ of $ABC$ maps to the incentre of the medial triangle, which is the Spieker point $S$. The same map scales the inradius by $\frac12$, so the Spieker circle has radius $\frac r2$.
 
 The perimeter-centroid description is the one worth understanding, because it explains why the point is not $G$. Replace each side by a uniform rod of mass equal to its length, placed at the side's midpoint. The centre of mass of the three rods is $\frac{a M_a + b M_b + c M_c}{a+b+c}$, and substituting $M_a = \frac{B+C}{2}$ and its partners gives weights proportional to $b+c$, $c+a$, $a+b$, which is the [[barycentric-coordinates|barycentric]] form. Mass distributed along the boundary balances at $S$; mass spread over the area balances at $G$; they are different points for any non-equilateral triangle.
 

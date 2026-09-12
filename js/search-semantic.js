@@ -34,9 +34,19 @@ window.MathSemantic = (function () {
       return;
     }
     state = "loading";
+    // Revalidate rather than trust the browser copy. These two files are fetched from
+    // JS, so they never picked up the ?v= bump that every asset in index.html carries:
+    // a rebuilt index could sit behind a stale cached copy indefinitely, and because a
+    // stale vector table still *works* nothing would look broken -- it would just be
+    // ranking against the wrong corpus, silently invalidating every relevance
+    // measurement taken against it. (Observed: a 490-card table still being served
+    // after the corpus reached 499.) "no-cache" forces an If-None-Match round trip and
+    // returns 304 with the cached body when nothing changed, so the 5 MB is not
+    // re-downloaded -- correctness without the cost, and nothing to remember to bump.
+    var opt = { cache: "no-cache" };
     Promise.all([
-      fetch(BASE + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-      fetch(BASE + ".bin").then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); })
+      fetch(BASE + ".json", opt).then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+      fetch(BASE + ".bin", opt).then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); })
     ]).then(function (res) {
       H = res[0];
       var buf = res[1], d = H.dims;

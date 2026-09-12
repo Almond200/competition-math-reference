@@ -221,6 +221,17 @@ window.MATH_SECTIONS.push({
           keywords: ["phantom point", "ghost point", "prove points coincide", "second intersection", "concurrency", "reverse reconstruction", "method"],
           importance: "low",
           level: ["Olympiad"]
+        },
+        {
+          id: "area-method",
+          name: "Area Ratio from Base Ratios",
+          type: "method",
+          subject: "geometry",
+          latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
+          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
+          keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
         }
       ]
     },
@@ -316,6 +327,17 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "largest-term-ratio",
+          name: "Largest Term by the Consecutive Ratio",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\frac{a_{k+1}}{a_k} > 1 \text{ while climbing}, \quad < 1 \text{ after the peak}`,
+          description: String.raw`To find where a sequence of positive terms peaks, do not evaluate them: form the ratio of consecutive terms and find where it crosses $1$. The terms increase while the ratio exceeds $1$ and decrease after, so the maximum sits at the last $k$ with $\frac{a_{k+1}}{a_k} \ge 1$. Binomial and factorial terms are the usual targets, because almost everything cancels in the ratio.`,
+          keywords: ["largest term", "ratio of consecutive terms", "where the sequence peaks", "maximum term of a binomial expansion", "ratio test", "when does the ratio drop below 1"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "sfft",
           name: "Simon's Favorite Factoring Trick (SFFT)",
           type: "method",
@@ -394,12 +416,12 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "abs-value-graphing",
-          name: "Graphing Absolute Value Equations",
+          name: "Graphing Absolute Value Transformations",
           type: "method",
           subject: "algebra",
           latex: String.raw`f(|x|):\ \text{keep } x \ge 0,\ \text{mirror into } x < 0 \qquad |f(x)|:\ \text{reflect } y < 0 \text{ upward}`,
           description: String.raw`Do not solve nested absolute values case by case, build the picture. Bars around the input and bars around the output do two different things: $f(|x|)$ discards the left half of the graph and replaces it with a mirror of the right half, so the result is automatically even, while $|f(x)|$ keeps the domain alone and folds everything below the axis up over it. Apply them one layer at a time from the inside out, and read off intersections instead of solving.`,
-          keywords: ["graphing absolute value", "nested absolute value", "f(|x|)", "|f(x)|", "reflect below axis", "fold upward", "even symmetry", "count solutions graphically", "piecewise graph", "method"],
+          keywords: ["graphing absolute value", "absolute value transformations", "nested absolute value", "f(|x|)", "|f(x)|", "reflect below axis", "fold upward", "even symmetry", "count solutions graphically", "piecewise graph", "transform a graph", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -457,6 +479,28 @@ window.MATH_SECTIONS.push({
           keywords: ["tangent line trick", "sos", "convex", "symmetric inequality", "equality case", "linear bound", "method"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "double-summation",
+          name: "Double Sums (Swapping & Splitting)",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\sum_{i}\sum_{j} a_{ij} = \sum_{j}\sum_{i} a_{ij}, \qquad \sum_{i}\sum_{j} f(i)g(j) = \Big(\sum_i f(i)\Big)\Big(\sum_j g(j)\Big), \qquad \sum_{i=1}^{n}\sum_{j=i}^{n} a_{ij} = \sum_{j=1}^{n}\sum_{i=1}^{j} a_{ij}`,
+          description: String.raw`A finite double sum is just a sum over a set of index pairs, so you may sweep that set in whichever order is convenient. Swapping the two summation signs, factoring a separable summand into a product of one-variable sums, and rewriting a triangular region's limits are the three moves that turn most intimidating double sums into routine ones.`,
+          keywords: ["double sum", "double summation", "swap the order of summation", "interchange summation", "split a summation", "nested sums", "sum over pairs", "fubini for sums", "sum of i less than j", "triangular sum", "method"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "rationalizing",
+          name: "Rationalizing & Conjugates",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\frac{1}{\sqrt{a} + \sqrt{b}} = \frac{\sqrt{a} - \sqrt{b}}{a - b}`,
+          description: String.raw`Multiplying by the conjugate telescopes sums like $\sum \frac{1}{\sqrt{k} + \sqrt{k+1}} = \sum (\sqrt{k+1} - \sqrt{k})$. Conjugate pairs also make $(3+\sqrt5)^n + (3-\sqrt5)^n$ an integer — the key to fractional-part-of-surd-power problems.`,
+          keywords: ["conjugate", "rationalize denominator", "telescoping radicals", "rationalize the denominator", "multiply by the conjugate", "rationalising surds"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
         }
       ]
     },
@@ -583,6 +627,17 @@ window.MATH_SECTIONS.push({
           keywords: ["bounding", "wlog ordering", "finitely many solutions", "smallest variable bound", "unit fractions", "finite check", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "factor-pair-counting",
+          name: "Solving $xy = N$ Style Equations",
+          type: "method",
+          subject: "number-theory",
+          latex: String.raw`\#\{(x, y) \in \mathbb{Z}_{>0}^2 : xy = N\} = d(N)`,
+          description: String.raw`Rearrange Diophantine equations into a product of factors equal to a constant (often via SFFT), then count divisor pairs — including negative ones when allowed.`,
+          keywords: ["factor pairs", "divisor counting", "sfft applications", "count factor pairs", "factor pairs of n", "divisor pair counting"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },

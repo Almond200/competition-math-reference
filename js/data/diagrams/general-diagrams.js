@@ -418,6 +418,31 @@
   })()];
 
   // The V and the two transformations that move it.
+  DIAGRAMS["taxicab-region"] = [(() => {
+    const m = frame(-3.7, 3.7, -3.7, 3.7, 60, 18, 290, 290), c = 3;
+    const dots = [];
+    for (let x = -c; x <= c; x++) for (let y = -c; y <= c; y++)
+      if (Math.abs(x) + Math.abs(y) <= c) dots.push(dot(m.pt(x, y), GRN, 3));
+    return wrap(410, 358, [
+      axes(m),
+      poly([m.pt(c, 0), m.pt(0, c), m.pt(-c, 0), m.pt(0, -c)], ACC, 2.2),
+      ...dots,
+      txt(add(m.pt(1.35, 1.35), [0, 0]), "area 2c\u00b2", ACC, 12),
+      txt(add(m.pt(c, 0), [6, 16]), "(c, 0)", FNT, 11.5),
+      txt(add(m.pt(0, c), [8, -6]), "(0, c)", FNT, 11.5),
+      cap(410, 358, "|x| + |y| \u2264 c is a square on its corner: 25 lattice points at c = 3")
+    ]);
+  })(), (() => {
+    const m = frame(-3.2, 3.2, -3.2, 3.2, 60, 18, 290, 290);
+    const dia = (h, k) => poly([m.pt(h + 1, k), m.pt(h, k + 1), m.pt(h - 1, k), m.pt(h, k - 1)], GLD, 2);
+    return wrap(410, 358, [
+      axes(m),
+      dia(1, 1), dia(-1, 1), dia(1, -1), dia(-1, -1),
+      dot(m.pt(1, 1), GLD, 3), dot(m.pt(-1, 1), GLD, 3), dot(m.pt(1, -1), GLD, 3), dot(m.pt(-1, -1), GLD, 3),
+      cap(410, 358, "each nested |\u00b7| mirrors the picture: ||x|\u22121| + ||y|\u22121| \u2264 1 is four copies")
+    ]);
+  })()];
+
   DIAGRAMS["absolute-value-rules"] = [(() => {
     const m = frame(-4.6, 4.6, -2.4, 4.4, 46, 24, 350, 210);
     return wrap(440, 292, [

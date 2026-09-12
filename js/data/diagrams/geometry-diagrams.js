@@ -1017,6 +1017,28 @@
     ]);
   })()];
 
+  DIAGRAMS["hexagon-diagonals"] = [(() => {
+    const O = [230, 175], R = 105;
+    const V = [];
+    for (let k = 0; k < 6; k++) {
+      const a = rad(60 * k - 30);
+      V.push([O[0] + R * Math.cos(a), O[1] + R * Math.sin(a)]);
+    }
+    const mid = (P, Q) => [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2];
+    return wrap(460, 330, [
+      poly(V, DIM, 2),
+      seg(V[0], V[3], GLD, 2.6),
+      seg(V[1], V[5], ACC, 2.6),
+      rightAngle(mid(V[1], V[5]), V[5], V[0], 10, FNT),
+      seg(V[0], mid(V[1], V[5]), FNT, 1.2, "4 3"),
+      ...V.map(p => dot(p, DIM, 3.5)), dot(O, GLD, 3.5),
+      txt(add(mid(V[0], V[3]), [6, -8]), "2s", GLD, 12.5),
+      txt(add(mid(V[1], V[5]), [-30, 4]), "s\u221A3", ACC, 12.5),
+      txt(add(mid(V[0], V[1]), [12, 2]), "s", DIM, 12),
+      cap(460, 330, "only two diagonal lengths: 2s through the center, s\u221A3 skipping one vertex")
+    ]);
+  })()];
+
   DIAGRAMS["regular-hexagon-area"] = [(() => {
     const cen = [210, 168], v = [0, 1, 2, 3, 4, 5].map(i => onC(cen, 118, 60 * i));
     return wrap(430, 340, [
@@ -3014,6 +3036,32 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(I, [12, 3]), "I", GRN, 11.5),
       txt(add(mid(B, D), [-11, 0]), "=", ACC, 14), txt(add(mid(C, D), [11, 0]), "=", ACC, 14),
       cap(440, 400, "the A-bisector meets the circumcircle at the arc midpoint D, so DB = DC; and AB·AC = AL·AD")
+    ]);
+  })()];
+
+  DIAGRAMS["tangent-circles"] = [(() => {
+    const O1 = [140, 150], R = 80, O2 = [320, 150], r = 100, T = [220, 150];
+    return wrap(460, 300, [
+      circ(O1, R, ACC, 1.6), circ(O2, r, GLD, 1.6),
+      seg([50, 150], [430, 150], FNT, 1.3, "5 4"),
+      seg(O1, T, ACC, 2.4), seg(O2, T, GLD, 2.4),
+      dot(O1, ACC, 3.5), dot(O2, GLD, 3.5), dot(T, GRN, 4.5),
+      txt(add(O1, [-6, 18]), "O\u2081", ACC, 11.5), txt(add(O2, [-2, 18]), "O\u2082", GLD, 11.5),
+      txt(add(T, [-4, -12]), "T", GRN, 12.5),
+      txt([175, 142], "R", ACC, 11.5), txt([268, 142], "r", GLD, 11.5),
+      cap(460, 300, "externally tangent: T lies on O\u2081O\u2082, so d = R + r")
+    ]);
+  })(), (() => {
+    const O1 = [200, 150], R = 120, O2 = [270, 150], r = 50, T = [320, 150];
+    return wrap(460, 300, [
+      circ(O1, R, ACC, 1.6), circ(O2, r, GLD, 1.6),
+      seg([60, 150], [400, 150], FNT, 1.3, "5 4"),
+      seg(O1, T, ACC, 2.4),
+      dot(O1, ACC, 3.5), dot(O2, GLD, 3.5), dot(T, GRN, 4.5),
+      txt(add(O1, [-8, 18]), "O\u2081", ACC, 11.5), txt(add(O2, [-4, -12]), "O\u2082", GLD, 11.5),
+      txt(add(T, [4, -10]), "T", GRN, 12.5),
+      txt([228, 142], "d", FNT, 11.5),
+      cap(460, 300, "internally tangent: T is still on the line of centers, so d = R \u2212 r")
     ]);
   })()];
 

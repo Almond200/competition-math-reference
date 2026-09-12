@@ -363,15 +363,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "double-summation",
-          name: "Double Sums (Swapping & Splitting)",
-          latex: String.raw`\sum_{i}\sum_{j} a_{ij} = \sum_{j}\sum_{i} a_{ij}, \qquad \sum_{i}\sum_{j} f(i)g(j) = \Big(\sum_i f(i)\Big)\Big(\sum_j g(j)\Big), \qquad \sum_{i=1}^{n}\sum_{j=i}^{n} a_{ij} = \sum_{j=1}^{n}\sum_{i=1}^{j} a_{ij}`,
-          description: String.raw`A finite double sum is just a sum over a set of index pairs, so you may sweep that set in whichever order is convenient. Swapping the two summation signs, factoring a separable summand into a product of one-variable sums, and rewriting a triangular region's limits are the three moves that turn most intimidating double sums into routine ones.`,
-          keywords: ["double sum", "double summation", "swap the order of summation", "interchange summation", "split a summation", "nested sums", "sum over pairs", "fubini for sums", "sum of i less than j", "triangular sum", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
-        },
-        {
           id: "abel-summation",
           name: "Abel Summation (Summation by Parts)",
           latex: String.raw`\sum_{k=1}^{n} a_k b_k = A_n b_n - \sum_{k=1}^{n-1} A_k (b_{k+1} - b_k), \qquad A_k = a_1 + \cdots + a_k`,
@@ -856,15 +847,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "rationalizing",
-          name: "Rationalizing & Conjugates",
-          latex: String.raw`\frac{1}{\sqrt{a} + \sqrt{b}} = \frac{\sqrt{a} - \sqrt{b}}{a - b}`,
-          description: String.raw`Multiplying by the conjugate telescopes sums like $\sum \frac{1}{\sqrt{k} + \sqrt{k+1}} = \sum (\sqrt{k+1} - \sqrt{k})$. Conjugate pairs also make $(3+\sqrt5)^n + (3-\sqrt5)^n$ an integer — the key to fractional-part-of-surd-power problems.`,
-          keywords: ["conjugate", "rationalize denominator", "telescoping radicals", "rationalize the denominator", "multiply by the conjugate", "rationalising surds"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
           id: "absolute-value-rules",
           name: "Absolute Value Rules",
           latex: String.raw`|x| < a \iff -a < x < a, \qquad |x| > a \iff x < -a \text{ or } x > a, \qquad \sqrt{x^2} = |x|`,
@@ -872,6 +854,15 @@ window.MATH_SECTIONS.push({
           keywords: ["absolute value", "distance on number line", "split cases", "sqrt x squared", "modulus"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "taxicab-region",
+          name: "Absolute-Value Regions in the Plane",
+          latex: String.raw`|x| + |y| \le c: \quad \text{area} = 2c^2, \quad \#\text{lattice} = 2c^2 + 2c + 1`,
+          description: String.raw`The shapes an absolute value cuts out of the plane, and the symmetry that finds them without casework. $|x| + |y| \le c$ is a square turned $45^\circ$ — vertices $(\pm c, 0)$ and $(0, \pm c)$, diagonals $2c$, area $2c^2$ — and $\max(|x|,|y|) \le c$ is the same square untilted. The lever for all of them is that a relation in $|x|$ is unchanged by $x \to -x$, so you may solve it on $x \ge 0$ with the bars simply deleted and mirror the answer back. For how a single bar reshapes a graph rather than a region, see graphing absolute value equations.`,
+          keywords: ["taxicab", "absolute value region", "diamond region", "rotated square", "x plus y absolute value", "area of absolute value region", "lattice points in a diamond", "L1 distance", "graph an absolute value inequality", "max of absolute values", "symmetry to remove absolute values", "solve for x positive and reflect", "region in the plane"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },

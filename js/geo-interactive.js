@@ -39,6 +39,14 @@
   function seg(a, b, cls) { return '<line x1="' + r1(a[0]) + '" y1="' + r1(a[1]) + '" x2="' + r1(b[0]) + '" y2="' + r1(b[1]) + '" class="' + (cls || "gl") + '"/>'; }
   function circ(c, r, cls) { return '<circle cx="' + r1(c[0]) + '" cy="' + r1(c[1]) + '" r="' + r1(r) + '" class="' + (cls || "gc") + '"/>'; }
   function dotS(p, cls, rr) { return '<circle cx="' + r1(p[0]) + '" cy="' + r1(p[1]) + '" r="' + (rr || 4) + '" class="' + (cls || "gd") + '"/>'; }
+  // Right-angle bracket at F, arms pointing toward q and r. Marks a perpendicular the way a
+  // figure should, rather than leaving the reader to infer it from the picture.
+  function rAngle(F, q, r, size) {
+    var k = size || 8, u = mul(norm(sub(q, F)), k), v = mul(norm(sub(r, F)), k);
+    var a = add(F, u), b = add(add(F, u), v), c = add(F, v);
+    return '<polyline points="' + r1(a[0]) + ',' + r1(a[1]) + ' ' + r1(b[0]) + ',' + r1(b[1]) +
+           ' ' + r1(c[0]) + ',' + r1(c[1]) + '" fill="none" class="gl"/>';
+  }
   function polyS(pts, cls) { return '<polygon points="' + pts.map(function (p) { return r1(p[0]) + "," + r1(p[1]); }).join(" ") + '" class="' + (cls || "gtri") + '"/>'; }
   function txt(p, s, cls) { return '<text x="' + r1(p[0]) + '" y="' + r1(p[1]) + '" class="' + (cls || "gt") + '">' + s + "</text>"; }
   function lbl(p, from, s, cls) { var d = norm(sub(p, from)); return txt(add(p, mul(d, 15)), s, cls); }
@@ -567,28 +575,63 @@
 
   // ---------- Viviani's theorem ----------
   W["vivianis-theorem"] = { mount: function (host) {
-    var cx = 210, top = [210, 70], s = 210;
-    var A = top, B = [cx - s / 2, 70 + s * Math.sqrt(3) / 2], C = [cx + s / 2, 70 + s * Math.sqrt(3) / 2];
-    function inside(pt) { var d = sarea([A, B, C]) < 0 ? -1 : 1; return true; }
+    var side = 170, h = side * Math.sqrt(3) / 2;
+    var A = [210, 78], B = [210 - side / 2, 78 + h], C = [210 + side / 2, 78 + h];
+    // Signed distance to a side: positive on the same side of that line as the opposite vertex,
+    // negative beyond it. With that sign the three distances sum to the altitude for EVERY point
+    // of the plane, because [PAB] + [PBC] + [PCA] = [ABC] holds as signed areas. That is the half
+    // of the theorem this widget used to hide: it clamped P back inside, so the outside cases
+    // were unreachable and the constant sum looked like a property of interior points only.
+    function signed(P, U, V, opp) {
+      var d = dist(P, foot(P, U, V)), sp = sarea([U, V, P]), so = sarea([U, V, opp]);
+      return sp === 0 ? 0 : ((sp > 0) === (so > 0) ? d : -d);
+    }
     mountGeo(host, {
       title: "Viviani",
-      hint: "Drag P inside.",
+      hint: "Drag P anywhere, inside or outside.",
       w: 420, h: 320,
-      init: { P: [210, 200] },
+      init: { P: [210, 170] },
       drag: { P: { constrain: function (xy) {
-        // clamp inside the equilateral triangle by pulling toward centroid if outside
-        var g = centroid(A, B, C), q = xy, tries = 0;
-        function outside(z) { var s1 = sarea([A, B, z]), s2 = sarea([B, C, z]), s3 = sarea([C, A, z]); return !((s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0)); }
-        while (outside(q) && tries++ < 40) q = add(q, mul(sub(g, q), 0.12));
-        return q;
+        // keep P on the canvas, but no longer inside the triangle
+        return [Math.max(14, Math.min(406, xy[0])), Math.max(14, Math.min(306, xy[1]))];
       } } },
       render: function (p) {
-        var d1 = dist(p.P, foot(p.P, A, B)), d2 = dist(p.P, foot(p.P, B, C)), d3 = dist(p.P, foot(p.P, C, A));
-        var h = s * Math.sqrt(3) / 2;
-        var body = polyS([A, B, C], "gtri-fill") +
-          seg(p.P, foot(p.P, A, B), "gl-acc") + seg(p.P, foot(p.P, B, C), "gl-acc") + seg(p.P, foot(p.P, C, A), "gl-acc") +
-          dotS(p.P, "gd-gold", 5) + txt(add(p.P, [8, -6]), "P", "gt-gold");
-        return { body: body, caption: "d₁ + d₂ + d₃ = " + uL(d1) + " + " + uL(d2) + " + " + uL(d3) + " = <b>" + uL(d1 + d2 + d3) + "</b> = the triangle&rsquo;s height (" + uL(h) + ") — constant everywhere inside." };
+        var legs = [[A, B, C], [B, C, A], [C, A, B]].map(function (t) {
+          var F = foot(p.P, t[0], t[1]), ab = sub(t[1], t[0]);
+          // where the foot falls along the side: t in [0,1] means on the segment itself
+          var u = dot(sub(F, t[0]), ab) / (dot(ab, ab) || 1);
+          return { U: t[0], V: t[1], foot: F, along: u, d: signed(p.P, t[0], t[1], t[2]) };
+        });
+        var body = polyS([A, B, C], "gtri-fill");
+        legs.forEach(function (L) {
+          // When P is outside, the perpendicular meets the side's EXTENSION, not the side. Draw
+          // that extension dashed and overshoot the foot slightly, so the figure shows what the
+          // distance is actually measured to -- without it a red leg appears to end in mid-air.
+          if (L.along < 0 || L.along > 1) {
+            var near = L.along < 0 ? L.U : L.V;
+            var out = add(L.foot, mul(norm(sub(L.foot, near)), 12));
+            body += seg(near, out, "gl-dash");
+          }
+          // right-angle bracket at the foot: one arm to P, the other along the side line toward
+          // its farther end, which keeps the arm on the drawn part whether the foot is on the
+          // segment or out on the extension
+          var far = dist(L.foot, L.U) > dist(L.foot, L.V) ? L.U : L.V;
+          body += rAngle(L.foot, p.P, far, 7) +
+                  seg(p.P, L.foot, L.d < 0 ? "gl-red" : "gl-acc") +
+                  dotS(L.foot, L.d < 0 ? "gd" : "gd-acc", 2.6);
+        });
+        body += dotS(p.P, "gd-gold", 5) + txt(add(p.P, [8, -6]), "P", "gt-gold") +
+                txt(add(A, [-4, -10]), "A", "gt") + txt(add(B, [-14, 14]), "B", "gt") +
+                txt(add(C, [8, 14]), "C", "gt");
+        var neg = legs.filter(function (L) { return L.d < 0; }).length;
+        var term = function (d) { return d < 0 ? "(" + uL(d) + ")" : "" + uL(d); };
+        var note = neg === 0 ? "P is inside, so all three count positive"
+                 : neg === 1 ? "P is across one side, so that distance counts negative"
+                 : "P is past a vertex, so two distances count negative";
+        return { body: body,
+          caption: "d\u2081 + d\u2082 + d\u2083 = " + term(legs[0].d) + " + " + term(legs[1].d) +
+                   " + " + term(legs[2].d) + " = <b>" + uL(legs[0].d + legs[1].d + legs[2].d) +
+                   "</b> = the triangle&rsquo;s height. " + note + "." };
       }
     });
   } };

@@ -518,7 +518,8 @@
       "angle-chord-secant", "tangent-facts", "two-tangents-angle", "common-tangent-lengths",
       "radical-axis", "butterfly-theorem", "miquels-theorem", "harmonic-quadrilateral",
       "cyclic-quad-diagonals", "circle-equation", "circular-segment", "brahmaguptas-formula",
-      "pitots-theorem", "descartes-circle-theorem", "caseys-theorem", "mixtilinear-incircle"
+      "pitots-theorem", "descartes-circle-theorem", "caseys-theorem", "mixtilinear-incircle",
+      "tangent-circles"
     ],
     "triangle areas": [
       "herons-formula", "trig-area", "triangle-area-standard", "shoelace-formula",
@@ -602,8 +603,8 @@
       "totient-divisor-sum"
     ],
     "floors and radicals": [
-      "absolute-value-rules", "floor-basics", "hermite-identity", "ramanujan-nested-radical",
-      "rationalizing"
+      "absolute-value-rules", "taxicab-region", "abs-value-graphing", "floor-basics",
+      "hermite-identity", "ramanujan-nested-radical", "rationalizing"
     ],
     "graph theory": [
       "cayleys-formula", "eulerian-paths", "graph-coloring", "halls-marriage", "konigs-theorem",
@@ -1255,7 +1256,8 @@
     "menelaus-theorem", "ratio-lemma", "apollonius-theorem", "rouths-theorem", "trig-ceva",
     "symmedian-lemoine", "harmonic-quadrilateral", "lemoine-point",
     "stars-and-bars", "grid-paths", "catalan-numbers", "am-gm", "jensens-inequality",
-    "roots-of-unity", "floor-basics", "absolute-value-rules", "lattice-points-gcd",
+    "roots-of-unity", "floor-basics", "absolute-value-rules", "taxicab-region", "tangent-circles",
+    "lattice-points-gcd",
     // These three carried a hand-written `diagram:` field that the card face used directly.
     // That field is gone, so they are listed here to keep their card-face figure — and going
     // through this path means they now get `card-glance`, hence cropDiagramHeight.
@@ -2012,6 +2014,17 @@
     p.formulas.forEach(fid => (PROBLEMS_BY_FORMULA[fid] = PROBLEMS_BY_FORMULA[fid] || []).push(p));
   });
   Object.keys(PROBLEMS_BY_FORMULA).forEach(fid => PROBLEMS_BY_FORMULA[fid].sort((a, b) => b.year - a.year || a.ref.localeCompare(b.ref)));
+
+  // One sitting (e.g. "2026 AIME I") → its problems in number order. The Database tree keys on
+  // family and year, which merges AIME I with AIME II; the footer navigator has to stay inside
+  // a single paper, so it needs its own index.
+  const CONTEST_TREE = {};
+  const contestKey = p => p.year + " " + p.cname;
+  PROBLEM_DB.forEach(p => (CONTEST_TREE[contestKey(p)] = CONTEST_TREE[contestKey(p)] || []).push(p));
+  Object.keys(CONTEST_TREE).forEach(k => CONTEST_TREE[k].sort((a, b) => a.num - b.num));
+  // How many problems the paper actually has, so the strip can show which are not yet tagged
+  // rather than implying the paper is as short as our coverage.
+  const FAM_LENGTH = { "AIME": 15, "AMC 8": 25, "AMC 10": 25, "AMC 12": 25 };
 
   // Competition → year → problems tree for the Database sidebar navigator.
   const DB_TREE = {};
@@ -3077,6 +3090,37 @@
     const nav = $content.querySelector(".db-fam-list");
     if (nav) nav.addEventListener("click", e => { if (e.target.closest("a")) dbQuery = ""; });
   }
+  // The AoPS "See also" box, rebuilt against our own data: the sitting, previous and next,
+  // and every problem number in the paper. Numbers we have not tagged are shown but inert, so
+  // the strip doubles as a coverage map instead of hiding the gaps.
+  function contestNavHtml(p) {
+    const sibs = CONTEST_TREE[contestKey(p)] || [];
+    if (!sibs.length) return "";
+    const i = sibs.findIndex(q => q.slug === p.slug);
+    const prev = i > 0 ? sibs[i - 1] : null;
+    const next = i >= 0 && i < sibs.length - 1 ? sibs[i + 1] : null;
+    const bySlot = {}; sibs.forEach(q => { bySlot[q.num] = q; });
+    const total = Math.max(FAM_LENGTH[p.fam] || 0, sibs[sibs.length - 1].num);
+    const cells = [];
+    for (let k = 1; k <= total; k++) {
+      const q = bySlot[k];
+      cells.push(q
+        ? `<a class="cn-num${q.slug === p.slug ? " cn-here" : ""}" href="#/problem/${q.slug}"${q.slug === p.slug ? ' aria-current="true"' : ""}>${k}</a>`
+        : `<span class="cn-num cn-missing" title="Not yet in the database">${k}</span>`);
+    }
+    const side = (label, q) => q
+      ? `<a class="cn-side" href="#/problem/${q.slug}"><span class="cn-side-label">${label}</span><span class="cn-side-ref">Problem ${q.num}</span></a>`
+      : `<span class="cn-side cn-side-off"><span class="cn-side-label">${label}</span><span class="cn-side-ref">&mdash;</span></span>`;
+    const famHref = `#/problems/${famSlug(p.fam)}/${p.year}`;
+    return `
+      <nav class="contest-nav" aria-label="Other problems in this contest">
+        <div class="cn-head"><a href="${famHref}">${escapeAttr(p.year + " " + p.cname)}</a></div>
+        <div class="cn-sides">${side("Preceded by", prev)}${side("Followed by", next)}</div>
+        <div class="cn-nums">${cells.join("")}</div>
+        <div class="cn-foot"><a href="#/problems/${famSlug(p.fam)}/${p.year}">All ${escapeAttr(p.fam)} problems</a></div>
+      </nav>`;
+  }
+
   function renderProblemDetail(slug) {
     const p = PROBLEM_BY_SLUG[slug];
     if (!p) { location.hash = "#/problems"; return; }
@@ -3100,6 +3144,7 @@
         </div>
         <p class="prob-note">The full statement and solution live on the Art of Problem Solving wiki.</p>
         ${p.url ? `<a class="aops-btn" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">Open on AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
+        ${contestNavHtml(p)}
       </div>`;
     renderMath($content);
   }

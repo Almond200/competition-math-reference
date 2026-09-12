@@ -147,11 +147,20 @@ window.MATH_SECTIONS.push({
           id: "regular-hexagon-area",
           name: "Regular Hexagon of Side $s$",
           latex: String.raw`A = \frac{3s^2\sqrt{3}}{2}`,
-          description: String.raw`Exactly six equilateral triangles. Long diagonal $= 2s$, short diagonal $= s\sqrt{3}$.`,
-          keywords: ["hexagon", "six equilateral triangles", "diagonals", "regular hexagon area", "area of a hexagon", "hexagon apothem"],
+          description: String.raw`Exactly six equilateral triangles, so the area is six times $\frac{s^2\sqrt3}{4}$ and the apothem is $\frac{s\sqrt3}{2}$, which is also the short diagonal halved.`,
+          keywords: ["hexagon", "six equilateral triangles", "regular hexagon area", "area of a hexagon", "hexagon apothem"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
+        {
+          id: "hexagon-diagonals",
+          name: "Diagonals of a Regular Hexagon",
+          latex: String.raw`\text{short} = s\sqrt3, \qquad \text{long} = 2s, \qquad \text{long} : \text{short} : \text{side} = 2 : \sqrt3 : 1`,
+          description: String.raw`A regular hexagon of side $s$ has only two diagonal lengths. The long one joins opposite vertices, passes through the center and is a diameter of the circumcircle, so it is $2s$. The short one skips a single vertex and cuts off an isosceles triangle with legs $s$ and apex $120^\circ$, giving $s\sqrt3$. Both follow from the hexagon being six equilateral triangles, and the three lengths $2 : \sqrt3 : 1$ are the sides of the $30$-$60$-$90$ triangle that half a short diagonal creates.`,
+          keywords: ["hexagon diagonal", "regular hexagon diagonals", "long diagonal", "short diagonal", "diagonal of a hexagon", "opposite vertices hexagon", "s root 3", "two diagonal lengths"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },,
         {
           id: "regular-dodecagon",
           name: "Regular Dodecagon of Side $s$",
@@ -196,21 +205,48 @@ window.MATH_SECTIONS.push({
           keywords: ["diagonals angle", "quadrilateral area", "sine", "area from diagonals", "half d1 d2 sine", "kite and rhombus area"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "van-aubel",
+          name: "Van Aubel's Theorem",
+          latex: String.raw`\text{squares on the sides: segments joining opposite centers are equal and } \perp`,
+          description: String.raw`Erect a square outward on each side of any quadrilateral (even non-convex): the two segments connecting centers of opposite squares have equal length and are perpendicular. Proved neatly with complex numbers — each center is a $90^\circ$-rotation average of its side's endpoints.`,
+          keywords: ["van aubel", "squares on sides", "equal perpendicular segments", "quadrilateral squares"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "bretschneiders-formula",
+          name: "Bretschneider's Formula",
+          latex: String.raw`A = \sqrt{(s-a)(s-b)(s-c)(s-d) - abcd \cos^2\left(\frac{A+C}{2}\right)}`,
+          description: String.raw`Area of any convex quadrilateral, using opposite angles $A, C$. When cyclic, $A + C = 180^\circ$ kills the last term, recovering Brahmagupta.`,
+          keywords: ["general quadrilateral area", "bretschneider", "brahmagupta generalization", "bretschneider formula", "general quadrilateral area", "brahmagupta generalization"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "euler-quadrilateral",
+          name: "Euler's Quadrilateral Theorem",
+          latex: String.raw`a^2 + b^2 + c^2 + d^2 = p^2 + q^2 + 4m^2`,
+          description: String.raw`For any convex quadrilateral with diagonals $p, q$ and $m$ the distance between the midpoints of the diagonals. $m = 0$ gives the parallelogram law.`,
+          keywords: ["parallelogram law", "diagonal midpoints", "generalization", "euler quadrilateral theorem", "diagonals and midpoint segment", "parallelogram law for quadrilaterals"],
+          importance: "lowest",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "varignons-theorem",
+          name: "Varignon's Theorem",
+          latex: String.raw`[\text{Varignon parallelogram}] = \frac{1}{2}[ABCD]`,
+          description: String.raw`Connecting the midpoints of the sides of any quadrilateral yields a parallelogram whose area is half the original's, with sides parallel to the diagonals.`,
+          keywords: ["midpoints", "parallelogram", "half area", "varignon"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         }
       ]
     },
     {
       title: "Triangle Areas & Radii",
       formulas: [
-        {
-          id: "area-method",
-          name: "Area Ratio from Base Ratios",
-          latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
-          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
-          keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
-          importance: "medium",
-          level: ["AMC12", "AIME", "Olympiad"]
-        },
         {
           id: "triangle-area-standard",
           name: "Standard Triangle Area",
@@ -480,9 +516,9 @@ window.MATH_SECTIONS.push({
         {
           id: "vivianis-theorem",
           name: "Viviani's Theorem",
-          latex: String.raw`d_1 + d_2 + d_3 = h`,
-          description: String.raw`For any point inside an equilateral triangle, the perpendicular distances to the three sides sum to the altitude. Proof: split into three triangles and compare areas.`,
-          keywords: ["equilateral", "distances to sides", "constant sum", "altitude"],
+          latex: String.raw`d_1 + d_2 + d_3 = h, \qquad a\,d_a + b\,d_b + c\,d_c = 2[ABC]`,
+          description: String.raw`For any point inside an equilateral triangle the perpendicular distances to the three sides sum to the altitude, by splitting into three triangles and comparing areas. Two extensions matter more than the statement itself. Counting a distance as negative when $P$ lies beyond that side makes the sum equal $h$ for every point of the plane, not just interior ones. And the same area decomposition on any triangle gives $a\,d_a + b\,d_b + c\,d_c = 2[ABC]$, of which Viviani is the case $a=b=c$.`,
+          keywords: ["equilateral", "distances to sides", "constant sum", "altitude", "signed distances", "point outside the triangle", "weighted sum of distances", "viviani general triangle"],
           importance: "low",
           level: ["AMC12", "AIME"]
         },
@@ -762,15 +798,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "harmonic-quadrilateral",
-          name: "Harmonic Quadrilaterals & the Symmedian in a Circle",
-          latex: String.raw`\frac{BD}{CD} = \frac{AB}{AC} \iff AD \text{ is the } A\text{-symmedian}, \qquad \frac{BE}{CE} = \left(\frac{AB}{AC}\right)^{2}`,
-          description: String.raw`The tangents to the circumcircle at $B$ and $C$ meet at the pole $X$ of $BC$, and $AX$ is the $A$-symmedian. Extending it to meet the circle again at $D$ makes $ABDC$ a harmonic quadrilateral, meaning $AB \cdot CD = AC \cdot BD$. The engine is a pair of similar triangles: $XB = XC$ as tangent lengths and $XB^2 = XA \cdot XD$ by power of a point, so $\triangle XBA \sim \triangle XDB$ and $\triangle XCA \sim \triangle XDC$. Both proportions run in both directions, so either one is a test for the symmedian rather than just a consequence of it.`,
-          keywords: ["harmonic quadrilateral", "symmedian in a circle", "tangents meet on the symmedian", "pole of BC", "BD/CD = AB/AC", "similar triangles from tangents", "power of a point symmedian", "AB*CD = AC*BD", "second intersection of the symmedian"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "lemoine-point",
           name: "The Lemoine Point (Symmedian Point)",
           latex: String.raw`K = (a^2 : b^2 : c^2), \qquad d_a : d_b : d_c = a : b : c`,
@@ -956,6 +983,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "tangent-circles",
+          name: "Tangent Circles & the Line of Centers",
+          latex: String.raw`d = R + r \ \text{(external)}, \qquad d = |R - r| \ \text{(internal)}`,
+          description: String.raw`Two tangent circles touch at a point that lies on the line joining their centers, so the distance $d$ between centers is fixed by the radii alone: $R + r$ when they touch from outside, $|R - r|$ when one lies inside the other. This is the move that turns a tangency condition into a length equation. The same quantity classifies every other position: $d \gt R + r$ separate, $|R-r| \lt d \lt R+r$ crossing, $d \lt |R-r|$ nested. All of it carries over verbatim to spheres, where it is usually the fastest way to place a ball resting inside or outside another.`,
+          keywords: ["tangent circles", "externally tangent", "internally tangent", "distance between centers", "line of centers", "circle packing", "touching circles", "tangency point collinear", "two circles tangent"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "miquels-theorem",
           name: "Miquel's Theorem",
           latex: String.raw`\odot(AEF), \; \odot(BFD), \; \odot(CDE) \text{ meet at one point}`,
@@ -1060,56 +1096,11 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
-          id: "bretschneiders-formula",
-          name: "Bretschneider's Formula",
-          latex: String.raw`A = \sqrt{(s-a)(s-b)(s-c)(s-d) - abcd \cos^2\left(\frac{A+C}{2}\right)}`,
-          description: String.raw`Area of any convex quadrilateral, using opposite angles $A, C$. When cyclic, $A + C = 180^\circ$ kills the last term, recovering Brahmagupta.`,
-          keywords: ["general quadrilateral area", "bretschneider", "brahmagupta generalization", "bretschneider formula", "general quadrilateral area", "brahmagupta generalization"],
-          importance: "lower",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "varignons-theorem",
-          name: "Varignon's Theorem",
-          latex: String.raw`[\text{Varignon parallelogram}] = \frac{1}{2}[ABCD]`,
-          description: String.raw`Connecting the midpoints of the sides of any quadrilateral yields a parallelogram whose area is half the original's, with sides parallel to the diagonals.`,
-          keywords: ["midpoints", "parallelogram", "half area", "varignon"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "euler-quadrilateral",
-          name: "Euler's Quadrilateral Theorem",
-          latex: String.raw`a^2 + b^2 + c^2 + d^2 = p^2 + q^2 + 4m^2`,
-          description: String.raw`For any convex quadrilateral with diagonals $p, q$ and $m$ the distance between the midpoints of the diagonals. $m = 0$ gives the parallelogram law.`,
-          keywords: ["parallelogram law", "diagonal midpoints", "generalization", "euler quadrilateral theorem", "diagonals and midpoint segment", "parallelogram law for quadrilaterals"],
-          importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "pascals-theorem",
-          name: "Pascal's Theorem",
-          latex: String.raw`AB \cap DE, \;\; BC \cap EF, \;\; CD \cap FA \;\text{ are collinear}`,
-          description: String.raw`Inscribe any hexagon $ABCDEF$ in a circle (self-intersecting allowed): the three intersection points of opposite sides lie on one line — the Pascal line. The dual, Brianchon's theorem: a hexagon circumscribed about a circle has its three main diagonals concurrent. Degenerate versions (letting adjacent vertices merge so a side becomes a tangent line) are the contest-useful forms.`,
-          keywords: ["pascal line", "hexagon in circle", "brianchon", "collinear intersections", "projective"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
           id: "cyclic-quad-radius",
           name: "Circumradius of a Cyclic Quadrilateral",
           latex: String.raw`R = \frac{1}{4K}\sqrt{(ab+cd)(ac+bd)(ad+bc)}`,
           description: String.raw`With $K$ the area (from Brahmagupta): the circumradius of a cyclic quadrilateral in terms of its four sides alone. The three paired products are the same ones appearing in Ptolemy ($ac + bd = pq$) and the diagonal-length formulas.`,
           keywords: ["circumradius cyclic quadrilateral", "parameshvara", "four sides", "brahmagupta companion"],
-          importance: "lower",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "van-aubel",
-          name: "Van Aubel's Theorem",
-          latex: String.raw`\text{squares on the sides: segments joining opposite centers are equal and } \perp`,
-          description: String.raw`Erect a square outward on each side of any quadrilateral (even non-convex): the two segments connecting centers of opposite squares have equal length and are perpendicular. Proved neatly with complex numbers — each center is a $90^\circ$-rotation average of its side's endpoints.`,
-          keywords: ["van aubel", "squares on sides", "equal perpendicular segments", "quadrilateral squares"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
         },
@@ -1544,6 +1535,15 @@ window.MATH_SECTIONS.push({
           level: ["Olympiad"]
         },
         {
+          id: "pascals-theorem",
+          name: "Pascal's Theorem",
+          latex: String.raw`AB \cap DE, \;\; BC \cap EF, \;\; CD \cap FA \;\text{ are collinear}`,
+          description: String.raw`Inscribe any hexagon $ABCDEF$ in a circle (self-intersecting allowed): the three intersection points of opposite sides lie on one line — the Pascal line. The dual, Brianchon's theorem: a hexagon circumscribed about a circle has its three main diagonals concurrent. Degenerate versions (letting adjacent vertices merge so a side becomes a tangent line) are the contest-useful forms.`,
+          keywords: ["pascal line", "hexagon in circle", "brianchon", "collinear intersections", "projective"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
           id: "desargues-theorem",
           name: "Desargues's Theorem",
           latex: String.raw`\text{perspective from a point} \iff \text{perspective from a line}`,
@@ -1578,6 +1578,15 @@ window.MATH_SECTIONS.push({
           keywords: ["harmonic bundle", "harmonic conjugate", "cross ratio -1", "harmonic division", "internal external bisector", "polar", "complete quadrilateral", "harmonic range"],
           importance: "low",
           level: ["Olympiad"]
+        },
+        {
+          id: "harmonic-quadrilateral",
+          name: "Harmonic Quadrilaterals & the Symmedian in a Circle",
+          latex: String.raw`\frac{BD}{CD} = \frac{AB}{AC} \iff AD \text{ is the } A\text{-symmedian}, \qquad \frac{BE}{CE} = \left(\frac{AB}{AC}\right)^{2}`,
+          description: String.raw`The tangents to the circumcircle at $B$ and $C$ meet at the pole $X$ of $BC$, and $AX$ is the $A$-symmedian. Extending it to meet the circle again at $D$ makes $ABDC$ a harmonic quadrilateral, meaning $AB \cdot CD = AC \cdot BD$. The engine is a pair of similar triangles: $XB = XC$ as tangent lengths and $XB^2 = XA \cdot XD$ by power of a point, so $\triangle XBA \sim \triangle XDB$ and $\triangle XCA \sim \triangle XDC$. Both proportions run in both directions, so either one is a test for the symmedian rather than just a consequence of it.`,
+          keywords: ["harmonic quadrilateral", "symmedian in a circle", "tangents meet on the symmedian", "pole of BC", "BD/CD = AB/AC", "similar triangles from tangents", "power of a point symmedian", "AB*CD = AC*BD", "second intersection of the symmedian"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "complete-quadrilateral-miquel",

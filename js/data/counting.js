@@ -260,15 +260,6 @@ window.MATH_SECTIONS.push({
           level: ["Olympiad"]
         },
         {
-          id: "zeckendorf-theorem",
-          name: "Zeckendorf's Theorem",
-          latex: String.raw`n = F_{k_1} + F_{k_2} + \cdots + F_{k_r}, \qquad k_1 \gg k_2 \gg \cdots \;(k_i \ge k_{i+1} + 2)`,
-          description: String.raw`Every positive integer has a unique representation as a sum of non-consecutive Fibonacci numbers (no two adjacent $F_i$). You build it greedily: repeatedly subtract the largest Fibonacci number $\le n$. This gives a canonical "Fibonacci base," underlies Fibonacci nim and Wythoff's game, and turns "represent $n$ with Fibonacci numbers" counting problems into digit arguments on the Zeckendorf string.`,
-          keywords: ["zeckendorf", "fibonacci representation", "non consecutive fibonacci", "fibonacci base", "greedy fibonacci", "wythoff", "unique representation"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "moser-circle",
           name: "Moser's Circle (Regions from Chords)",
           latex: String.raw`R(n) = \binom{n}{4} + \binom{n}{2} + 1 = 1,\ 2,\ 4,\ 8,\ 16,\ \mathbf{31},\ 57,\ \ldots`,
@@ -276,6 +267,15 @@ window.MATH_SECTIONS.push({
           keywords: ["euler formula regions", "moser circle", "regions from chords", "points on a circle", "1 2 4 8 16 31", "not powers of two", "chord regions", "pattern trap"],
           importance: "low",
           level: ["MATHCOUNTS", "AMC12", "AIME"]
+        },
+        {
+          id: "plane-regions",
+          name: "Regions from Lines and Circles",
+          latex: String.raw`R_{\text{lines}} = \frac{n^2 + n + 2}{2}, \qquad R_{\text{circles}} = n^2 - n + 2`,
+          description: String.raw`Maximum regions from $n$ lines (no two parallel, no three concurrent) or $n$ circles (each pair meeting twice). Incremental principle: each new curve adds one region per crossing plus one — which is also how region-counting problems with expected values decompose.`,
+          keywords: ["regions", "lazy caterer", "pancake", "lines divide plane", "circles divide plane"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },
@@ -308,6 +308,15 @@ window.MATH_SECTIONS.push({
           keywords: ["set partitions", "stirling", "bell", "surjections", "onto functions"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "permutation-cycle-structure",
+          name: "Permutation Cycle Structure & Order",
+          latex: String.raw`f^{\,k} = \mathrm{id} \iff \text{every cycle length divides } k, \qquad \operatorname{ord}(f) = \operatorname{lcm}(\text{cycle lengths})`,
+          description: String.raw`Take any bijection $f$ from a finite set to itself and follow one element: $x, f(x), f(f(x)), \dots$ must eventually return to $x$, so the set breaks into disjoint cycles, and that picture is what almost every question about $f$ is really about. Repeatedly applying $f$ rotates each cycle independently, so $f$ returns everything to its start after $\operatorname{lcm}$ of the cycle lengths steps, and $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$. Counting is by cycle type: the number with $m_c$ cycles of each length $c$ is $\frac{n!}{\prod_c c^{m_c} m_c!}$.`,
+          keywords: ["cycle structure", "cycle type", "order of a permutation", "disjoint cycle decomposition", "iterating a function returns to start", "f composed with itself k times is the identity", "lcm of cycle lengths", "counting permutations by cycle type", "self-inverse function", "involution"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
         },
         {
           id: "stirling-first-kind",
@@ -562,15 +571,6 @@ window.MATH_SECTIONS.push({
           keywords: ["eulerian", "trace without lifting", "even degree", "bridges", "draw one stroke"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "plane-regions",
-          name: "Regions from Lines and Circles",
-          latex: String.raw`R_{\text{lines}} = \frac{n^2 + n + 2}{2}, \qquad R_{\text{circles}} = n^2 - n + 2`,
-          description: String.raw`Maximum regions from $n$ lines (no two parallel, no three concurrent) or $n$ circles (each pair meeting twice). Incremental principle: each new curve adds one region per crossing plus one — which is also how region-counting problems with expected values decompose.`,
-          keywords: ["regions", "lazy caterer", "pancake", "lines divide plane", "circles divide plane"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "planar-graph-bound",
