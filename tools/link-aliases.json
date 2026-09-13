@@ -14,6 +14,9 @@
   "abs-value-graphing": [
    "Graphing Absolute Value Transformations"
   ],
+  "abs-value-relations": [
+   "Graphing Absolute Value Relations"
+  ],
   "absolute-value-rules": [
    "Absolute Value Rules"
   ],
@@ -1678,9 +1681,6 @@
   ],
   "tangent-line-trick": [
    "Tangent Line Trick"
-  ],
-  "taxicab-region": [
-   "Absolute-Value Regions in the Plane"
   ],
   "telescoping": [
    "Telescoping Sums"

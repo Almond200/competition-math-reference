@@ -603,7 +603,7 @@
       "totient-divisor-sum"
     ],
     "floors and radicals": [
-      "absolute-value-rules", "taxicab-region", "abs-value-graphing", "floor-basics",
+      "absolute-value-rules", "abs-value-relations", "abs-value-graphing", "floor-basics",
       "hermite-identity", "ramanujan-nested-radical", "rationalizing"
     ],
     "graph theory": [
@@ -1256,7 +1256,7 @@
     "menelaus-theorem", "ratio-lemma", "apollonius-theorem", "rouths-theorem", "trig-ceva",
     "symmedian-lemoine", "harmonic-quadrilateral", "lemoine-point",
     "stars-and-bars", "grid-paths", "catalan-numbers", "am-gm", "jensens-inequality",
-    "roots-of-unity", "floor-basics", "absolute-value-rules", "taxicab-region", "tangent-circles",
+    "roots-of-unity", "floor-basics", "absolute-value-rules", "abs-value-relations", "tangent-circles",
     "lattice-points-gcd",
     // These three carried a hand-written `diagram:` field that the card face used directly.
     // That field is gone, so they are listed here to keep their card-face figure — and going

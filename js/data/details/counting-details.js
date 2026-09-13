@@ -406,6 +406,8 @@ Applying $f$ once rotates every cycle by one step, and the cycles do not interac
 ## How to use it
 Whenever a problem constrains an iterate of $f$, translate it immediately into which cycle lengths are allowed, then case on the partitions of $n$ using only those parts and count each type with the formula. Read backwards it answers the reverse question too: the largest order available to a permutation of $n$ elements is the largest lcm of any partition of $n$, which is why the answer is usually far bigger than $n$ but far smaller than $n!$. The same decomposition is what makes a permutation's parity well defined, since a $c$-cycle is $c-1$ transpositions.
 
+One family is worth knowing in closed form, because it comes up whenever something steps around a ring: moving $k$ places at a time around $n$ positions splits the $n$ elements into exactly $\\gcd(n,k)$ cycles, each of length $n/\\gcd(n,k)$. The orbit of a single element closes as soon as $mk \\equiv 0 \\pmod n$, which first happens at $m = n/\\gcd(n,k)$, and the orbits partition the ring.
+
 ## On contests
 The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are exactly the divisors of $k$; 2026 AIME I Problem 7 is that question with $k = 6$. [[derangements|Derangements]] ask the complementary question about fixed points, averaging over cycle structure is what [[burnsides-lemma|Burnside's lemma]] does, and counting by *number* of cycles rather than by type is [[stirling-first-kind|Stirling numbers of the first kind]].`,
 

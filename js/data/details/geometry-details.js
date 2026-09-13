@@ -1522,6 +1522,8 @@ Drop the altitude from $A$ to $BC$ at foot $H$. In the two right triangles, $BH 
 ## How to use it
 It's the fastest linear relation between a side and its two adjacent base angles — no squaring. Adding the three, or eliminating cosines between them, reproduces the Law of Cosines, so reach for projection when you want the cosines to appear linearly rather than quadratically.
 
+The same accounting works on a path rather than a triangle: project every segment of a polyline onto one direction and the projections add to the net displacement in that direction. When every segment happens to make the same angle $\\theta$ with that direction, the sum collapses to (total path length)$\\cdot\\cos\\theta$, so a zigzag with a known total length and a known net displacement gives up its angle immediately.
+
 ## On contests
 A cheap AMC 12 / AIME identity, handy inside trig-bash and whenever an altitude foot splits a side. Underused because it looks too elementary to matter.`,
 

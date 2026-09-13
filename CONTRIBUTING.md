@@ -38,8 +38,8 @@ Each item here is something that has actually gone wrong, not a hypothetical.
 
 1. **Check the subsection it landed in.** Inserting after a card's closing `},` puts the new
    card in the *next* subsection whenever the anchor card is last in its own, because the brace
-   you matched closes the subsection rather than the card. `taxicab-region` went into "Rates,
-   Work & Mixtures" this way. Verify with the subsection titles, do not assume:
+   you matched closes the subsection rather than the card. The card now called `abs-value-relations` went into
+   "Rates, Work & Mixtures" this way. Verify with the subsection titles, do not assume:
 
    ```python
    subs = [(m.start(), m.group(1)) for m in re.finditer(r'title: "([^"]+)"', src)]
@@ -58,14 +58,19 @@ Each item here is something that has actually gone wrong, not a hypothetical.
    one exception is `search-vectors.{json,bin}`, which carry no `?v=` because
    `js/search-semantic.js` revalidates them instead — see the cache section below.
 
-4. **Add the example to `examples-supplement.js`**, never to a card's dead `example:` field.
+4. **No raw `"` inside a problem `strategy`.** It is a double-quoted JS string, so an unescaped
+   quote ends it and breaks the *whole file* — `validate-problem-db.js` then fails to load rather
+   than reporting a violation, which is the signal to look for this. Reword instead of escaping;
+   quoted phrases read badly in a strategy anyway.
+
+5. **Add the example to `examples-supplement.js`**, never to a card's dead `example:` field.
    Those 143 fields were deleted precisely because they were shadowed and drifting.
 
-5. **A figure goes through the diagram DSL**, one canvas size for every panel on a card, and a
+6. **A figure goes through the diagram DSL**, one canvas size for every panel on a card, and a
    `cap()` on every panel. Then confirm on the rendered page that no text is drawn outside its
    viewBox and that every panel has its caption.
 
-6. **Run, in order:** `jsc` each edited file (a `window` ReferenceError means the parse
+7. **Run, in order:** `jsc` each edited file (a `window` ReferenceError means the parse
    succeeded); `jsc tools/validate-problem-db.js`; `python3 tools/build-cross-links.py --seed`
    if you added or **renamed** a card, since the alias table is generated from card names and a
    rename leaves it stale; `--report` and review every candidate in context; then rebuild the
@@ -105,6 +110,21 @@ An entry is `{ ref, formulas, strategy }` — no problem statement, just a link 
   AoPS sets $s=x+y$, $p=xy$ outright — that is `sp-substitution`.
 - **Tagging from the wrong solution.** See rule 3.
 
+### AMC 10 and AMC 12 share problems
+
+The later problems of an AMC 10 and the earlier problems of the AMC 12 of the same letter overlap,
+so one problem can sit in the database twice under two refs. Both entries must carry the **same tag
+set** — a solver landing on either page is looking at one problem, and drift between them is a
+defect no per-entry review can see.
+
+The AoPS page says so at the top ("The following problem is from the 2023 AMC 10A #16 and 2023 AMC
+12A #13, so those problems redirect to this page"), so the check costs nothing while the page is
+already open. Four such pairs exist today: 2023 10A #16 = 12A #13, 2023 10B #17 = 12B #13, 2024
+10B #18 = 12B #14, and 2024 10B #23 = 12B #18. One of the four had drifted.
+
+Collisions are only possible between the same year *and* letter, so a 10B entry can only ever
+collide with a 12B entry.
+
 ### Where new cards go
 
 A card for a **technique** belongs in `js/data/patterns.js` with `type: "method"` (or
@@ -115,34 +135,66 @@ Additional Tools split exists to prevent.
 ### Recording missing coverage
 
 When a problem's best solution uses something the library has no card for, **record it here**
-before moving on, with the sighting that produced it. A single sighting is a candidate; a
-second sighting is usually enough to justify writing the card. Classify it when you record it,
-because that decides where the card goes:
+before moving on, with the sighting that produced it. Two bars it has to clear first.
 
-- **formula** — a stated result, goes in one of the four subject files
-- **method** — a technique you apply, goes in `patterns.js` with `type: "method"`
-- **pattern** — a recognisable problem shape, goes in `patterns.js` with `type: "pattern"`
+**It must be a general pattern, not one problem's move.** State it without referring to the problem
+that produced it. If you cannot, it is a worked example and belongs in an existing card's write-up,
+not on this register. Measured on the first seven candidates recorded here, four failed this test
+or were already covered — the register was filling up with problem residue.
+
+**Search for an owner before adding a row.** Of those seven, two were already stated generally by a
+card that existed, and three more were one clause away from being covered.
+
+Then classify it, because that decides where a card would go:
+
+- **method** — the default, and what nearly every problem-derived finding actually is: a technique
+  you apply. Goes in `patterns.js` with `type: "method"`.
+- **pattern** — a recognisable problem shape rather than a technique. Also `patterns.js`, with
+  `type: "pattern"`.
+- **formula** — needs a justification, not just an expression. The four subject files already hold
+  essentially every true formula, so the test is whether the library would carry this statement
+  even if no contest had ever asked for it. "Two tangent circles have $d = R \pm r$" passes.
+  "The area of this particular region is $2c^2$" does not — that is a method with an expression
+  attached, which is a different thing, and putting an expression in the latex field does not make
+  it a formula.
 
 #### Written so far
 
-| gap | kind | sightings | nearest existing card |
+| gap | kind | sightings | card |
 |---|---|---|---|
-| order of a permutation is the lcm of its cycle lengths; count by cycle type | formula | 2026 I #7 | *written* — `permutation-cycle-structure` |
-| find where a sequence peaks by the consecutive ratio crossing 1 | **method** | 1991 #3 | *written* — `largest-term-ratio` |
-| two tangent circles: the touch point is on the line of centers, so $d = R \pm r$ | formula | 2023 12A #18, and bedrock throughout | *written* — `tangent-circles` |
-| $|x|+|y| \le c$ is a tilted square of area $2c^2$, and each nested absolute value reflects the region across an axis | formula | 2023 12B #9, 2022 12A #5 | *written* — `taxicab-region` |
+| order of a permutation is the lcm of its cycle lengths; count by cycle type | formula | 2026 I #7 | `permutation-cycle-structure` |
+| find where a sequence peaks by the consecutive ratio crossing 1 | **method** | 1991 #3 | `largest-term-ratio` |
+| two tangent circles: the touch point is on the line of centers, so $d = R \pm r$ | formula | 2023 12A #18, and bedrock throughout | `tangent-circles` |
+| graph a relation in $|x|$ and $|y|$ by solving one quadrant and reflecting, including nested bars | **method** | 2023 12B #9, 2022 12A #5 | `abs-value-relations` |
+
+#### Closed by a clause on a card that already existed
+
+| gap | resolved on |
+|---|---|
+| perpendicular bisector of a chord passes through the center | `equal-chords-arcs` — it carried the forward direction, not the locus reading that finds a circumcenter |
+| a step of size $k$ around an $n$-cycle splits into $\gcd(n,k)$ cycles | `permutation-cycle-structure` — it reasoned about orbits but never stated the count |
+| a polyline whose segments share an angle has net displacement (length)$\cdot\cos\theta$ | `projection-formula` — it stated the triangle case only |
+
+#### Closed as already covered
+
+| gap | already stated by |
+|---|---|
+| homogenize a two-variable equation by dividing by $y^2$ and solve for the ratio | `normalization` — "only the ratios matter, so you may fix one quantity for free" |
+| probability symmetry: drop the irrelevant player, the rest is a fair coin | `symmetry-probability` — the general statement; the sighting was one instance of it |
+
+#### Dropped as too narrow
+
+- pair consecutive factorials, $k!\,(k+1)! = (k!)^2(k+1)$, to expose square factors. One problem's
+  algebra. It reads as a solution, not a pattern, which is exactly what the first bar above rejects.
 
 #### Open candidates
 
 | gap | kind | sightings | nearest existing card |
 |---|---|---|---|
-| a step of size $k$ around an $n$-cycle splits into $\gcd(n,k)$ cycles | formula | 2025 II #11 | none |
-| perpendicular bisector of a chord passes through the center | formula | 2024 I #5 | `chord-length` states the distance, not the locus |
-| probability symmetry: drop the irrelevant player, the rest is a fair coin | **pattern** | 2026 II #7, 2026 I #9 | `symmetry-probability`, loosely |
-| homogenise a two-variable equation by dividing by $y^2$ and solve for the ratio | **method** | 2025 I #4 | none |
-| pair consecutive factorials, $k!\,(k+1)! = (k!)^2(k+1)$, to expose square factors | **method** | 2023 10B #15 | none |
-| a polyline whose every segment makes the same angle $\theta$ with a direction has net displacement (total length)$\cdot\cos\theta$ | **method** | 2023 12A #15 | `projection-formula` states it for a triangle only |
-| unwind a recursion that terminates on a sparse set (perfect squares, powers of 2) into a closed form on each interval between terminators | **method** | 2021 II #15 | none; `first-order-recurrence` and `linear-recurrence` both assume a fixed-step recurrence |
+| unwind a recursion that terminates only on a sparse set of inputs into a closed form on each interval between them | **method** | 2021 II #15 | none; `first-order-recurrence` and `linear-recurrence` both assume a fixed-step recurrence |
+| invert a digit-sum condition using the fact that the least positive integer with base-$b$ digit sum $s$ is strictly increasing in $s$ | **method** | 2020 II #5 | none; `base-conversion` handles representation, not this monotonicity |
+| in a regular polygon the circumradius, the apothem and half a side form a right triangle, so $R^2 = a^2 + (s/2)^2$ | formula | 2009 12A #19 | **one clause on `regular-polygon-area`**, which names the apothem but never relates it to $R$ and $s$. It is why the annulus between a regular polygon's two circles depends only on the side length, not on the number of sides |
+| reflecting a graph in $y = x$ gives the inverse relation, so a graph symmetric about that line is its own inverse | formula | 2024 12A #25 | **one clause on `reflection-coordinates`**, which gives the point-level swap $(x,y) \to (y,x)$ but not the function-level reading. No card in the library mentions inverse functions at all |
 
 Detailed per-year findings and the defect tally live in `tools/RETAG-NOTES.md`.
 
@@ -198,7 +250,7 @@ material is the worked example:
 | card | kind | owns |
 |---|---|---|
 | `abs-value-graphing` — Graphing Absolute Value Transformations | **method**, Additional Tools | what a bar does to a *graph*: $f(\|x\|)$ mirrors, $\|f(x)\|$ folds, $\|y\|=f(x)$ doubles; shifts and stretches; peel from the innermost bar; count solutions by sliding a horizontal line |
-| `taxicab-region` — Absolute-Value Regions in the Plane | **formula**, Algebra | what a bar cuts out of the *plane*: the tilted square and its area and lattice count, $\max(\|x\|,\|y\|)$ untilted, the rhombus, the taxicab disc, and the symmetry that deletes the bars ($x \to -x$ changes nothing, so solve on $x \ge 0$ and mirror) |
+| `abs-value-relations` — Graphing Absolute Value Relations | **method**, Additional Tools | what a bar does to a *region*: the symmetry that deletes the bars ($x \to -x$ changes nothing, so solve one quadrant and mirror), how a nested bar places copies, and the two shapes worth knowing by sight |
 | `absolute-value-rules` | formula, Algebra | the one-variable algebra: $\|x\| \lt a$ as a band, $\sqrt{x^2} = \|x\|$, $\|A\|=\|B\| \iff A = \pm B$ |
 
 The name carries its half of the split: that card is called *Transformations*, not *Equations*,
@@ -221,6 +273,68 @@ transformation from one card and the area formula from the other. It is overlapp
 
 When you are about to add a fourth bullet to a card that is already carrying two different jobs,
 that is the signal to split instead.
+
+## To-do
+
+Recorded, not built. Each has its research already done so it can be picked up cold.
+
+### The 3D British Flag theorem belongs on `british-flag-theorem`
+
+The card says the planar statement "holds even if $P$ is outside the rectangle or off its plane".
+That is a weaker claim than the **box** version, which is what 2021 AIME I #6 actually wants: for a
+rectangular box, the sums of squared distances to *diagonally opposite* vertices all agree,
+
+$$PA^2 + PG^2 = PB^2 + PH^2 = PC^2 + PE^2 = PD^2 + PF^2.$$
+
+Applying it twice gives the form that problem uses, $2PA^2 + PG^2 = PB^2 + PC^2 + PD^2$. Put the box
+form in the latex. Once it is there, 2021 I #6 could reasonably be tagged to this card instead of
+to `coordinate-bash` — right now it is not, because the card does not state what the problem needs.
+
+### A way to draw real 3D figures
+
+The honest finding is the opposite of the obvious guess: **stay in SVG and put the 3D in the
+coordinates.** Projecting real $(x,y,z)$ points down to 2D gives genuine three dimensions, and it
+keeps every existing pass working. A rotatable figure is reachable too, since `mountGeo`
+(`js/geo-interactive.js:79`) already maps pointer events through `getScreenCTM().inverse()`, so a
+drag could set azimuth and elevation instead of moving a point.
+
+**What exists now.** No projection maths, no `<canvas>`, no WebGL, no CSS 3D anywhere in the app.
+All 19 Solid Geometry cards fake depth by hand, and four of them independently open-code the *same*
+oblique box shift with *different* tuned constants — `dx,dy` of `70,50`, `65,45`, `60,45`, `64,48`
+at `js/data/diagrams/geometry-diagrams.js:976`, `:1339`, `:2118`, `:1429`. Tetrahedra are four
+literal screen points; round solids use a squashed ellipse; `regular-octahedron` says
+`// Schematic projection:` outright. A shared projector would unify all of that.
+
+**There is working prior art, used once and never generalised** —
+`js/data/diagrams/geometry-diagrams.js:3431`, inside `plane-intercept-form`:
+
+```js
+const ex = [-0.62, 0.36], ey = [1, 0.17], ez = [0, -1];
+const P = (u, v, w) => [O[0] + ex[0]*u + ey[0]*v + ez[0]*w, O[1] + ex[1]*u + ey[1]*v + ez[1]*w];
+```
+
+**What it would take:** roughly 60–100 lines in the shared helper block — `P(x,y,z)`, 3-vector
+`add3/sub3/cross3/norm3`, faces emitted back-to-front by centroid depth, and a hidden-edge test so
+occluded edges come out dashed the way the hand-drawn boxes already do.
+
+**Why not canvas, CSS 3D or WebGL.** `MATH_DIAGRAMS` entries are inert HTML strings inserted by
+`innerHTML` in three places (`js/app.js:1933`, `:2387`, `:2512`) with **no mount hook**, and the
+same string can be live in two places at once (card face plus hover preview). So any non-SVG
+surface needs a new mount contract, device-pixel-ratio handling, and a theme-redraw hook — the
+theme toggle (`js/app.js:3416`) re-renders nothing today, because SVG recolours for free from CSS
+variables. On top of that, all three lose the same four working features:
+
+- **copy-asy silently no-ops.** The button still appears, since `hasDiagram` only checks that a
+  `MATH_DIAGRAMS` entry exists (`js/app.js:2484`), but the handler finds zero `svg` elements
+  (`js/app.js:3571`) and neither copies nor reports a failure.
+- **Label de-collision stops running** — `tidyDiagrams` selects `".diagram svg"` (`js/app.js:1668`).
+- **Dead-height trimming stops** — `cropDiagramHeight` rewrites a viewBox (`js/app.js:1685`).
+- **The out-of-viewBox check has no analogue**, and that check is the acceptance test the diagram
+  checklist above depends on.
+
+One gotcha for whoever builds it: `tidyDiagram` re-appends every filled circle of radius $\le 7$ to
+the end of the SVG (`js/app.js:1702`), so a vertex dot drawn *behind* a face gets hoisted in front
+of it. Use a larger radius or an unfilled marker on projected solids.
 
 ## Filing: what goes where, and the moves already made
 
@@ -290,9 +404,10 @@ so the matcher can find a literal card name.**
 This replaces an earlier rule that said never to hand-write a link. That rule caused real damage,
 and it is worth knowing what it looked like so it is not reintroduced:
 
-- **Formal card names dropped mid-sentence.** "see [[taxicab-region|absolute-value regions in the
-  plane]] for the shapes those cut out" — a five-word title used where "the two-variable case"
-  says it better.
+- **Formal card names dropped mid-sentence.** "see [[…|absolute-value regions in the plane]] for
+  the shapes those cut out" — a five-word card title used where "the two-variable case" says it
+  better. (That card has since been reworked into `abs-value-relations`; the link now reads
+  "see [[abs-value-relations|the two-variable case]]".)
 - **Card titles used as parts of speech they do not fit** — as the subject of a verb ("*graphing
   absolute value transformations* uses in one variable…"), or as a predicate ("the modular case
   is *periodicity mod m*").

@@ -426,6 +426,17 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "abs-value-relations",
+          name: "Graphing Absolute Value Relations",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\text{relation in } |x| \Rightarrow \text{solve on } x \ge 0,\ \text{then mirror} \qquad \bigl||x|-h\bigr| \Rightarrow \text{copies centered at } \pm h`,
+          description: String.raw`Do not split an equation in $|x|$ and $|y|$ into four sign cases. A relation in $|x|$ is unchanged when $x$ becomes $-x$, so solve it on $x \ge 0$, where the bars simply vanish, and mirror the result; with bars on both variables, work the first quadrant and reflect into the other three. Every bar wrapped around a variable mirrors the whole picture across that axis, so a nested expression draws copies of a simpler region rather than a harder one, and an inner shift just moves where the copies sit.`,
+          keywords: ["graphing absolute value", "absolute value relation", "two variable absolute value", "nested absolute value", "symmetry to remove absolute values", "solve for x positive and reflect", "reflect into the other quadrants", "region in the plane", "taxicab", "diamond region", "four copies", "graph an absolute value inequality", "method"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
+        },,
+        {
           id: "trig-substitution",
           name: "Trigonometric Substitution",
           type: "method",

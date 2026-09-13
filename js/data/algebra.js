@@ -854,15 +854,6 @@ window.MATH_SECTIONS.push({
           keywords: ["absolute value", "distance on number line", "split cases", "sqrt x squared", "modulus"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },
-        {
-          id: "taxicab-region",
-          name: "Absolute-Value Regions in the Plane",
-          latex: String.raw`|x| + |y| \le c: \quad \text{area} = 2c^2, \quad \#\text{lattice} = 2c^2 + 2c + 1`,
-          description: String.raw`The shapes an absolute value cuts out of the plane, and the symmetry that finds them without casework. $|x| + |y| \le c$ is a square turned $45^\circ$ — vertices $(\pm c, 0)$ and $(0, \pm c)$, diagonals $2c$, area $2c^2$ — and $\max(|x|,|y|) \le c$ is the same square untilted. The lever for all of them is that a relation in $|x|$ is unchanged by $x \to -x$, so you may solve it on $x \ge 0$ with the bars simply deleted and mirror the answer back. For how a single bar reshapes a graph rather than a region, see graphing absolute value equations.`,
-          keywords: ["taxicab", "absolute value region", "diamond region", "rotated square", "x plus y absolute value", "area of absolute value region", "lattice points in a diamond", "L1 distance", "graph an absolute value inequality", "max of absolute values", "symmetry to remove absolute values", "solve for x positive and reflect", "region in the plane"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },

@@ -418,19 +418,20 @@
   })()];
 
   // The V and the two transformations that move it.
-  DIAGRAMS["taxicab-region"] = [(() => {
+  DIAGRAMS["abs-value-relations"] = [(() => {
     const m = frame(-3.7, 3.7, -3.7, 3.7, 60, 18, 290, 290), c = 3;
-    const dots = [];
-    for (let x = -c; x <= c; x++) for (let y = -c; y <= c; y++)
-      if (Math.abs(x) + Math.abs(y) <= c) dots.push(dot(m.pt(x, y), GRN, 3));
+    const P = (x, y) => m.pt(x, y);
+    // the first-quadrant piece solid, its three mirror images ghosted: the move the card teaches
+    const q1 = [P(0, 0), P(c, 0), P(0, c)];
+    const ghost = (sx, sy) => poly([P(0, 0), P(sx * c, 0), P(0, sy * c)], FNT, 1.3, "none");
     return wrap(410, 358, [
       axes(m),
-      poly([m.pt(c, 0), m.pt(0, c), m.pt(-c, 0), m.pt(0, -c)], ACC, 2.2),
-      ...dots,
-      txt(add(m.pt(1.35, 1.35), [0, 0]), "area 2c\u00b2", ACC, 12),
-      txt(add(m.pt(c, 0), [6, 16]), "(c, 0)", FNT, 11.5),
-      txt(add(m.pt(0, c), [8, -6]), "(0, c)", FNT, 11.5),
-      cap(410, 358, "|x| + |y| \u2264 c is a square on its corner: 25 lattice points at c = 3")
+      ghost(-1, 1), ghost(1, -1), ghost(-1, -1),
+      poly(q1, ACC, 2.4),
+      seg(P(c, 0), P(-c, 0), FNT, 1.1, "3 3"), seg(P(0, c), P(0, -c), FNT, 1.1, "3 3"),
+      txt(add(P(1.05, 1.05), [0, 0]), "x + y \u2264 c", ACC, 12),
+      txt(add(P(-2.1, 1.1), [0, 0]), "mirror", FNT, 11),
+      cap(410, 358, "drop the bars in the first quadrant, then reflect into the other three")
     ]);
   })(), (() => {
     const m = frame(-3.2, 3.2, -3.2, 3.2, 60, 18, 290, 290);
@@ -439,7 +440,7 @@
       axes(m),
       dia(1, 1), dia(-1, 1), dia(1, -1), dia(-1, -1),
       dot(m.pt(1, 1), GLD, 3), dot(m.pt(-1, 1), GLD, 3), dot(m.pt(1, -1), GLD, 3), dot(m.pt(-1, -1), GLD, 3),
-      cap(410, 358, "each nested |\u00b7| mirrors the picture: ||x|\u22121| + ||y|\u22121| \u2264 1 is four copies")
+      cap(410, 358, "a bar nested inside a shift places the copies: ||x|\u22121| + ||y|\u22121| \u2264 1")
     ]);
   })()];
 

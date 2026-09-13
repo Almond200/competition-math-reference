@@ -869,7 +869,7 @@ window.MATH_SECTIONS.push({
           id: "equal-chords-arcs",
           name: "Equal Chords, Arcs & Distances",
           latex: String.raw`\text{equal chords} \iff \text{equal arcs} \iff \text{equidistant from the center}`,
-          description: String.raw`In one circle (or two congruent circles) these three conditions are all equivalent: two chords have equal length, they cut off equal arcs, and they lie at equal distance from the center. Two workhorse consequences: the perpendicular from the center to a chord bisects both the chord and its arc, and of two unequal chords the longer one lies closer to the center — so the diameter, at distance $0$, is the longest chord.`,
+          description: String.raw`In one circle (or two congruent circles) these three conditions are all equivalent: two chords have equal length, they cut off equal arcs, and they lie at equal distance from the center. Two workhorse consequences: the perpendicular from the center to a chord bisects both the chord and its arc, and of two unequal chords the longer one lies closer to the center — so the diameter, at distance $0$, is the longest chord. Read the first consequence backwards and it locates the center: the perpendicular bisector of any chord passes through it, which is why intersecting the perpendicular bisectors of two chords finds a circumcenter.`,
           keywords: ["equal chords", "equal arcs", "equidistant from center", "congruent chords", "chord distance from center", "perpendicular from center bisects chord", "longer chord closer to center", "diameter longest chord"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
