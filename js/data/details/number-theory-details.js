@@ -975,4 +975,31 @@ To find $a$ and $b$ for a specific prime, just test $p-b^2$ for squareness with 
 
 ## On contests
 It is the engine behind Pythagorean-triple problems with a prime hypotenuse, and behind "how many ways can $N$ be written as a sum of two squares" once $N$ is factored. AIME uses it in disguise more often than by name — any time a prime that is $1$ mod $4$ appears alongside a sum of squares, this theorem is the reason the configuration is rigid.`,
+
+"euclids-lemma": String.raw`## Why it works
+From [[bezouts-identity|Bezout's identity]] there are integers with $ax + by = 1$ whenever $\gcd(a,b) = 1$. Multiplying through by $n$ gives $anx + bny = n$, and $b$ divides both terms on the left, the first because $b \mid an$ was assumed. So $b \mid n$. The prime statement is the special case: if $p \nmid a$ then $\gcd(p,a) = 1$, so $p \mid ab$ forces $p \mid b$.
+
+## How to use it
+Reach for it whenever a divisibility has to survive a cancellation. If $\frac{an}{b}$ is an integer and $b$ shares no factor with $a$, then $b \mid n$, and that is usually the step pinning a variable to a multiple of something.
+
+It is also what makes lowest terms rigid. Once a rational is written as $\frac pq$ with $\gcd(p,q) = 1$, knowing $q \mid kp$ forces $q \mid k$, so a denominator cannot be quietly absorbed elsewhere. When the gcd is not yet $1$, apply [[gcd-substitution|gcd substitution]] first: pull the common factor out, and what remains is coprime by construction.
+
+## On contests
+The invisible step in a large share of AIME number theory, rarely mentioned in a solution even when it is doing the work. It is why $\frac{13n}{6}$ being an integer forces $6 \mid n$, and it is the step on which unique factorization itself rests, since without it a prime could split its divisibility across two composite factors.`,
+
+"digit-sum-carries": String.raw`## Why it works
+Adding two digits in a place either stays below ten or does not. When it does not, that place keeps the sum minus ten and one unit is handed to the next place up. So the digit sum loses $10$ and gains $1$, a net drop of $9$, and each carry contributes that independently. In base $b$ the same accounting gives a drop of $b-1$. This is also why $n \equiv s(n) \pmod 9$: the whole correction is a multiple of $9$, which is the content of [[digit-sum-mod-9|digit sums mod 9]].
+
+## How to use it
+Use it in whichever direction is short. Forwards it predicts a digit sum without performing the addition. Backwards it counts carries, $c = \frac{s(a)+s(b)-s(a+b)}{9}$, which is often the real question in disguise.
+
+"No carrying required" is the most common phrasing, and it is exactly the condition $s(a+b) = s(a)+s(b)$. Read digit by digit it says every column sums to at most $9$, which turns a vague-sounding constraint into an independent choice per place and makes the count a product.
+
+For a number added to itself, doubling carries precisely where a digit is $5$ or more, so $s(2n) = 2s(n) - 9\cdot\#\{\text{digits} \ge 5\}$.
+
+## On contests
+Carry-counting problems appear on the AIME in two guises: counting pairs that add without carrying, and pinning down a digit sum after an addition. The same carry count drives [[kummers-theorem|Kummer's theorem]], where it gives the exact power of a prime dividing a binomial coefficient.`,
+
+
+
 });

@@ -1,5 +1,12 @@
 # Authoring conventions
 
+> **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
+> the two legal field orders, the three required write-up headings, the mandatory example, the
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 503
+> cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
+> reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
+
+
 House style for writing cards. Moved out of the README, which is for readers of the
 reference rather than people editing it.
 
@@ -80,8 +87,36 @@ Each item here is something that has actually gone wrong, not a hypothetical.
 
 ## Tagging a problem in the database
 
-An entry is `{ ref, formulas, strategy }` — no problem statement, just a link out to AoPS. The
-`formulas` list is a claim about **how the problem is best solved**, so it has to be earned.
+An entry is `{ ref, formulas, strategy }`, optionally carrying `trick` and `trickFormulas` too —
+no problem statement, just a link out to AoPS. The `formulas` list is a claim about **how the
+problem is best solved**, so it has to be earned.
+
+### Formulas and Strategies, or a Trick
+
+`formulas` holds the most basic tools needed to solve the problem *the appropriate way*. That is
+not the theoretical minimum. Nearly every geometry problem reduces to similar triangles, the
+Pythagorean theorem and some trig, and tagging it that way tells a reader nothing about how to
+attack it. Tag the route a good solver would actually take under time.
+
+`trick` holds a shortcut: a second route, faster than the tagged one, that leans on something a
+solver would not normally reach for. Most problems have none, and the section only appears when
+one is recorded. It is written after `strategy` in the entry, and its cards go in
+`trickFormulas`. Both halves are required together — the validator rejects prose without cards
+and cards without prose, since a card with no prose puts a problem on a card page with nothing
+explaining why it is there.
+
+**The dividing line is feasibility, not obscurity.** If the problem cannot reasonably be solved
+without a particular result, that result is a *formula*, however obscure: Pell's equation,
+Lucas' theorem and the roots-of-unity filter are formulas on the problems that need them. A
+result is a *trick* only when a standard route exists and the result merely beats it. So the
+test is not "is this famous?" but "could a solver get there without it?" — British Flag on
+2021 I #6 is a trick because the coordinate bash works; Burnside on 1993 #8 is a trick because
+constructing and repairing the overcount works.
+
+A card tagged only in `trickFormulas` still lists the problem among its practice problems, and
+the row is not marked out in any way. That is deliberate: the obscure cards are the ones a main
+route never reaches for, so tricks are the only way many of them acquire a worked use, and the
+problem's own page is where the trick route is labelled.
 
 ### The rule, in order
 
@@ -166,6 +201,12 @@ Then classify it, because that decides where a card would go:
 | find where a sequence peaks by the consecutive ratio crossing 1 | **method** | 1991 #3 | `largest-term-ratio` |
 | two tangent circles: the touch point is on the line of centers, so $d = R \pm r$ | formula | 2023 12A #18, and bedrock throughout | `tangent-circles` |
 | graph a relation in $|x|$ and $|y|$ by solving one quadrant and reflecting, including nested bars | **method** | 2023 12B #9, 2022 12A #5 | `abs-value-relations` |
+| triangular numbers, $T_n=\frac{n(n+1)}2$, and $T_{n-1}+T_n=n^2$ | formula | 1994 #3 | `triangular-numbers` (Sequences & Series); it unblocked the trick route on 1994 #3 |
+| Euclid's lemma, $\gcd(a,b)=1$ and $b \mid an \implies b \mid n$ | formula | 1994 #12, 1992 #11 | `euclids-lemma` (Divisibility & GCD) |
+| composing two reflections in lines at angle $\theta$ is a rotation by $2\theta$ | formula | 1992 #11 | `reflection-composition` (Coordinate & Grid Geometry) |
+| multi-leg distance-rate-time: the leg times $\frac{d_i}{v_i}$ add to the total while the distances add to $D$ | **method** | 2013 I #1, 2012 I #4, 2012 II #4, 2008 II #2 | `multi-leg-rates` (Methods › Algebra). 2007 I #2 was recorded as a fifth sighting and was a mis-sighting: each walker there moves at a single speed, so nothing is multi-leg. It is retagged on `casework-method`, its actual crux |
+| counting with a uniform overcount: build every object exactly $k$ times, divide by $k$, and repair the objects built fewer times | **method** | 1997 #10, 2002 I #5, 1993 #8 | `uniform-overcount` (Methods › Counting & Probability) |
+| adding two numbers drops the digit sum by $9$ per carry, $s(a+b)=s(a)+s(b)-9c$ | formula | 2015 I #8, 1999 #5 | `digit-sum-carries` (Bases, Digits & Decimals) |
 
 #### Closed by a clause on a card that already existed
 
@@ -181,6 +222,9 @@ Then classify it, because that decides where a card would go:
 |---|---|
 | homogenize a two-variable equation by dividing by $y^2$ and solve for the ratio | `normalization` — "only the ratios matter, so you may fix one quantity for free" |
 | probability symmetry: drop the irrelevant player, the rest is a fair coin | `symmetry-probability` — the general statement; the sighting was one instance of it |
+| alligation: the mixing volumes split in inverse ratio to the distances from the target concentration | `weighted-average` ("Weighted Averages & Mixtures") — states the mixing ratio $\frac{w_1}{w_2} = \frac{x_2-\bar x}{\bar x-x_1}$ and names the alligation seesaw outright. It was recorded as missing because the search looked in the "Rates, Work & Mixtures" subsection, where it is not; the card sits in algebra. Search by keyword, not by section |
+| the inclusion-exclusion principle | `pie` ("Principle of Inclusion-Exclusion (PIE)", `patterns.js`) — it carries the full alternating form, a Key-forms write-up and an example, and was already tagged on about twenty problems. **A card was built before this was caught, then removed.** The search that "proved" it missing was `grep -riE 'inclusion' js/data/*.js | head -8`, and the eight lines it printed were all keyword hits from other files; `patterns.js` came later in the output and was cut off. Never pipe a does-this-exist search through `head`, and search card names across `patterns.js` as well as the four subject files, since a card's id can be nothing like its name |
+| the ratio of adjacent binomial coefficients, $\frac{\binom n{k+1}}{\binom nk}=\frac{n-k}{k+1}$ | folded into `pascals-identity`, which already owned the other two relations between binomial coefficients (the additive one between rows, and the symmetry). **A separate card was built first and removed**: read next to `largest-term-ratio` it plainly duplicated it, since that card already claims binomial terms as its usual target. A new card must be distinguishable from its neighbours on the page, not just absent from the index |
 
 #### Dropped as too narrow
 
@@ -195,6 +239,19 @@ Then classify it, because that decides where a card would go:
 | invert a digit-sum condition using the fact that the least positive integer with base-$b$ digit sum $s$ is strictly increasing in $s$ | **method** | 2020 II #5 | none; `base-conversion` handles representation, not this monotonicity |
 | in a regular polygon the circumradius, the apothem and half a side form a right triangle, so $R^2 = a^2 + (s/2)^2$ | formula | 2009 12A #19 | **one clause on `regular-polygon-area`**, which names the apothem but never relates it to $R$ and $s$. It is why the annulus between a regular polygon's two circles depends only on the side length, not on the number of sides |
 | reflecting a graph in $y = x$ gives the inverse relation, so a graph symmetric about that line is its own inverse | formula | 2024 12A #25 | **one clause on `reflection-coordinates`**, which gives the point-level swap $(x,y) \to (y,x)$ but not the function-level reading. No card in the library mentions inverse functions at all |
+| orthogonal projection onto a plane multiplies areas by $\cos\theta$, so a slanted section is its shadow divided by $\cos\theta$ | formula | 2015 I #15 | none; `projection-formula` is the triangle side relation $a = b\cos C + c\cos B$, a different statement |
+| a circle of radius $r$ rolling without slipping around the outside of a radius-$R$ circle turns through $\frac Rr + 1$ full rotations, not $\frac Rr$ | formula | 2014 I #10 | none; the coin-rotation count appears nowhere, and `circle-basics` gives only $\text{arc} = r\theta$ |
+| the **three-dimensional** lattice-crossing count, $a+b+c-\gcd(a,b)-\gcd(b,c)-\gcd(c,a)+\gcd(a,b,c)$ | formula | 1996 #14 | **one clause on `lattice-points-gcd`**. The row previously claimed the planar count was missing too; that was wrong, since the card's latex already states $m+n-\gcd(m,n)$ outright. 2007 II #5 had been tagged `gcd-lcm-product` for want of that owner and is now retagged. Only the 3D extension is genuinely absent |
+| the full solution set of a basic trig equation: $\sin\theta = \sin\alpha$ exactly when $\theta = \alpha + 2\pi k$ or $\theta = \pi - \alpha + 2\pi k$, with the analogous families for cosine and tangent | formula | 2002 II #10 | none; `common-angle-values` gives the value table and the reference-angle rule, and the addition and double-angle cards give identities, but no card states which angles share a given sine |
+| a $3\times3$ magic square's center is one third of the common line sum, and any two cells symmetric about it add to twice the center | formula | 1996 #1 | none; nothing in the library mentions magic squares, so the nearest owner used was `proportion-properties` for the averaging step |
+| a sum over all tuples of a product of per-coordinate terms factors into a product of per-coordinate sums, $\sum_{d_1,\ldots,d_k}\prod_i f(d_i) = \prod_i\left(\sum_d f(d)\right)$ | **method** | 1994 #5 | none states it directly. `sum-of-divisors` is the most familiar instance ($\sigma$ as a product of geometric sums) but presents it as a divisor formula, and `generating-function-method` is the coefficient-extraction version, which hides that the same expansion evaluated at $1$ totals every tuple |
+| the number of ways to split $n=ab$ with $\gcd(a,b)=1$ is $2^{\omega(n)}$, since each prime power must go wholly to one side; halve it for unordered or for $a\lt b$ | formula | 1991 #5 | none. `number-of-divisors` gives $d(n)=\prod(e_i+1)$ from the same factorization, but counts every divisor rather than the coprime splits, and no card mentions $\omega(n)$, the count of distinct primes |
+| the combinatorial reading of the Fibonacci numbers: tilings of a $1 \times n$ strip by squares and dominoes, and binary strings with no two adjacent $1$s, both number $F_{n+2}$ | **method** | 1990 #9 | **partly a misrecord, now corrected.** `binets-formula` does carry the sequence and its identities (closed form, Cassini, $\gcd(F_m,F_n)=F_{\gcd(m,n)}$, $\sum F_i = F_{n+2}-1$) and its keywords include Fibonacci, so the earlier claim that nothing covered Fibonacci was wrong. It was found by searching card *names* only. What is genuinely absent is the counting interpretation, which is how the sequence actually enters AMC/AIME problems; `binets-formula` is purely algebraic and `non-adjacent-selection` gives only the fixed-$k$ closed form |
+| the cotangent rule, $\cot A = \frac{b^2+c^2-a^2}{4K}$, whose immediate corollary is $\cot A + \cot B = \frac{c^2}{2K}$ | formula | 1989 #10 | none. It follows in one line from `law-of-cosines` and `trig-area` together, and those two are what 1989 #10 is tagged with, but no card states it. It is the standard way any $\cot$-of-a-triangle expression collapses to side lengths, so the derivation gets redone every time |
+| a small cyclic linear system, where each equation ties one unknown to the next and substituting around the cycle closes it; the symmetric case, each equation being the grand total plus one variable, collapses by adding all $n$ of them | **method** | 1986 #4, 2024 10B #25 | none. `symmetric-polynomial-strategies` is about symmetric functions of polynomial roots, a different object, and the library carries no card on linear systems at all. Possibly deliberate, since solving them is assumed, but the add-them-all move is a genuine recognition step rather than routine elimination |
+| an extremal set cut out by gap conditions is bounded by its densest periodic block: find the shortest repeating window, work out the most elements it can hold, then tile the range with copies and add the tail | **method** | 2024 10A #20 | none. `gap-method` supplies the minimum-gap bookkeeping and is what that problem is tagged with, but it counts selections of a fixed size rather than maximizing the size, and no card states the tile-the-range bound |
+| the center of a rotation is equidistant from every point and its image, so it is the intersection of the perpendicular bisectors of the point-image segments | **method** | 2023 10A #19 | none. `distance-midpoint` is what the problem is tagged with because squaring the two distance equations is how the center is actually found, and `reflection-composition` shows a rotation arises from two reflections, but no card gives the perpendicular-bisector locus. The register already carries the chord version of the same locus idea as a clause for `equal-chords-arcs` |
+| a region swept by independently varying parameters is the Minkowski sum of the segments they generate, and a sum of segments is a zonogon whose sides come in opposite parallel pairs, one pair per generator, so its perimeter is twice the total generator length | **method** | 2023 10B #24 | none. `affine-transformations` covers what a linear map preserves but never the image of a region, `minkowski-lattice` is the lattice-point theorem and unrelated, and the problem is tagged `distance-midpoint` only because measuring the three generators is the arithmetic that remains |
 
 Detailed per-year findings and the defect tally live in `tools/RETAG-NOTES.md`.
 
@@ -290,7 +347,16 @@ Applying it twice gives the form that problem uses, $2PA^2 + PG^2 = PB^2 + PC^2 
 form in the latex. Once it is there, 2021 I #6 could reasonably be tagged to this card instead of
 to `coordinate-bash` — right now it is not, because the card does not state what the problem needs.
 
-### A way to draw real 3D figures
+### A way to draw real 3D figures — BUILT
+
+The recommendation below was followed and the helpers now exist in
+`js/data/diagrams/geometry-diagrams.js`: `proj3(O, scale, axes)` returns a `(x, y, z)` projector,
+`depth3` orders points front to back, `box3` emits a wireframe box with the hidden corner's three
+edges dashed, and `AX3` / `AX3_ISO` are the two axis sets. First uses: the box panel on
+`british-flag-theorem` (the form 2021 I #6 actually needs) and the five-sphere panel on
+`descartes-sphere-theorem`. See CONVENTIONS.md §4 for the two rules that came out of building them.
+The nineteen hand-tuned Solid Geometry figures are still hand-tuned; converting them is optional
+and should only happen where a figure is actually wrong.
 
 The honest finding is the opposite of the obvious guess: **stay in SVG and put the 3D in the
 coordinates.** Projecting real $(x,y,z)$ points down to 2D gives genuine three dimensions, and it

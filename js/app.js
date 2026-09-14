@@ -290,12 +290,24 @@
   // out on the query side too makes the two meet -- and doing it here rather than in wordsOf
   // keeps it off the index, where every "+" in a LaTeX field would flood "plus" with
   // occurrences and destroy its IDF.
+  const QUERY_NUMWORD = { "2": "two", "3": "three", "4": "four", "5": "five", "6": "six",
+                    "7": "seven", "8": "eight", "9": "nine", "10": "ten", "12": "twelve" };
   function spellOperators(q) {
     // "+" never occurs inside a word, so it can always be spelled out. "-" can (cross-ratio,
     // power-of-a-point), so it is only spelled when it joins two SINGLE characters, which is
     // the "a-b" / "x-y" shape and never a hyphenated term.
+    //
+    // Small standalone numerals are spelled out too, because wordsOf drops any token of length
+    // one: "5 spheres tangent" reached the ranker as just "spheres tangent", so the query lost
+    // the very word that identifies the card ("five spheres" is a keyword on the Soddy-Gosset
+    // card) and the generic "tangent" decided the ranking instead. The numeral is KEPT beside
+    // the word rather than replaced, so a two-digit token like "12" still matches cards that
+    // write the digits. Query-side only, for the same reason "plus" is: spelling numerals on
+    // the index side would flood those words with LaTeX occurrences and destroy their IDF.
     return q.replace(/\+/g, " plus ")
-            .replace(/(?<![\w-])([a-z0-9])\s*-\s*([a-z0-9])(?![\w-])/g, "$1 minus $2");
+            .replace(/(?<![\w-])([a-z0-9])\s*-\s*([a-z0-9])(?![\w-])/g, "$1 minus $2")
+            .replace(/(?<![\w.^-])(\d{1,2})(?![\w.^])/g,
+                     (m, d) => QUERY_NUMWORD[d] ? d + " " + QUERY_NUMWORD[d] : m);
   }
 
   // Index-side tokenization keeps both the raw word and its stem, so queries
@@ -1647,7 +1659,7 @@
       }
     });
     if (window.renderMathInElement) {
-      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box, .cp-head, .cp-desc").forEach(el => {
+      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box, .trick-prose, .cp-head, .cp-desc").forEach(el => {
         renderMathInElement(el, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
@@ -2000,10 +2012,12 @@
   }
   const PROBLEM_DB = (window.MATH_PROBLEM_DB || []).map(e => {
     const formulas = (e.formulas || []).filter(fid => BY_ID[fid]);
+    const trickFormulas = (e.trickFormulas || []).filter(fid => BY_ID[fid]);
     const pr = parseRef(e.ref);
     return {
       ref: e.ref, slug: problemSlug(e.ref), url: aopsUrl(e.ref),
-      formulas, types: problemTypes(e), strategy: e.strategy || "",
+      formulas, trickFormulas, types: problemTypes(e), strategy: e.strategy || "",
+      trick: e.trick || "",
       year: pr.year, cname: pr.cname, fam: pr.fam, num: pr.num
     };
   }).filter(p => p.formulas.length);
@@ -2012,6 +2026,14 @@
   PROBLEM_DB.forEach(p => {
     PROBLEM_BY_SLUG[p.slug] = p;
     p.formulas.forEach(fid => (PROBLEMS_BY_FORMULA[fid] = PROBLEMS_BY_FORMULA[fid] || []).push(p));
+    // A card the trick route uses still lists the problem, which is the point of tagging
+    // tricks at all: the obscure cards are exactly the ones a main route never reaches
+    // for, so this is the only way they ever acquire a worked use. The row looks the same
+    // either way; the problem page is where the trick is labelled.
+    p.trickFormulas.forEach(fid => {
+      if (p.formulas.indexOf(fid) >= 0) return;
+      (PROBLEMS_BY_FORMULA[fid] = PROBLEMS_BY_FORMULA[fid] || []).push(p);
+    });
   });
   Object.keys(PROBLEMS_BY_FORMULA).forEach(fid => PROBLEMS_BY_FORMULA[fid].sort((a, b) => b.year - a.year || a.ref.localeCompare(b.ref)));
 
@@ -2598,6 +2620,31 @@
   // Ids of the formulas in the current list-style view (used for the empty check).
   let shownIds = [];
 
+  // Split one subject's visible cards into its declared clusters, in the order the data
+  // lists them. The level filter can empty a cluster, so empty ones are dropped rather
+  // than left as a bare heading. Anything the data forgot to place still renders, under
+  // no heading, so a card can never go missing from the page because of a typo in `ids`.
+  function clusterBody(section, sub, i, visible) {
+    const byId = new Map(visible.map(e => [e.formula.id, e]));
+    const placed = new Set();
+    const parts = [];
+    sub.groups.forEach((g, j) => {
+      const members = g.ids.map(id => byId.get(id)).filter(Boolean);
+      members.forEach(e => placed.add(e.formula.id));
+      if (!members.length) return;
+      parts.push(`
+        <div class="cluster" id="sub-${section.id}-${i}-${j}">
+          <h4 class="cluster-title">${g.title}<span class="cluster-count">${members.length}</span></h4>
+          <div class="cards">${members.map(e => cardHtml(e, false, null)).join("")}</div>
+        </div>`);
+    });
+    const rest = visible.filter(e => !placed.has(e.formula.id));
+    if (rest.length) {
+      parts.push(`<div class="cluster"><div class="cards">${rest.map(e => cardHtml(e, false, null)).join("")}</div></div>`);
+    }
+    return parts.join("");
+  }
+
   function renderSection(section) {
     const parts = [];
     parts.push(`
@@ -2612,12 +2659,18 @@
       const visible = sortEntries(sub.formulas.filter(passesLevel).map(f => BY_ID[f.id]));
       if (!visible.length) return;
       visible.forEach(e => shownIds.push(e.formula.id));
+      // Methods and Patterns carry an optional third level: a subject holds clusters of
+      // techniques that get reached for in the same situation, which is more useful than
+      // one alphabetical wall of twenty-six cards. Subjects without `groups` (the two tiny
+      // Patterns subjects) fall through to the flat grid, which is still the right shape
+      // for three or four cards.
+      const body = sub.groups
+        ? clusterBody(section, sub, i, visible)
+        : `<div class="cards">${visible.map(e => cardHtml(e, false, null)).join("")}</div>`;
       subParts.push(`
-        <div class="subsection" id="sub-${section.id}-${i}">
+        <div class="subsection${sub.groups ? " has-clusters" : ""}" id="sub-${section.id}-${i}">
           <h3>${sub.title}</h3>
-          <div class="cards">
-            ${visible.map(e => cardHtml(e, false, null)).join("")}
-          </div>
+          ${body}
         </div>`);
     });
 
@@ -3039,9 +3092,9 @@
       const strip = s => s.replace(/[^a-z0-9]+/g, "");
       const matches = PROBLEM_DB.filter(p => {
         const ref = p.ref.toLowerCase();
-        const collapsed = strip((ref + " " + (p.strategy || "") + " " +
+        const collapsed = strip((ref + " " + (p.strategy || "") + " " + (p.trick || "") + " " +
           p.types.map(t => t.label).join(" ") + " " +
-          p.formulas.map(fid => BY_ID[fid]
+          p.formulas.concat(p.trickFormulas).map(fid => BY_ID[fid]
             ? BY_ID[fid].formula.name + " " + (BY_ID[fid].formula.keywords || []).join(" ")
             : "").join(" ")).toLowerCase());
         return toks.every(t => {
@@ -3126,10 +3179,24 @@
     if (!p) { location.hash = "#/problems"; return; }
     shownIds = [];
     const types = p.types.map(t => `<a class="ptype-chip" href="#/topic/${t.id}">${escapeAttr(t.label)}</a>`).join("");
-    const formulas = p.formulas.map(fid => {
+    const cardItem = fid => {
       const e = BY_ID[fid]; if (!e) return "";
       return `<li><a class="strat-link" href="#/f/${fid}"><span class="strat-name">${e.formula.name}</span><span class="strat-crumb">${e.section.title} &rsaquo; ${e.subsection.title}</span></a></li>`;
-    }).join("");
+    };
+    const formulas = p.formulas.map(cardItem).join("");
+    // Most problems have no trick: the section only appears where a genuinely shorter
+    // route exists that leans on something the main solution would not think to use.
+    // It sits below the standard route, so that route is still what a reader meets first.
+    const trickCards = p.trickFormulas.map(cardItem).join("");
+    const trickHtml = (p.trick || trickCards)
+      ? `<div class="prob-detail-section trick-box">
+           <h4>Tricks</h4>
+           <div class="trick-body">
+             ${p.trick ? `<p class="trick-prose">${p.trick}</p>` : ""}
+             ${trickCards ? `<ul class="strat-list">${trickCards}</ul>` : ""}
+           </div>
+         </div>`
+      : "";
     $content.innerHTML = `
       <div class="detail">
         <a class="back-link" href="#/problems">&larr; All problems</a>
@@ -3139,9 +3206,10 @@
         ${types ? `<div class="ptype-row">${types}</div>` : ""}
         ${p.strategy ? `<div class="prob-strategy-box"><h4>Strategy</h4><p>${p.strategy}</p></div>` : ""}
         <div class="prob-detail-section">
-          <h4>Formulas</h4>
+          <h4>Formulas and Strategies</h4>
           <ul class="strat-list">${formulas || "<li class=\"strat-empty\">Not yet tagged.</li>"}</ul>
         </div>
+        ${trickHtml}
         <p class="prob-note">The full statement and solution live on the Art of Problem Solving wiki.</p>
         ${p.url ? `<a class="aops-btn" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">Open on AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
         ${contestNavHtml(p)}
@@ -3219,7 +3287,10 @@
         </button>
         <div class="nav-subs"><div class="nav-subs-inner">
           ${section.subsections.map((sub, i) =>
-            `<a class="nav-sub-link" data-section="${section.id}" data-sub="${i}">${sub.title}</a>`
+            `<a class="nav-sub-link" data-section="${section.id}" data-sub="${i}">${sub.title}</a>` +
+            (sub.groups ? `<div class="nav-clusters">${sub.groups.map((g, j) =>
+              `<a class="nav-cluster-link" data-section="${section.id}" data-sub="${i}" data-cluster="${j}">${g.title}</a>`
+            ).join("")}</div>` : "")
           ).join("")}
         </div></div>
       </div>`).join("")}
@@ -3234,7 +3305,7 @@
         return;
       }
       const btn = e.target.closest(".nav-section-btn");
-      const link = e.target.closest(".nav-sub-link");
+      const link = e.target.closest(".nav-sub-link") || e.target.closest(".nav-cluster-link");
       // In the mobile drawer, the first tap on a section opens it (revealing its
       // sub-subjects) and keeps the drawer up; tapping that same (already-open)
       // section again takes you to its main page and closes the drawer. A
@@ -3264,7 +3335,9 @@
         // stop it without moving anything.
         window.scrollTo({ top: window.scrollY, behavior: "instant" });
         render();
-        const target = document.getElementById(`sub-${link.dataset.section}-${link.dataset.sub}`);
+        const base = `sub-${link.dataset.section}-${link.dataset.sub}`;
+        const id = link.dataset.cluster === undefined ? base : `${base}-${link.dataset.cluster}`;
+        const target = document.getElementById(id) || document.getElementById(base);
         if (target) target.scrollIntoView({ block: "start" });
       }
     });

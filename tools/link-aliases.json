@@ -488,6 +488,10 @@
   "digit-manipulation": [
    "Digit Manipulation"
   ],
+  "digit-sum-carries": [
+   "Digit Sums",
+   "Digit Sums and Carries"
+  ],
   "digit-sum-mod-9": [
    "Digit Sums mod 9",
    "Digit Sums mod 9 and 11"
@@ -505,6 +509,9 @@
   ],
   "dirichlet-convolution": [
    "Dirichlet Convolution"
+  ],
+  "distance-3d": [
+   "Distance in Three Dimensions"
   ],
   "distance-midpoint": [
    "Distance, Midpoint, Slope"
@@ -548,6 +555,13 @@
   ],
   "euclidean-algorithm": [
    "Euclidean Algorithm"
+  ],
+  "euclids-lemma": [
+   "Euclid",
+   "Euclid's",
+   "Euclid's Lemma",
+   "Euclids",
+   "Euclid’s"
   ],
   "euler-distance-theorem": [
    "Euler",
@@ -1146,6 +1160,10 @@
    "Muirheads",
    "Muirhead’s"
   ],
+  "multi-leg-rates": [
+   "Multi-Leg Distance, Rate",
+   "Multi-Leg Distance, Rate & Time"
+  ],
   "multinomial-theorem": [
    "Multinomial Theorem"
   ],
@@ -1440,6 +1458,9 @@
    "Cofunction, Sign",
    "Cofunction, Sign & Periodicity Identities",
    "Periodicity Identities"
+  ],
+  "reflection-composition": [
+   "Composing Two Reflections"
   ],
   "reflection-coordinates": [
    "Reflecting a Point over a Line"
@@ -1744,6 +1765,9 @@
   "triangle-square-identities": [
    "Triangle Squared-Angle Identities"
   ],
+  "triangular-numbers": [
+   "Triangular Numbers"
+  ],
   "trig-area": [
    "Trigonometric Area"
   ],
@@ -1777,6 +1801,9 @@
   ],
   "two-tangents-angle": [
    "Angle Between Two Tangents"
+  ],
+  "uniform-overcount": [
+   "Counting with a Uniform Overcount"
   ],
   "useful-factorizations": [
    "More Factorizations Worth Knowing"

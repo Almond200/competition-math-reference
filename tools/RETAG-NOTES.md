@@ -447,7 +447,8 @@ a solution *names* the tool:
   generating functions"), against being wrong on 2019 II #4 and 2023 12B #19.
 - **`legendres-formula`** is right on 1992 #15 and 2006 II #3, wrong only on 2023 10B #15.
 
-**`rotation-trick` remains the sole card with no correct use at all: 0 for 5.**
+**`rotation-trick` was the sole card with no correct use at all: 0 for 5.** That is now settled — see the
+first correct use, 2012 AIME I #13, at the end of this file.
 
 Fetch rate matters: AoPS returns HTTP 429 if pushed, so this pass ran one request per ~1.7 s.
 
@@ -611,3 +612,166 @@ of Solution 3 is a real alternative, but for this configuration it is longer in 
 would trade a named lemma for generic machinery. Tags stand.
 
 **Final state: all 525 entries reviewed, 171 defective tags fixed, 4 cards added.**
+
+
+## Filling in the incomplete AIME sets
+
+A different job from retagging: most AIME contests before 2016 hold only a handful of entries, so
+whole sets are missing. Of the 69 AIME contests in the database, **22 were complete** when this
+started, and 599 individual problems were absent. Same protocol as retagging — read the problem
+statement and every solution, pick the single best route for a solver under time, tag only that
+route — plus one addition: where an idea is genuinely split across several cards, all of them get
+tagged, not just the nearest one.
+
+**2015 AIME I and II, and 2014 AIME I and II, are now complete: 51 new entries.** Four more contests
+complete, 548 problems still missing.
+
+The extractor needed a companion to `__deep`: `__full(slug, pcap, scap, nsol)` returns the problem
+statement as well as the solutions, since a strategy cannot be written from solutions alone.
+
+### Where multiple cards were tagged for one idea
+
+This is the new instruction in practice. A route that genuinely leans on two or three cards now
+names all of them:
+
+| problem | cards | why all of them |
+|---|---|---|
+| 2015 I #4 | `coordinate-bash` + `equilateral-triangle-facts` + `shoelace-formula` | the equilateral height places $D$ and $E$, and the shoelace formula finishes; neither card alone describes the route |
+| 2015 II #11 | `inscribed-angle-theorem` + `angle-chasing` + `similar-figures-ratios` | central angle $= 2 \times$ inscribed, then a chase to $\angle BQO = A$, then the similar triangles that give $BP$ |
+| 2015 II #6 | `vietas-general` + `square-of-sum` | Vieta's supplies $e_1$ and $e_2$; squaring $e_1$ and subtracting $2e_2$ is what collapses to $\sum x_i^2 = 81$ |
+| 2015 II #14 | `sp-substitution` + `square-of-sum` | the whole problem lives in $s$ and $p$, and the cube-of-a-sum expansion on that card is the recognition step |
+| 2014 II #6 | `bayes-theorem` + `conditional-probability` | the posterior weights are Bayes with the law of total probability in the denominator, and the answer is a conditional probability |
+| 2014 II #14 | `special-right-triangles` + `similar-figures-ratios` | the $45$-$45$-$90$ and $30$-$60$-$90$ split gives the lengths, similar triangles give $AP = HM$ |
+| 2014 II #15 | `bijection-method` + `base-conversion` | the primes-to-binary encoding is the bijection, and the recursion is binary increment |
+
+### Routes chosen against the flashier solution
+
+- **2015 I #4** takes coordinates and shoelace over the $60^\circ$-rotation congruence, which is
+  prettier but needs the Law of Cosines and a median length afterwards.
+- **2015 I #12** takes the shift bijection over summing $\sum i\binom{2015-i}{999}$ by hockey stick.
+- **2015 I #13** uses `roots-unity-distance-product`, whose $\prod \sin\frac{k\pi}{n} = \frac{n}{2^{n-1}}$
+  answers it in two applications, rather than deriving the same value term by term.
+- **2015 II #14** uses the add-three-times trick that assembles $(x+y)^3$, not the $\frac xy$ quadratic.
+- **2014 I #7** uses the tangent-line-from-the-origin picture, giving $\tan^2\theta = \frac1{99}$
+  in one line, over the Law of Cosines optimisation.
+- **2014 II #14** uses the perpendicular from $B$ that avoids $\sin 15^\circ$ entirely.
+
+### Three coverage gaps, all recorded and none built
+
+Each is general, each is stated without reference to its problem, and each has no owner:
+the digit-sum drop of $9$ per carry, the $\cos\theta$ area factor under projection, and the
+coin-rotation count $\frac Rr + 1$. They are on the register in `CONTRIBUTING.md`.
+
+**Totals: 576 entries, all reviewed or newly written; 171 defective tags fixed; 51 entries added.**
+
+### `rotation-trick` finally has a correct use
+
+Adding 2012 AIME I #13 closes the longest-running open question in this file. The card was wrong on
+all five problems it had been attached to (2026 I #5, 2025 I #9, 2025 I #14, 2017 I #15, 1997 #15),
+every time because the problem merely *contained* a rotation, and the note above asked whether the
+card's name invited the error.
+
+2012 I #13 is the genuine article. Three concentric circles of radii $3$, $4$, $5$ with an
+equilateral triangle inscribed one vertex per circle is the same configuration read inside out: a
+point $X$ at distances $3$, $4$, $5$ from the vertices of an equilateral triangle. Rotating
+$60^\circ$ about a vertex sends $X$ to $X''$ with $XX'' = 3$, $X''B = 5$, $XB = 4$ — the three
+distances fused into one $3$-$4$-$5$ right triangle, which is exactly what the card describes. The
+right angle plus the rotation's $60^\circ$ gives $\angle BXC = 150^\circ$, and the Law of Cosines
+finishes: $s^2 = 25 + 12\sqrt3$, area $9 + \frac{25}4\sqrt3$.
+
+So the card is fine and its five earlier attachments were simply wrong. The diagnosis stands
+unchanged: tagging on sight of a configuration rather than after reading the solution.
+
+### 2013 and 2012 AIME I filled in
+
+2013 AIME I and II and 2012 AIME I are complete. Two more correct uses of cards with bad records
+turned up: `divisibility-rules` is right on 2012 I #1, where the rule for $4$ genuinely applies to
+the last two digits, and `invariants-coloring` is right on 2012 I #11, where $3 \mid x+y$ and
+$5 \mid x-y$ are preserved by every jump.
+
+**Contests complete: 32 of 69. Entries: 646.** 2015, 2014, 2013, 2012 and 2011 are all complete,
+both divisions each year.
+
+### The first four-tag entry
+
+2012 AIME II #15 is the first problem in the database carrying four cards. Its route chains four
+named theorems, each load-bearing: the angle bisector theorem splits $BC$, Stewart's theorem gives
+the cevian $AD$, the power of the point $D$ gives $DE$, and the Law of Cosines identifies the
+$60^\circ$ angle that makes $\triangle BCE$ equilateral. Dropping any one of them breaks the chain,
+so under the instruction to mark every relevant card this is four rather than three. Every other
+entry stays at three or fewer.
+
+It also gives `power-of-a-point` another clean use, against its earlier record of 2 right and 5
+wrong: the solution says outright "Use Power of Point $D$ to find $DE$".
+
+### A third mixture-shaped gap
+
+2011 AIME I #1 is an acid-mixture problem, and the library has no mixtures card at all — the
+section is even named "Rates, Work & Mixtures" but holds only `work-rates`, `average-speed`,
+`relative-motion` and `proportion-properties`. Alligation is now on the register in
+`CONTRIBUTING.md`. The same shape recurs for multi-leg distance-rate-time problems (2013 I #1,
+2012 I #4, 2012 II #4), where `average-speed` is the closest true owner but not an exact one.
+
+
+## Filling in 2010 back to 2001
+
+Ten more years finished, both divisions each: **2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002,
+and 2001 AIME I**. Entries went from 673 to 909; **51 of 71 AIME contests are now complete and 245
+problems remain**, all of them 2000 and earlier apart from two in 2001 AIME II.
+
+Two contests had held zero entries and so never appeared in the per-contest counts: **2006 AIME I**,
+now complete, and **1999 AIME**, still empty. That miscount is why an earlier progress note said
+"69 contests" and undercounted the remaining work by 30 problems.
+
+### Cards that got their first genuine use
+
+Filling in older contests surfaced problems that are the canonical application of cards nothing had
+yet pointed at:
+
+| card | problem | why it is the intended tool |
+|---|---|---|
+| `roots-unity-distance-product` | 2009 II #13 | twelve chords from two ends of a semicircular arc to six equal divisions are distances among fourteenth roots of unity, which is the card's exact statement |
+| `pell-equation` | 2008 II #15 | the difference of consecutive cubes forces $(2n+1)(2n-1) = 3(2m+1)^2$, landing on $a^2-3b^2 = 2$ |
+| `inversion-properties` | 2008 II #13 | $z \mapsto \frac1z$ *is* inversion in the unit circle composed with conjugation |
+| `lucas-theorem` | 2007 II #13 | the top of the Pascal array is $\sum\binom{10}k x_k$, and mod $3$ Lucas with $10 = 101_3$ kills all but four coefficients |
+| `hockey-stick` | 2003 I #13 | counting binaries with more ones than zeros sums $\binom nk$ down a diagonal |
+| `ratio-lemma` | 2005 II #14 | isogonal cevians, and multiplying the lemma over both gives $\frac{BE \cdot BD}{AB^2} = \frac{CE \cdot CD}{AC^2}$ |
+| `mass-points` | 2009 I #4, #5 | the parallelogram identity $\frac{AC}{AP} = \frac{AB}{AM} + \frac{AD}{AN}$ falls straight out |
+
+`invariants-coloring` also earned a use for a **monovariant** rather than an impossibility proof
+(2005 II #11: multiplying the recurrence gives $a_ka_{k+1} = a_{k-1}a_k - 3$, dropping by three a
+step from $37 \cdot 72$ and hitting zero at $k = 888$).
+
+### More vindications for cards with bad records
+
+- **`power-of-a-point`** is right on 2010 II #15 (radical axis), 2002 I #13 and 2001 II #6. Its
+  record is now genuinely mixed rather than mostly wrong.
+- **`legendres-formula`** is right on 2010 II #3 and 2006 I #4 — three right against one wrong, and
+  the pattern is clear: right when a factorial's prime valuation is actually wanted.
+- **`divisibility-rules`** is right on 2012 I #1, 2010 II #1 and 2003 II #2, all cases where the
+  rule for $4$, $8$ or $9$ is the actual content.
+- **`finite-differences`** is right on 2003 II #8, where multiplying two arithmetic sequences gives
+  a quadratic and the second difference is genuinely taken.
+
+### The gap register grew to seven, and they cluster
+
+Newly recorded, each general and ownerless: the **lattice-diagonal count** $m+n-\gcd(m,n)$
+(2007 II #5), **alligation** for mixtures (2011 I #1), and the **solution set of a basic trig
+equation** — which angles share a given sine (2002 II #10).
+
+Six of the seven open candidates are *lattice, rounding, or physical-process* facts rather than
+algebraic identities: digit-sum carries, projection area scaling, coin rotation, alligation, lattice
+diagonals, and now trig solution sets. The library is dense on named theorems and thin on this
+class. Worth knowing when deciding which to build.
+
+### Routes worth remembering
+
+- **2006 II #15** looks like three nested-radical equations and is a triangle: if the altitude to
+  side $x$ is $\frac14$, the Pythagorean theorem gives exactly $x = \sqrt{y^2-\frac1{16}} + \sqrt{z^2-\frac1{16}}$.
+  So the altitudes are $\frac14, \frac15, \frac16$ and $x:y:z = 4:5:6$.
+- **2004 I #4** is `median-to-hypotenuse`: every segment is a hypotenuse, so its midpoint is exactly
+  $1$ from the corner, tracing quarter circles and giving area $4-\pi$.
+- **2008 II #6** divides the recurrence by $a_{n-1}$ so the ratios count upward: $a_n = n!$.
+- **2003 II #5** fits two copies of the wedge into a cylinder, so the answer is $\frac{\pi \cdot 6^2 \cdot 12}2$.
+
+**Totals: 909 entries; 171 defective tags fixed in the retagging pass; 384 entries newly written.**

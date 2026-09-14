@@ -90,9 +90,9 @@ window.MATH_SECTIONS.push({
         {
           id: "pascals-identity",
           name: "Pascal's Identity & Symmetry",
-          latex: String.raw`\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}, \qquad \binom{n}{k} = \binom{n}{n-k}`,
-          description: String.raw`Pascal's rule builds the triangle; combinatorially, split on whether the first element is chosen.`,
-          keywords: ["pascal triangle", "recursive", "symmetry", "pascal's rule", "binomial coefficient recurrence", "add two entries above"],
+          latex: String.raw`\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}, \qquad \binom{n}{k} = \binom{n}{n-k}, \qquad \frac{\binom{n}{k+1}}{\binom{n}{k}} = \frac{n-k}{k+1}`,
+          description: String.raw`Pascal's rule builds the triangle; combinatorially, split on whether the first element is chosen. The third relation moves along a row instead of between them: stepping one place multiplies by $\frac{n-k}{k+1}$, which turns any condition on adjacent entries into a linear equation in $n$ and $k$.`,
+          keywords: ["pascal triangle", "recursive", "symmetry", "pascal's rule", "binomial coefficient recurrence", "add two entries above", "ratio of consecutive binomial coefficients", "adjacent entries in a row", "three consecutive terms in ratio"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
         },

@@ -17,6 +17,36 @@
   const rad = deg => deg * Math.PI / 180;
   const onC = (c, r, deg) => [c[0] + r * Math.cos(rad(deg)), c[1] + r * Math.sin(rad(deg))];
 
+  // ---- 3D ----------------------------------------------------------------
+  // Solid figures are projected from real (x, y, z) rather than drawn as
+  // hand-tuned parallelograms, so a box is guaranteed to close and a hidden
+  // edge can be decided instead of guessed. Axes: +x toward the viewer-left,
+  // +y toward the viewer-right, +z up. A point is nearer the viewer as x + y
+  // grows, so for an axis-aligned box the origin corner is the hidden one.
+  const AX3 = { ex: [-0.62, 0.36], ey: [1, 0.17], ez: [0, -1] };
+  // True isometric: the three axes are unit length and 120 degrees apart on
+  // screen. Boxes read better under AX3, but solids of revolution need the
+  // even foreshortening this gives, or they look squashed along one axis.
+  const AX3_ISO = { ex: [-0.866, 0.5], ey: [0.866, 0.5], ez: [0, -1] };
+  const proj3 = (O, s = 1, ax = AX3) => (x, y, z) => [
+    O[0] + s * (ax.ex[0] * x + ax.ey[0] * y + ax.ez[0] * z),
+    O[1] + s * (ax.ex[1] * x + ax.ey[1] * y + ax.ez[1] * z)
+  ];
+  const depth3 = (x, y, z) => x + y;
+  // Wireframe box [0,a]x[0,b]x[0,c]: returns the twelve edges with the three
+  // meeting the hidden corner dashed, plus the eight projected vertices in the
+  // order A B C D (bottom) E F G H (top), so ABCD-EFGH labelling stays honest.
+  function box3(P, a, b, c) {
+    const V = [[0,0,0],[a,0,0],[a,b,0],[0,b,0],[0,0,c],[a,0,c],[a,b,c],[0,b,c]];
+    const pts = V.map(v => P(v[0], v[1], v[2]));
+    const E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    const hidden = V.map(v => depth3(v[0], v[1], v[2]))
+      .reduce((lo, d, i, arr) => (d < arr[lo] ? i : lo), 0);
+    const edges = E.map(([i, j]) =>
+      seg(pts[i], pts[j], DIM, 1.8, (i === hidden || j === hidden) ? "5 4" : ""));
+    return { pts, edges, hidden };
+  }
+
   function lineInt(p1, p2, p3, p4) {
     const [x1, y1] = p1, [x2, y2] = p2, [x3, y3] = p3, [x4, y4] = p4;
     const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
@@ -936,7 +966,30 @@
       dot(P, DIM, 4.5), txt(add(P, [0, 20]), "P"),
       txt(away(a, P, 14), "A", ACC), txt(away(c, P, 14), "C", ACC),
       txt(away(b, P, 14), "B", GLD), txt(away(d, P, 14), "D", GLD),
-      cap(430, 320, "PA² + PC² = PB² + PD²")
+      cap(430, 320, "PA² + PC² = PB² + PD², for P anywhere in the plane or off it")
+    ]);
+  })(), (() => {
+    // The box form, projected from real coordinates: the four space diagonals
+    // pair the vertices, and every pair gives the same sum of squares.
+    const O = [128, 216], a = 125, b = 155, c = 112;
+    const P3 = proj3(O);
+    const { pts, edges } = box3(P3, a, b, c);
+    const [A, B, C, D, E, F, G, H] = pts;
+    const ctr = P3(a / 2, b / 2, c / 2);
+    // A is the hidden corner and projects near the middle of the figure, so P
+    // is placed well clear of it or the four segments bunch up around one dot.
+    const Q = P3(0.30 * a, 0.82 * b, 0.25 * c);
+    const L = (p, t, col) => txt(away(p, ctr, 14), t, col, 12);
+    return wrap(430, 320, [
+      edges.join(""),
+      seg(Q, A, ACC, 1.7, "5 4"), seg(Q, G, ACC, 1.7),
+      seg(Q, B, GLD, 1.7), seg(Q, H, GLD, 1.7),
+      dot(A, ACC, 4), dot(G, ACC, 4), dot(B, GLD, 4), dot(H, GLD, 4),
+      dot(C, DIM, 3), dot(D, DIM, 3), dot(E, DIM, 3), dot(F, DIM, 3),
+      dot(Q, GRN, 4.5), txt(add(Q, [0, -11]), "P", GRN, 12.5),
+      L(A, "A", ACC), L(G, "G", ACC), L(B, "B", GLD), L(H, "H", GLD),
+      L(C, "C", FNT), L(D, "D", FNT), L(E, "E", FNT), L(F, "F", FNT),
+      cap(430, 320, "in a box the same thing happens twice over: PA² + PG² = PB² + PH² = PC² + PE² = PD² + PF², each pair being the ends of a space diagonal")
     ]);
   })()];
 
@@ -970,6 +1023,31 @@
       seg(t, b, ACC, 1.6, "5 4"), txt([222, 185], "h", ACC),
       txt([210, 112], "A₂", GLD, 12.5), txt([210, 254], "A₁", GLD, 12.5),
       cap(430, 310, "V = ⅓ h (A₁ + A₂ + √(A₁A₂))")
+    ]);
+  })()];
+
+  // Two arbitrary points in space, with the axis-aligned box they bound. The
+  // base leg and the vertical rise are the two Pythagorean steps; the box is
+  // projected from real (x, y, z) so it is guaranteed to close.
+  DIAGRAMS["distance-3d"] = [(() => {
+    const P = proj3([190, 200], 1, AX3), a = 190, b = 140, c = 120;
+    const B = box3(P, a, b, c);
+    const P1 = B.pts[0], base = B.pts[2], P2 = B.pts[6];
+    return wrap(430, 330, [
+      ...B.edges,
+      seg(P1, base, GLD, 2, "6 4"),
+      seg(base, P2, ACC, 1.6, "3 3"),
+      seg(P1, P2, ACC, 2.4),
+      rightAngle(base, P1, P2, 13),
+      dot(P1, DIM, 4.5), dot(P2, DIM, 4.5),
+      txt(add(P1, [-16, -8]), "P\u2081", DIM, 13, "end"),
+      txt(add(P2, [12, -6]), "P\u2082", DIM, 13, "start"),
+      txt(add(mid(B.pts[0], B.pts[1]), [-12, 14]), "\u0394x", FNT, 12.5),
+      txt(add(mid(B.pts[1], B.pts[2]), [16, 12]), "\u0394y", FNT, 12.5),
+      txt(add(mid(B.pts[2], B.pts[6]), [18, 4]), "\u0394z", FNT, 12.5),
+      txt(add(mid(P1, base), [6, 16]), "\u221a(\u0394x\u00b2+\u0394y\u00b2)", GLD, 11.5),
+      txt(add(mid(P1, P2), [-16, -8]), "d", ACC, 14),
+      cap(430, 330, "the base leg, then the rise: d\u00b2 = \u0394x\u00b2 + \u0394y\u00b2 + \u0394z\u00b2")
     ]);
   })()];
 
@@ -2087,6 +2165,41 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
+  DIAGRAMS["reflection-composition"] = [(() => {
+    const O = [215, 235], r = 105;
+    const m = (p, a, b) => sub(mul(foot(p, a, b), 2), p);   // mirror p in line ab
+    const L1a = onC(O, 150, -115), L1b = onC(O, 55, 65);
+    const L2a = onC(O, 150, -65), L2b = onC(O, 55, 115);
+    const P = onC(O, r, -90);
+    const P1 = m(P, L1a, L1b), P2 = m(P1, L2a, L2b);
+    return wrap(470, 330, [
+      seg(L1a, L1b, DIM, 2), seg(L2a, L2b, DIM, 2),
+      seg(O, P, FNT, 1.3, "4 4"), seg(O, P1, FNT, 1.3, "4 4"), seg(O, P2, FNT, 1.3, "4 4"),
+      angleArc(O, L1a, L2a, 34, GRN), txt(add(O, [0, -48]), "\u03b8", GRN, 13),
+      angleArc(O, P, P2, 68, GLD, true), txt(add(O, [68, -56]), "2\u03b8", GLD, 13),
+      dot(P, ACC, 4.5), dot(P1, FNT, 4), dot(P2, GLD, 4.5), dot(O, DIM, 3.5),
+      txt(add(P, [0, -12]), "P", ACC), txt(add(P1, [-14, -4]), "P\u2032", FNT),
+      txt(add(P2, [16, 4]), "P\u2033", GLD),
+      txt(add(O, [-12, 14]), "O", DIM, 12),
+      txt(add(L1a, [-16, -6]), "\u2113\u2081", DIM, 13), txt(add(L2a, [18, -6]), "\u2113\u2082", DIM, 13),
+      cap(470, 330, "mirrors meeting at angle \u03b8: reflecting in \u2113\u2081 then \u2113\u2082 turns P through 2\u03b8 about O, so the pair is a rotation")
+    ]);
+  })(), (() => {
+    const x1 = 165, x2 = 245, y = 175, top = 70, bot = 280;
+    const P = [110, y], P1 = [2 * x1 - P[0], y], P2 = [2 * x2 - P1[0], y];
+    return wrap(470, 330, [
+      seg([x1, top], [x1, bot], DIM, 2), seg([x2, top], [x2, bot], DIM, 2),
+      seg([x1, 250], [x2, 250], GRN, 1.6), txt([(x1 + x2) / 2, 266], "d", GRN, 13),
+      seg(P, P2, GLD, 1.6, "5 4"),
+      dot(P, ACC, 4.5), dot(P1, FNT, 4), dot(P2, GLD, 4.5),
+      txt(add(P, [0, -14]), "P", ACC), txt(add(P1, [0, -14]), "P\u2032", FNT),
+      txt(add(P2, [0, -14]), "P\u2033", GLD),
+      txt([(P[0] + P2[0]) / 2, y + 24], "2d", GLD, 13),
+      txt([x1 - 16, top + 14], "\u2113\u2081", DIM, 13), txt([x2 + 16, top + 14], "\u2113\u2082", DIM, 13),
+      cap(470, 330, "parallel mirrors have no fixed point: the same pair of reflections slides P by 2d instead, a translation")
+    ]);
+  })()];
+
   DIAGRAMS["skew-lines-distance"] = [wrap(430, 320, [
     seg([50, 210], [390, 250], ACC, 2),
     seg([120, 60], [360, 140], GLD, 2),
@@ -2964,24 +3077,54 @@ DIAGRAMS["trig-ceva"] = [(() => {
   })()];
 
   DIAGRAMS["descartes-sphere-theorem"] = [(() => {
+    // A genuine 3D arrangement rather than a cross-section: four equal spheres
+    // whose centers form a regular tetrahedron of edge 2R are mutually tangent,
+    // and the sphere in the central gap touches all four, giving five mutually
+    // tangent spheres. Its radius is the circumradius minus R, so with R = 1 it
+    // is sqrt(6)/2 - 1, and the curvatures then satisfy the theorem exactly.
+    // Tangent spheres seen from an angle project to OVERLAPPING circles, so the
+    // fills are opaque and painted back to front; drawn translucent they read
+    // as interpenetrating instead of as one sphere in front of another.
+    const O = [225, 185], R = 46, a = 2 * R;
+    const P3 = proj3(O, 1, AX3_ISO);
+    const rho = a / Math.sqrt(3), h = a * Math.sqrt(2 / 3);
+    const rin = a * Math.sqrt(6) / 4 - R;
+    const C = [
+      [rho * Math.cos(rad(90)), rho * Math.sin(rad(90)), 0],
+      [rho * Math.cos(rad(210)), rho * Math.sin(rad(210)), 0],
+      [rho * Math.cos(rad(330)), rho * Math.sin(rad(330)), 0],
+      [0, 0, h]
+    ];
+    const col = [ACC, GRN, ACC, GLD];
+    const sph = (c, r, cc, fill) =>
+      `<circle cx="${r1(c[0])}" cy="${r1(c[1])}" r="${r1(r)}" fill="${fill}" stroke="${cc}" stroke-width="2"/>` +
+      `<circle cx="${r1(c[0] - r * 0.36)}" cy="${r1(c[1] - r * 0.36)}" r="${r1(r * 0.18)}" fill="rgba(255,255,255,0.28)"/>`;
+    const order = C.map((v, i) => i).sort((p, q) => depth3(...C[p]) - depth3(...C[q]));
+    const Cin = P3(0, 0, h / 4);
+    return wrap(450, 340, [
+      order.map(i => sph(P3(...C[i]), R, col[i], "var(--bg-card)")).join(""),
+      sph(Cin, rin, GLD, GLD),
+      txt(add(P3(...C[0]), [R + 14, 4]), "k\u2081", ACC, 12),
+      txt(add(P3(...C[1]), [-R - 14, 4]), "k\u2082", GRN, 12),
+      txt(add(P3(...C[2]), [-4, R + 17]), "k\u2083", ACC, 12),
+      txt(add(P3(...C[3]), [0, -R - 10]), "k\u2084", GLD, 12),
+      txt(add(Cin, [rin + 17, 4]), "k\u2085", GLD, 12),
+      cap(450, 340, "four equal spheres centered at a regular tetrahedron are mutually tangent, and the small sphere filling the central gap touches all four, so all five are mutually tangent. With R = 1 the gap sphere has radius \u221a6/2 \u2212 1, and those five curvatures satisfy the relation exactly")
+    ]);
+  })(), (() => {
+    // A plane through two of the spheres, where the gap the fifth fills is legible.
+    const O = [225, 178], R = 66, d = 2 * R / Math.sqrt(3), rin = R * (2 - Math.sqrt(3)) / Math.sqrt(3);
     const sph = (c, r, col, lab) =>
       circ(c, r, col, 2, "rgba(91,140,255,0.08)") +
       `<circle cx="${r1(c[0] - r * 0.34)}" cy="${r1(c[1] - r * 0.34)}" r="${r1(r * 0.20)}" fill="rgba(255,255,255,0.42)"/>` +
       txt(add(c, [0, 4.5]), lab, col, 13);
-    // Cross-section drawn with genuinely tangent circles: three equal spheres
-    // plus a small one in the central gap. (Five mutually tangent spheres cannot
-    // be shown truly in the plane — the fourth here fills the gap, a fifth would
-    // sit out of the plane.)
-    const O = [225, 178], R = 66, d = 2 * R / Math.sqrt(3), rin = R * (2 - Math.sqrt(3)) / Math.sqrt(3);
     const c1 = onC(O, d, -90), c2 = onC(O, d, 30), c3 = onC(O, d, 150);
     return wrap(450, 340, [
-      sph(c1, R, ACC, "k₁"), sph(c2, R, GLD, "k₂"), sph(c3, R, GRN, "k₃"),
+      sph(c1, R, ACC, "k\u2081"), sph(c2, R, GLD, "k\u2082"), sph(c3, R, GRN, "k\u2083"),
       circ(O, rin, DIM, 1.8, "rgba(245,196,81,0.20)"),
-      cap(450, 340, "cross-section of mutually tangent spheres — three equal ones plus a small one in the central gap (a fifth completes the 3D set): curvatures kᵢ = 1/rᵢ satisfy (Σkᵢ)² = 3 Σkᵢ²")
+      cap(450, 340, "the same idea one dimension down: three mutually tangent circles leave a curvilinear gap, and curvatures k\u1d62 = 1/r\u1d62 satisfy (\u03a3k)\u00b2 = 3\u03a3k\u00b2 in space, against 2\u03a3k\u00b2 in the plane")
     ]);
   })()];
-
-  // ---------- Added: surface path, integer triangles, extended bisector, common chord ----------
 
   DIAGRAMS["surface-shortest-path"] = [(() => {
     const x0 = 60, x1 = 180, x2 = 360, yT = 70, yB = 190;

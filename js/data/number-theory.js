@@ -38,6 +38,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
+          id: "euclids-lemma",
+          name: "Euclid's Lemma",
+          latex: String.raw`p \mid ab \implies p \mid a \ \text{ or } \ p \mid b, \qquad \gcd(a,b) = 1 \ \text{ and } \ b \mid an \implies b \mid n`,
+          description: String.raw`A prime dividing a product divides one of the factors. The coprime form is what gets used: a divisor sharing nothing with $a$ must divide whatever else is there. This is the step that licenses cancelling in $\frac{an}{b}$, and the reason a fraction in lowest terms forces its denominator onto the other factor.`,
+          keywords: ["euclid lemma", "prime divides product", "coprime divisibility", "cancel a coprime factor", "relatively prime implies divides", "lowest terms forces divisibility"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "bezouts-identity",
           name: "Bézout's Identity",
           latex: String.raw`\exists\, x, y \in \mathbb{Z}: \; ax + by = \gcd(a, b)`,
@@ -574,6 +583,15 @@ window.MATH_SECTIONS.push({
           keywords: ["repeating decimal", "period", "nines", "fraction"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "digit-sum-carries",
+          name: "Digit Sums and Carries",
+          latex: String.raw`s(a+b) = s(a) + s(b) - 9c, \qquad c = \#\{\text{carries when adding } a + b\}`,
+          description: String.raw`Each carry moves ten units out of one place and returns one to the next, so the digit sum falls by exactly $9$ every time one happens. In base $b$ the drop is $b-1$. Read backwards, the identity counts the carries: $c = \frac{s(a)+s(b)-s(a+b)}{9}$.`,
+          keywords: ["digit sum of a sum", "carries", "digit sum drops by nine", "count the carries", "no carrying addition", "base b carry drop", "s(a+b)"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "terminating-decimals",

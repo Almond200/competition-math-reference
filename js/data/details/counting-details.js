@@ -127,6 +127,8 @@ The identity is a case split: fix one element of the $n$, and every $k$-subset e
 
 Computationally the recursion builds Pascal's triangle row by row, which is the fastest way to get a whole row by hand and the standard engine for induction proofs about binomial coefficients.
 
+Moving along a row is a different relation and often the more useful one: dividing the factorials leaves $\frac{\binom n{k+1}}{\binom nk} = \frac{n-k}{k+1}$, so a stated ratio between adjacent entries becomes a linear equation in $n$ and $k$, and two such conditions pin both. Combinatorially, a $(k+1)$-subset is built by adding one of the $n-k$ absent elements and arises from $k+1$ different $k$-subsets, which is the same fraction. It is also the ratio [[largest-term-ratio|the largest-term method]] asks for, crossing $1$ at $k = \frac{n-1}2$ and so putting the row's peak at $k = \lfloor n/2 \rfloor$.
+
 The other use is absorption: applying the rule repeatedly collapses a sum of consecutive entries into a single coefficient, which is precisely how the [[hockey-stick|hockey stick identity]] telescopes. Symmetry halves your work and explains why every row reads the same forwards and backwards.
 
 ## On contests
@@ -1258,6 +1260,30 @@ Take any path that touches the forbidden line and reflect everything after the f
 Recipe: total paths minus $\binom{\cdot}{\cdot}$ to the reflected endpoint. Compute the reflection of the endpoint across the barrier line (for $y = x + c$ barriers, swap-and-shift coordinates). Iterated barriers (two walls) need alternating reflections with inclusion-exclusion. [[ballot-problem|The ballot problem]] and [[catalan-numbers|Catalan]] formula are the two canonical outputs.
 
 ## On contests
-Vote-count and never-trailing problems, queue problems (people with 5- and 10-dollar bills), and lattice paths avoiding a diagonal. When a path constraint says "never above/below," reflect before attempting recursion — the closed form is one subtraction.`
+Vote-count and never-trailing problems, queue problems (people with 5- and 10-dollar bills), and lattice paths avoiding a diagonal. When a path constraint says "never above/below," reflect before attempting recursion — the closed form is one subtraction.`,
+
+"uniform-overcount": String.raw`## Key forms
+- $\#(\text{objects}) = \frac{\#(\text{constructions})}{k}$ — legal exactly while $k$ does not depend on the object
+- $\binom nr = \frac{n!}{(n-r)!} \div r!$ — arrangements divided by the $r!$ orders inside one selection
+- $\frac{n!}{n} = (n-1)!$ — $n$ rotations of a row give the same circular arrangement
+- $\frac{n!}{n_1!\,n_2!\cdots}$ — the orderings within each block of identical items divided out
+- $\frac{N - f}{k} + f$ — the repair, when $f$ objects are built fewer than $k$ times
+
+## Why it works
+The map from constructions to objects is $k$-to-one, so the two counts stand in the ratio $k$. That is the whole argument, and it is also where the method fails: if some object has extra symmetry, fewer distinct constructions produce it, the map is no longer uniformly $k$-to-one, and dividing by $k$ undercounts exactly those objects.
+
+## How to use it
+Say out loud how many times a typical object gets built before dividing. If the answer depends on which object it is, do not divide yet.
+
+Then check the symmetric cases by hand. Pairs where the two halves are identical, colorings fixed by a rotation, and arrangements that read the same reversed are the usual culprits. Pull them out of the count, divide the rest, and add them back once each. Choosing two subsets whose union is a given set is the standard example: order does not matter, so almost everything is doubled, but the one pair with both subsets equal is not, giving $\frac{3^n - 1}{2} + 1$.
+
+When the symmetric cases are numerous rather than exceptional, stop patching and use [[burnsides-lemma|Burnside's lemma]], which averages over the symmetries and needs no repair step at all.
+
+## On contests
+The most frequently botched step in AMC counting, and the reason an answer is often off by a small amount rather than wildly wrong. It is the step hidden inside [[multiset-permutations|arrangements with repeats]] and [[circular-permutations|circular arrangements]], and it finishes what [[constructive-counting|constructive counting]] starts, since that method builds the constructions this one divides.`,
+
+
+
+
 
 });

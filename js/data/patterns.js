@@ -12,6 +12,13 @@ window.MATH_SECTIONS.push({
   subsections: [
     {
       title: "Geometry",
+      groups: [
+        { title: "Angle & configuration chasing", ids: ["angle-chasing", "directed-angles", "auxiliary-lines", "phantom-point", "perp-to-angle-bisector"] },
+        { title: "Ratios, masses & areas", ids: ["mass-points", "area-method", "ravi-substitution"] },
+        { title: "Transformations & inversion", ids: ["spiral-similarity", "homothety-monge", "inversion-properties", "affine-transformations", "pole-polar"] },
+        { title: "Coordinate & algebraic bashes", ids: ["coordinate-bash", "trig-bash", "complex-bash", "barycentric-coordinates"] },
+        { title: "Working in three dimensions", ids: ["solid-tactics", "cross-section-method", "cavalieris-principle"] }
+      ],
       formulas: [
         {
           id: "cross-section-method",
@@ -237,6 +244,14 @@ window.MATH_SECTIONS.push({
     },
     {
       title: "Algebra",
+      groups: [
+        { title: "Substitutions", ids: ["log-substitution", "weierstrass-substitution", "trig-substitution", "functional-substitution", "sp-substitution", "normalization"] },
+        { title: "Factoring & rewriting", ids: ["sfft", "completing-the-square", "forced-difference-of-squares", "rationalizing", "denesting-radicals"] },
+        { title: "Polynomials & their roots", ids: ["newtons-sums", "symmetric-polynomial-strategies", "lagrange-interpolation", "root-transformations"] },
+        { title: "Sums & sequences", ids: ["telescoping", "finite-differences", "double-summation", "largest-term-ratio"] },
+        { title: "Inequalities & optimization", ids: ["sos-method", "smoothing-method", "tangent-line-trick"] },
+        { title: "Graphs, estimates & rates", ids: ["abs-value-graphing", "abs-value-relations", "sqrt-approximation", "multi-leg-rates"] }
+      ],
       formulas: [
         {
           id: "denesting-radicals",
@@ -470,6 +485,17 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "multi-leg-rates",
+          name: "Multi-Leg Distance, Rate & Time",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\sum_i d_i = D, \qquad \sum_i \frac{d_i}{v_i} = T`,
+          description: String.raw`When a journey breaks into legs at different speeds, it is the times that add, never the speeds. Write each leg as $\frac{d_i}{v_i}$, sum those to the total time, and pair that with the distances summing to the total distance. Two travelers covering the same route give two such equations, and subtracting them kills the shared unknown.`,
+          keywords: ["multi leg journey", "different speed on each leg", "time is distance over rate", "two travelers same route", "walked then ran", "upstream and downstream", "legs of a trip", "meet partway"],
+          importance: "medium",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "normalization",
           name: "Normalization & Homogenization",
           type: "method",
@@ -517,6 +543,12 @@ window.MATH_SECTIONS.push({
     },
     {
       title: "Number Theory",
+      groups: [
+        { title: "Choosing the right lens", ids: ["choose-modulus", "exponent-tracking", "recognition-numbers"] },
+        { title: "Lifting & descent", ids: ["lte", "hensel-lifting", "vieta-jumping"] },
+        { title: "The gcd machinery", ids: ["extended-euclidean-algorithm", "gcd-substitution"] },
+        { title: "Bounding & factoring to finish", ids: ["bounding-diophantine", "squeeze-between-squares", "factor-pair-counting", "fermat-two-squares"] }
+      ],
       formulas: [
         {
           id: "recognition-numbers",
@@ -654,6 +686,13 @@ window.MATH_SECTIONS.push({
     },
     {
       title: "Counting & Probability",
+      groups: [
+        { title: "Reframing the count", ids: ["complementary-counting", "bijection-method", "double-counting", "symmetry-probability"] },
+        { title: "Building & splitting", ids: ["constructive-counting", "casework-method", "uniform-overcount", "pie"] },
+        { title: "Recursion & states", ids: ["recursive-counting", "states-recursion-prob", "transfer-matrix-method"] },
+        { title: "Algebraic machinery", ids: ["generating-function-method", "indicator-variables"] },
+        { title: "Existence arguments", ids: ["invariants-coloring", "extremal-principle", "probabilistic-method"] }
+      ],
       formulas: [
         {
           id: "complementary-counting",
@@ -730,6 +769,17 @@ window.MATH_SECTIONS.push({
           description: String.raw`Build the object one decision at a time and multiply the choice counts — valid only when every step has the same number of options regardless of earlier picks. Start with the most restricted slot (last digit of an even number, the seat of the picky person); if a step's count depends on history, split into cases or subtract overcounts. Divide at the end by symmetries you didn't intend to distinguish. Counting integers by digit rule is the same move applied position by position, which is why "how many numbers below $N$ have property P" is built rather than listed.`,
           keywords: ["constructive counting", "multiplication principle", "build step by step", "most restricted first", "overcount divide", "digit counting", "count numbers with a digit property", "no digit 7", "digit sum", "digit dp", "count by position", "how many numbers", "method"],
           importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "uniform-overcount",
+          name: "Counting with a Uniform Overcount",
+          type: "method",
+          subject: "counting",
+          latex: String.raw`\#(\text{objects}) = \frac{\#(\text{constructions})}{k} \quad \text{when every object is built exactly } k \text{ times}`,
+          description: String.raw`Count something easier that produces each target object the same number of times, then divide by that number. The division is legal only while $k$ is genuinely constant. An object with extra symmetry is built fewer times, so it has to be removed, divided separately, and added back.`,
+          keywords: ["overcount then divide", "divide by the number of orderings", "each object counted k times", "unordered from ordered", "correcting for symmetry", "symmetric cases break the division", "divide by 2 for order"],
+          importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
@@ -882,6 +932,10 @@ window.MATH_SECTIONS.push({
     },
     {
       title: "Algebra",
+      groups: [
+        { title: "Recognizing the shape", ids: ["infinite-nest", "palindromic-polynomials", "piecewise-graph-counting", "periodic-sequences"] },
+        { title: "Pairing & filtering", ids: ["fx-pairing", "roots-of-unity-filter", "median-minimizes-abs", "shifted-polynomial-construction"] }
+      ],
       formulas: [
         {
           id: "median-minimizes-abs",
@@ -1013,6 +1067,10 @@ window.MATH_SECTIONS.push({
     },
     {
       title: "Counting & Probability",
+      groups: [
+        { title: "Symmetry & group counting", ids: ["burnsides-lemma", "polya-enumeration", "reflection-principle"] },
+        { title: "Placement & position", ids: ["gap-method", "counting-blocks", "losing-positions", "geometric-probability"] }
+      ],
       formulas: [
         {
           id: "losing-positions",

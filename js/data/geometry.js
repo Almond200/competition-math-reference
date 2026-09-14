@@ -1200,6 +1200,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "reflection-composition",
+          name: "Composing Two Reflections",
+          latex: String.raw`\text{reflect in } \ell_1, \text{ then } \ell_2: \quad \text{rotation by } 2\theta \text{ about } \ell_1 \cap \ell_2, \qquad \ell_1 \parallel \ell_2 : \ \text{translation by } 2d`,
+          description: String.raw`Two reflections never leave another reflection behind. When the mirrors meet at angle $\theta$ the composite is a rotation through $2\theta$ about their intersection; when they are parallel at distance $d$ it is a translation by $2d$ across them. Order matters, since swapping the mirrors reverses the turn.`,
+          keywords: ["composition of reflections", "two reflections make a rotation", "rotation by twice the angle", "double reflection", "composing isometries", "reflect then reflect", "mirror pair"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "rotation-90",
           name: "Rotating a Point",
           latex: String.raw`(x, y) \xrightarrow{90^\circ \text{ ccw}} (-y, x), \qquad (x,y) \xrightarrow{\theta} (x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)`,
@@ -1350,6 +1359,15 @@ window.MATH_SECTIONS.push({
           latex: String.raw`V = \frac{1}{3}h\left(A_1 + A_2 + \sqrt{A_1 A_2}\right)`,
           description: String.raw`A truncated pyramid or cone with parallel base areas $A_1, A_2$ and height $h$ between them.`,
           keywords: ["frustum", "truncated cone", "truncated pyramid", "frustum volume formula", "truncated cone volume", "truncated pyramid volume"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "distance-3d",
+          name: "Distance in Three Dimensions",
+          latex: String.raw`d = \sqrt{(\Delta x)^2 + (\Delta y)^2 + (\Delta z)^2}, \quad M = \left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}, \frac{z_1+z_2}{2}\right)`,
+          description: String.raw`One Pythagorean step per axis, so every planar coordinate identity survives unchanged: the midpoint still averages coordinatewise, and the point dividing $P_1P_2$ in ratio $k:1$ is still $\frac{P_1 + kP_2}{1+k}$. Fixing $d = r$ turns the formula into the sphere $(x-a)^2 + (y-b)^2 + (z-c)^2 = r^2$.`,
+          keywords: ["distance in 3d", "distance in space", "three dimensional distance", "distance between two points in space", "midpoint in space", "sphere equation", "xyz coordinates", "space coordinates"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },

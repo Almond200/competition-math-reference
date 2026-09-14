@@ -447,7 +447,7 @@ A heavy but elementary computation with the tangency conditions (center distance
 Solve the quadratic as $k_4 = k_1 + k_2 + k_3 \pm 2\sqrt{k_1k_2 + k_2k_3 + k_3k_1}$. Conventions: enclosing circle → negative curvature; straight line → curvature 0 (two lines + circle configurations become trivial). The two $\pm$ roots satisfy $k_4 + k_4' = 2(k_1+k_2+k_3)$ — handy for Apollonian gasket chains.
 
 ## On contests
-AIME's favorite "four [[tangent-circles|tangent circles]]" shortcut — problems that would take a page of center-distance algebra fall in three lines. Circles tangent to two parallel lines and each other: use curvature 0 twice.`,
+AIME's favorite "four [[tangent-circles|tangent circles]]" shortcut — problems that would take a page of center-distance algebra fall in three lines. Circles tangent to two parallel lines and each other: use curvature 0 twice. The same identity holds in every dimension, with the $3$ replaced by $n$ and $n+2$ spheres in play, which is [[descartes-sphere-theorem|the Soddy-Gosset theorem]].`,
 
 "caseys-theorem": String.raw`## Why it works
 Generalizes [[ptolemys-theorem|Ptolemy]] by replacing vertices with circles tangent to the host circle; each tangent length $t_{ij}$ plays the role of a side/diagonal. Provable by inversion centered on the host circle, which turns the statement into ordinary Ptolemy.
@@ -656,8 +656,17 @@ Often it's cleaner to restore the apex: extend the frustum to the full cone/pyra
 ## On contests
 Truncated-solid problems on AMC/AIME nearly always reward apex restoration — heights scale like linear dimensions, volumes like cubes, and the frustum is a difference of the two.`,
 
+"distance-3d": String.raw`## Why it works
+Take the axis-aligned box whose opposite corners are the two points. Its base diagonal is $\sqrt{(\Delta x)^2 + (\Delta y)^2}$ by the [[pythagorean-theorem|Pythagorean theorem]], and the remaining rise $\Delta z$ is perpendicular to the whole base plane, so a second right triangle closes on it. Perpendicular contributions add in squares, one axis at a time, which is why the pattern keeps going into any number of dimensions.
+
+## How to use it
+Coordinatize first and the formula does the rest, which is the usual reason [[solid-tactics|the 3D playbook]] opens by choosing axes. When the two points are opposite corners of a box you are computing [[space-diagonal|its space diagonal]], the special case where the coordinate differences are the edge lengths themselves. Reading $d$ as a constant instead gives the sphere, so a tangency or an equidistance condition becomes one equation rather than a picture.
+
+## On contests
+The most common use is a sphere condition in disguise: a point at a fixed distance from a center, or two centers whose separation is compared against $r_1 + r_2$. The corollary worth remembering is that the farthest two points on two spheres lie on the line through the centers, at $d + r_1 + r_2$, and the nearest at $d - r_1 - r_2$; both follow because any other pair detours off that line.`,
+
 "space-diagonal": String.raw`## Why it works
-Two Pythagorean steps: the base diagonal is $\sqrt{\ell^2 + w^2}$, then the vertical edge is perpendicular to the entire base plane, so the space diagonal closes a second right triangle.
+Two [[pythagorean-theorem|Pythagorean]] steps: the base diagonal is $\sqrt{\ell^2 + w^2}$, then the vertical edge is perpendicular to the entire base plane, so the space diagonal closes a second right triangle.
 
 ## How to use it
 The general principle — perpendicular contributions add in squares — extends to any orthogonal decomposition, e.g. distances in coordinatized boxes and "corner to far corner through the inside" questions. For the cube: $s\sqrt{3}$, and the angle between space diagonal and base is $\arctan\frac{1}{\sqrt2}$.
@@ -1765,7 +1774,7 @@ For a specific small $n$, skip the closed form and just sweep: let $c$ run from 
 "How many triangles with integer sides and perimeter $n$" is a recurring MATHCOUNTS/AMC question. The fix-the-longest-side sweep is reliable under time pressure, and the round-to-nearest formula lets you confirm the answer in one line.`,
 
 "equal-chords-arcs": String.raw`## Why it works
-All three conditions come from the same congruent triangles at the center. A chord of length $\ell$ at distance $d$ from the center $O$ (radius $R$) satisfies $\ell=2\sqrt{R^2-d^2}$, so $\ell$ and $d$ determine each other; equal chords force equal $d$ and conversely. The isosceles triangles formed by $O$ and a chord's endpoints subtend equal central angles when the chords are equal, and equal central angles cut equal arcs — so "equal chords," "equal arcs," and "equal distance from center" are one fact viewed three ways.
+All three conditions come from the same congruent triangles at the center. A [[chord-length|chord]] of length $\ell$ at distance $d$ from the center $O$ (radius $R$) satisfies $\ell=2\sqrt{R^2-d^2}$, so $\ell$ and $d$ determine each other; equal chords force equal $d$ and conversely. The isosceles triangles formed by $O$ and a chord's endpoints subtend equal central angles when the chords are equal, and equal central angles cut equal arcs — so "equal chords," "equal arcs," and "equal distance from center" are one fact viewed three ways.
 
 ## How to use it
 The perpendicular from $O$ to a chord bisects the chord (the two right triangles $O$–foot–endpoint are congruent) and bisects its arc too — the standard route to a chord's or arc's midpoint. From $\ell=2\sqrt{R^2-d^2}$, a larger $\ell$ means a smaller $d$: the longer chord sits closer to the center, and the diameter ($d=0$) is longest. Use the same relation to convert a chord length to its distance from the center, or back, in one step.
@@ -1859,7 +1868,7 @@ Trigger on "circle tangent to two sides and internally to the circumcircle." The
 A recurring olympiad configuration (and a few hard prep/AIME problems); the tangency point $T$ and its collinearities are the usual keys to unlocking it.`,
 
 "descartes-sphere-theorem": String.raw`## Why it works
-It is the $n=3$ case of the Soddy–Gosset relation $\left(\sum k_i\right)^2 = n\sum k_i^2$: in $n$ dimensions, $n+2$ mutually tangent spheres have curvatures obeying that quadratic. The Descartes Circle Theorem is the $n=2$ instance of the very same identity.
+It is the $n=3$ case of the Soddy–Gosset relation $\left(\sum k_i\right)^2 = n\sum k_i^2$: in $n$ dimensions, $n+2$ mutually tangent spheres have curvatures obeying that quadratic. [[descartes-circle-theorem|The Descartes Circle Theorem]] is the $n=2$ instance of the very same identity.
 
 ## How to use it
 With four mutually tangent spheres known, solve the quadratic for the fifth; its two roots are the small sphere filling the central gap and the large sphere enclosing the rest (negative curvature). A flat plane counts as curvature $0$ and an enclosing sphere as negative, exactly as in 2D.
@@ -2071,6 +2080,20 @@ Choose the target to make the problem trivial. Sending a circle to a line straig
 Watch the special cases. $c=0$ gives the affine maps $z\mapsto\alpha z+\beta$, which fix $\infty$ and are the similarity transformations. Inversion in a circle is *not* itself a Möbius map, since it is anti-conformal, but inversion followed by conjugation is; that is the precise sense in which the inversive and Möbius pictures agree.
 
 ## On contests
-Essentially never needed below olympiad level, and even there it is a structural tool rather than a computational one. It appears when a problem is really about circles and tangency and the intended solution is "normalise the picture": sending a circle to a line, or two circles to concentric ones, and reading the answer off the easy configuration.`
+Essentially never needed below olympiad level, and even there it is a structural tool rather than a computational one. It appears when a problem is really about circles and tangency and the intended solution is "normalise the picture": sending a circle to a line, or two circles to concentric ones, and reading the answer off the easy configuration.`,
+
+
+"reflection-composition": String.raw`## Why it works
+Track directions. Reflecting a line at angle $\alpha$ in a mirror at angle $\mu$ sends it to $2\mu - \alpha$, so reflecting in $\ell_1$ and then $\ell_2$ sends $\alpha$ to $2\mu_2 - (2\mu_1 - \alpha) = \alpha + 2(\mu_2 - \mu_1)$. Every direction therefore turns by the same $2\theta$, and the intersection point is fixed by both mirrors, so the composite can only be a rotation about it. Parallel mirrors have no fixed point: a point at signed distance $t$ from the first lands at $t + 2d$, which is a translation.
+
+## How to use it
+Use it to collapse a chain of reflections. An even number of reflections is a rotation or a translation and an odd number is a reflection or a glide, so a long alternating process is secretly one rotation applied over and over, and the question becomes the order of that rotation.
+
+Run it backwards as well. Any rotation by $2\theta$ splits into two reflections whose mirrors pass through the center at angle $\theta$, and one of the two mirrors may be chosen freely. That freedom is what lets an awkward rotation be traded for a convenient mirror line.
+
+Mind the order, because composing the other way rotates by $-2\theta$. It is the directed angle from $\ell_1$ to $\ell_2$ that doubles.
+
+## On contests
+Iterated-reflection problems on the AIME reduce to finding the order of the resulting rotation, turning a geometry question into a divisibility one. Related: [[reflection-coordinates|reflecting a point over a line]] gives the single-reflection formulas, and [[rotation-90|rotating a point]] handles the quarter-turn special case.`,
 
 });

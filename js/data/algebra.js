@@ -291,6 +291,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
+          id: "triangular-numbers",
+          name: "Triangular Numbers",
+          latex: String.raw`T_n = \frac{n(n+1)}{2} = \binom{n+1}{2}, \qquad T_{n-1} + T_n = n^2, \qquad 8T_n + 1 = (2n+1)^2`,
+          description: String.raw`$1, 3, 6, 10, 15, 21, \dots$ counts the dots in a triangular array, and also the pairs drawn from $n+1$ objects. Two consecutive ones add to a perfect square, and a number $T$ is triangular exactly when $8T+1$ is an odd square, which is the fastest test.`,
+          keywords: ["triangular number", "figurate numbers", "sum of the first n integers", "consecutive triangular numbers sum to a square", "8T+1 square test", "handshake count"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "geometric-series",
           name: "Geometric Series",
           latex: String.raw`a_n = a\,r^{n-1}, \qquad S_n = a\,\frac{1 - r^n}{1 - r}, \qquad S_\infty = \frac{a}{1 - r} \;\; (|r| < 1)`,

@@ -1542,4 +1542,40 @@ Swap when the inner sum is hard but its transpose is easy, and the classic sign 
 
 ## On contests
 Any AIME sum with two indices is worth reading twice: once as written, once transposed. Divisor sums, symmetric pair sums such as $\sum_{i\lt j}a_ia_j$, and lattice-point counts are the three places this pays off most often.`,
+
+"triangular-numbers": String.raw`## Why it works
+Pair the ends of $1 + 2 + \cdots + n$. The first and last add to $n+1$, so do the second and the second-last, and running the sum forwards and backwards at once gives $n$ such pairs, hence $T_n = \frac{n(n+1)}2$. That is also $\binom{n+1}2$, since choosing two of $n+1$ objects is the same count. For the square identity, staircases of heights $1$ through $n-1$ and $1$ through $n$ interlock exactly into an $n \times n$ block, so $T_{n-1} + T_n = n^2$. [[completing-the-square|Completing the square]] on $2T = n^2 + n$ turns it into $8T + 1 = (2n+1)^2$.
+
+## How to use it
+Recognize the shape rather than the formula. Any count of pairs, handshakes, or unordered choices is triangular, so [[handshakes-diagonals|counting handshakes]] describes these same numbers from the other direction.
+
+The square identity earns its place when a sequence has constant second differences. Such a sequence differs from $T_n$ only by a linear term, so guessing a quadratic with leading coefficient $\frac12$ and fitting the known values beats solving for three coefficients.
+
+To test a given number, check whether $8T + 1$ is an odd perfect square, then read off $n = \frac{\sqrt{8T+1} - 1}{2}$. This is much faster than inverting $\frac{n(n+1)}2$ by trial.
+
+## On contests
+Sums of the first $n$ integers turn up constantly, usually buried inside a telescoping or counting argument rather than standing as the answer. The general sum is on [[arithmetic-series|the arithmetic series card]], and [[power-sums|the power sums]] carry squares and cubes.`,
+
+"multi-leg-rates": String.raw`## Key forms
+- $\sum_i d_i = D, \quad \sum_i \frac{d_i}{v_i} = T$ — distances add and times add; speeds never do
+- $\frac{x}{v_1} + \frac{D-x}{v_2} = T$ — one trip of length $D$ with a single unknown leg $x$
+- $T_A = T_B$ — two travelers over one route, subtracted so the shared length cancels
+- $v_1 t + v_2 t = D$ — a meeting, written as two distances closing a gap in a common time
+- $\frac{2v_1v_2}{v_1+v_2}$ — out and back, the reason the average comes out harmonic
+
+## Why it works
+Rate times time equals distance holds on any stretch where the speed is constant, so a journey at changing speeds has to be cut at the points where it changes. Over leg $i$ the time spent is $\frac{d_i}{v_i}$, and those durations are consecutive and disjoint, so they add to the total. The distances add for the same reason. Speeds do not add, because a speed is a ratio and averaging ratios weights the legs by the wrong quantity.
+
+## How to use it
+Name the legs first, before writing any equation, and give each one a distance and a speed even if one of them is the unknown. Two relations then come almost for free: the distances total $D$ and the times total $T$.
+
+When two people cover the same route, write the total-time equation for each and subtract. Everything they have in common, usually the route length, drops out, which is faster than solving either equation alone.
+
+Watch for a leg whose distance is stated as a fraction of the whole, since that turns the distance equation into an identity and leaves the time equation carrying all the information.
+
+## On contests
+A staple of early AIME and mid-AMC: walked then jogged, rowed upstream and back, or two cyclists starting at opposite ends. Three neighbours are close enough to confuse: [[average-speed|average speed]] is only total distance over total time, [[work-rates|combined work rates]] is simultaneous effort where rates genuinely do add, and [[relative-motion|relative motion]] is about closing speeds.`,
+
+
+
 });

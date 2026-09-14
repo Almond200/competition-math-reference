@@ -28,6 +28,15 @@ DB.forEach(function (e, i) {
   if (seen[e.ref]) errors.push(at + ": duplicate ref"); seen[e.ref] = 1;
   if (!e.formulas || !e.formulas.length) errors.push(at + ": no formulas");
   (e.formulas || []).forEach(function (f) { if (!CARDS[f]) errors.push(at + ": unknown formula id '" + f + "'"); });
+  // The trick route is optional, but a half-filled one is always a mistake: prose with no
+  // cards leaves the idea untagged, and cards with no prose put a problem on a card page
+  // with nothing explaining why it is there.
+  (e.trickFormulas || []).forEach(function (f) { if (!CARDS[f]) errors.push(at + ": unknown trickFormulas id '" + f + "'"); });
+  if (e.trick && !(e.trickFormulas || []).length) errors.push(at + ": trick prose with no trickFormulas");
+  if ((e.trickFormulas || []).length && !e.trick) errors.push(at + ": trickFormulas with no trick prose");
+  (e.trickFormulas || []).forEach(function (f) {
+    if ((e.formulas || []).indexOf(f) >= 0) errors.push(at + ": '" + f + "' is in both formulas and trickFormulas");
+  });
   (e.types || []).forEach(function (t) { if (!TOPICS[t]) errors.push(at + ": unknown type id '" + t + "'"); });
   if (e.d != null && (typeof e.d !== "number" || e.d < 1 || e.d > 10)) errors.push(at + ": d out of range");
 });
@@ -55,12 +64,14 @@ print("card cross-links: " + linkCount + " | dangling: " + (linkErrors.length ? 
 // page, so it is checked here. Control characters are the tell.
 var latexErrors = [];
 DB.forEach(function (e) {
-  if (!e.strategy) return;
-  if (/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(e.strategy)) {
-    latexErrors.push(e.ref + ": control character in strategy (un-escaped LaTeX backslash)");
+  [["strategy", e.strategy], ["trick", e.trick]].forEach(function (pair) {
+  var field = pair[0], text = pair[1];
+  if (!text) return;
+  if (/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(text)) {
+    latexErrors.push(e.ref + ": control character in " + field + " (un-escaped LaTeX backslash)");
   }
   // a lone "$...$" span that contains a letter-run with no backslash where one is expected
-  var m = e.strategy.match(/\$[^$]*\$/g) || [];
+  var m = text.match(/\$[^$]*\$/g) || [];
   m.forEach(function (span) {
     if (/(?:^|[^\\a-zA-Z])(?:frac|sqrt|cdot|pmod|bmod|equiv|angle|triangle|varphi|mathrm|mathbb|tfrac|circ|times|prod|sum|leq|geq)(?![a-zA-Z])/.test(span)) {
       latexErrors.push(e.ref + ": LaTeX command missing its backslash in " + span.slice(0, 40));
@@ -75,9 +86,11 @@ DB.forEach(function (e) {
         + "rest of the line -- use \\lt: " + span.slice(0, 44));
     }
   });
+  });
 });
 if (latexErrors.length) { errors = errors.concat(latexErrors); }
 
-print("problems: " + DB.length + " | cards: " + Object.keys(CARDS).length + " | topics: " + Object.keys(TOPICS).length);
+var withTrick = DB.filter(function (e) { return e.trick; }).length;
+print("problems: " + DB.length + " | cards: " + Object.keys(CARDS).length + " | topics: " + Object.keys(TOPICS).length + " | tricks: " + withTrick);
 if (errors.length) { print("VIOLATIONS (" + errors.length + "):"); errors.slice(0, 50).forEach(print); }
 else print("OK — 0 violations");
