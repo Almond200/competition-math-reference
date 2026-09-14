@@ -614,20 +614,6 @@ body {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--text-dim);
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.cluster-count {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--text-faint);
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 1px 7px;
 }
 
 .nav-clusters { margin: 1px 0 5px; }

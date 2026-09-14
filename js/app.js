@@ -2634,7 +2634,7 @@
       if (!members.length) return;
       parts.push(`
         <div class="cluster" id="sub-${section.id}-${i}-${j}">
-          <h4 class="cluster-title">${g.title}<span class="cluster-count">${members.length}</span></h4>
+          <h4 class="cluster-title">${g.title}</h4>
           <div class="cards">${members.map(e => cardHtml(e, false, null)).join("")}</div>
         </div>`);
     });
