@@ -6,8 +6,8 @@
   <title>Competition Math Reference</title>
   <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=75">
-  <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+  <link rel="stylesheet" href="css/styles.css?v=108">
+  <script>document.documentElement.setAttribute("data-theme","light");try{if(localStorage.getItem("theme")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
 </head>
 <body>
   <header class="topbar">
@@ -25,11 +25,11 @@
         <kbd class="search-kbd">/</kbd>
       </div>
       <div class="topbar-tools">
-        <button class="tool-btn" id="settings-btn" title="Filter by contest level &amp; importance" aria-label="Filters"><span class="tb-icon">&#9881;</span><span class="tb-label">Filters</span></button>
+        <button class="tool-btn" id="filters-btn" title="Filter by contest level &amp; importance" aria-label="Filters"><span class="tb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg></span><span class="tb-label">Filters</span></button>
         <button class="tool-btn" id="adv-btn" title="Advanced search" aria-label="Advanced search"><span class="tb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></span><span class="tb-label">Advanced</span></button>
         <button class="tool-btn" id="db-btn" title="Problem database" aria-label="Problem database"><span class="tb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path></svg></span><span class="tb-label">Database</span></button>
         <button class="tool-btn" id="lists-btn" title="Your study lists"><span class="tb-icon">&#9733;</span><span class="tb-label">Lists</span></button>
-        <button class="tool-btn tool-btn-icon" id="theme-btn" title="Switch to light theme" aria-label="Toggle light or dark theme">&#9790;</button>
+        <button class="tool-btn tool-btn-icon" id="settings-btn" title="Settings" aria-label="Settings">&#9881;</button>
       </div>
     </div>
   </header>
@@ -42,28 +42,28 @@
 
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-  <script src="js/data/geometry.js?v=77"></script>
-  <script src="js/data/algebra.js?v=67"></script>
-  <script src="js/data/number-theory.js?v=44"></script>
-  <script src="js/data/counting.js?v=50"></script>
-  <script src="js/data/patterns.js?v=201"></script>
-  <script src="js/data/details/geometry-details.js?v=122"></script>
-  <script src="js/data/details/algebra-details.js?v=63"></script>
-  <script src="js/data/details/number-theory-details.js?v=110"></script>
-  <script src="js/data/details/counting-details.js?v=64"></script>
-  <script src="js/data/examples-supplement.js?v=76"></script>
-  <script src="js/data/built-in-lists.js?v=11"></script>
+  <script src="js/data/geometry.js?v=105"></script>
+  <script src="js/data/algebra.js?v=72"></script>
+  <script src="js/data/number-theory.js?v=47"></script>
+  <script src="js/data/counting.js?v=57"></script>
+  <script src="js/data/patterns.js?v=207"></script>
+  <script src="js/data/details/geometry-details.js?v=137"></script>
+  <script src="js/data/details/algebra-details.js?v=68"></script>
+  <script src="js/data/details/number-theory-details.js?v=113"></script>
+  <script src="js/data/details/counting-details.js?v=70"></script>
+  <script src="js/data/examples-supplement.js?v=88"></script>
+  <script src="js/data/built-in-lists.js?v=18"></script>
   <script src="js/data/problems/geometry-problems.js?v=8"></script>
   <script src="js/data/problems/contest-problems.js?v=10"></script>
   <script src="js/data/problems/extra-problems.js?v=6"></script>
-  <script src="js/data/problems/problem-db.js?v=80"></script>
-  <script src="js/data/diagrams/geometry-diagrams.js?v=55"></script>
-  <script src="js/data/diagrams/general-diagrams.js?v=18"></script>
+  <script src="js/data/problems/problem-db.js?v=81"></script>
+  <script src="js/data/diagrams/geometry-diagrams.js?v=83"></script>
+  <script src="js/data/diagrams/general-diagrams.js?v=22"></script>
   <script src="js/recurrence-solver.js?v=1"></script>
-  <script src="js/geo-interactive.js?v=23"></script>
-  <script src="js/math-tools.js?v=17"></script>
-  <script src="js/data/search-glossary.js?v=23"></script>
+  <script src="js/geo-interactive.js?v=27"></script>
+  <script src="js/math-tools.js?v=18"></script>
+  <script src="js/data/search-glossary.js?v=36"></script>
   <script src="js/search-semantic.js?v=2"></script>
-  <script src="js/app.js?v=153"></script>
+  <script src="js/app.js?v=192"></script>
 </body>
 </html>

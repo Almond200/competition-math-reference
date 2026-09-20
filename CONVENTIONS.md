@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 503 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 518 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -12,7 +12,7 @@ Regenerate the numbers with `tools/scan-conventions.py`.
 
 Exactly two field orders exist, and nothing else. Copy one of these.
 
-**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 409 of 409 cards:
+**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 418 of 418 cards:
 
 ```js
         {
@@ -26,18 +26,21 @@ Exactly two field orders exist, and nothing else. Copy one of these.
         },
 ```
 
-**`patterns.js`** — 94 of 94 cards. Same, plus `type` and `subject` immediately after `name`:
+**`patterns.js`** — 100 of 100 cards. Same, plus `type` and `subject` immediately after `name`:
 
 ```js
           type: "method",       // or "pattern"
           subject: "counting",  // geometry | algebra | number-theory | counting
 ```
 
-- `type` and `subject` appear on **94/94** `patterns.js` cards and on **0/409** subject-file cards.
+- `type` and `subject` appear on **100/100** `patterns.js` cards and on **0/418** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **502/503** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **517/518** cards. Use it even when there is no backslash.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
-  `id, type, subject, name, ...`. It is the only exception in 503 cards, and it is not a precedent.
+  `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
+  all 518 cards use one of the four canonical orders, the extra two being the same pair with an
+  optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
+  something to show).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
 - Every card has a `latex` and a `description`. **0** cards omit either.
 
@@ -45,11 +48,11 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 | field | measured |
 |---|---|
-| `importance` | five values, not three: `high` 132, `medium` 202, `low` 83, `lower` 38, `lowest` 48 |
-| `level` | drawn from `MATHCOUNTS` (100), `AMC10` (195), `AMC12` (266), `AIME` (351), `Olympiad` (188). No other string appears |
+| `importance` | five values, not three: `high` 135, `medium` 211, `low` 83, `lower` 41, `lowest` 48 |
+| `level` | drawn from `MATHCOUNTS` (105), `AMC10` (201), `AMC12` (277), `AIME` (365), `Olympiad` (192). No other string appears |
 | `keywords` | min 4, median 6, 90th percentile 9, max 20. Four is the floor — never ship fewer |
 | `name` | median 24 chars, max 55. 63 names use ` & `, 42 carry a parenthetical like `(PIE)` |
-| `description` | median 259 chars, 90th percentile 496, max 729. Two to four sentences |
+| `description` | median 267 chars, 90th percentile 504, max 1001. Two to four sentences |
 
 ### Naming
 
@@ -60,20 +63,20 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**503 write-ups for 503 cards. One each, no orphans, no card without one.**
+**518 write-ups for 518 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      503/503
-## How to use it     503/503
-## On contests       503/503
+## Why it works      518/518
+## How to use it     518/518
+## On contests       518/518
 ```
 
 An optional fourth, `## Key forms`, appears on 96. There is exactly one other heading in the whole
 corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do not invent a fifth.
 
-- **Key forms is a `patterns.js` habit**: 89 of 94 `patterns.js` cards have one, against 7 of 409
+- **Key forms is a `patterns.js` habit**: 93 of 100 `patterns.js` cards have one, against 11 of 418
   subject-file cards. If you are writing a formula card and reaching for Key forms, put the material
   in the prose instead.
 - Key forms lists the shapes a technique takes, not worked examples.
@@ -85,7 +88,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 503** write-ups contain `**`. This rule is unbroken — do not be the first.
+  asterisks. **0 of 518** write-ups contain `**`. This rule is unbroken — do not be the first.
 - **Em dashes: median 2 per write-up, 90th percentile 5, and 64 write-ups use none.** Prefer commas.
   (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
@@ -96,14 +99,27 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 
 ### Cross-links
 
-Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **481 piped
-against 17 bare**, and all 17 bare ones were added in a single careless batch and have since been
-converted, so the corpus now reads **498 piped, 0 bare**. A bare link renders the card's Title Case
+Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **592 piped
+links, 0 bare** across the corpus. A bare link renders the card's Title Case
 name, which lands capitalised in the middle of a sentence.
 
 - **Lowercase the display text mid-sentence** (268 of the piped links do), capitalising only a
   proper name: "apply [[gcd-substitution|gcd substitution]] first", but "[[kummers-theorem|Kummer's
   theorem]]".
+- **Never put `$...$` inside a link's display text.** `linkifyCards` (`js/app.js`) splits the prose on
+  `$...$` *before* it matches `[[...]]`, so a link whose label contains math is torn across two parts,
+  the pattern never matches, and the raw `[[id|...]]` is printed to the reader. It fails silently: the
+  validator passes, and `.card-link-broken` does not fire because no link was ever produced. Write
+  `[[trig-area|the sine area formula]] $\tfrac12ab\sin C$`, never `[[trig-area|$\tfrac12ab\sin C$]]`.
+  Three occurrences existed when this was found; a corpus check is one grep for `\[\[[^\]]*\$`.
+- **No `*italics*` either.** Same reason as bold: markdown emphasis is not processed, so it reaches the
+  reader as literal asterisks.
+- **A card's `description` is never linkified.** `linkifyCards` runs on the write-up in
+  `js/data/details/` and nowhere else, so `[[id|text]]` placed in a `description` is printed to the
+  reader verbatim. It fails the same silent way math-inside-a-link does: the validator passes and
+  `.card-link-broken` never fires, because no link was attempted. Put the cross-link in the write-up
+  and let the description read as plain prose. One grep finds any regression:
+  `grep -n 'description: String.raw`[^`]*\[\[' js/data/*.js`.
 - **Do not write a paragraph in order to hang a link on it.** Link where the sentence was going to
   mention the idea anyway. A sentence that exists only to list three neighbouring cards is padding;
   a sentence that says how this card differs from them is not.
@@ -118,12 +134,17 @@ positives and should be rejected every time they reappear:
 - the phrase "digit sums" offered a link to `digit-sum-carries`. In `divisibility-rules` and
   `repeating-decimals` it means $10 \equiv 1 \pmod 9$ or the digits of a repeating block, neither of
   which involves a carry; `digit-sum-mod-9` is the card those mean.
+- **a mathematician's name is not a card match.** "Brahmagupta's" in `cyclic-perpendicular-diagonals`
+  means Brahmagupta's *theorem* (the perpendicular from the diagonal intersection bisects the opposite
+  side), not `brahmaguptas-formula`, which is his area formula. Likewise "Pappus' chain" in `arbelos`
+  is the chain of circles, not `pappus-centroid`, which is the solid-of-revolution theorem. Both
+  reappear on every `--seed`, and both are rejections.
 
 ---
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**503 example keys for 503 cards. Zero cards lack one.**
+**518 example keys for 518 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -141,8 +162,8 @@ window.MATH_EXAMPLES["your-card-id"] = { q: String.raw`...`, s: String.raw`...` 
 
 ## 4. The diagram — mandatory for geometry
 
-**171 of 171 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
-geometry card without a figure is incomplete. The count reached 171/171 only after a card shipped
+**176 of 176 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
+geometry card without a figure is incomplete. The count reached 176/176 only after a card shipped
 without one and had to be fixed, which is why `tools/scan-conventions.py` exits non-zero on any
 geometry card missing a diagram.
 
@@ -153,8 +174,32 @@ Elsewhere it is the exception, reserved for configuration-heavy figures: `patter
   `DIAGRAMS["card-id"] = [...]`. Geometry figures live in `geometry-diagrams.js`, everything else in
   `general-diagrams.js`.
 - One canvas size for every panel on a card, and a `cap()` caption on every panel.
-- Then confirm on the rendered page that no text is drawn outside its viewBox and every panel has its
-  caption.
+- **Nothing overlaps, and nothing falls off the canvas.** Run `python3 tools/check-diagrams.py`; it
+  exits non-zero on any label outside its viewBox, any marker dot outside it, and any two labels
+  whose boxes intersect. Then confirm on the rendered page that every panel has its caption.
+- **Derive positions; do not hardcode one where the construction gives it.** This is the rule that
+  the other checks could not enforce, and every instance of the bug below is the same mistake:
+  a coordinate chosen by eye, or a derived point never checked against the frame.
+    - The arbelos comparison circle sat at a hardcoded `[330, 118]` and landed *on top of* the
+      figure. Both shapes are now placed from a computed gap.
+    - `angle-bisector-length`'s external foot is at `t = b/(b-a)` along `AB`, so it runs to infinity
+      as `a` approaches `b`. A near-isosceles triangle put it at `x = -406`. Sides must be clearly
+      unequal -- 197 : 104 places it at 337.
+    - `ellipse-tangent-line` reflects a focus to `2*yAx - F1.y`; with the line low in the frame that
+      was `y = 368` on a 330-tall canvas, so the point and its label drew nothing.
+    - `difference-of-squares` left 14px to the right of the figure for a 28px label.
+  In each case the figure rendered, the page looked plausible, and every existing gate passed.
+- A line drawn deliberately past the frame is *not* a violation -- that is how an unbounded line is
+  rendered, and the clipping is the intent.
+- **A drawn circle that nearly fits is a bug.** `check-diagrams.py`'s circle test was long gated on
+  `r <= 8`, so it only ever saw marker dots: a radius-166 circumcircle sliced flat at BOTH ends of
+  `median-to-hypotenuse` passed every gate for months. It now flags any circle overflowing by up to
+  25% of its own radius. Beyond that the circle is plainly bigger than the frame on purpose -- four
+  circumcircles of four triangles genuinely are -- and stays exempt. Today's data splits cleanly
+  either side: the three real bugs sat at 4%, 17% and 23%, the deliberate arc at 90%.
+- **Never assign `DIAGRAMS["id"]` twice.** Six keys had drifted into a second definition that
+  silently replaced the first, and for `median-to-hypotenuse` the *discarded* copy was the correct
+  one. The checker now fails on a repeated key.
 - A vertex dot drawn with a filled circle of `r <= 7` is re-appended to the end of the SVG by
   `tidyDiagram` (`js/app.js`), so it will be hoisted in front of any face. Use a larger radius or an
   unfilled marker on projected solids.
@@ -224,6 +269,10 @@ fails with `Unexpected string literal`. Add the comma.
 ```bash
 jsc js/data/<file>.js                    # a `window` ReferenceError means the parse SUCCEEDED
 jsc tools/validate-problem-db.js         # 0 violations, and check the card count moved as intended
+python3 tools/check-diagrams.py          # every panel fits its canvas, no labels collide
+python3 tools/scan-conventions.py        # the census above; fails on any rule marked "must stay 0"
+python3 tools/check-lists.py             # list ids resolve, and every route is complete
+./tools/check-lab.sh                     # the inline script of each lab/ page still parses
 python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py --report
 ~/Downloads/competition-math-buildenv/bin/python tools/build-search-index.py
 ```
@@ -234,14 +283,34 @@ python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py 
   search number. If they disagree, the browser is serving a cached data file.
 - **Changing only the hash does not reload the document.** To see new data you must navigate to
   `index.html` itself, and a `?nocache=` parameter is the reliable way.
-- Measure search with `tools/search-eval.html`, never by eye. Current hold: **154/171 top-1, MRR 0.935**.
+- Measure search with `tools/search-eval.html`, never by eye. Current hold: **155/171 top-1, MRR 0.937**.
   Adding a card jostles neighbouring queries by a rank or two; what must not move is the top-1 count.
 - On the rendered page: correct breadcrumb, all three write-up headings, the example block, 0
   `.katex-error`, 0 `.card-link-broken`, and no literal `**`.
 
 ---
 
-## 8. Tagging a problem
+## 8. Built-in lists
+
+`js/data/built-in-lists.js` opens by promising that a route is "every card carrying that level and
+subject, so a route is complete by construction rather than a hand-picked sample". Nothing enforced
+it, and the file is edited by hand, so **every card added to the library silently failed to join the
+routes it qualified for**: 14 such gaps had accumulated across six cards before the check existed.
+The failure is invisible in the UI -- the route just quietly omits a card the reader was promised.
+
+- `tools/check-lists.py` now enforces it in both directions: a qualifying card missing from a route
+  fails, and a non-qualifying card present in one fails too.
+- **`tier: "AMC"` maps to two level tags, `AMC10` and `AMC12`.** Comparing the tier string against
+  card levels directly reports all four AMC routes as 100% wrong. This is the single easiest thing
+  to get wrong when touching that checker.
+- A list that is *not* complete by construction must not be `kind: "route"`. "Olympiad Heavy
+  Hitters" was tagged one while its own blurb read "Not a syllabus", and held 16 of 192 olympiad
+  cards; it is now `kind: "thinking"`, and the four real olympiad routes carry the other 192.
+- Sections of one card are reported as advisory, not fatal: that is a presentation call. 17 exist.
+
+---
+
+## 9. Tagging a problem
 
 `{ ref, formulas, strategy }`, optionally `trick` and `trickFormulas`.
 

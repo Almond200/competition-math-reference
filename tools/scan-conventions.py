@@ -5,7 +5,8 @@ Run from the repo root:  python3 tools/scan-conventions.py
 Every figure quoted in CONVENTIONS.md comes from here. If a rule cannot be produced
 by this script, it is an opinion, not a convention.
 """
-import collections, glob, io, os, re, sys
+import collections
+import glob, glob, io, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -91,13 +92,18 @@ def quantiles(xs):
 print("CARDS: %d  %s" % (len(CARDS), dict(collections.Counter(c["file"] for c in CARDS))))
 
 print("\n-- field order --")
+# `latexPlain` is the expanded-notation twin of `latex`, carried by 13 cards; it sits directly
+# after `latex` in both orders. The slice is [:10], not [:9], because the pattern order plus
+# latexPlain is ten fields long and [:9] truncated it into a phantom eleventh variant.
 CANON = {("id", "name", "latex", "description", "keywords", "importance", "level"),
-         ("id", "name", "type", "subject", "latex", "description", "keywords", "importance", "level")}
-counts = collections.Counter(tuple(c["fields"][:9]) for c in CARDS)
+         ("id", "name", "latex", "latexPlain", "description", "keywords", "importance", "level"),
+         ("id", "name", "type", "subject", "latex", "description", "keywords", "importance", "level"),
+         ("id", "name", "type", "subject", "latex", "latexPlain", "description", "keywords", "importance", "level")}
+counts = collections.Counter(tuple(c["fields"][:10]) for c in CARDS)
 for order, n in counts.most_common(4):
     flag = "" if order in CANON else "   <-- NOT one of the two canonical orders"
     print("  %3d  %s%s" % (n, ", ".join(order), flag))
-odd = [c["id"] for c in CARDS if tuple(c["fields"][:9]) not in CANON]
+odd = [c["id"] for c in CARDS if tuple(c["fields"][:10]) not in CANON]
 if odd:
     print("  deviating cards: %s" % ", ".join(odd))
 
@@ -136,6 +142,23 @@ em = [v.count("—") for v in DETAILS.values()]
 print("  em dashes: median %d p90 %d max %d | %d write-ups use none"
       % (quantiles(em)[1], quantiles(em)[2], quantiles(em)[3], sum(1 for x in em if x == 0)))
 print("  containing literal '**': %d  (must stay 0)" % sum(1 for v in DETAILS.values() if "**" in v))
+
+# Single-asterisk emphasis reaches the reader as literal asterisks exactly like bold does, and
+# the "**" check above never saw it. The word-boundary guards are what keep LaTeX out: P^*Q^*
+# (inversion) and a keyword written "AB*CD = AC*BD" both have the asterisk glued to a character,
+# while markdown emphasis always opens after a space and closes before one.
+EMPH_RE = re.compile(r"(?<![\w^_{])\*[A-Za-z][^*\n]{0,40}\*(?![\w])")
+emph = []
+for _f in sorted(glob.glob("js/data/**/*.js", recursive=True)):
+    for _i, _line in enumerate(io.open(_f, encoding="utf-8").read().split("\n"), 1):
+        if _line.strip().startswith("//"):
+            continue                      # source comments are not shown to anyone
+        for _m in EMPH_RE.finditer(_line):
+            if "**" not in _m.group(0):
+                emph.append((_f.split("/")[-1], _i, _m.group(0)))
+print("  markdown *emphasis* in prose: %d  (must stay 0)" % len(emph))
+for _e in emph[:8]:
+    print("    %s:%d  %s" % _e)
 bare = [(k, m.group(1)) for k, v in DETAILS.items() for m in re.finditer(r"\[\[([\w-]+)\]\]", v)]
 piped = sum(len(re.findall(r"\[\[[\w-]+\|", v)) for v in DETAILS.values())
 print("  cross-links: %d piped, %d bare  (bare must stay 0; a bare link renders Title Case mid-sentence)"
@@ -144,6 +167,51 @@ if bare:
     print("  BARE LINKS: %s" % ", ".join("%s -> %s" % b for b in bare[:8]))
 print("  raw '<' inside maths: %d  (must stay 0)"
       % sum(1 for v in DETAILS.values() if re.search(r"\$[^$]*<[A-Za-z/][^$]*\$", v)))
+
+# Every way a [[link]] can be written and silently not become a link. All three of these have
+# actually shipped: math in a label (linkifyCards splits the prose on $...$ first, so the
+# pattern never matches), a link in a card `description` (linkifyCards runs on the write-up and
+# nowhere else), and a link in a "## heading" line (headings are interpolated raw). None of them
+# trip the validator and none render .card-link-broken, because no link is ever attempted.
+LINK_RE = re.compile(r"\[\[([\w-]+)(?:\|([^\]]*))?\]\]")
+mislaid = []
+for _k, _v in DETAILS.items():
+    for _line in _v.split("\n"):
+        _head = _line.strip().startswith("## ")
+        for _m in LINK_RE.finditer(_line):
+            if _m.group(2) and "$" in _m.group(2):
+                mislaid.append((_k, "math in label", _m.group(0)))
+            if _head:
+                mislaid.append((_k, "link in a heading", _m.group(0)))
+for _f in sorted(glob.glob("js/data/*.js")):
+    for _m in re.finditer(r'description: String\.raw`([^`]*)`', io.open(_f, encoding="utf-8").read()):
+        if "[[" in _m.group(1):
+            mislaid.append((_f.split("/")[-1], "link in a card description", _m.group(1)[:50]))
+print("  links that would render raw: %d  (must stay 0)" % len(mislaid))
+for _x in mislaid[:8]:
+    print("    %s: %s -- %s" % _x)
+
+# CONVENTIONS.md: "Key forms lists the shapes a technique takes, not worked examples." A bullet
+# that is mostly concrete digits is a worked example wearing a form's clothes -- the one that
+# prompted this read "row $n = 4$: $1+16+36+16+1=70=\\binom 84$", which is an instance of the
+# identity above it, not another shape of it. Threshold is deliberately loose (a real form like
+# "$\\binom{2n}{n}/4^n$" carries digits too) and catches exactly the offending kind.
+kf_examples = []
+for _k, _v in DETAILS.items():
+    _m = re.search(r"## Key forms\n(.*?)(?=\n## |\Z)", _v, re.S)
+    if not _m:
+        continue
+    for _line in _m.group(1).split("\n"):
+        _t = _line.strip()
+        if not _t.startswith("- "):
+            continue
+        _d = len(re.findall(r"\d", _t))
+        _l = len(re.findall(r"[A-Za-z]", _t))
+        if _d >= 6 and _d > _l * 0.5:
+            kf_examples.append((_k, _t[:90]))
+print("  worked examples inside Key forms: %d  (must stay 0)" % len(kf_examples))
+for _x in kf_examples[:8]:
+    print("    %s: %s" % _x)
 
 print("\n-- examples --")
 print("  one per card: %s" % pct(sum(1 for c in CARDS if c["id"] in EXAMPLES), len(CARDS)))
@@ -185,6 +253,6 @@ dupes = {w: v for w, v in seen.items() if len(v) > 1}
 for w in sorted(dupes, key=lambda w: -len(dupes[w]))[:12]:
     print("  %-16s %s" % (w, ", ".join(dupes[w])))
 
-bad = bool(missing_ex or missing_dia or bare or _bad)
+bad = bool(missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples)
 print("\n%s" % ("FAILURES ABOVE" if bad else "no convention violations found"))
 sys.exit(1 if bad else 0)

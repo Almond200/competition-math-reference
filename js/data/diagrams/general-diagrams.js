@@ -85,7 +85,10 @@
     // rectangles that reassemble into an (a+b)×(a−b) rectangle.
     const a = 140, b = 52, c = a - b;                 // c = a − b
     const x = 40, y = 56;                             // left panel origin
-    const rx = 272, ry = y + (a - (a + b - c)) / 2 + 10; // right panel top (aligned band)
+    // rx leaves room to the RIGHT of the reassembled rectangle for its height label: the
+    // rectangle is a+b = 192 wide, so rx = 272 ended it at 464 and pushed "a − b" to 479 on
+    // a 478 canvas, entirely off frame. 246 ends it at 438 and leaves the label 40px.
+    const rx = 246, ry = y + (a - (a + b - c)) / 2 + 10; // right panel top (aligned band)
     const T = ACCS, Bp = GLDS;                        // piece colors
     return wrap(478, 260, [
       // ---- left: a×a square with the b×b corner removed, split into T + B ----
@@ -100,7 +103,7 @@
       rect(rx, ry, a, c, ACC, 1.6, T),                // T stays
       rect(rx + a, ry, b, c, GLD, 1.6, Bp),           // B rotated to the right
       txt([rx + (a + b) / 2, ry + c + 20], "a + b", DIM, 13),
-      txt([rx + a + b + 15, ry + c / 2 + 4], "a − b", DIM, 12, "start"),
+      txt([rx + a + b + 8, ry + c / 2 + 4], "a − b", DIM, 12, "start"),
       txt([(x + a + rx) / 2 - 4, y + a / 2 + 4], "=", DIM, 20),
       cap(478, 260, "a² − b²: cut the b×b corner off an a×a square and rearrange the two pieces into an (a+b)×(a−b) rectangle")
     ]);
@@ -560,6 +563,89 @@
       txt(add(m.pt(0.35, b * Math.cos(0.35)), [20, -8]), "4 cos θ", FNT, 11.5),
       cap(430, 300, "3 sin θ + 4 cos θ is one wave of amplitude √(3²+4²) = 5, so its max is 5")
     ]);
+  })()];
+
+  // The worked grid from the example: (0,0) to (4,3), right/up steps, with (2,1) and (1,2)
+  // closed. Every number is computed by the same sweep the card describes rather than typed
+  // in, so the figure cannot drift from the method it illustrates.
+  DIAGRAMS["grid-path-fill"] = [(() => {
+    const W = 4, H = 3, step = 74, x0 = 62, y0 = 246;
+    const blocked = { "2,1": 1, "1,2": 1 };
+    const N = {};
+    for (let y = 0; y <= H; y++) {
+      for (let x = 0; x <= W; x++) {
+        N[x + "," + y] = blocked[x + "," + y] ? 0
+          : (x === 0 && y === 0) ? 1
+          : (N[(x - 1) + "," + y] || 0) + (N[x + "," + (y - 1)] || 0);
+      }
+    }
+    const P = (x, y) => [x0 + x * step, y0 - y * step];
+    const parts = [];
+    for (let y = 0; y <= H; y++) parts.push(seg(P(0, y), P(W, y), FNT, 1));
+    for (let x = 0; x <= W; x++) parts.push(seg(P(x, 0), P(x, H), FNT, 1));
+    for (let y = 0; y <= H; y++) {
+      for (let x = 0; x <= W; x++) {
+        const at = P(x, y), off = blocked[x + "," + y];
+        const here = x === W && y === H;
+        // bg-card, not bg: tidyDiagram() pins a bare number sitting inside a bg-card disc of
+        // radius 9-15 and nudges everything else apart. That rule was written for mass-point
+        // weight badges, and these cells are the same shape — a number centred in a disc — so
+        // matching it is what keeps the grid's numbers on their lattice points.
+        parts.push(circ(at, 13, "none", 0, "var(--bg-card)"));
+        if (off) {
+          parts.push(circ(at, 9, GLD, 1.8, "none"),
+            seg(add(at, [-6, -6]), add(at, [6, 6]), GLD, 1.8),
+            seg(add(at, [-6, 6]), add(at, [6, -6]), GLD, 1.8));
+        } else {
+          parts.push(txt(add(at, [0, 5]), String(N[x + "," + y]),
+            here ? ACC : (x === 0 || y === 0) ? FNT : DIM, here ? 16 : 13.5));
+        }
+      }
+    }
+    parts.push(txt(add(P(0, 0), [-4, 26]), "start", FNT, 11.5, "end"));
+    // Beside the corner, not above it: the top row sits 24px from the edge, so a label
+    // stacked over it lands outside the canvas.
+    parts.push(txt(add(P(W, H), [30, 5]), "end", ACC, 12));
+    parts.push(cap(430, 330, "each cell is the sum of the one left of it and the one below; a closed point holds 0, and the corner reads 5"));
+    return wrap(430, 330, parts);
+  })(), (() => {
+    // Panel 2: the same sweep with a diagonal step allowed, so each cell adds THREE sources
+    // instead of two. Drawn on a clear grid because that is where the pattern is legible —
+    // these are the Delannoy numbers, and 1, 3, 13, 63 runs down the main diagonal. The three
+    // arrows into (2,2) show the rule: 5 + 5 + 3 = 13.
+    const W = 4, H = 3, step = 74, x0 = 62, y0 = 246;
+    const N = {};
+    for (let y = 0; y <= H; y++) {
+      for (let x = 0; x <= W; x++) {
+        N[x + "," + y] = (x === 0 || y === 0) ? 1
+          : N[(x - 1) + "," + y] + N[x + "," + (y - 1)] + N[(x - 1) + "," + (y - 1)];
+      }
+    }
+    const P = (x, y) => [x0 + x * step, y0 - y * step];
+    const parts = [];
+    for (let y = 0; y <= H; y++) parts.push(seg(P(0, y), P(W, y), FNT, 1));
+    for (let x = 0; x <= W; x++) parts.push(seg(P(x, 0), P(x, H), FNT, 1));
+    // The three contributions into (2,2), each stopped clear of both discs.
+    const tgt = P(2, 2);
+    [[1, 2], [2, 1], [1, 1]].forEach(([sx, sy]) => {
+      const a = P(sx, sy);
+      const dx = tgt[0] - a[0], dy = tgt[1] - a[1], L = Math.hypot(dx, dy);
+      const t = 16 / L;
+      parts.push(seg([a[0] + dx * t, a[1] + dy * t], [tgt[0] - dx * t, tgt[1] - dy * t], ACC, 2));
+    });
+    parts.push(seg(P(1, 1), P(2, 2), ACC, 2, "3 3"));
+    for (let y = 0; y <= H; y++) {
+      for (let x = 0; x <= W; x++) {
+        const at = P(x, y), here = x === 2 && y === 2;
+        parts.push(circ(at, 13, "none", 0, "var(--bg-card)"));
+        parts.push(txt(add(at, [0, 5]), String(N[x + "," + y]),
+          here ? ACC : (x === 0 || y === 0) ? FNT : DIM, here ? 15 : 13));
+      }
+    }
+    parts.push(txt(add(P(2, 2), [0, -24]), "5 + 5 + 3 = 13", ACC, 12));
+    parts.push(txt(add(P(0, 0), [-4, 26]), "start", FNT, 11.5, "end"));
+    parts.push(cap(430, 330, "allow a diagonal step and each cell adds three sources, not two — on a clear grid that is the Delannoy numbers, 1, 3, 13, 63 down the main diagonal"));
+    return wrap(430, 330, parts);
   })()];
 
 })();

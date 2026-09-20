@@ -199,6 +199,7 @@ window.MATH_SECTIONS.push({
           id: "binomial-theorem",
           name: "Binomial Theorem",
           latex: String.raw`(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k, \qquad (x+y)^n = x^n + \binom{n}{1}x^{n-1}y + \binom{n}{2}x^{n-2}y^2 + \cdots + y^n`,
+          latexPlain: String.raw`(a+b)^n = a^n + \binom{n}{1}a^{n-1}b + \binom{n}{2}a^{n-2}b^2 + \cdots + \binom{n}{n-1}ab^{n-1} + b^n`,
           description: String.raw`Expansion coefficients are the binomial coefficients — row $n$ of Pascal's triangle. Setting $x=y=1$ gives $\sum_k\binom{n}{k}=2^n$; setting $x=1,\,y=-1$ gives the alternating sum $0$ — the quick way to collapse coefficient sums.`,
           keywords: ["expansion", "pascal", "binomial coefficients", "powers"],
           importance: "high",
@@ -311,9 +312,10 @@ window.MATH_SECTIONS.push({
         {
           id: "power-sums",
           name: "Sums of Powers of Integers",
-          latex: String.raw`\sum_{k=1}^n k = \frac{n(n+1)}{2}, \quad \sum k^2 = \frac{n(n+1)(2n+1)}{6}, \quad \sum k^3 = \left(\frac{n(n+1)}{2}\right)^2, \quad \sum (2k-1) = n^2`,
-          description: String.raw`The sum of cubes equals the square of the sum: $\sum k^3 = \left(\frac{n(n+1)}{2}\right)^2$ — Nicomachus's identity, worth remembering on its own. Sum of the first $n$ odd numbers $= n^2$; sum of the first $n$ even numbers $= n(n+1)$.`,
-          keywords: ["sum of squares", "sum of cubes", "square of the sum", "nicomachus", "triangular numbers", "odd numbers"],
+          latex: String.raw`\sum_{k=1}^{n} k = \frac{n(n+1)}{2}, \quad \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}, \quad \sum_{k=1}^{n} k^3 = \left(\frac{n(n+1)}{2}\right)^2, \quad \sum_{k=1}^{n} (2k-1) = n^2, \quad \sum_{k=1}^{n} 2k = n(n+1)`,
+          latexPlain: String.raw`1 + 2 + \cdots + n = \tfrac{n(n+1)}{2}, \quad 1^2 + 2^2 + \cdots + n^2 = \tfrac{n(n+1)(2n+1)}{6}, \quad 1^3 + 2^3 + \cdots + n^3 = \left(\tfrac{n(n+1)}{2}\right)^2, \quad 1 + 3 + \cdots + (2n-1) = n^2, \quad 2 + 4 + \cdots + 2n = n(n+1)`,
+          description: String.raw`Every sum here runs $k = 1$ to $n$, so each one totals the first $n$ terms: the number of terms is $n$, not the last term. The sum of cubes equals the square of the sum, $\sum_{k=1}^{n} k^3 = \left(\sum_{k=1}^{n} k\right)^2 = \left(\frac{n(n+1)}{2}\right)^2$ — Nicomachus's identity, worth remembering on its own. The last two lines are the first $n$ odd numbers, giving $n^2$, and the first $n$ even numbers, giving $n(n+1)$. Watch the endpoint there: the odd sum stops at $2n-1$ and the even sum at $2n$, so a sum of the even numbers up to $100$ has $n = 50$ terms, not $100$.`,
+          keywords: ["sum of squares", "sum of cubes", "square of the sum", "sum of the first n cubes", "sum of the first n squares", "1 cubed plus 2 cubed", "nicomachus", "triangular numbers", "odd numbers"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
@@ -854,6 +856,15 @@ window.MATH_SECTIONS.push({
           keywords: ["ramanujan nested radical", "golden ratio radical", "sqrt 1 + 2 sqrt 1 + 3", "equals 3", "telescoping radical", "denest infinite", "party trick"],
           importance: "lowest",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "absolute-value-identities",
+          name: "Absolute Value Identities",
+          latex: String.raw`|ab| = |a||b|, \quad \left|\tfrac{a}{b}\right| = \tfrac{|a|}{|b|}, \quad |a^n| = |a|^n, \quad |a|^2 = a^2, \quad |ax + b| = |a|\left|x + \tfrac{b}{a}\right|`,
+          description: String.raw`Absolute value passes straight through products, quotients and powers, which is what lets you pull a coefficient out of the bars: $|ax + b| = |a|\,|x + b/a|$ turns any linear expression into a distance, so $|3x - 12| = 3|x - 4|$ reads as three times the distance from $x$ to $4$. The outside factor is $|a|$, never $a$ — with $a = -2$ the identity gives $2|x - 2|$, and dropping the bars would make the whole expression negative. It does not pass through sums: $|a + b|$ only obeys the triangle inequality. Also $|-a| = |a|$, $\bigl||a|\bigr| = |a|$, and $|a - b| = |b - a|$, the last of which says distance does not care which end you start from.`,
+          keywords: ["absolute value identities", "absolute value of a product", "abs of product equals product of abs", "factor out of absolute value", "pull coefficient out of absolute value", "|ax+b|", "|a||b| = |ab|", "absolute value of a power", "modulus is multiplicative", "distance form"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
           id: "absolute-value-rules",

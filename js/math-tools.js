@@ -11,7 +11,7 @@
   W["roots-of-unity"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Roots of unity</div>' +
-      '<div class="tool-row">n = <input class="tool-in ru-n" type="number" min="1" max="24" value="7"> ' +
+      '<div class="tool-row">n = <input class="tool-in ru-n" type="number" min="1" max="24" value="7"><span class="tool-lim">1–24</span> ' +
       '<label><input type="checkbox" class="ru-poly" checked> connect them</label></div>' +
       '<svg viewBox="0 0 300 300" class="tool-svg ru-svg"></svg><div class="tool-cap ru-cap"></div></div>';
     var svg = host.querySelector(".ru-svg"), cap = host.querySelector(".ru-cap");
@@ -396,7 +396,7 @@
   W["geometric-series"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Partial &amp; infinite sums</div>' +
-      '<div class="tool-row">a = <input class="tool-in gs-a" type="number" value="1" style="width:60px"> r = <input class="tool-in gs-r" type="number" value="0.5" step="0.1" style="width:60px"> n = <input class="tool-in gs-n" type="number" value="8" style="width:56px"> <button class="tool-btn2 gs-go">Show</button></div>' +
+      '<div class="tool-row">a = <input class="tool-in gs-a" type="number" value="1" style="width:60px"> r = <input class="tool-in gs-r" type="number" value="0.5" step="0.1" style="width:60px"> n = <input class="tool-in gs-n" type="number" min="1" max="40" value="8" style="width:56px"><span class="tool-lim">1–40</span> <button class="tool-btn2 gs-go">Show</button></div>' +
       '<svg viewBox="0 0 440 160" class="tool-svg gs-svg"></svg><div class="tool-cap gs-cap"></div></div>';
     var svg = host.querySelector(".gs-svg"), cap = host.querySelector(".gs-cap");
     function run() {
@@ -416,7 +416,7 @@
   W["binomial-theorem"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Expand (x + y)ⁿ</div>' +
-      '<div class="tool-row">n = <input class="tool-in bt-n" type="number" value="5" min="0" max="12" style="width:60px"> <button class="tool-btn2 bt-go">Expand</button></div>' +
+      '<div class="tool-row">n = <input class="tool-in bt-n" type="number" value="5" min="0" max="12" style="width:60px"><span class="tool-lim">0–12</span> <button class="tool-btn2 bt-go">Expand</button></div>' +
       '<div class="tool-out bt-out"></div></div>';
     var out = host.querySelector(".bt-out");
     function run() {
@@ -433,7 +433,7 @@
   W["de-moivre"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Powers of z</div>' +
-      '<div class="tool-row">z = <input class="tool-in dm-a" type="number" value="1.1" step="0.1" style="width:60px"> + <input class="tool-in dm-b" type="number" value="0.5" step="0.1" style="width:60px">i, &nbsp; up to z^<input class="tool-in dm-n" type="number" value="7" style="width:48px"> <button class="tool-btn2 dm-go">Plot</button></div>' +
+      '<div class="tool-row">z = <input class="tool-in dm-a" type="number" value="1.1" step="0.1" style="width:60px"> + <input class="tool-in dm-b" type="number" value="0.5" step="0.1" style="width:60px">i, &nbsp; up to z^<input class="tool-in dm-n" type="number" min="1" max="24" value="7" style="width:48px"><span class="tool-lim">1–24</span> <button class="tool-btn2 dm-go">Plot</button></div>' +
       '<svg viewBox="0 0 320 300" class="tool-svg dm-svg"></svg><div class="tool-cap dm-cap"></div></div>';
     var svg = host.querySelector(".dm-svg"), cap = host.querySelector(".dm-cap");
     function run() {
@@ -478,7 +478,7 @@
   W["grid-paths"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Lattice paths, moves right &amp; up only</div>' +
-      '<div class="tool-row">width <input class="tool-in gp-w" type="number" value="5" min="1" max="12" style="width:52px"> × height <input class="tool-in gp-h" type="number" value="3" min="1" max="12" style="width:52px"> <button class="tool-btn2 gp-go">Count</button> <button class="tool-btn2 gp-path" style="background:var(--bg-card);color:var(--accent);border-color:var(--border)">New path</button></div>' +
+      '<div class="tool-row">width <input class="tool-in gp-w" type="number" value="5" min="1" max="12" style="width:52px"><span class="tool-lim">1–12</span> × height <input class="tool-in gp-h" type="number" value="3" min="1" max="12" style="width:52px"><span class="tool-lim">1–12</span> <button class="tool-btn2 gp-go">Count</button> <button class="tool-btn2 gp-path" style="background:var(--bg-card);color:var(--accent);border-color:var(--border)">New path</button></div>' +
       '<svg viewBox="0 0 380 260" class="tool-svg gp-svg"></svg><div class="tool-cap gp-cap"></div></div>';
     var svg = host.querySelector(".gp-svg"), cap = host.querySelector(".gp-cap");
     function draw(rand) {
@@ -691,9 +691,9 @@
   W["reflection-principle"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Reflecting a path that touches the barrier</div>' +
-      '<div class="tool-row">to (<input class="tool-in rp-w" type="number" value="6" min="1" max="10" style="width:48px">, ' +
-      '<input class="tool-in rp-h" type="number" value="4" min="0" max="10" style="width:48px">) ' +
-      'barrier y = x + <input class="tool-in rp-b" type="number" value="1" min="1" max="6" style="width:44px"> ' +
+      '<div class="tool-row">to (<input class="tool-in rp-w" type="number" value="6" min="1" max="10" style="width:48px"><span class="tool-lim">1–10</span>, ' +
+      '<input class="tool-in rp-h" type="number" value="4" min="0" max="10" style="width:48px"><span class="tool-lim">0–10</span>) ' +
+      'barrier y = x + <input class="tool-in rp-b" type="number" value="1" min="1" max="6" style="width:44px"><span class="tool-lim">1–6</span> ' +
       '<button class="tool-btn2 rp-go">Count</button> ' +
       '<button class="tool-btn2 rp-path" style="background:var(--bg-card);color:var(--accent);border-color:var(--border)">New bad path</button></div>' +
       '<svg viewBox="0 0 380 270" class="tool-svg rp-svg"></svg><div class="tool-cap rp-cap"></div></div>';
@@ -823,7 +823,7 @@
   W["catalan-numbers"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Catalan numbers</div>' +
-      '<div class="tool-row">n = <input class="tool-in ct-n" type="number" value="5" min="0" max="18" style="width:60px"> <button class="tool-btn2 ct-go">Show</button></div>' +
+      '<div class="tool-row">n = <input class="tool-in ct-n" type="number" value="5" min="0" max="18" style="width:60px"><span class="tool-lim">0–18</span> <button class="tool-btn2 ct-go">Show</button></div>' +
       '<div class="tool-out ct-out"></div></div>';
     var out = host.querySelector(".ct-out");
     function run() {
@@ -840,7 +840,7 @@
   W["binomial-probability"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Binomial distribution</div>' +
-      '<div class="tool-row">n = <input class="tool-in bp-n" type="number" value="12" min="1" max="40" style="width:56px"> p = <input class="tool-in bp-p" type="number" value="0.5" step="0.05" min="0" max="1" style="width:60px"> <button class="tool-btn2 bp-go">Plot</button></div>' +
+      '<div class="tool-row">n = <input class="tool-in bp-n" type="number" value="12" min="1" max="40" style="width:56px"><span class="tool-lim">1–40</span> p = <input class="tool-in bp-p" type="number" value="0.5" step="0.05" min="0" max="1" style="width:60px"> <button class="tool-btn2 bp-go">Plot</button></div>' +
       '<svg viewBox="0 0 440 220" class="tool-svg bp-svg"></svg><div class="tool-cap bp-cap"></div></div>';
     var svg = host.querySelector(".bp-svg"), cap = host.querySelector(".bp-cap");
     function run() {
@@ -859,7 +859,7 @@
   W["handshakes-diagonals"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Handshakes &amp; diagonals in an n-gon</div>' +
-      '<div class="tool-row">n = <input class="tool-in hd-n" type="number" value="7" min="2" max="16" style="width:60px"> <button class="tool-btn2 hd-go">Draw</button></div>' +
+      '<div class="tool-row">n = <input class="tool-in hd-n" type="number" value="7" min="2" max="16" style="width:60px"><span class="tool-lim">2–16</span> <button class="tool-btn2 hd-go">Draw</button></div>' +
       '<svg viewBox="0 0 300 260" class="tool-svg hd-svg"></svg><div class="tool-cap hd-cap"></div></div>';
     var svg = host.querySelector(".hd-svg"), cap = host.querySelector(".hd-cap");
     function run() {
@@ -997,7 +997,7 @@
   W["regular-polygon-area"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Regular polygon area &amp; apothem</div>' +
-      '<div class="tool-row">sides n = <input class="tool-in rp-n" type="number" value="6" min="3" max="24" style="width:60px"> &nbsp; side length s = <input class="tool-in rp-s" type="number" value="1" step="0.5" style="width:60px"> <button class="tool-btn2 rp-go">Show</button></div>' +
+      '<div class="tool-row">sides n = <input class="tool-in rp-n" type="number" value="6" min="3" max="24" style="width:60px"><span class="tool-lim">3–24</span> &nbsp; side length s = <input class="tool-in rp-s" type="number" value="1" step="0.5" style="width:60px"> <button class="tool-btn2 rp-go">Show</button></div>' +
       '<svg viewBox="0 0 300 240" class="tool-svg rp-svg"></svg><div class="tool-cap rp-cap"></div></div>';
     var svg = host.querySelector(".rp-svg"), cap = host.querySelector(".rp-cap");
     function run() {
@@ -1020,7 +1020,7 @@
   W["polygon-angle-sums"] = { mount: function (host) {
     host.innerHTML =
       '<div class="tool"><div class="tool-title">Polygon angle sums</div>' +
-      '<div class="tool-row">sides n = <input class="tool-in pa-n" type="number" value="5" min="3" max="24" style="width:60px"> <button class="tool-btn2 pa-go">Show</button></div>' +
+      '<div class="tool-row">sides n = <input class="tool-in pa-n" type="number" value="5" min="3" max="24" style="width:60px"><span class="tool-lim">3–24</span> <button class="tool-btn2 pa-go">Show</button></div>' +
       '<svg viewBox="0 0 300 230" class="tool-svg pa-svg"></svg><div class="tool-cap pa-cap"></div></div>';
     var svg = host.querySelector(".pa-svg"), cap = host.querySelector(".pa-cap");
     function run() {

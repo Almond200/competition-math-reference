@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula Web — experimental</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<style>
+  :root {
+    --bg: #f6f8fc; --panel: #ffffff; --line: #d7deed;
+    --text: #1b2333; --dim: #55607a; --faint: #808aa3;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1420; --panel: #161d2e; --line: #2a3654;
+    --text: #e8ecf6; --dim: #9aa7c7; --faint: #6b7794;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--text); overflow: hidden;
+         font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  canvas { display: block; cursor: grab; }
+  canvas.dragging { cursor: grabbing; }
+
+  .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; gap: 8px;
+         align-items: center; padding: 10px 14px; background: color-mix(in srgb, var(--bg) 88%, transparent);
+         backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .bar h1 { font-size: 15px; margin: 0 6px 0 0; font-weight: 700; }
+  .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint);
+         border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+  input[type=search] { font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 8px;
+         border: 1px solid var(--line); background: var(--panel); color: var(--text); width: 182px; }
+  input[type=search]:focus { outline: none; border-color: #5b8cff; }
+  label.chk { font-size: 12.5px; color: var(--dim); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  button { font: inherit; font-size: 12.5px; padding: 5px 11px; border-radius: 8px;
+           border: 1px solid var(--line); background: var(--panel); color: var(--dim); cursor: pointer; }
+  button:hover { color: var(--text); border-color: var(--faint); }
+  .spacer { flex: 1; }
+
+  .legend { position: fixed; left: 14px; bottom: 14px; z-index: 5; background: color-mix(in srgb, var(--panel) 92%, transparent);
+            border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 12px; }
+  .legend div { display: flex; align-items: center; gap: 7px; color: var(--dim); line-height: 1.7; }
+  .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  .tip { position: fixed; z-index: 6; pointer-events: none; max-width: 290px; padding: 8px 11px;
+         background: var(--panel); border: 1px solid var(--line); border-radius: 9px;
+         box-shadow: 0 6px 22px rgba(0,0,0,.22); font-size: 12.5px; display: none; }
+  .tip b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+  .tip span { color: var(--faint); font-size: 11.5px; }
+  .hint { position: fixed; right: 14px; bottom: 14px; z-index: 5; font-size: 11.5px; color: var(--faint); text-align: right; }
+  #boot { position: fixed; inset: 0; display: grid; place-items: center; z-index: 9;
+          background: var(--bg); color: var(--faint); font-size: 13px; }
+  select { font: inherit; font-size: 12.5px; padding: 5px 9px; border-radius: 8px;
+           border: 1px solid var(--line); background: var(--panel); color: var(--dim); }
+  #minhops { font: inherit; font-size: 12.5px; width: 46px; padding: 4px 6px; border-radius: 7px;
+             border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+
+  /* The path readout. Sits opposite the legend so the two never fight for the same corner. */
+  .path { position: fixed; right: 14px; top: 58px; z-index: 6; width: 268px; max-height: 70vh;
+          overflow-y: auto; background: color-mix(in srgb, var(--panel) 94%, transparent);
+          border: 1px solid var(--line); border-radius: 11px; padding: 12px 13px; font-size: 12.5px; }
+  .path h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+             color: var(--faint); margin: 0 0 9px; font-weight: 700; }
+  .path ol { margin: 0; padding: 0; list-style: none; }
+  .path li { position: relative; padding: 0 0 0 20px; margin-bottom: 9px; line-height: 1.4; }
+  .path li { padding-left: 32px; }
+  .path li::before { content: ""; position: absolute; left: 19px; top: 5px; width: 7px; height: 7px;
+                     border-radius: 50%; background: var(--dot, #888); }
+  .path .step { position: absolute; left: 0; top: 1px; width: 13px; text-align: right;
+                font-size: 10.5px; font-weight: 700; color: var(--faint); }
+  .path li::after { content: ""; position: absolute; left: 22px; top: 15px; bottom: -9px; width: 1px;
+                    background: var(--line); }
+  .path li:last-child::after { display: none; }
+  .path a { color: var(--text); text-decoration: none; }
+  .path a:hover { text-decoration: underline; }
+  .path .via { display: block; color: var(--faint); font-size: 11px; }
+  .path .via.weak { color: #f0a35e; }
+  .path .none { color: var(--faint); }
+  .path button { margin-top: 9px; font-size: 12px; padding: 4px 10px; }
+  .tip .fx { margin-top: 6px; font-size: 12.5px; overflow-x: auto; }
+  .tip .fx .katex { font-size: 1em; }
+  .pill { display: inline-block; font-size: 10.5px; border: 1px solid var(--line);
+          border-radius: 999px; padding: 1px 7px; color: var(--faint); margin-top: 5px; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>Formula Web</h1>
+  <span class="tag">experimental</span>
+  <input type="search" id="q" placeholder="Find a formula…" autocomplete="off">
+  <select id="lens" title="What the colours mean">
+    <option value="subject">colour: subject</option>
+    <option value="level">colour: first contest</option>
+    <option value="importance">colour: importance</option>
+    <option value="degree">colour: how linked</option>
+  </select>
+  <label class="chk"><input type="checkbox" id="spokes" checked> ties</label>
+  <label class="chk"><input type="checkbox" id="onlyCross"> cross-subject only</label>
+  <span class="spacer"></span>
+  <label class="chk" id="hopslab" title="How many cards the route should visit">
+    <input type="number" id="minhops" min="2" value="7">cards
+  </label>
+  <button id="rand">Random</button>
+  <button id="reheat">Shake</button>
+  <button id="reset">Reset</button>
+</div>
+<div id="boot">building the web…</div>
+<canvas id="c"></canvas>
+<div class="legend" id="legend"></div>
+<div class="hint" id="hint">click two cards to trace a path between them &middot; double-click opens a card<br>
+  drag to pan &middot; scroll to zoom &middot; drag a node to pull it</div>
+<div class="path" id="path" hidden></div>
+<div class="tip" id="tip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="../js/data/geometry.js"></script>
+<script src="../js/data/algebra.js"></script>
+<script src="../js/data/number-theory.js"></script>
+<script src="../js/data/counting.js"></script>
+<script src="../js/data/patterns.js"></script>
+<script src="../js/data/details/geometry-details.js"></script>
+<script src="../js/data/details/algebra-details.js"></script>
+<script src="../js/data/details/number-theory-details.js"></script>
+<script src="../js/data/details/counting-details.js"></script>
+<script src="../js/data/diagrams/geometry-diagrams.js"></script>
+<script src="../js/data/diagrams/general-diagrams.js"></script>
+<script src="lab-common.js"></script>
+<script>
+(function () {
+  "use strict";
+  LabData.applyTheme();
+  var D = LabData.build();
+  var cards = D.cards, byId = D.byId, links = D.links;
+
+  // ---------- model ----------
+  // Two kinds of node. Cards are drawn; one invisible anchor per subsection does the clustering,
+  // which is what stops the 121 cards with no authored link from drifting off alone. Anchors
+  // repel each other so subsections spread out instead of piling up at the centre.
+  var N = cards.length;
+  var nodes = cards.map(function (c, i) {
+    var a = (i / N) * Math.PI * 2, r = 260 + 140 * Math.random();
+    return { c: c, x: Math.cos(a) * r, y: Math.sin(a) * r, vx: 0, vy: 0,
+             rad: 3 + Math.min(6, Math.sqrt(c.degree) * 1.7), pinned: false };
+  });
+  var nodeOf = {};
+  nodes.forEach(function (n) { nodeOf[n.c.id] = n; });
+
+  var anchors = {}, anchorList = [];
+  cards.forEach(function (c) {
+    if (anchors[c.subKey]) return;
+    var k = anchorList.length, a = (k / 64) * Math.PI * 2;
+    anchors[c.subKey] = { x: Math.cos(a) * 420, y: Math.sin(a) * 420, vx: 0, vy: 0, color: c.color };
+    anchorList.push(anchors[c.subKey]);
+  });
+  nodes.forEach(function (n) { n.anchor = anchors[n.c.subKey]; });
+
+  var edges = links.map(function (e) { return { a: nodeOf[e.a], b: nodeOf[e.b], cross: e.cross }; });
+  var adj = {};
+  cards.forEach(function (c) { adj[c.id] = []; });
+  links.forEach(function (e) { adj[e.a].push(e.b); adj[e.b].push(e.a); });
+
+  // ---------- lenses ----------
+  // The same map, asked four different questions. Subject is the default because it is how the
+  // library is organised; the other three are the ones that show something the sidebar cannot.
+  var LEVEL_ORDER = ["MATHCOUNTS", "AMC10", "AMC12", "AIME", "Olympiad"];
+  var LEVEL_COLOR = { MATHCOUNTS: "#4cc38a", AMC10: "#5b8cff", AMC12: "#9d7bff",
+                      AIME: "#f0a35e", Olympiad: "#ef5f8b" };
+  var IMP_COLOR = { high: "#f5c451", medium: "#5b8cff", low: "#4cc38a",
+                    lower: "#7b86a3", lowest: "#5a6480" };
+  function firstLevel(c) {
+    for (var i = 0; i < LEVEL_ORDER.length; i++)
+      if ((c.level || []).indexOf(LEVEL_ORDER[i]) !== -1) return LEVEL_ORDER[i];
+    return null;
+  }
+  function degColor(d) {
+    if (d === 0) return "#7a3b52";                 // orphan: nothing points at it
+    if (d <= 2) return "#5a6480";
+    if (d <= 5) return "#5b8cff";
+    if (d <= 9) return "#9d7bff";
+    return "#f5c451";
+  }
+  var lens = "subject";
+  function colorOf(c) {
+    if (lens === "level") return LEVEL_COLOR[firstLevel(c)] || "#5a6480";
+    if (lens === "importance") return IMP_COLOR[c.importance] || "#5a6480";
+    if (lens === "degree") return degColor(c.degree);
+    return c.color;
+  }
+
+  // ---------- paths ----------
+  // The point of drawing a graph is being able to ask it graph questions. Two clicks pick
+  // endpoints and this walks the authored links between them. 143 components means many pairs
+  // have no written route at all, so a second pass allows a hop between cards that merely share
+  // a subsection -- reported separately, because "an author linked these" and "these are filed
+  // together" are very different claims.
+  var sameSub = {};
+  cards.forEach(function (c) { (sameSub[c.subKey] || (sameSub[c.subKey] = [])).push(c.id); });
+  function bfs(a, b, loose) {
+    if (a === b) return [a];
+    var prev = {}, seen = {}, q = [a], i = 0;
+    seen[a] = 1;
+    while (i < q.length) {
+      var u = q[i++];
+      var nbrs = adj[u].slice();
+      if (loose) nbrs = nbrs.concat(sameSub[byId[u].subKey] || []);
+      for (var k = 0; k < nbrs.length; k++) {
+        var v = nbrs[k];
+        if (seen[v]) continue;
+        seen[v] = 1; prev[v] = u;
+        if (v === b) {
+          var out = [b], cur = b;
+          while (cur !== a) { cur = prev[cur]; out.unshift(cur); }
+          return out;
+        }
+        q.push(v);
+      }
+    }
+    return null;
+  }
+  function linked(a, b) { return adj[a].indexOf(b) !== -1; }
+
+  // Distances from one source in a single sweep. Finding a long route by sampling random PAIRS
+  // and testing each would waste a BFS per miss; one sweep from a random start hands back every
+  // reachable card with its hop count, so a qualifying target can be chosen directly.
+  function distancesFrom(a) {
+    var dist = {}, q = [a], i = 0;
+    dist[a] = 0;
+    while (i < q.length) {
+      var u = q[i++];
+      for (var k = 0; k < adj[u].length; k++) {
+        var v = adj[u][k];
+        if (dist[v] === undefined) { dist[v] = dist[u] + 1; q.push(v); }
+      }
+    }
+    return dist;
+  }
+
+  // The longest shortest-path anywhere in the graph. Sweeping from all 518 nodes is ~500 cheap
+  // BFS runs, so it is measured once rather than guessed -- the old code reported whatever the
+  // best of its ~120 sampled starts happened to be, which is why "nothing longer than N exists"
+  // kept naming a different N on every click.
+  var EXACT = {};                       // hop count -> one pair known to be exactly that far apart
+  var WIDEST = (function () {
+    var best = { hops: 0, a: null, b: null };
+    for (var i = 0; i < cards.length; i++) {
+      var from = cards[i].id, d = distancesFrom(from);
+      for (var id in d) {
+        var h = d[id];
+        if (h > 0 && !EXACT[h]) EXACT[h] = { a: from, b: id };
+        if (h > best.hops) best = { hops: h, a: from, b: id };
+      }
+    }
+    return best;
+  })();
+  var DIAMETER = WIDEST.hops;
+
+  // EXACTLY this many hops, not "at least". distancesFrom returns shortest distances, so a
+  // target sitting at distance n is a pair whose shortest route is n long -- no filtering of
+  // longer routes needed. Random starts are tried first purely for variety; the sweep's stored
+  // example is the guarantee, because near the ceiling only a handful of pairs qualify and
+  // sampling would usually miss them.
+  function randomPath(hops) {
+    var starts = shuffleArr(cards.map(function (c) { return c.id; }));
+    for (var t = 0; t < Math.min(starts.length, 120); t++) {
+      var dist = distancesFrom(starts[t]), exact = [];
+      for (var id in dist) if (dist[id] === hops) exact.push(id);
+      if (exact.length) return { a: starts[t], b: exact[(Math.random() * exact.length) | 0], ok: true };
+    }
+    if (EXACT[hops]) return { a: EXACT[hops].a, b: EXACT[hops].b, ok: true };
+    return null;
+  }
+  function shuffleArr(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = (Math.random() * (i + 1)) | 0, tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  var pathA = null, pathB = null, pathIds = null, pathSet = null;
+  function setPath() {
+    var panel = document.getElementById("path");
+    pathIds = null; pathSet = null;
+    if (!pathA || !pathB || !byId[pathA] || !byId[pathB]) { panel.hidden = true; return; }
+    var route = bfs(pathA, pathB, false), loose = false;
+    if (!route) { route = bfs(pathA, pathB, true); loose = true; }
+    panel.hidden = false;
+    if (!route) {
+      panel.innerHTML = "<h2>No route</h2><p class=\"none\">" + esc(byId[pathA].name) +
+        " and " + esc(byId[pathB].name) +
+        " sit in different pieces of the graph, with nothing written or filed between them.</p>" +
+        '<button id="clearpath">Clear</button>';
+    } else {
+      pathIds = route;
+      pathSet = {};
+      route.forEach(function (id) { pathSet[id] = 1; });
+      fitToPath(route);
+      panel.innerHTML = "<h2>" + route.length + " cards &middot; " + (route.length - 1) +
+        " hop" + (route.length === 2 ? "" : "s") +
+        (loose ? " &middot; partly by shelf" : "") + "</h2><ol>" +
+        route.map(function (id, i) {
+          var c = byId[id];
+          var via = "";
+          if (i > 0) {
+            var wrote = linked(route[i - 1], id);
+            via = '<span class="via' + (wrote ? "" : " weak") + '">' +
+                  (wrote ? "linked from " : "same subsection as ") +
+                  esc(byId[route[i - 1]].name.replace(/\$[^$]*\$/g, "…")) + "</span>";
+          }
+          return '<li style="--dot:' + colorOf(c) + '"><span class="step">' + (i + 1) + "</span>" +
+                 '<a href="../index.html#/f/' + id + '" target="_blank">' +
+                 esc(c.name.replace(/\$[^$]*\$/g, "…")) + "</a>" + via + "</li>";
+        }).join("") + "</ol><button id=\"clearpath\">Clear</button>";
+    }
+    var cb = document.getElementById("clearpath");
+    if (cb) cb.addEventListener("click", function () {
+      pathA = pathB = null; setPath();
+    });
+  }
+
+  // ---------- layout ----------
+  // Repulsion is grid-bucketed rather than all-pairs: 518 nodes is 134k pairs a tick, which is
+  // wasteful when the force is negligible past ~90px anyway. A 90px grid makes it linear.
+  var CELL = 90, heat = 1;
+  function tick() {
+    var grid = {}, i, n;
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      var key = Math.round(n.x / CELL) + "," + Math.round(n.y / CELL);
+      (grid[key] || (grid[key] = [])).push(n);
+    }
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      var gx = Math.round(n.x / CELL), gy = Math.round(n.y / CELL);
+      for (var dx = -1; dx <= 1; dx++) for (var dy = -1; dy <= 1; dy++) {
+        var bucket = grid[(gx + dx) + "," + (gy + dy)];
+        if (!bucket) continue;
+        for (var j = 0; j < bucket.length; j++) {
+          var m = bucket[j];
+          if (m === n) continue;
+          var ddx = n.x - m.x, ddy = n.y - m.y, d2 = ddx * ddx + ddy * ddy;
+          if (d2 > 8100 || d2 < 0.01) continue;
+          var d = Math.sqrt(d2), f = 900 / d2;
+          n.vx += (ddx / d) * f; n.vy += (ddy / d) * f;
+        }
+      }
+    }
+    // authored links pull hard -- they are the signal
+    for (i = 0; i < edges.length; i++) {
+      var e = edges[i], ex = e.b.x - e.a.x, ey = e.b.y - e.a.y;
+      var ed = Math.sqrt(ex * ex + ey * ey) || 1, k = (ed - 70) * 0.012;
+      var fx = (ex / ed) * k, fy = (ey / ed) * k;
+      e.a.vx += fx; e.a.vy += fy; e.b.vx -= fx; e.b.vy -= fy;
+    }
+    // each card drifts toward its subsection's anchor; weak, so a strong link can override it
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      var ax = n.anchor.x - n.x, ay = n.anchor.y - n.y;
+      n.vx += ax * 0.0125; n.vy += ay * 0.0125;
+      n.anchor.vx -= ax * 0.0009; n.anchor.vy -= ay * 0.0009;
+    }
+    // anchors push apart so the clusters separate, and are held loosely to the origin
+    for (i = 0; i < anchorList.length; i++) {
+      var A = anchorList[i];
+      for (var j2 = i + 1; j2 < anchorList.length; j2++) {
+        var B = anchorList[j2], bx = A.x - B.x, by = A.y - B.y, b2 = bx * bx + by * by;
+        if (b2 < 1) continue;
+        var bd = Math.sqrt(b2), bf = 90000 / b2;
+        A.vx += (bx / bd) * bf; A.vy += (by / bd) * bf;
+        B.vx -= (bx / bd) * bf; B.vy -= (by / bd) * bf;
+      }
+      A.vx -= A.x * 0.0009; A.vy -= A.y * 0.0009;
+      A.x += A.vx * heat; A.y += A.vy * heat; A.vx *= 0.82; A.vy *= 0.82;
+    }
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (n.pinned) { n.vx = n.vy = 0; continue; }
+      n.vx -= n.x * 0.0009; n.vy -= n.y * 0.0009;
+      n.x += n.vx * heat; n.y += n.vy * heat;
+      n.vx *= 0.80; n.vy *= 0.80;
+    }
+    if (heat > 0.16) heat *= 0.994;
+  }
+
+  // ---------- view ----------
+  var cv = document.getElementById("c"), ctx = cv.getContext("2d");
+  var view = { x: 0, y: 0, s: 1 }, DPR = Math.min(2, window.devicePixelRatio || 1);
+  function resize() {
+    cv.width = innerWidth * DPR; cv.height = innerHeight * DPR;
+    cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
+  }
+  addEventListener("resize", resize); resize();
+  function toScreen(p) { return { x: (p.x + view.x) * view.s + innerWidth / 2, y: (p.y + view.y) * view.s + innerHeight / 2 }; }
+  function toWorld(sx, sy) { return { x: (sx - innerWidth / 2) / view.s - view.x, y: (sy - innerHeight / 2) / view.s - view.y }; }
+
+  var hover = null, matches = null, showSpokes = true, onlyCross = false;
+  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  function draw() {
+    var lineCol = css("--line"), dimCol = css("--faint"), textCol = css("--text");
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    // A traced path owns the highlight while it exists -- hovering around inside it should not
+    // keep tearing the route off the screen.
+    var lit = null;
+    if (pathSet) lit = pathSet;
+    else if (hover) { lit = {}; lit[hover.c.id] = 1; adj[hover.c.id].forEach(function (id) { lit[id] = 1; }); }
+
+    if (showSpokes && !onlyCross) {
+      ctx.lineWidth = Math.max(0.35, 0.6 * view.s);
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i], p = toScreen(n), a = toScreen(n.anchor);
+        ctx.strokeStyle = lineCol;
+        ctx.globalAlpha = lit ? 0.05 : 0.16;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(a.x, a.y); ctx.stroke();
+      }
+    }
+    for (var k = 0; k < edges.length; k++) {
+      var e = edges[k];
+      if (onlyCross && !e.cross) continue;
+      var on = !lit || (lit[e.a.c.id] && lit[e.b.c.id]);
+      var pa = toScreen(e.a), pb = toScreen(e.b);
+      ctx.strokeStyle = e.cross ? textCol : e.a.c.color;
+      ctx.globalAlpha = on ? (e.cross ? 0.55 : 0.30) : 0.05;
+      ctx.lineWidth = Math.max(0.5, (on && lit ? 1.7 : 0.9) * view.s);
+      ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+    }
+    if (pathIds) {
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = Math.max(3.2, 3.4 * view.s);
+      ctx.lineCap = "round";
+      for (var t = 1; t < pathIds.length; t++) {
+        var p1 = toScreen(nodeOf[pathIds[t - 1]]), p2 = toScreen(nodeOf[pathIds[t]]);
+        var wrote = linked(pathIds[t - 1], pathIds[t]);
+        ctx.strokeStyle = wrote ? "#f5c451" : "#f0a35e";
+        ctx.setLineDash(wrote ? [] : [5, 5]);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    }
+    ctx.globalAlpha = 1;
+    for (var m = 0; m < nodes.length; m++) {
+      var nd = nodes[m], q = toScreen(nd);
+      if (q.x < -40 || q.y < -40 || q.x > innerWidth + 40 || q.y > innerHeight + 40) continue;
+      var isMatch = matches && matches[nd.c.id];
+      var faded = (lit && !lit[nd.c.id]) || (matches && !isMatch);
+      ctx.globalAlpha = faded ? 0.16 : 1;
+      var isEnd = nd.c.id === pathA || nd.c.id === pathB;
+      ctx.beginPath();
+      ctx.arc(q.x, q.y, Math.max(2, nd.rad * view.s * (isEnd ? 1.6 : 1)), 0, 6.2832);
+      ctx.fillStyle = colorOf(nd.c); ctx.fill();
+      if (isEnd) { ctx.lineWidth = 2.5; ctx.strokeStyle = "#f5c451"; ctx.stroke(); }
+      else if (isMatch || (hover && nd === hover)) {
+        ctx.lineWidth = 2; ctx.strokeStyle = textCol; ctx.stroke();
+      }
+      // Label only what is worth reading: the hubs, anything the search found, and the
+      // hovered node with its neighbours. Labelling 518 dots is a grey smear.
+      // While a route is on screen the numbered badges ARE the labels, so every text label is
+      // suppressed -- `lit` is the path set in that mode, so the hover branch would otherwise
+      // redraw all eight titles on top of each other.
+      var big = (nd.c.degree >= 6 && view.s > 0.34) && !pathSet;
+      if (!faded && !pathSet && (big || isMatch || (lit && lit[nd.c.id]))) {
+        ctx.globalAlpha = 1;
+        ctx.font = (lit && lit[nd.c.id] ? "600 " : "") + Math.max(10, 11 * Math.min(1.4, view.s)) + "px -apple-system, sans-serif";
+        ctx.fillStyle = textCol; ctx.textAlign = "center";
+        ctx.fillText(nd.c.name.replace(/\$[^$]*\$/g, "…"), q.x, q.y - nd.rad * view.s - 5);
+      }
+    }
+    // Step badges last, so nothing draws over them. Eight full card titles scattered across the
+    // canvas overlapped into an unreadable pile; a number keys straight to the panel instead.
+    if (pathIds) {
+      ctx.globalAlpha = 1;
+      var bgCol = css("--bg");
+      // Consecutive hops are often in the same subsection and therefore land on top of each
+      // other, so the badges get a short relaxation pass: push any overlapping pair apart while
+      // pulling each back toward its own node, which keeps the numbering legible without
+      // detaching a badge from the dot it labels.
+      var bpos = pathIds.map(function (id) {
+        var t = toScreen(nodeOf[id]); return { x: t.x, y: t.y, ax: t.x, ay: t.y };
+      });
+      for (var pass = 0; pass < 14; pass++) {
+        for (var u = 0; u < bpos.length; u++) {
+          for (var v = u + 1; v < bpos.length; v++) {
+            var dx = bpos[v].x - bpos[u].x, dy = bpos[v].y - bpos[u].y;
+            var dd = Math.sqrt(dx * dx + dy * dy) || 0.01;
+            if (dd >= 27) continue;
+            var push = (27 - dd) / 2;
+            bpos[u].x -= (dx / dd) * push; bpos[u].y -= (dy / dd) * push;
+            bpos[v].x += (dx / dd) * push; bpos[v].y += (dy / dd) * push;
+          }
+        }
+        for (var w2 = 0; w2 < bpos.length; w2++) {
+          bpos[w2].x += (bpos[w2].ax - bpos[w2].x) * 0.16;
+          bpos[w2].y += (bpos[w2].ay - bpos[w2].y) * 0.16;
+        }
+      }
+      // A badge nudged off its dot gets a hairline back to it, so the label still reads as
+      // belonging to that node rather than floating between two.
+      ctx.strokeStyle = "#f5c451"; ctx.lineWidth = 1;
+      for (var L = 0; L < bpos.length; L++) {
+        var bb = bpos[L];
+        if (Math.abs(bb.x - bb.ax) + Math.abs(bb.y - bb.ay) < 6) continue;
+        ctx.beginPath(); ctx.moveTo(bb.ax, bb.ay); ctx.lineTo(bb.x, bb.y); ctx.stroke();
+      }
+      for (var b = 0; b < pathIds.length; b++) {
+        var bp = bpos[b];
+        // Knock a hole in the route first. The badge and the line are the same gold, so without
+        // this the line runs straight into the disc and the two read as one smear.
+        ctx.beginPath(); ctx.arc(bp.x, bp.y, 13, 0, 6.2832);
+        ctx.fillStyle = bgCol; ctx.fill();
+        ctx.beginPath(); ctx.arc(bp.x, bp.y, 10, 0, 6.2832);
+        ctx.fillStyle = "#f5c451"; ctx.fill();
+        ctx.fillStyle = "#1b2333";
+        ctx.font = "700 11px -apple-system, sans-serif";
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(String(b + 1), bp.x, bp.y + 0.5);
+      }
+      ctx.textBaseline = "alphabetic";
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Frame the traced route, not the whole web: drawn correctly but shown at the zoom that
+  // fits all 518 nodes, an eight-hop path is a few pixels of gold and effectively invisible.
+  function fitToPath(route) {
+    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    route.forEach(function (id) {
+      var n = nodeOf[id];
+      if (n.x < x0) x0 = n.x; if (n.x > x1) x1 = n.x;
+      if (n.y < y0) y0 = n.y; if (n.y > y1) y1 = n.y;
+    });
+    var pad = 110;
+    view.s = Math.max(0.25, Math.min(1.8, Math.min(
+      (innerWidth - 300 - pad * 2) / Math.max(1, x1 - x0),
+      (innerHeight - pad * 2 - 54) / Math.max(1, y1 - y0))));
+    // Shifted left of centre because the path panel occupies the right ~290px.
+    view.x = -(x0 + x1) / 2 - 140 / view.s;
+    view.y = -(y0 + y1) / 2;
+  }
+
+  // Frame the whole graph rather than opening at 1:1 in the middle of it, which looked like
+  // a fragment. Recomputed on Reset view as well, since Shake can change the extent.
+  function fitToBounds() {
+    // Percentile bounds, not min/max: a couple of tiny subsections get flung wide by the
+    // anchor repulsion, and framing to them shrank the whole web to a smudge. Clipping the
+    // outer 2% frames the mass of the graph and lets the strays sit just off-screen.
+    var xs = nodes.map(function (n) { return n.x; }).sort(function (a, b) { return a - b; });
+    var ys = nodes.map(function (n) { return n.y; }).sort(function (a, b) { return a - b; });
+    var lo = Math.floor(nodes.length * 0.04), hi = Math.ceil(nodes.length * 0.96) - 1;
+    var x0 = xs[lo], x1 = xs[hi], y0 = ys[lo], y1 = ys[hi];
+    var pad = 34;
+    view.s = Math.max(0.18, Math.min(2.4, Math.min(
+      (innerWidth - pad * 2) / Math.max(1, x1 - x0),
+      (innerHeight - pad * 2 - 54) / Math.max(1, y1 - y0))));
+    view.x = -(x0 + x1) / 2; view.y = -(y0 + y1) / 2;
+  }
+
+  var running = true;
+  function frame() { if (running) { tick(); draw(); } requestAnimationFrame(frame); }
+
+  // settle before the first paint so the reader never sees the explosion
+  for (var w = 0; w < 320; w++) tick();
+  fitToBounds();
+  document.getElementById("boot").remove();
+  frame();
+
+  // ---------- interaction ----------
+  var drag = null, panning = null;
+  function pick(sx, sy) {
+    var best = null, bd = 1e9;
+    for (var i = 0; i < nodes.length; i++) {
+      var p = toScreen(nodes[i]), dx = p.x - sx, dy = p.y - sy, d = dx * dx + dy * dy;
+      var rr = Math.max(7, nodes[i].rad * view.s + 4);
+      if (d < rr * rr && d < bd) { bd = d; best = nodes[i]; }
+    }
+    return best;
+  }
+  var tip = document.getElementById("tip");
+  cv.addEventListener("mousemove", function (ev) {
+    if (drag) {
+      var w2 = toWorld(ev.clientX, ev.clientY);
+      drag.x = w2.x; drag.y = w2.y; heat = Math.max(heat, 0.5);
+      return;
+    }
+    if (panning) {
+      view.x += (ev.clientX - panning.x) / view.s;
+      view.y += (ev.clientY - panning.y) / view.s;
+      panning = { x: ev.clientX, y: ev.clientY };
+      return;
+    }
+    var n = pick(ev.clientX, ev.clientY);
+    hover = n;
+    if (n) {
+      tip.style.display = "block";
+      tip.style.left = Math.min(ev.clientX + 14, innerWidth - 310) + "px";
+      tip.style.top = Math.min(ev.clientY + 16, innerHeight - 170) + "px";
+      tip.innerHTML = "<b>" + esc(n.c.name.replace(/\$[^$]*\$/g, "…")) + "</b>" +
+        "<span>" + esc(n.c.sectionTitle + " › " + n.c.subsection) + " &middot; " +
+        n.c.degree + " link" + (n.c.degree === 1 ? "" : "s") + "</span>" +
+        texOf(n.c) +
+        '<span class="pill">' + esc(firstLevel(n.c) || "unrated") + " &middot; " +
+        esc(n.c.importance) + "</span>";
+    } else { tip.style.display = "none"; }
+  });
+  cv.addEventListener("mousedown", function (ev) {
+    var n = pick(ev.clientX, ev.clientY);
+    if (n) { drag = n; n.pinned = true; }
+    else { panning = { x: ev.clientX, y: ev.clientY }; cv.classList.add("dragging"); }
+  });
+  addEventListener("mouseup", function (ev) {
+    if (drag) {
+      drag.pinned = false;
+      if (ev.target === cv) {
+        var n = pick(ev.clientX, ev.clientY);
+        // A click on a node is now "pick an endpoint": first sets the start, second traces the
+        // route, a third starts over from there. Opening the card moved to double-click, since
+        // leaving for another tab is the rarer thing to want once a path is on screen.
+        if (n === drag) {
+          if (!pathA || (pathA && pathB)) { pathA = n.c.id; pathB = null; }
+          else if (n.c.id !== pathA) { pathB = n.c.id; }
+          setPath();
+        }
+      }
+    }
+    drag = null; panning = null; cv.classList.remove("dragging");
+  });
+  cv.addEventListener("dblclick", function (ev) {
+    var n = pick(ev.clientX, ev.clientY);
+    if (n) window.open("../index.html#/f/" + n.c.id, "_blank");
+  });
+  cv.addEventListener("wheel", function (ev) {
+    ev.preventDefault();
+    var before = toWorld(ev.clientX, ev.clientY);
+    view.s = Math.max(0.18, Math.min(4, view.s * (ev.deltaY < 0 ? 1.11 : 0.9)));
+    var after = toWorld(ev.clientX, ev.clientY);
+    view.x += after.x - before.x; view.y += after.y - before.y;
+  }, { passive: false });
+
+  document.getElementById("q").addEventListener("input", function () {
+    var v = this.value.trim().toLowerCase();
+    if (!v) { matches = null; return; }
+    matches = {};
+    var hits = 0, first = null;
+    cards.forEach(function (c) {
+      if (c.name.toLowerCase().indexOf(v) !== -1 || c.id.indexOf(v) !== -1) {
+        matches[c.id] = 1; hits++; if (!first) first = nodeOf[c.id];
+      }
+    });
+    if (!hits) matches = {};
+    if (hits === 1 && first) { view.x = -first.x; view.y = -first.y; view.s = Math.max(view.s, 1.4); }
+  });
+  document.getElementById("spokes").addEventListener("change", function () { showSpokes = this.checked; });
+  document.getElementById("onlyCross").addEventListener("change", function () { onlyCross = this.checked; });
+  document.getElementById("rand").addEventListener("click", function () {
+    // The box is in cards; the search works in hops. A route of N cards has N-1 hops.
+    var cardsWanted = Math.max(2, Math.min(DIAMETER + 1, +document.getElementById("minhops").value || 7));
+    var want = cardsWanted - 1;
+    var r = randomPath(want);
+    var panel = document.getElementById("path");
+    if (!r) {
+      panel.hidden = false;
+      panel.innerHTML = "<h2>Nothing that long</h2><p class=\"none\">No route visits exactly " +
+        cardsWanted + " cards. The longest in the library is " + (DIAMETER + 1) +
+        " cards (" + DIAMETER + " hops).</p>";
+      pathA = pathB = null; pathIds = null; pathSet = null;
+      return;
+    }
+    pathA = r.a; pathB = r.b; setPath();
+  });
+  // Shake used to just reset `heat` to its starting value, which did almost nothing: the layout
+  // is already at equilibrium, so scaling a set of balanced forces back up moves nothing. A real
+  // shake needs ENERGY -- a random impulse into every node (and every subsection anchor, so the
+  // clusters themselves slosh too). The springs then haul it all back, which is the fun part.
+  document.getElementById("reheat").addEventListener("click", function () {
+    heat = 1.5;
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].vx += (Math.random() - 0.5) * 46;
+      nodes[i].vy += (Math.random() - 0.5) * 46;
+      nodes[i].pinned = false;
+    }
+    for (var j = 0; j < anchorList.length; j++) {
+      anchorList[j].vx += (Math.random() - 0.5) * 18;
+      anchorList[j].vy += (Math.random() - 0.5) * 18;
+    }
+  });
+  document.getElementById("reset").addEventListener("click", function () {
+    fitToBounds();
+    document.getElementById("q").value = ""; matches = null;
+    pathA = pathB = null; setPath();
+  });
+
+  // legend, rebuilt whenever the lens changes so the key always describes what is on screen
+  var secOrder = [], seenSec = {};
+  cards.forEach(function (c) { if (!seenSec[c.sectionId]) { seenSec[c.sectionId] = 1; secOrder.push(c); } });
+  function drawLegend() {
+    var rows;
+    if (lens === "level") {
+      var used = LEVEL_ORDER.filter(function (l) {
+        return cards.some(function (c) { return firstLevel(c) === l; });
+      });
+      rows = used.map(function (l) {
+        return swatch(LEVEL_COLOR[l], l === "AMC10" ? "AMC 10" : l === "AMC12" ? "AMC 12" : l);
+      }).join("") + '<div style="color:var(--faint);font-size:11px;margin-top:4px">earliest contest that asks it</div>';
+    } else if (lens === "importance") {
+      rows = ["high", "medium", "low", "lower", "lowest"].map(function (k) {
+        return swatch(IMP_COLOR[k], k);
+      }).join("");
+    } else if (lens === "degree") {
+      rows = swatch(degColor(0), "nothing links to it") + swatch(degColor(1), "1\u20132 links") +
+             swatch(degColor(4), "3\u20135") + swatch(degColor(7), "6\u20139") + swatch(degColor(12), "10+");
+    } else {
+      rows = secOrder.map(function (c) { return swatch(c.color, c.sectionTitle); }).join("");
+    }
+    document.getElementById("legend").innerHTML = rows +
+      '<div style="margin-top:5px"><i style="background:var(--text);border-radius:1px;height:2px;width:14px"></i>cross-subject link</div>' +
+      '<div><i style="background:#f5c451;border-radius:1px;height:2px;width:14px"></i>traced path</div>';
+  }
+  function swatch(col, label) {
+    return '<div><i style="background:' + col + '"></i>' + esc(label) + "</div>";
+  }
+  drawLegend();
+  (function () {
+    var inp = document.getElementById("minhops");
+    inp.max = String(DIAMETER + 1);
+    document.getElementById("hopslab").title =
+      "Generate a route visiting exactly this many cards (longest in the library: " +
+      (DIAMETER + 1) + " cards, i.e. " + DIAMETER + " hops)";
+  })();
+  document.getElementById("lens").addEventListener("change", function () {
+    lens = this.value; drawLegend(); if (pathIds) setPath();
+  });
+
+  // Hover fires on every mouse move, so each card's formula is typeset once and kept.
+  var texCache = {};
+  function texOf(c) {
+    if (texCache[c.id] !== undefined) return texCache[c.id];
+    var html = "";
+    if (c.latex && window.katex) {
+      try {
+        html = '<div class="fx">' +
+               katex.renderToString(c.latex, { displayMode: false, throwOnError: false }) +
+               "</div>";
+      } catch (e) { html = ""; }
+    }
+    texCache[c.id] = html;
+    return html;
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // Same idea as index.html?debug=1 exposing __mathSearch: the routing is the substance of this
+  // page and is otherwise only reachable by clicking two dots, so leave a handle to check it.
+  window.__web = {
+    trace: function (a, b) { pathA = a; pathB = b; setPath(); return pathIds; },
+    bfs: bfs,
+    degreeOf: function (id) { return byId[id] ? byId[id].degree : null; },
+    diameter: function () {
+      var best = 0, pair = null;
+      cards.forEach(function (c) {
+        var d = distancesFrom(c.id);
+        for (var id in d) if (d[id] > best) { best = d[id]; pair = [c.id, id]; }
+      });
+      return { hops: best, between: pair };
+    }
+  };
+})();
+</script>
+</body>
+</html>

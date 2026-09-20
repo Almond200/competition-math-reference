@@ -203,6 +203,18 @@
 
   // Importance tiers, most-used first. Filtered per section via the settings popup.
   const IMP_TIERS = ["high", "medium", "low", "lower", "lowest"];
+  // How a section page is laid out. "cards" is the full card grid under subsection headings;
+  // "wiki" is a bare A-Z index of names, which drops subsections because the alphabet groups
+  // instead. Chosen on the Settings page.
+  const LAYOUTS = ["cards", "wiki"];
+  // Card-face figures: "curated" is CARD_DIAGRAM_IDS, "all" is every card that has one,
+  // "none" hides them. Density and tags are booleans in spirit but kept as words so the
+  // stored value reads back plainly. Notation picks the expanded form where a card offers
+  // one — see latexFor().
+  const DIAGRAM_MODES = ["curated", "all", "none"];
+  const DENSITIES = ["comfortable", "compact"];
+  const NOTATIONS = ["sigma", "expanded"];
+  const TEXT_SIZES = ["normal", "large"];
   const SECTION_IDS = SECTIONS.map(s => s.id);
   // Each section carries its own rarity + level filter (persisted).
   function loadSettings() {
@@ -218,11 +230,29 @@
       const ll = (stored && Array.isArray(stored.levels)) ? stored.levels.filter(l => LEVELS.indexOf(l) !== -1) : [];
       sf[id] = { rarities: new Set(rr), levels: new Set(ll) };
     });
-    return { sectionFilters: sf };
+    // Preferences live alongside the per-section filters in the same store. Theme is the one
+    // exception: it keeps its own localStorage key because the pre-paint script in index.html
+    // has to read it before this file is even parsed.
+    const P = (s && s.prefs) || {};
+    const pick = (v, allowed) => allowed.indexOf(v) !== -1 ? v : allowed[0];
+    return {
+      sectionFilters: sf,
+      layout: pick(P.layout, LAYOUTS),
+      diagrams: pick(P.diagrams, DIAGRAM_MODES),
+      density: pick(P.density, DENSITIES),
+      notation: pick(P.notation, NOTATIONS),
+      text: pick(P.text, TEXT_SIZES),
+      tags: P.tags === false ? false : true,
+      autoGroup: P.autoGroup === false ? false : true
+    };
   }
   function saveSettings() {
     try {
-      const out = { sections: {} };
+      const out = { sections: {}, prefs: {
+        layout: state.layout, diagrams: state.diagrams,
+        density: state.density, notation: state.notation,
+        text: state.text, tags: state.tags, autoGroup: state.autoGroup
+      } };
       SECTION_IDS.forEach(id => {
         out.sections[id] = { rarities: [...state.sectionFilters[id].rarities], levels: [...state.sectionFilters[id].levels] };
       });
@@ -236,7 +266,14 @@
     sectionFilters: _loaded.sectionFilters,  // per-section { rarities:Set, levels:Set }
     activeSectionId: SECTIONS.length ? SECTIONS[0].id : null,
     adv: null,                   // advanced search: { sections:Set, subs:Set, topics:Set, desc:string } or null
-    openGroup: null              // sidebar: explicitly opened group, or null to follow the active section
+    openGroup: null,             // sidebar: explicitly opened group, or null to follow the active section
+    layout: _loaded.layout,      // "cards" or "wiki" — how a section page is drawn
+    diagrams: _loaded.diagrams,  // "curated" | "all" | "none" — figures on the card face
+    density: _loaded.density,    // "comfortable" | "compact"
+    notation: _loaded.notation,  // "sigma" | "expanded"
+    text: _loaded.text,          // "normal" | "large"
+    tags: _loaded.tags,          // keyword chips on the card face
+    autoGroup: _loaded.autoGroup // group a saved list into sections instead of one flat run
   };
   const GROUP_LABELS = { formulas: "Formulas", tools: "Additional Tools" };
   const groupOf = section => (section && section.group) || "formulas";
@@ -809,7 +846,7 @@
   const ALSO_LISTED_IN = {
     algebra: {
       "Trigonometric Identities": [
-        "trig-area", "triangle-half-angle-identities",
+        "trig-area", "trig-area-circumradius", "triangle-half-angle-identities",
         "half-angle-tangent-identity", "triangle-sin2-sum-ratio"
       ]
     }
@@ -1059,12 +1096,18 @@
     if (m && PROBLEM_BY_SLUG[m[1]]) return { type: "problem", slug: m[1] };
     m = location.hash.match(/^#\/topic\/([\w-]+)$/);
     if (m && TOPICS_BY_ID[m[1]]) return { type: "topic", topicId: m[1] };
+    if (/^#\/settings$/.test(location.hash)) return { type: "settings" };
     return { type: "home" };
   }
 
   // Remember where the reader was in the list so "back" from a detail page
-  // returns them there instead of jumping to the top.
+  // returns them there instead of jumping to the top. Recorded continuously rather than only
+  // when a formula is opened: reaching Settings or Lists by any other route and coming back
+  // would otherwise restore a position from whenever a card was last opened.
   let listScrollY = 0;
+  window.addEventListener("scroll", () => {
+    if (getRoute().type === "home") listScrollY = window.scrollY;
+  }, { passive: true });
   function openFormula(id) {
     if (getRoute().type !== "formula") listScrollY = window.scrollY;
     location.hash = "#/f/" + id;
@@ -1120,8 +1163,19 @@
   // Curated built-in study sets (read-only). These are cross-cutting sets, so they
   // keep the deliberate file order (contest tiers, then methods, then curiosities)
   // rather than being grouped by subject. Unknown ids are dropped at load.
+  // `sections` is the source of truth in built-in-lists.js; `ids` is flattened from it here
+  // so every downstream consumer (anyList, listPreview, the user-list copy flow) keeps working
+  // against a plain array and nothing is duplicated in the data file. A list written the old
+  // way, with a bare `ids`, still loads.
   const BUILTIN_LISTS = (window.MATH_BUILTIN_LISTS || [])
-    .map((l, i) => ({ id: l.id, name: l.name, subject: l.subject, ids: (l.ids || []).filter(id => BY_ID[id]), builtinSet: true, _i: i }))
+    .map((l, i) => {
+      const secs = (l.sections || [{ title: "", note: "", ids: l.ids || [] }])
+        .map(sec => ({ title: sec.title || "", note: sec.note || "", ids: (sec.ids || []).filter(id => BY_ID[id]) }))
+        .filter(sec => sec.ids.length);
+      return { id: l.id, name: l.name, subject: l.subject, kind: l.kind || "route", tier: l.tier || "",
+               blurb: l.blurb || "", sections: secs,
+               ids: secs.reduce((a, sec) => a.concat(sec.ids), []), builtinSet: true, _i: i };
+    })
     .filter(l => l.ids.length)
     .sort((a, b) => a._i - b._i);
   const BUILTIN_BY_ID = {};
@@ -1270,6 +1324,12 @@
     "stars-and-bars", "grid-paths", "catalan-numbers", "am-gm", "jensens-inequality",
     "roots-of-unity", "floor-basics", "absolute-value-rules", "abs-value-relations", "tangent-circles",
     "lattice-points-gcd",
+    // Cards whose name and one-line text do not tell you the configuration — you have to see
+    // it. "Counting Paths by Filling the Grid" and "3D Tangency via Cross-Sections" are the
+    // clearest: both describe a picture rather than state a fact.
+    "grid-path-fill", "angle-bisector-circumcircle", "cross-section-method", "arbelos",
+    "incircle-excircle-homothety", "corner-circle-chain", "cyclic-perpendicular-diagonals",
+    "mixtilinear-incircle", "pascals-theorem",
     // These three carried a hand-written `diagram:` field that the card face used directly.
     // That field is gone, so they are listed here to keep their card-face figure — and going
     // through this path means they now get `card-glance`, hence cropDiagramHeight.
@@ -1488,7 +1548,12 @@
 
   const IMP_RANK = { high: 0, medium: 1, low: 2, lower: 3, lowest: 4 };
 
-  function searchFormulas(rawQuery) {
+  // opts.only: a Set of card ids to restrict the answer to, applied to the ranked pool
+  // rather than to the corpus. Scoring stays corpus-wide — IDF and field-length norms are
+  // only meaningful against the whole library — but the trim and the cap then apply to what
+  // survives, so searching inside a 141-card list is not silently cut off by the global
+  // top-60 before the filter ever runs.
+  function searchFormulas(rawQuery, opts) {
     let raw = rawQuery.trim();
     if (ABBREV[raw.toLowerCase()]) raw = ABBREV[raw.toLowerCase()];   // whole query is an abbreviation
     const queryLower = spellOperators(raw.toLowerCase());
@@ -1607,8 +1672,27 @@
     // Trim the weak tail: keep the clearly-relevant matches (always at least the
     // top handful), then drop entries scoring far below the leader so a growing
     // library doesn't bury the answer under near-misses.
+    const only = opts && opts.only;
     const topScore = pool.length ? pool[0].score : 0;
-    const kept = pool.filter((r, i) => i < 6 || r.score >= topScore * 0.3);
+    // A scoped search measures relevance against the whole library, and keeps no floor.
+    // Judging against the best card that happens to be in this list instead would mean a
+    // geometry term searched inside a number-theory list still returned its six least-bad
+    // cards; against the library, nothing there clears the bar and the answer is honestly
+    // empty. The unscoped path is untouched — its floor is what guarantees a search for a
+    // word the library barely knows still shows its nearest misses.
+    let kept;
+    if (only) {
+      // Two gates, because one is not enough. Against the library (0.3 of the global best)
+      // so a term the list knows nothing about returns nothing at all. Then against the best
+      // card actually in the list, because once the semantic channel is warm the fused scores
+      // bunch up and the library gate alone let 44 of a 62-card list through — the same as
+      // showing the list. The cap is the backstop.
+      const inScope = pool.filter(r => only.has(r.entry.formula.id) && r.score >= topScore * 0.3);
+      const best = inScope.length ? inScope[0].score : 0;
+      kept = inScope.filter(r => r.score >= best * 0.75).slice(0, 20);
+    } else {
+      kept = pool.filter((r, i) => i < 6 || r.score >= topScore * 0.3);
+    }
     return {
       results: kept.slice(0, 60).map(r => r.entry),
       partial: !anyFull && pool.length > 0
@@ -1659,7 +1743,10 @@
       }
     });
     if (window.renderMathInElement) {
-      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box, .trick-prose, .cp-head, .cp-desc").forEach(el => {
+      // Anywhere a formula NAME can appear needs to be on this list: eight card names carry
+      // LaTeX ("Powers of $x + 1/x$", "Primes Are $6k \\pm 1$"), and a surface left off here
+      // shows the raw dollar signs instead of typesetting them.
+      container.querySelectorAll(".card-desc, .card-name, .card-example, .detail-body, .key-forms, .related-item, .problem-q, .problem-sol, .strat-name, .prob-strategy, .prob-strategy-box, .trick-prose, .cp-head, .cp-desc, .wiki-list a, .dym-link").forEach(el => {
         renderMathInElement(el, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
@@ -1925,9 +2012,9 @@
           <span class="badges">${badgeHtml(f)}</span>
           ${starBtnHtml(f.id)}
           ${addListBtnHtml(f.id)}
-          <button class="copy-btn" data-latex="${escapeAttr(f.latex)}" title="Copy LaTeX">copy tex</button>
+          <button class="copy-btn" data-latex="${escapeAttr(latexFor(f))}" title="Copy LaTeX">copy tex</button>
         </div>
-        <div class="formula-display" data-latex="${escapeAttr(f.latex)}"></div>
+        <div class="formula-display" data-latex="${escapeAttr(latexFor(f))}"></div>
         <p class="card-desc">${f.description}</p>
         ${extraHtml(f)}
         ${tagRowHtml(f, queryTokens, entry.topics)}
@@ -1943,7 +2030,9 @@
   // field, which skipped the caption and crop passes and drew outside its own
   // viewBox, so it was migrated into MATH_DIAGRAMS and the field removed.
   function extraHtml(f) {
-    const glance = CARD_DIAGRAM_IDS.has(f.id) ? ((window.MATH_DIAGRAMS || {})[f.id] || [])[0] : null;
+    if (state.diagrams === "none") return "";
+    const wanted = state.diagrams === "all" || CARD_DIAGRAM_IDS.has(f.id);
+    const glance = wanted ? ((window.MATH_DIAGRAMS || {})[f.id] || [])[0] : null;
     if (!glance) return "";
     return `
       <div class="card-extra">
@@ -2511,7 +2600,12 @@
       : "";
     $content.innerHTML = `
       <div class="detail">
-        <a class="back-link" href="#">&larr; Back to ${entry.section.title}</a>
+        <div class="back-row">
+          ${backFromFormula && backFromFormula.fid === f.id && anyList(backFromFormula.listId)
+            ? `<a class="back-link" href="#/list/${backFromFormula.listId}">&larr; Back to ${escapeAttr(anyList(backFromFormula.listId).name)}</a>`
+            : ""}
+          <a class="back-link" href="#">&larr; Back to ${entry.section.title}</a>
+        </div>
         <p class="detail-crumb">${entry.section.title} &rsaquo; ${entry.subsection.title}</p>
         <div class="detail-head">
           <h2 class="card-name">${f.name}</h2>
@@ -2519,10 +2613,10 @@
           <span class="badges">${badgeHtml(f)}</span>
           ${starBtnHtml(f.id)}
           ${addListBtnHtml(f.id)}
-          <button class="copy-btn" data-latex="${escapeAttr(f.latex)}" title="Copy LaTeX">copy tex</button>
+          <button class="copy-btn" data-latex="${escapeAttr(latexFor(f))}" title="Copy LaTeX">copy tex</button>
           ${asyBtn}
         </div>
-        <div class="formula-display detail-formula" data-latex="${escapeAttr(f.latex)}"></div>
+        <div class="formula-display detail-formula" data-latex="${escapeAttr(latexFor(f))}"></div>
         <p class="card-desc detail-summary">${f.description}</p>
         ${formsHtml}
         ${(() => {
@@ -2646,6 +2740,7 @@
   }
 
   function renderSection(section) {
+    if (state.layout === "wiki") { renderSectionWiki(section); return; }
     const parts = [];
     parts.push(`
       <div class="section-header">
@@ -2679,6 +2774,174 @@
     } else {
       parts.push(subParts.join(""));
     }
+    $content.innerHTML = parts.join("");
+    renderMath($content);
+  }
+
+  // ---------- Settings page ----------
+  // A real page rather than a modal, because preferences here change how the whole app reads
+  // and there needs to be room for more of them later. Per-section filters deliberately stay
+  // behind the toolbar funnel: they belong to the section you are looking at, not to the app.
+  function settingsChoice(group, value, current, label, note) {
+    return `
+      <button type="button" class="set-choice${value === current ? " active" : ""}"
+              data-set="${group}" data-val="${value}"${value === current ? ' aria-current="true"' : ""}>
+        <span class="set-choice-label">${label}</span>
+        <span class="set-choice-note">${note}</span>
+      </button>`;
+  }
+
+  function renderSettingsPage() {
+    shownIds = [];
+    const theme = currentTheme();
+    // One option per .set-opt, several options per group. The groups are the answer to "what
+    // kind of thing is this": how the app looks, how the maths reads, how browsing behaves.
+    const opt = (label, rows) => `
+      <div class="set-opt">
+        <div class="set-sub">${label}</div>
+        <div class="set-choices">${rows}</div>
+      </div>`;
+    $content.innerHTML = `
+      <div class="section-header">
+        <h2>Settings</h2>
+        <p>Preferences are saved in this browser.</p>
+      </div>
+      <div class="settings-page">
+
+        <div class="settings-group">
+          <div class="settings-group-title">Appearance</div>
+          ${opt("Theme",
+            settingsChoice("theme", "light", theme, "Light", "The default.") +
+            settingsChoice("theme", "dark", theme, "Dark", "Easier at night."))}
+          ${opt("Density",
+            settingsChoice("density", "comfortable", state.density, "Comfortable", "The default spacing.") +
+            settingsChoice("density", "compact", state.density, "Compact", "Tighter cards, so more fits on a screen."))}
+          ${opt("Text size",
+            settingsChoice("text", "normal", state.text, "Normal", "The default.") +
+            settingsChoice("text", "large", state.text, "Large", "Bigger prose and formulas together."))}
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Reading the maths</div>
+          ${opt("Notation",
+            settingsChoice("notation", "sigma", state.notation, "Sigma", "Sums written with \u2211.") +
+            settingsChoice("notation", "expanded", state.notation, "Expanded",
+              "Terms written out where a card offers that form."))}
+          ${opt("Figures on cards",
+            settingsChoice("diagrams", "curated", state.diagrams, "Curated",
+              "A figure only on the cards whose idea is hard to read without one.") +
+            settingsChoice("diagrams", "all", state.diagrams, "All",
+              "Every card that has a figure shows it while browsing.") +
+            settingsChoice("diagrams", "none", state.diagrams, "None",
+              "Text only. Figures still appear on a card's own page."))}
+          <p class="settings-hint">Expanded notation shows the first few terms instead of the
+            sigma, on the cards where writing them out makes the identity clearer. Cards without
+            an expanded form are unchanged.</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Browsing</div>
+          ${opt("Section layout",
+            settingsChoice("layout", "cards", state.layout, "Cards",
+              "Full formula cards grouped under their subsection headings.") +
+            settingsChoice("layout", "wiki", state.layout, "Wiki index",
+              "Just names, in A\u2013Z columns. Subsections give way to the alphabet."))}
+          ${opt("Keyword tags",
+            settingsChoice("tags", "on", state.tags ? "on" : "off", "Show", "The chips under each card, also used by search.") +
+            settingsChoice("tags", "off", state.tags ? "on" : "off", "Hide", "Cleaner cards; search is unaffected."))}
+          <p class="settings-hint">The wiki index lists every formula in a section as a plain
+            link, so a whole subject fits on one screen. Open a name to read the full card.</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Filters</div>
+          <p class="settings-hint">Importance and contest-level filters are kept per section and
+            live behind the funnel in the toolbar, next to Advanced.</p>
+        </div>
+
+        <div class="settings-group settings-lab">
+          <div class="settings-group-title">Experimental <span class="lab-tag">for fun</span></div>
+          <p class="settings-hint">Toys built on the same data, living outside the app in their own
+            tab so they cannot disturb it. Nothing here is a real feature.</p>
+          <div class="lab-row">
+            <a class="lab-card" href="lab/formula-web.html" target="_blank" rel="noopener">
+              <span class="lab-name">Formula Web &rarr;</span>
+              <span class="lab-desc">Every card as a dot, clustered by subsection, with the
+                hand-written cross-links drawn between them. Hover to isolate one card and its
+                neighbours; click to open it.</span>
+            </a>
+            <a class="lab-card" href="lab/quiz.html" target="_blank" rel="noopener">
+              <span class="lab-name">Quiz &rarr;</span>
+              <span class="lab-desc">Pick a list and name the formula from its statement and
+                figure, four choices at a time. Wrong answers come from the same subsection, so
+                they are not giveaways.</span>
+            </a>
+          </div>
+        </div>
+      </div>`;
+    $content.querySelector(".settings-page").addEventListener("click", e => {
+      const btn = e.target.closest("[data-set]");
+      if (!btn) return;
+      const key = btn.dataset.set, val = btn.dataset.val;
+      if (key === "theme") { applyTheme(val); }
+      else {
+        const next = key === "tags" ? (val === "on") : val;
+        if (state[key] === next) return;
+        state[key] = next;
+        applyLayout();
+        saveSettings();
+      }
+      renderSettingsPage();
+    });
+  }
+
+  // ---------- Wiki layout ----------
+  // The bucket a formula name sorts into. Names are display strings, so a few carry LaTeX or
+  // start with a digit: "$a^3 + b^3 + c^3 - 3abc$" belongs under A once the markup is stripped,
+  // while "15-75-90 Triangle Ratio" and "3D Tangency via Cross-Sections" have no letter to
+  // offer and collect under "#".
+  function alphaKey(name) {
+    const bare = String(name).replace(/[$\\{}]/g, "").replace(/^[^A-Za-z0-9]+/, "");
+    const c = bare.charAt(0).toUpperCase();
+    return /[A-Z]/.test(c) ? c : "#";
+  }
+
+  function renderSectionWiki(section) {
+    shownIds = [];
+    const buckets = new Map();
+    section.subsections.forEach(sub => {
+      sortEntries(sub.formulas.filter(passesLevel).map(f => BY_ID[f.id])).forEach(e => {
+        shownIds.push(e.formula.id);
+        const k = alphaKey(e.formula.name);
+        if (!buckets.has(k)) buckets.set(k, []);
+        buckets.get(k).push(e);
+      });
+    });
+    const parts = [`
+      <div class="section-header">
+        <h2>${section.title}</h2>
+        <p>${section.blurb}</p>
+      </div>`];
+    if (!shownIds.length) {
+      parts.push(`<div class="empty-state"><div class="big">&#8709;</div>No ${section.title} formulas match the selected level filters.</div>`);
+      $content.innerHTML = parts.join("");
+      renderMath($content);
+      return;
+    }
+    // "#" first, then A-Z. Within a letter, by name, so the index reads as an index.
+    const keys = [...buckets.keys()].sort((a, b) =>
+      a === "#" ? -1 : b === "#" ? 1 : a.localeCompare(b));
+    keys.forEach(k => {
+      const rows = buckets.get(k)
+        .slice()
+        .sort((a, b) => a.formula.name.localeCompare(b.formula.name))
+        .map(e => `<li><a href="#/f/${e.formula.id}">${e.formula.name}</a></li>`).join("");
+      parts.push(`
+        <section class="wiki-letter" id="alpha-${section.id}-${k === "#" ? "num" : k}">
+          <h3>${k}</h3>
+          <ul class="wiki-list">${rows}</ul>
+        </section>`);
+    });
     $content.innerHTML = parts.join("");
     renderMath($content);
   }
@@ -2850,7 +3113,7 @@
     advEl.innerHTML = `
       <div class="modal adv-modal adv-tagmodal" role="dialog" aria-label="Browse formulas by tag">
         <div class="modal-head">
-          <h3>Browse by tag</h3>
+          <h3>Browse by Tag</h3>
           <button class="modal-close" aria-label="Close">&times;</button>
         </div>
         <div class="adv-tagpick">
@@ -2916,7 +3179,7 @@
       <div class="section-header">
         <a class="back-link" href="#/lists">&larr; Study lists</a>
         <h2>${escapeAttr(topic.label)}</h2>
-        <p>Every formula tagged <strong>${escapeAttr(topic.label)}</strong>. To turn a topic into a study list, use the filter builder under Study Lists.</p>
+        <p>Every formula tagged <strong>${escapeAttr(topic.label)}</strong>. To collect these, star the ones you want and they land in your Starred list.</p>
       </div>`];
     if (!entries.length) {
       parts.push(`<div class="empty-state"><div class="big">&#8709;</div>No formulas match this topic at the current level filter.</div>`);
@@ -2927,12 +3190,10 @@
     renderMath($content);
   }
 
-  // ---------- Lists overview: built-in sets + your lists + a filter builder ----------
+  // ---------- Lists overview: curated routes, ways of thinking, curiosities, your lists ----------
   function listPreview(l) {
     return l.ids.slice(0, 3).map(id => BY_ID[id] && BY_ID[id].formula.name).filter(Boolean).join(", ");
   }
-  function subjectClass(s) { return (s || "").toLowerCase().replace(/[^a-z]+/g, "-"); }
-
   function listCardHtml(l) {
     const preview = listPreview(l);
     return `
@@ -2940,42 +3201,78 @@
         <div class="list-card-top">
           <span class="list-emoji">${listGlyph(l)}</span>
           <span class="list-name">${escapeAttr(l.name)}</span>
-          ${l.builtin ? `<span class="list-builtin">built-in</span>` : ""}
         </div>
         <div class="list-card-count">${l.ids.length} formula${l.ids.length === 1 ? "" : "s"}</div>
         ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : `<div class="list-card-preview empty">Empty &mdash; add formulas with the &ldquo;+ list&rdquo; button.</div>`}
       </a>`;
   }
-  function builtinCardHtml(l) {
-    const preview = listPreview(l);
+  // No pill. Every version of it was redundant: the group heading above the grid already
+  // says whether a list is a route, a configuration set or a curiosity, and the name carries
+  // both tier and subject ("AIME Geometry"). The name, the count and the blurb are the tile.
+  // No blurb on the tile. Blurbs run from one line to four, and with tiles sized to their
+  // own content that made every row a different height — the grid read as broken rather than
+  // as a grid. The blurb is still carried on the list and still shown, in full, at the top of
+  // the list's own page; the tile is just a name and a count so the rows line up.
+  function builtinCardHtml(l, extra) {
+    const secs = l.sections.filter(x => x.title).length;
     return `
-      <a class="list-card builtin-card" href="#/list/${l.id}">
+      <a class="list-card builtin-card${extra ? " list-extra" : ""}" href="#/list/${l.id}">
         <div class="list-card-top">
           <span class="list-name">${escapeAttr(l.name)}</span>
-          <span class="list-subject sub-${subjectClass(l.subject)}">${escapeAttr(l.subject)}</span>
         </div>
-        <div class="list-card-count">${l.ids.length} formulas</div>
-        ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : ""}
+        <div class="list-card-count">${l.ids.length} formula${l.ids.length === 1 ? "" : "s"}${secs ? ` &middot; ${secs} section${secs === 1 ? "" : "s"}` : ""}</div>
       </a>`;
   }
-  function renderLists() {
+  function listsIndexHtml() {
     shownIds = [];
     const userCards = lists.items.map(listCardHtml).join("");
-    const curatedCards = BUILTIN_LISTS.map(builtinCardHtml).join("");
-    $content.innerHTML = `
+    // Two rows at the usual three-column width, so a group opens as an overview.
+    const LIST_PREVIEW = 6;
+    const groupHtml = (head, note, k) => {
+      const all = BUILTIN_LISTS.filter(l => l.kind === k);
+      if (!all.length) return "";
+      // One grid, not two. The extras used to be a second .list-grid below the first, so a
+      // group whose count is not a multiple of the column span (13 routes at 3 across) left a
+      // ragged row and then restarted below it with its own margin — the revealed tiles never
+      // joined the rows above. Keeping every tile in the same grid and hiding the overflow by
+      // class means they flow on from where the visible ones stop.
+      // The reveal is delegated, like .sol-toggle: renderLists re-runs on every visit, so
+      // re-wiring a listener here would either leak one or miss all but the first button.
+      const hidden = all.length - LIST_PREVIEW;
+      const gridId = `grid-${k}`;
+      return `
+      <section class="lists-section" id="lists-${k}">
+        <h3 class="lists-subhead">${head}</h3>
+        <p class="lists-subnote">${note}</p>
+        <div class="list-grid${hidden > 0 ? " is-collapsed" : ""}" id="${gridId}">
+          ${all.map((l, i) => builtinCardHtml(l, i >= LIST_PREVIEW)).join("")}
+        </div>
+        ${hidden > 0 ? `
+          <button type="button" class="show-more-btn list-more" data-target="${gridId}" aria-expanded="false"
+                  data-more="Show ${hidden} more" data-less="Show fewer">Show ${hidden} more</button>` : ""}
+      </section>`;
+    };
+    return `
       <div class="section-header">
         <h2>Study Lists</h2>
-        <p>A few cross-cutting curated sets, plus your own saved collections. Star any formula, or hit &ldquo;Save these results&rdquo; on a search to build a list in one click.</p>
+        <p>Curated routes through the library, plus your own saved collections. Star any formula, or use &ldquo;+ list&rdquo; on any card, to build a list of your own.</p>
       </div>
 
-      <section class="lists-section">
-        <h3 class="lists-subhead">Curated sets</h3>
-        <p class="lists-subnote">Cross-cutting collections you can&rsquo;t get by browsing one section &mdash; contest-tier essentials, ways of thinking, and surprising facts.</p>
-        <div class="list-grid" id="builtin-grid">${curatedCards}</div>
-      </section>
+      ${groupHtml("Study Routes",
+        "One contest tier, one subject, complete. Every card at that level is in here, grouped by what you are trying to do rather than by where it happens to be filed &mdash; so you can work from the route instead of the whole database.",
+        "route")}
+      ${groupHtml("Configurations Worth Recognizing",
+        "Recurring shapes rather than a syllabus. When a problem's diagram or setup matches one of these, the configuration itself usually supplies the step you are missing.",
+        "configuration")}
+      ${groupHtml("Ways of Thinking",
+        "Cross-cutting collections of technique, not tied to any one tier or subject.",
+        "thinking")}
+      ${groupHtml("Curiosities",
+        "Recreational. Genuinely nice results with no claim to being a syllabus &mdash; read these for pleasure, not for a contest.",
+        "curiosity")}
 
-      <section class="lists-section">
-        <h3 class="lists-subhead">Your lists</h3>
+      <section class="lists-section" id="lists-yours">
+        <h3 class="lists-subhead">Your Lists</h3>
         <div class="lists-toolbar">
           <form class="lists-new" id="lists-new-form">
             <input type="text" id="lists-new-name" placeholder="Name a new list&hellip;" maxlength="40" autocomplete="off">
@@ -2984,6 +3281,21 @@
         </div>
         <div class="list-grid">${userCards}</div>
       </section>`;
+  }
+
+  // Both Lists surfaces render into one .list-main wrapper, so the sidebar field can swap
+  // the panel for results without touching the nav it lives in.
+  function listMainHtml(route) {
+    if (listNavQuery.trim()) return listResultsHtml(route);
+    return route.type === "list" ? listDetailHtml(route.listId) : listsIndexHtml();
+  }
+  let listNavRouteKey = "";
+  function renderListSurface(route) {
+    // Moving between the index and a list, or between two lists, drops the query: arriving
+    // at a list you clicked and being shown stale results for it would be a surprise.
+    const key = route.type === "list" ? "list:" + route.listId : "lists";
+    if (key !== listNavRouteKey) { listNavRouteKey = key; listNavQuery = ""; }
+    $content.innerHTML = `<div class="list-main">${listMainHtml(route)}</div>`;
     renderMath($content);
   }
 
@@ -3013,40 +3325,142 @@
     renderMath(results);
   }
 
-  function renderListDetail(listId) {
+  // A route is only navigable if it is broken up, so a built-in list renders its sections
+  // with a heading and a note each. Same shape as clusterBody for subsection clusters: a
+  // section whose cards all failed to resolve is dropped rather than left as a bare heading,
+  // and an untitled section (the single-section lists) just renders its cards.
+  // ---------- auto-sections for saved lists ----------
+  // A built-in list arrives pre-sectioned; a saved one is a flat array, so a 40-card collection
+  // renders as one undifferentiated wall. Rather than invent headings, this matches against the
+  // ones already written by hand, from three vocabularies in order of how well they read:
+  //   1. the 160 section headings across the built-in lists -- task-oriented, and they carry a
+  //      note, so a matched section explains itself
+  //   2. the 23 curated TAG_GROUPS families ("triangle centers", "modular arithmetic")
+  //   3. the library's own subsections, as the specific-but-plain fallback
+  // Subject names are deliberately NOT a fallback. Grouping the leftovers under "Geometry" or
+  // "Number Theory" told the reader nothing they could not see from the cards themselves.
+  const GENERIC_TITLES = new Set(SECTIONS.map(x => x.title));
+  const titleCase = str => str.replace(/\b[a-z]/g, c => c.toUpperCase()).replace(/\bAnd\b/g, "&");
+
+  const SECTION_VOCAB = (() => {
+    const out = [];
+    // Each section stays its OWN candidate. Merging same-titled sections across tiers was the
+    // first attempt and made matches worse: "Triangles: Sides, Areas & Radii" merged to ~40 ids
+    // and out-scored the 5-card "Cevians & Ratios" for a list whose cevian cards it barely
+    // described. Small, specific candidates are the point.
+    BUILTIN_LISTS.forEach(l => (l.sections || []).forEach(sec => {
+      if (sec.title && sec.ids.length >= 2) {
+        out.push({ title: sec.title, note: sec.note || "", ids: new Set(sec.ids) });
+      }
+    }));
+    Object.keys(TAG_GROUPS).forEach(label => {
+      const ids = TAG_GROUPS[label].filter(id => BY_ID[id]);
+      if (ids.length >= 2) out.push({ title: titleCase(label), note: "", ids: new Set(ids) });
+    });
+    SECTIONS.forEach(sec => (sec.subsections || []).forEach(sub => {
+      if (GENERIC_TITLES.has(sub.title)) return;
+      const ids = (sub.formulas || []).map(f => f.id);
+      if (ids.length >= 2) out.push({ title: sub.title, note: "", ids: new Set(ids) });
+    }));
+    return out;
+  })();
+
+  function homeSubsection(id) {
+    const e = BY_ID[id];
+    return e ? e.subsection.title : "";
+  }
+
+  // Greedy set cover. The score is |hit|^2 / |candidate| rather than plain |hit|: a 37-card
+  // route section overlapping six of your cards would otherwise win on raw count while saying
+  // almost nothing about them, so the denominator demands the heading actually be ABOUT the
+  // cards it collects. Two passes -- a heading earning three of your cards is worth more than
+  // one earning two, so every three-card match is taken before any two-card one is considered.
+  function autoSections(ids) {
+    const remaining = new Set(ids);
+    const out = [], usedTitles = new Set();
+    [3, 2].forEach(minHit => {
+      for (;;) {
+        if (remaining.size < minHit) return;
+        let best = null;
+        for (const cand of SECTION_VOCAB) {
+          if (usedTitles.has(cand.title)) continue;    // the same heading twice reads as a bug
+          let hit = 0;
+          for (const id of remaining) if (cand.ids.has(id)) hit++;
+          if (hit < minHit) continue;
+          const score = (hit * hit) / cand.ids.size;
+          if (!best || score > best.score) best = { cand, score };
+        }
+        if (!best) break;
+        usedTitles.add(best.cand.title);
+        const picked = ids.filter(id => remaining.has(id) && best.cand.ids.has(id));
+        picked.forEach(id => remaining.delete(id));
+        out.push({ title: best.cand.title, note: best.cand.note, ids: picked });
+      }
+    });
+    const loose = ids.filter(id => remaining.has(id));
+    if (loose.length) out.push({ title: out.length ? "Also in this list" : "", note: "", ids: loose });
+    return out;
+  }
+
+  function listSectionsHtml(l) {
+    return (l.sections || []).map((sec, j) => {
+      const entries = sec.ids.map(id => BY_ID[id]).filter(Boolean);
+      if (!entries.length) return "";
+      const cards = `<div class="cards">${entries.map(e => cardHtml(e, true, null)).join("")}</div>`;
+      if (!sec.title) return cards;
+      return `
+        <div class="list-section" id="ls-${l.id}-${j}">
+          <h3 class="list-section-title">${sec.title}</h3>
+          ${sec.note ? `<p class="list-section-note">${sec.note}</p>` : ""}
+          ${cards}
+        </div>`;
+    }).join("");
+  }
+
+  function listDetailHtml(listId) {
     const userL = getList(listId);
     const l = userL || BUILTIN_BY_ID[listId];
-    if (!l) { location.hash = "#/lists"; return; }
+    if (!l) { location.hash = "#/lists"; return ""; }
     const isBuiltin = !userL;
     const entries = l.ids.map(id => BY_ID[id]).filter(Boolean);
     shownIds = entries.map(e => e.formula.id);
-    const tools = isBuiltin ? "" : `
-      <div class="list-detail-tools">
+    // The three buttons used to sit in a row directly above the cards, which put Clear and
+    // Delete list one slip away from the formula you were reading. They move to the top right
+    // of the header instead, leaving the builder below as just the add field.
+    const AUTO_MIN = 8;
+    const canGroup = !isBuiltin && entries.length >= AUTO_MIN;
+    const grouped = canGroup && state.autoGroup;
+    const headTools = isBuiltin ? "" : `
+      <div class="list-head-tools">
+        ${canGroup ? `<button class="list-tool${grouped ? " on" : ""}" data-list-group="1" title="${grouped ? "Showing sections matched from the built-in lists" : "Group this list into sections"}">${grouped ? "Grouped" : "Group"}</button>` : ""}
         ${l.builtin ? "" : `<button class="list-tool" data-list-rename="${l.id}">Rename</button>`}
         ${entries.length ? `<button class="list-tool danger" data-list-clear="${l.id}">Clear</button>` : ""}
         ${l.builtin ? "" : `<button class="list-tool danger" data-list-delete="${l.id}">Delete list</button>`}
-      </div>
+      </div>`;
+    const tools = isBuiltin ? "" : `
       <div class="list-add" data-list-add="${l.id}">
         <input type="search" class="list-add-input" placeholder="Search formulas to add&hellip;" autocomplete="off" aria-label="Search formulas to add to this list">
         <div class="list-add-results" hidden></div>
       </div>`;
     const glyph = isBuiltin ? `<span class="list-ico">&#9670;</span>` : `<span class="list-emoji">${listGlyph(l)}</span>`;
-    $content.innerHTML = `
+    return `
       <div class="detail">
-        <a class="back-link" href="#/lists">&larr; All study lists</a>
+        <a class="back-link" href="#/lists">&larr; All Study Lists</a>
         <div class="list-detail-head">
           <h2>${glyph} ${escapeAttr(l.name)}</h2>
           <span class="list-detail-count">${entries.length} formula${entries.length === 1 ? "" : "s"}</span>
-          ${isBuiltin ? `<span class="list-subject sub-${subjectClass(l.subject)}">${escapeAttr(l.subject)}</span>` : ""}
+          ${headTools}
         </div>
-        ${isBuiltin ? `<p class="detail-crumb builtin-note">Built-in study set &mdash; hit &ldquo;+ list&rdquo; on any card to copy it into one of your own lists.</p>` : ""}
+        ${isBuiltin && l.blurb ? `<p class="list-blurb">${escapeAttr(l.blurb)}</p>` : ""}
         ${tools}
         ${entries.length
-          ? `<div class="cards">${entries.map(e => cardHtml(e, true, null)).join("")}</div>`
-          : `<div class="empty-state"><div class="big">${glyph}</div>This list is empty. Open any formula and hit &ldquo;+ list&rdquo;, or use the builder in <a href="#/lists">Study Lists</a>.</div>`}
+          ? (isBuiltin || grouped
+              ? listSectionsHtml(isBuiltin ? l : { id: l.id, sections: autoSections(shownIds) })
+              : `<div class="cards">${entries.map(e => cardHtml(e, true, null)).join("")}</div>`)
+          : `<div class="empty-state"><div class="big">${glyph}</div>This list is empty. Open any formula and hit &ldquo;+ list&rdquo;, or star one from its page.</div>`}
       </div>`;
-    renderMath($content);
   }
+  function renderListDetail(listId) { renderListSurface({ type: "list", listId }); }
 
   // ---------- Problem Database: competition/year navigator + per-problem detail ----------
   let dbQuery = "";
@@ -3199,14 +3613,19 @@
       : "";
     $content.innerHTML = `
       <div class="detail">
-        <a class="back-link" href="#/problems">&larr; All problems</a>
+        <div class="back-row">
+          ${backFromProblem && backFromProblem.slug === p.slug && BY_ID[backFromProblem.fid]
+            ? `<a class="back-link" href="#/f/${backFromProblem.fid}">&larr; Back to ${escapeAttr(BY_ID[backFromProblem.fid].formula.name)}</a>`
+            : ""}
+          <a class="back-link" href="#/problems">&larr; All problems</a>
+        </div>
         <div class="detail-head">
           <h2 class="card-name">${refShort(p.ref)}</h2>
         </div>
         ${types ? `<div class="ptype-row">${types}</div>` : ""}
         ${p.strategy ? `<div class="prob-strategy-box"><h4>Strategy</h4><p>${p.strategy}</p></div>` : ""}
         <div class="prob-detail-section">
-          <h4>Formulas and Strategies</h4>
+          <h4>Formulas &amp; Strategies</h4>
           <ul class="strat-list">${formulas || "<li class=\"strat-empty\">Not yet tagged.</li>"}</ul>
         </div>
         ${trickHtml}
@@ -3217,8 +3636,38 @@
     renderMath($content);
   }
 
+  // ---------- One step of provenance ----------
+  // Arriving at a problem straight from a formula, or at a formula straight from a list,
+  // earns a second back link to exactly that page. Deliberately one hop and no more: it is
+  // a breadcrumb for the jump you just made, not a history stack. Any other navigation
+  // clears it, so going to a second problem and returning leaves no stale link behind.
+  // Held in memory only — a reloaded page has no journey to remember.
+  let backFromProblem = null;   // { slug, fid }
+  let backFromFormula = null;   // { fid, listId }
+  let prevRoute = null, prevRouteKey = null;
+
+  function routeKey(r) {
+    return r.type + ":" + (r.entry ? r.entry.formula.id
+      : r.slug || r.listId || r.topicId || r.fam || "");
+  }
+  function trackOrigin(route) {
+    const key = routeKey(route);
+    // A re-render of the page you are already on is not a journey.
+    if (key === prevRouteKey) return;
+    const prev = prevRoute;
+    prevRoute = route; prevRouteKey = key;
+    if (route.type === "problem") {
+      backFromProblem = (prev && prev.type === "formula")
+        ? { slug: route.slug, fid: prev.entry.formula.id } : null;
+    } else if (route.type === "formula") {
+      backFromFormula = (prev && prev.type === "list")
+        ? { fid: route.entry.formula.id, listId: prev.listId } : null;
+    }
+  }
+
   function render() {
     const route = getRoute();
+    trackOrigin(route);
     const section = SECTIONS.find(s => s.id === state.activeSectionId) || SECTIONS[0];
     closeListMenu();
     if (route.type === "formula") {
@@ -3226,13 +3675,15 @@
     } else if (route.type === "topic") {
       renderTopic(route.topicId);
     } else if (route.type === "lists") {
-      renderLists();
+      renderListSurface(route);
     } else if (route.type === "list") {
       renderListDetail(route.listId);
     } else if (route.type === "problems") {
       renderProblems(route);
     } else if (route.type === "problem") {
       renderProblemDetail(route.slug);
+    } else if (route.type === "settings") {
+      renderSettingsPage();
     } else if (state.adv) {
       renderAdvancedResults();
     } else if (state.query.trim()) {
@@ -3245,14 +3696,19 @@
     // search, topic, list, and detail views — none of which they apply to.
     const filtersApply = route.type === "home" && !state.query.trim() && !state.adv;
     if ($filtersRow) $filtersRow.style.display = filtersApply ? "" : "none";
-    const filtersBtn = document.getElementById("settings-btn");
+    const filtersBtn = document.getElementById("filters-btn");
     if (filtersBtn) filtersBtn.style.display = filtersApply ? "" : "none";
     // The section sidebar is meaningless on the Database and Lists surfaces —
     // drop it there and let the content run full width (desktop only; on mobile it
     // stays the hamburger drawer).
-    const noSidebar = ["problems", "problem", "lists", "list"].indexOf(route.type) !== -1;
+    const noSidebar = ["problems", "problem", "settings"].indexOf(route.type) !== -1;
     const $layout = document.querySelector(".layout");
     if ($layout) $layout.classList.toggle("no-sidebar", noSidebar);
+    // The Lists surfaces get category navigation instead of the formula tree. Both live in
+    // #sidebar at once and only visibility is toggled: buildSidebar() runs once at startup
+    // and owns the delegated click listener, so rebuilding it per route would attach a
+    // duplicate listener every time.
+    renderListNav(route);
     updateNavActive();
     syncFilterChips();
     syncSortSelect();
@@ -3260,6 +3716,279 @@
   }
 
   // ---------- Sidebar ----------
+
+  // The Lists sidebar follows the Database navigator, not the formula tree: a search box,
+  // then a flat row of sections that turn blue when chosen and drop their contents beneath.
+  // It borrows the .db-* classes outright (see the grouped selectors in styles.css) so the
+  // two navigators cannot drift apart the way this one did from the formula tree.
+  let listNavQuery = "";
+
+  const LIST_KINDS = [["route", "Study Routes"], ["configuration", "Configurations"],
+                      ["thinking", "Ways of Thinking"], ["curiosity", "Curiosities"]];
+
+  function lnSection(key, title, count, items, open, active) {
+    return `
+      <div class="ln-sec${open ? " open" : ""}" data-ln="${key}">
+        <button type="button" class="ln-btn${active ? " active" : ""}" data-ln="${key}">
+          ${title}<span class="db-count">${count}</span>
+        </button>
+        <div class="ln-items">${items}</div>
+      </div>`;
+  }
+
+  // One row per list. href rows navigate; data-scroll rows jump within the page.
+  function lnItem(label, attrs, active) {
+    return `<a class="ln-item${active ? " active" : ""}" ${attrs}>${label}</a>`;
+  }
+
+  function listNavBodyHtml(route) {
+    if (route.type === "lists") {
+      let first = true;
+      const rows = LIST_KINDS
+        .filter(([k]) => BUILTIN_LISTS.some(l => l.kind === k))
+        .map(([k, label]) => {
+          const mine = BUILTIN_LISTS.filter(l => l.kind === k);
+          const items = mine.map(l => lnItem(escapeAttr(l.name), `href="#/list/${l.id}"`)).join("");
+          const open = first; first = false;
+          // Open and blue are the same thing here: the section you chose is the one showing.
+          return lnSection(`lists-${k}`, label, mine.length, items, open, open);
+        }).join("");
+      return rows + lnSection("lists-yours", "Your Lists", lists.items.length,
+        lists.items.map(l => lnItem(escapeAttr(l.name), `href="#/list/${l.id}"`)).join(""), false);
+    }
+
+    // Inside a list there is no wrapper folder any more: the list's own name is the heading,
+    // and its sections are the rows under it.
+    const l = anyList(route.listId);
+    if (!l) return "";
+    // A saved list has no stored sections, but when grouping is on the page is rendering
+    // synthesized ones -- so the navigator has to synthesize the same ones or it reports "no
+    // sections" next to a page full of them. Same call, same input, same result.
+    const live = (l.sections && l.sections.length)
+      ? l.sections
+      : (!getList(route.listId) || !state.autoGroup || l.ids.length < 8 ? [] : autoSections(l.ids.filter(id => BY_ID[id])));
+    const secs = live.filter(sec => sec.title && sec.ids.length);
+    const items = secs.length
+      ? secs.map((sec, j) => lnItem(sec.title, `data-scroll="ls-${l.id}-${j}"`)).join("")
+      : `<p class="ln-empty">This list has no sections.</p>`;
+    return lnSection(`ls-${l.id}`, escapeAttr(l.name), (l.ids || []).length, items, true, true) +
+           `<a class="list-nav-back" href="#/lists">&larr; All Study Lists</a>`;
+  }
+
+  // ---------- Searching the Lists index ----------
+  // This searches LISTS, not formulas, but with the same care the formula search takes:
+  // tokenised through the same abbreviation table and stopword list, scored by field, and
+  // fused with a second channel rather than matched as a substring. The two channels are
+  //   - the list's own words, its name counting for far more than its blurb; and
+  //   - what the list actually holds, read straight off the formula ranker, so "ptolemy"
+  //     finds Geometry Configurations even though no list is named after him.
+  // A name match on its own outranks a content match on its own, which is why the weights
+  // are lopsided; content is there to answer "which list covers this?", not to outvote a
+  // list the reader named outright.
+  const LIST_W = { name: 10, tag: 5, section: 3, blurb: 1.6 };
+
+  function listQueryTokens(raw) {
+    let q = raw.trim().toLowerCase();
+    if (ABBREV[q]) q = ABBREV[q];
+    let toks = wordsOf(spellOperators(q)).filter(t => !STOPWORDS.has(t));
+    if (!toks.length) toks = wordsOf(spellOperators(q));
+    return toks.flatMap(t => ABBREV[t] ? wordsOf(ABBREV[t]).filter(w => !STOPWORDS.has(w)) : [t]);
+  }
+
+  function listFields(l) {
+    const kindLabel = (LIST_KINDS.find(([k]) => k === l.kind) || [null, ""])[1];
+    return {
+      name: wordsOf((l.name || "").toLowerCase()),
+      tag: wordsOf(((l.subject || "") + " " + kindLabel + " " + (l.tier || "")).toLowerCase()),
+      section: wordsOf((l.sections || []).map(x => x.title || "").join(" ").toLowerCase()),
+      blurb: wordsOf((l.blurb || "").toLowerCase())
+    };
+  }
+
+  function searchLists(rawQuery) {
+    const raw = rawQuery.trim();
+    const toks = listQueryTokens(raw);
+    if (!toks.length) return [];
+    const lower = raw.toLowerCase();
+
+    // Content channel: where the best formula answers live.
+    const formulaHits = searchFormulas(raw).results.slice(0, 12);
+    const rankOf = new Map();
+    formulaHits.forEach((e, i) => { if (!rankOf.has(e.formula.id)) rankOf.set(e.formula.id, i); });
+
+    const all = BUILTIN_LISTS.concat(lists.items);
+    const scored = all.map(l => {
+      const f = listFields(l);
+      let text = 0, covered = 0;
+      toks.forEach(t => {
+        let best = 0;
+        for (const key in LIST_W) {
+          if (f[key].some(w => w === t || w.startsWith(t) || t.startsWith(w))) {
+            best = Math.max(best, LIST_W[key]);
+          }
+        }
+        if (best) { text += best; covered++; }
+      });
+      // Every token has to land somewhere, or the list is not what was asked for.
+      const coverage = covered / toks.length;
+      text *= coverage * coverage;
+      // The whole query appearing in the name is the strongest signal there is, but the bonus
+      // stays modest on purpose: at 14 it buried the sibling lists that match by kind, so
+      // "configurations" returned only the list with the word in its title.
+      if (lower && (l.name || "").toLowerCase().includes(lower)) text += 8;
+
+      // Content: credit only the list's two best-placed members, and steeply, so what counts
+      // is holding the very best answers rather than holding many merely-related ones. A flat
+      // curve over more members made every large route match anything: "inversion" reaches
+      // modular-inverse cards, and 14 of the 22 lists contain one.
+      const ranks = (l.ids || []).map(id => rankOf.has(id) ? rankOf.get(id) : -1)
+        .filter(r => r >= 0).sort((a, b) => a - b).slice(0, 2);
+      const content = ranks.reduce((n, r) => n + 10 / (2 + r), 0);
+
+      return { list: l, score: text + content, text, content };
+    }).filter(r => r.score > 0);
+
+    scored.sort((a, b) => b.score - a.score || a.list.name.localeCompare(b.list.name));
+    // A stricter tail than the formula search keeps, and a hard cap. There are only 22 lists,
+    // so returning half of them is the same as returning none: the answer has to be short
+    // enough to read at a glance.
+    const top = scored.length ? scored[0].score : 0;
+    return scored.filter(r => r.score >= top * 0.45).slice(0, 8).map(r => r.list);
+  }
+
+  // The sidebar field on the index searches lists; inside a list it searches that list's
+  // formulas, with the real ranker in both cases. Either way the nav stays put and dims and
+  // only the main panel is replaced, the way the Database field behaves.
+  function listResultsHtml(route) {
+    const q = listNavQuery.trim();
+    return route.type === "list" ? inListResultsHtml(route.listId, q) : listIndexResultsHtml(q);
+  }
+
+  function listIndexResultsHtml(q) {
+    shownIds = [];
+    const found = searchLists(q);
+    if (!found.length) {
+      return `
+        <div class="section-header">
+          <h2>No List Found</h2>
+          <p>No study list matches &ldquo;${escapeAttr(q)}&rdquo;, by name or by what it holds.</p>
+        </div>`;
+    }
+    const tiles = found.map(l => l.kind ? builtinCardHtml(l) : listCardHtml(l)).join("");
+    return `
+      <div class="section-header">
+        <h2>${found.length} List${found.length === 1 ? "" : "s"}</h2>
+        <p>Study lists matching &ldquo;${escapeAttr(q)}&rdquo;, by name or by what they contain.</p>
+      </div>
+      <div class="list-grid">${tiles}</div>`;
+  }
+
+  function inListResultsHtml(listId, q) {
+    const scope = anyList(listId);
+    if (!scope) return "";
+    const only = new Set(scope.ids);
+    const { results } = searchFormulas(q, { only });
+    shownIds = results.map(e => e.formula.id);
+
+    // "Did you mean": only when the library's own best answer is NOT in this list and the
+    // match is a real one — partial===false means some card matched every token, not just
+    // some of them. Without both tests this would suggest near-misses on every query.
+    const global = searchFormulas(q);
+    const topIsOutside = global.results.length && !only.has(global.results[0].formula.id);
+    // Drawn from the library's top three only. Filtering the whole result list instead took
+    // the first two outside cards wherever they sat, so "divisor" offered Isoperimetric Facts
+    // as a suggestion: a card the query barely touched, presented as the thing you meant.
+    const elsewhere = (!global.partial && topIsOutside)
+      ? global.results.slice(0, 3).filter(e => !only.has(e.formula.id)).slice(0, 2)
+      : [];
+    const didYouMean = elsewhere.length ? `
+      <div class="dym">
+        <p class="dym-label">Did you mean ${elsewhere.length === 1 ? "this" : "these"}? <span class="dym-note">(not in this list)</span></p>
+        <ul class="dym-list">
+          ${elsewhere.map(e => `<li><a class="dym-link" href="#/f/${e.formula.id}">${escapeAttr(e.formula.name)}</a><span class="dym-crumb">${e.section.title} &rsaquo; ${e.subsection.title}</span></li>`).join("")}
+        </ul>
+      </div>` : "";
+
+    if (!results.length) {
+      return `
+        <div class="section-header">
+          <h2>Nothing Found</h2>
+          <p>No formula in ${escapeAttr(scope.name)} matches &ldquo;${escapeAttr(q)}&rdquo;.</p>
+        </div>
+        ${didYouMean}`;
+    }
+    return `
+      <div class="section-header">
+        <h2>${results.length} Result${results.length === 1 ? "" : "s"}</h2>
+        <p>Formulas in ${escapeAttr(scope.name)} matching &ldquo;${escapeAttr(q)}&rdquo;.</p>
+      </div>
+      ${didYouMean}
+      <div class="cards">${results.map(e => cardHtml(e, true, null)).join("")}</div>`;
+  }
+
+  // Only the main panel is replaced, so the sidebar field keeps focus and the caret.
+  function refreshListMain(route) {
+    const main = $content.querySelector(".list-main");
+    if (main) { main.innerHTML = listMainHtml(route); renderMath(main); }
+    const nav = document.querySelector("#list-nav .ln-list");
+    if (nav) nav.classList.toggle("searching", !!listNavQuery.trim());
+  }
+
+  function renderListNav(route) {
+    let box = document.getElementById("list-nav");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "list-nav";
+      $sidebar.appendChild(box);
+    }
+    const onLists = route.type === "lists" || route.type === "list";
+    const tree = document.getElementById("formula-nav");
+    box.hidden = !onLists;
+    if (tree) tree.hidden = onLists;
+    if (!onLists) { box.innerHTML = ""; listNavQuery = ""; return; }
+
+    const ph = route.type === "lists"
+      ? "Search all lists&hellip;"
+      : `Search inside this list&hellip;`;
+    box.innerHTML = `
+      <input id="ln-q" class="db-search" type="search" autocomplete="off"
+             placeholder="${ph}" aria-label="${route.type === "lists" ? "Search all study lists" : "Search formulas in this list"}"
+             value="${escapeAttr(listNavQuery)}">
+      <div class="ln-list${listNavQuery.trim() ? " searching" : ""}">${listNavBodyHtml(route)}</div>`;
+    const q = document.getElementById("ln-q");
+    if (q) q.addEventListener("input", () => {
+      listNavQuery = q.value;
+      refreshListMain(route);
+    });
+  }
+
+  // #list-nav's own click handling. The formula tree's branches read a row as a formula
+  // section (data-section is undefined here) and would navigate to nothing.
+  function listNavClick(e) {
+    const item = e.target.closest(".ln-item");
+    if (item) {
+      if (item.dataset.scroll) {
+        const target = document.getElementById(item.dataset.scroll);
+        if (target) target.scrollIntoView({ block: "start" });
+      }
+      closeDrawer();
+      return;
+    }
+    const btn = e.target.closest(".ln-btn");
+    if (btn) {
+      // Folder behaviour, like the Database navigator: choosing one section shuts the rest,
+      // and choosing the open one shuts it too, so all of them can be closed.
+      const sec = btn.closest(".ln-sec");
+      const wasOpen = sec.classList.contains("open");
+      [...document.querySelectorAll("#list-nav .ln-sec")].forEach(x => {
+        const on = x === sec && !wasOpen;
+        x.classList.toggle("open", on);
+        x.querySelector(".ln-btn").classList.toggle("active", on);
+      });
+      const target = document.getElementById(btn.dataset.ln);
+      if (target) target.scrollIntoView({ block: "start" });
+    }
+  }
 
   function buildSidebar() {
     // The sidebar reads as two books, and only one is unfolded at a time: opening
@@ -3272,7 +4001,7 @@
       if (!byGroup.has(g)) { byGroup.set(g, []); order.push(g); }
       byGroup.get(g).push(section);
     });
-    $sidebar.innerHTML = order.map(group => `
+    $sidebar.innerHTML = `<div id="formula-nav">` + order.map(group => `
       <div class="nav-group" data-group="${group}">
         <button class="nav-group-btn" data-group="${group}" aria-expanded="false">
           <span class="nav-group-label">${GROUP_LABELS[group] || group}</span>
@@ -3295,11 +4024,15 @@
         </div></div>
       </div>`).join("")}
         </div></div>
-      </div>`).join("");
+      </div>`).join("") + `</div>`;
 
     $sidebar.addEventListener("click", e => {
+      // The list nav emits the same nav-* classes so the two trees look identical, so it
+      // must claim its own clicks before the formula branches below see them.
+      if (e.target.closest("#list-nav")) { listNavClick(e); return; }
       const groupBtn = e.target.closest(".nav-group-btn");
       if (groupBtn) {
+        // Exactly one book is open at a time: choosing one opens it and folds the other.
         state.openGroup = groupBtn.dataset.group;
         updateNavActive();
         return;
@@ -3344,18 +4077,24 @@
   }
 
   function updateNavActive() {
+    // Scoped to #formula-nav: #list-nav now emits the same classes, and this function owns
+    // only the formula tree. The null guards are belt and braces on top of that.
+    const tree = document.getElementById("formula-nav");
+    if (!tree) return;
     const onHome = getRoute().type === "home";
     const open = openGroupId();
-    $sidebar.querySelectorAll(".nav-group").forEach(el => {
+    tree.querySelectorAll(".nav-group").forEach(el => {
       const mine = el.dataset.group === open;
       el.classList.toggle("open", mine);
-      el.querySelector(".nav-group-btn").setAttribute("aria-expanded", mine ? "true" : "false");
+      const btn = el.querySelector(".nav-group-btn");
+      if (btn) btn.setAttribute("aria-expanded", mine ? "true" : "false");
     });
-    $sidebar.querySelectorAll(".nav-section").forEach(el => {
+    tree.querySelectorAll(".nav-section").forEach(el => {
       const isActive = onHome && !state.query.trim() && !state.adv
                        && el.dataset.section === state.activeSectionId;
       el.classList.toggle("open", isActive);
-      el.querySelector(".nav-section-btn").classList.toggle("active", isActive);
+      const btn = el.querySelector(".nav-section-btn");
+      if (btn) btn.classList.toggle("active", isActive);
     });
   }
 
@@ -3476,24 +4215,44 @@
     window.scrollTo({ top: 0 });
   });
 
-  // Light / dark theme toggle (persisted; default dark). The early inline script
-  // in index.html applies the saved choice before paint to avoid a flash.
-  const $theme = document.getElementById("theme-btn");
-  function syncThemeBtn() {
-    if (!$theme) return;
-    const light = document.documentElement.getAttribute("data-theme") === "light";
-    $theme.textContent = light ? "☀" : "☾";   // ☀ in light mode, ☾ in dark
-    $theme.title = light ? "Switch to dark theme" : "Switch to light theme";
+  // Light / dark theme (persisted; default dark), now chosen on the Settings page rather than
+  // by a lone topbar toggle. The early inline script in index.html applies the saved choice
+  // before paint to avoid a flash, which is why this keeps its own localStorage key instead of
+  // joining mq-settings — that store is parsed far too late to help.
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
-  if ($theme) {
-    syncThemeBtn();
-    $theme.addEventListener("click", () => {
-      const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
-      document.documentElement.setAttribute("data-theme", next);
-      try { localStorage.setItem("theme", next); } catch (e) { /* ignore */ }
-      syncThemeBtn();
-    });
+  function applyTheme(v) {
+    const next = v === "light" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) { /* ignore */ }
   }
+
+  // The sidebar is built once at startup and owns a delegated listener, so wiki mode cannot
+  // rebuild it. A root attribute lets CSS fold the subsection lists away instead.
+  function applyLayout() {
+    const r = document.documentElement;
+    r.setAttribute("data-layout", state.layout);
+    r.setAttribute("data-density", state.density);
+    r.setAttribute("data-text", state.text);
+    r.setAttribute("data-tags", state.tags ? "on" : "off");
+  }
+
+  // The latex a card shows. A card may carry latexPlain, the same statement written out
+  // instead of in sigma notation; only some do, and the rest simply keep their own form.
+  function latexFor(f) {
+    return (state.notation === "expanded" && f.latexPlain) ? f.latexPlain : f.latex;
+  }
+  applyLayout();
+
+  // Settings → the preferences page.
+  const $settingsBtn = document.getElementById("settings-btn");
+  if ($settingsBtn) $settingsBtn.addEventListener("click", () => {
+    clearSearch();
+    if (getRoute().type === "settings") return;
+    if (location.hash === "#/settings") render(); else location.hash = "#/settings";
+    window.scrollTo({ top: 0 });
+  });
 
   // ---------- Settings / filters popup ----------
   // Importance counts within the currently-active section (filters are per-section).
@@ -3503,7 +4262,7 @@
     return c;
   }
   function updateGearActive() {
-    const g = document.getElementById("settings-btn");
+    const g = document.getElementById("filters-btn");
     if (!g) return;
     const af = activeFilter();
     g.classList.toggle("has-filters", af.rarities.size < IMP_TIERS.length || af.levels.size > 0);
@@ -3548,7 +4307,7 @@
     settingsEl.innerHTML = `
       <div class="modal settings-modal" role="dialog" aria-label="Filters and settings">
         <div class="modal-head">
-          <h3>Filters &amp; settings</h3>
+          <h3>Filters &amp; Settings</h3>
           <button class="modal-close" aria-label="Close">&times;</button>
         </div>
         <div class="settings-body">
@@ -3589,8 +4348,8 @@
       afterFilterChange(); return;
     }
   }
-  const $settings = document.getElementById("settings-btn");
-  if ($settings) $settings.addEventListener("click", openSettings);
+  const $filters = document.getElementById("filters-btn");
+  if ($filters) $filters.addEventListener("click", openSettings);
   const $adv = document.getElementById("adv-btn");
   if ($adv) $adv.addEventListener("click", openAdvanced);
 
@@ -3691,6 +4450,14 @@
       sol.textContent = panel.hidden ? "Show solution" : "Hide solution";
       return;
     }
+    const lmore = e.target.closest(".list-more");
+    if (lmore) {
+      const grid = document.getElementById(lmore.dataset.target);
+      const collapsed = grid.classList.toggle("is-collapsed");
+      lmore.textContent = collapsed ? lmore.dataset.more : lmore.dataset.less;
+      lmore.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      return;
+    }
     const tag = e.target.closest(".tag");
     if (tag) {
       $search.value = tag.dataset.tag;
@@ -3722,6 +4489,8 @@
     }
     const topicChip = e.target.closest(".topic-chip");
     if (topicChip) { location.hash = "#/topic/" + topicChip.dataset.topic; window.scrollTo({ top: 0 }); return; }
+    const grp = e.target.closest("[data-list-group]");
+    if (grp) { state.autoGroup = !state.autoGroup; saveSettings(); render(); return; }
     const rn = e.target.closest("[data-list-rename]");
     if (rn) {
       const l = getList(rn.dataset.listRename);
@@ -3770,9 +4539,11 @@
   window.addEventListener("hashchange", () => {
     const route = getRoute();
     render();
-    // Detail pages start at the top; returning to the list restores the
-    // reader's previous scroll position.
-    window.scrollTo({ top: route.type === "formula" ? 0 : listScrollY });
+    // The section list is the one surface that restores a position; everything else opens at
+    // the top. The old test named only "formula" as the top-scrolling route, so Settings,
+    // Lists, the Database and topic pages all reopened wherever the section list had been —
+    // and because this fires after each button's own scrollTo(0), it overwrote that too.
+    window.scrollTo({ top: route.type === "home" ? listScrollY : 0 });
   });
 
   // ---------- Init ----------

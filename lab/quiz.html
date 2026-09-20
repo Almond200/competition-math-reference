@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz — experimental</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<style>
+  /* The full diagram palette has to be redeclared here: MATH_DIAGRAMS SVG strings carry
+     inline var(--accent), var(--gold) and friends, so without these every figure would draw
+     with invalid colours and vanish. Values match css/styles.css. */
+  :root {
+    --bg: #f6f8fc; --panel: #ffffff; --panel2: #eaeef7; --line: #d7deed; --line2: #c2cbe1;
+    --text: #1b2333; --text-dim: #55607a; --text-faint: #808aa3; --bg-card: #ffffff;
+    --accent: #2f66e0; --gold: #b7860b;
+    --level-mc: #1f9d63; --level-10: #2f66e0; --level-12: #7a4fe0;
+    --level-aime: #cf6a1e; --level-oly: #d63f6e;
+    --ok: #1f9d63; --bad: #d63f6e;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1420; --panel: #161d2e; --panel2: #1a2338; --line: #2a3654; --line2: #354467;
+    --text: #e8ecf6; --text-dim: #9aa7c7; --text-faint: #6b7794; --bg-card: #1a2338;
+    --accent: #5b8cff; --gold: #f5c451;
+    --level-mc: #4cc38a; --level-10: #5b8cff; --level-12: #9d7bff;
+    --level-aime: #f08c4e; --level-oly: #ef5f8b;
+    --ok: #4cc38a; --bad: #ef5f8b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh;
+         font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
+  header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  h1 { font-size: 21px; margin: 0; }
+  .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint);
+         border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+  .sub { color: var(--text-dim); margin: 0 0 22px; font-size: 13.5px; }
+  a { color: var(--accent); }
+
+  label.f { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .05em; color: var(--text-faint); margin: 16px 0 7px; }
+  select, input[type=number] { font: inherit; font-size: 14px; padding: 8px 11px; width: 100%;
+            border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+  button { font: inherit; cursor: pointer; border-radius: 9px; border: 1px solid var(--line);
+           background: var(--panel); color: var(--text); padding: 9px 16px; }
+  button:hover:not(:disabled) { border-color: var(--line2); }
+  .primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .primary:hover { filter: brightness(1.08); }
+  .row { display: flex; gap: 10px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+
+  .meta { display: flex; justify-content: space-between; align-items: baseline;
+          font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; }
+  .meta b { color: var(--text); font-size: 15px; }
+  .bar { height: 4px; background: var(--panel2); border-radius: 999px; overflow: hidden; margin-bottom: 20px; }
+  .bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+
+  .stem { background: var(--panel); border: 1px solid var(--line); border-radius: 13px;
+          padding: 20px 18px; text-align: center; }
+  .stem .fx { font-size: 1.08em; overflow-x: auto; }
+  .fig { margin-top: 14px; }
+  .fig svg { max-width: 100%; height: auto; max-height: 230px; }
+  .diagram-cap { font-size: 12px; color: var(--text-faint); margin-top: 7px; line-height: 1.45; }
+  /* Captions give the answer away -- several spell the formula out in words -- so they are
+     held back until the question is answered, where they read as the explanation. */
+  .stem .diagram-cap { display: none; }
+  .stem.revealed .diagram-cap { display: block; }
+  .ask { margin: 18px 0 11px; font-size: 13.5px; color: var(--text-dim); }
+
+  .opts { display: grid; gap: 9px; }
+  .opt { text-align: left; padding: 12px 15px; line-height: 1.45; }
+  .opt:disabled { cursor: default; }
+  .opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+  .opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+  .opt .mark { float: right; font-weight: 700; }
+  .opt .num { display: inline-flex; align-items: center; justify-content: center;
+              width: 20px; height: 20px; margin-right: 10px; border-radius: 6px;
+              background: var(--panel2); color: var(--text-faint);
+              font-size: 11.5px; font-weight: 700; vertical-align: 1px; }
+  .opt.right .num, .opt.wrong .num { background: transparent; }
+  .kbd { font-size: 12px; color: var(--text-faint); margin-top: 12px; }
+  /* Running backwards: the prompt is the card's NAME and the options carry the maths. */
+  .stem-name { font-size: 19px; font-weight: 650; padding: 6px 0 2px; }
+  .opts-fx .opt { padding: 14px 15px; }
+  .opts-fx .nm { display: inline-block; overflow-x: auto; max-width: calc(100% - 46px);
+                 vertical-align: middle; scrollbar-width: none; }
+  /* A long statement still scrolls, but without the scrollbar stub, which on a short option
+     reads as a stray mark rather than as an affordance. */
+  .opts-fx .nm::-webkit-scrollbar { display: none; }
+  /* "Keep it behind a button": the figure is laid out but clipped away until asked for, so
+     revealing it does not reflow the page under the reader's cursor. */
+  .stem.fig-held .fig { visibility: hidden; height: 0; overflow: hidden; margin-top: 0; }
+  .fig-btn { margin-top: 12px; font-size: 12.5px; padding: 5px 12px; color: var(--text-dim);
+             border: 1px dashed var(--line2); background: transparent; }
+  .stem.fig-held .fig-btn { display: inline-block; }
+  .kbd b { font-weight: 600; color: var(--text-dim); border: 1px solid var(--line);
+           border-radius: 5px; padding: 0 5px; font-size: 11.5px; }
+  .streak { color: var(--gold); font-weight: 700; }
+  .opt.right .mark { color: var(--ok); }
+  .opt.wrong .mark { color: var(--bad); }
+
+  .after { margin-top: 16px; padding: 13px 15px; border-radius: 11px; background: var(--panel);
+           border: 1px solid var(--line); font-size: 13.5px; color: var(--text-dim); }
+  .after b { color: var(--text); }
+
+  .score { font-size: 42px; font-weight: 700; margin: 6px 0 2px; }
+  .missed { margin-top: 20px; }
+  .missed h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em;
+               color: var(--text-faint); margin: 0 0 9px; }
+  .missed a { display: block; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px;
+              margin-bottom: 7px; text-decoration: none; color: var(--text); font-size: 14px; }
+  .missed a span { color: var(--text-faint); font-size: 12px; display: block; }
+  .note { font-size: 12.5px; color: var(--text-faint); margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Quiz</h1><span class="tag">experimental</span></header>
+  <p class="sub">Name the formula from its statement and figure. Four choices, drawn from whichever
+     list you pick.</p>
+  <div id="app">loading…</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="../js/data/geometry.js"></script>
+<script src="../js/data/algebra.js"></script>
+<script src="../js/data/number-theory.js"></script>
+<script src="../js/data/counting.js"></script>
+<script src="../js/data/patterns.js"></script>
+<script src="../js/data/details/geometry-details.js"></script>
+<script src="../js/data/details/algebra-details.js"></script>
+<script src="../js/data/details/number-theory-details.js"></script>
+<script src="../js/data/details/counting-details.js"></script>
+<script src="../js/data/built-in-lists.js"></script>
+<script src="../js/data/diagrams/geometry-diagrams.js"></script>
+<script src="../js/data/diagrams/general-diagrams.js"></script>
+<script src="lab-common.js"></script>
+<script>
+(function () {
+  "use strict";
+  LabData.applyTheme();
+  var D = LabData.build(), byId = D.byId, cards = D.cards;
+  var app = document.getElementById("app");
+
+  // ---- which cards can actually be asked -------------------------------------------------
+  // The honest answer to "some things are more identities than formulas": a card is askable
+  // only if its `latex` is a real statement. Two things disqualify one -- being a METHOD card
+  // ("Angle Chasing" has no formula to show), and having a latex that is mostly \text{}, which
+  // is how the prose-y cards are written ("box a<=b<=c, opposite corners: ..."). That is 332 of
+  // 518 cards, derived rather than hand-tagged, so it stays correct as cards are added.
+  function textShare(tex) {
+    var t = (tex.match(/\\text\{[^}]*\}/g) || []).join("").length;
+    return tex.length ? t / tex.length : 1;
+  }
+  function askable(c) {
+    return c.type !== "method" && c.latex.length > 8 && textShare(c.latex) <= 0.30;
+  }
+  var pool = cards.filter(askable);
+  var poolIds = {};
+  pool.forEach(function (c) { poolIds[c.id] = 1; });
+
+  // ---- what you keep getting wrong -------------------------------------------------------
+  // A quiz you can only take forwards is a toy; one that remembers what caught you is a study
+  // tool. A miss increments a counter, a correct answer decrements it, so the pile drains as
+  // you learn rather than growing forever.
+  var MISS_KEY = "mq-quiz-misses";
+  function loadMisses() {
+    try { return JSON.parse(localStorage.getItem(MISS_KEY) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function saveMisses(m) { try { localStorage.setItem(MISS_KEY, JSON.stringify(m)); } catch (e) {} }
+  function noteMiss(id) { var m = loadMisses(); m[id] = (m[id] || 0) + 1; saveMisses(m); }
+  function noteHit(id) {
+    var m = loadMisses();
+    if (!m[id]) return;
+    if (--m[id] <= 0) delete m[id];
+    saveMisses(m);
+  }
+
+  // ---- sources ---------------------------------------------------------------------------
+  var sources = [{ id: "__all", name: "Everything askable", ids: pool.map(function (c) { return c.id; }) }];
+  var missIds = Object.keys(loadMisses()).filter(function (id) { return poolIds[id]; });
+  if (missIds.length >= 4) sources.unshift({ id: "__misses", name: "Your misses", ids: missIds });
+  var bySec = {};
+  pool.forEach(function (c) { (bySec[c.sectionTitle] || (bySec[c.sectionTitle] = [])).push(c.id); });
+  Object.keys(bySec).forEach(function (t) {
+    sources.push({ id: "sec-" + t, name: t + " (whole section)", ids: bySec[t] });
+  });
+  LabData.lists(byId).forEach(function (l) {
+    var ids = l.ids.filter(function (id) { return poolIds[id]; });
+    if (ids.length >= 4) sources.push({ id: l.id, name: l.name + "  ·  " + l.kind, ids: ids });
+  });
+
+  // ---- setup screen ----------------------------------------------------------------------
+  function setup(msg) {
+    Q = null;
+    app.innerHTML =
+      '<label class="f" for="src">List</label>' +
+      '<select id="src">' + sources.map(function (s, i) {
+        return '<option value="' + i + '">' + esc(s.name) + " — " + s.ids.length + " cards</option>";
+      }).join("") + "</select>" +
+      '<label class="f" for="n">Questions</label>' +
+      '<input type="number" id="n" min="4" max="40" value="10">' +
+      '<label class="f" for="dir">Direction</label>' +
+      '<select id="dir">' +
+        '<option value="name">Show the formula &rarr; pick its name</option>' +
+        '<option value="formula">Show the name &rarr; pick the formula</option>' +
+        '<option value="mixed">Mixed</option>' +
+      "</select>" +
+      '<label class="f" for="fig">Figure</label>' +
+      '<select id="fig">' +
+        '<option value="show">Show it with the question</option>' +
+        '<option value="hint">Keep it behind a button</option>' +
+        '<option value="hide">Never show it</option>' +
+      "</select>" +
+      '<div class="row"><button class="primary" id="go">Start</button>' +
+      (msg ? '<span style="color:var(--text-faint);font-size:13px">' + esc(msg) + "</span>" : "") +
+      "</div>" +
+      '<p class="note">Only cards whose statement is a real formula are asked — ' + pool.length +
+      " of " + cards.length + ". Methods and the prose-y cards sit this out, since " +
+      "&ldquo;name this&rdquo; needs something to show.</p>";
+    document.getElementById("go").addEventListener("click", function () {
+      var src = sources[+document.getElementById("src").value];
+      var n = Math.max(4, Math.min(40, +document.getElementById("n").value || 10));
+      start(src, n, { dir: document.getElementById("dir").value,
+                      fig: document.getElementById("fig").value });
+    });
+  }
+
+  // ---- quiz ------------------------------------------------------------------------------
+  var Q = null;
+  function start(src, n, opts) {
+    opts = opts || { dir: "name", fig: "show" };
+    var ids = pickWeighted(src.ids, Math.min(n, src.ids.length));
+    // The source OBJECT, not its name: a list and a section can share a title, and looking the
+    // source back up by name for "Another round" would then restart the wrong one.
+    Q = { qs: ids.map(function (id) { return makeQuestion(id, opts.dir); }),
+          i: 0, score: 0, missed: [], src: src, streak: 0, best: 0, opts: opts };
+    // Same idea as index.html?debug=1 exposing __mathSearch: the weighting is invisible from
+    // the outside, so leave a handle to check that it is actually biasing the draw.
+    window.__lastDraw = ids;
+    window.__draw = function (source, n) { return pickWeighted(source || src.ids, n || 10); };
+    render();
+  }
+
+  // Draw without replacement, but weight each card by how often it has caught you before.
+  // A card missed twice is five times likelier to come up than one you have never missed, so a
+  // long session drifts toward your weak spots on its own instead of re-asking what you know.
+  function pickWeighted(ids, n) {
+    var m = loadMisses(), bag = ids.slice(), out = [];
+    while (out.length < n && bag.length) {
+      var total = 0, w = bag.map(function (id) {
+        var x = 1 + 2 * (m[id] || 0); total += x; return x;
+      });
+      var r = Math.random() * total, k = 0;
+      while (k < w.length - 1 && (r -= w[k]) > 0) k++;
+      out.push(bag[k]); bag.splice(k, 1);
+    }
+    return out;
+  }
+
+  // Distractors are drawn from the nearest ring outwards -- same subsection first, then the
+  // same section, then anything askable. A wrong answer from the same subsection is a real
+  // question; one pulled at random from across the library gives the answer away.
+  function makeQuestion(id, dir) {
+    var c = byId[id];
+    if (dir === "mixed") dir = Math.random() < 0.5 ? "name" : "formula";
+    var tiers = [
+      pool.filter(function (o) { return o.id !== id && o.subKey === c.subKey; }),
+      pool.filter(function (o) { return o.id !== id && o.sectionId === c.sectionId && o.subKey !== c.subKey; }),
+      pool.filter(function (o) { return o.id !== id && o.sectionId !== c.sectionId; })
+    ];
+    var picked = [], used = {};
+    for (var t = 0; t < tiers.length && picked.length < 3; t++) {
+      var bag = shuffle(tiers[t].slice());
+      for (var i = 0; i < bag.length && picked.length < 3; i++) {
+        if (used[bag[i].id] || bag[i].name === c.name) continue;
+        used[bag[i].id] = 1; picked.push(bag[i]);
+      }
+    }
+    return { card: c, options: shuffle(picked.concat([c])), answered: null, dir: dir };
+  }
+
+  function render() {
+    var q = Q.qs[Q.i];
+    var forward = q.dir !== "formula";
+    // A figure only makes sense forwards. Running backwards the name already identifies the
+    // card, so the picture would be decoration rather than a clue.
+    var figMode = forward ? Q.opts.fig : "hide";
+    var showFig = q.card.diagram && figMode !== "hide";
+
+    app.innerHTML =
+      '<div class="meta"><span>Question <b>' + (Q.i + 1) + "</b> of " + Q.qs.length +
+        "</span><span>" + (Q.streak >= 3 ? '<span class="streak">' + Q.streak + " in a row</span> &middot; " : "") +
+        "Score <b>" + Q.score + "</b></span></div>" +
+      '<div class="bar"><i style="width:' + (Q.i / Q.qs.length * 100) + '%"></i></div>' +
+      '<div class="stem' + (figMode === "hint" ? " fig-held" : "") + '">' +
+        (forward ? '<div class="fx" id="fx"></div>'
+                 : '<div class="stem-name" id="fx">' + esc(q.card.name) + "</div>") +
+        (showFig ? '<div class="fig">' + q.card.diagram + "</div>" +
+                   (figMode === "hint" ? '<button class="fig-btn" id="figbtn">show the figure</button>' : "")
+                 : "") +
+      "</div>" +
+      '<p class="ask">' + (forward ? "Which formula is this?" : "Which statement is it?") + "</p>" +
+      '<div class="opts' + (forward ? "" : " opts-fx") + '" id="opts">' +
+        q.options.map(function (o, k) {
+          return '<button class="opt" data-k="' + k + '"><span class="mark"></span>' +
+                 '<span class="num">' + (k + 1) + "</span>" +
+                 (forward ? '<span class="nm">' + esc(o.name) + "</span>"
+                          : '<span class="nm fxo" data-tex="' + esc(o.latex) + '"></span>') +
+                 "</button>";
+        }).join("") +
+      "</div>" +
+      '<p class="kbd"><b>1</b>&ndash;<b>4</b> to answer &middot; <b>enter</b> for the next one</p>' +
+      '<div id="after"></div>';
+
+    if (forward) {
+      try {
+        katex.render(q.card.latex, document.getElementById("fx"), { displayMode: true, throwOnError: false });
+      } catch (e) { document.getElementById("fx").textContent = q.card.latex; }
+    } else {
+      // Running backwards the options are the maths, so each one is rendered in place.
+      [].forEach.call(document.querySelectorAll(".fxo"), function (el) {
+        try { katex.render(el.getAttribute("data-tex"), el, { displayMode: false, throwOnError: false }); }
+        catch (e) { el.textContent = el.getAttribute("data-tex"); }
+      });
+    }
+    // Names can carry maths of their own ("GCD of $a^m-1$ and $a^n-1$"), so anything showing a
+    // name gets the same auto-render treatment the app gives card titles.
+    renderMathIn(document.getElementById("opts"));
+    if (!forward) renderMathIn(document.getElementById("fx"));
+
+    var fb = document.getElementById("figbtn");
+    if (fb) fb.addEventListener("click", function () {
+      document.querySelector(".stem").classList.remove("fig-held");
+      fb.remove();
+    });
+
+    document.getElementById("opts").addEventListener("click", function (e) {
+      var b = e.target.closest(".opt");
+      if (!b || q.answered !== null) return;
+      answer(+b.dataset.k);
+    });
+  }
+
+  function answer(k) {
+    var q = Q.qs[Q.i];
+    q.answered = k;
+    var stem = document.querySelector(".stem");
+    if (stem) { stem.classList.add("revealed"); stem.classList.remove("fig-held"); }
+    var fb = document.getElementById("figbtn");
+    if (fb) fb.remove();
+    var right = q.options[k].id === q.card.id;
+    if (right) {
+      Q.score++; Q.streak++; if (Q.streak > Q.best) Q.best = Q.streak;
+      noteHit(q.card.id);
+    } else {
+      Q.streak = 0; Q.missed.push(q.card); noteMiss(q.card.id);
+    }
+    [].forEach.call(document.querySelectorAll(".opt"), function (b) {
+      var idx = +b.dataset.k;
+      b.disabled = true;
+      if (q.options[idx].id === q.card.id) { b.classList.add("right"); b.querySelector(".mark").textContent = "correct"; }
+      else if (idx === k) { b.classList.add("wrong"); b.querySelector(".mark").textContent = "you"; }
+    });
+    var last = Q.i === Q.qs.length - 1;
+    document.getElementById("after").innerHTML =
+      '<div class="after"><b>' + esc(q.card.name) + "</b> — " + esc(q.card.sectionTitle) +
+      " &rsaquo; " + esc(q.card.subsection) +
+      ' &middot; <a href="../index.html#/f/' + q.card.id + '" target="_blank">open the card</a></div>' +
+      '<div class="row"><button class="primary" id="next">' + (last ? "See score" : "Next") + "</button></div>";
+    renderMathIn(document.getElementById("after"));
+    document.getElementById("next").addEventListener("click", function () {
+      if (last) finish(); else { Q.i++; render(); }
+    });
+  }
+
+  function finish() {
+    var pct = Math.round(Q.score / Q.qs.length * 100);
+    Q.done = true;
+    app.innerHTML =
+      '<div class="score">' + Q.score + " / " + Q.qs.length + "</div>" +
+      '<p class="sub">' + pct + "% on " + esc(Q.src.name) +
+        (Q.best >= 3 ? " &middot; best run of " + Q.best : "") + "</p>" +
+      (Q.missed.length ? '<div class="missed"><h3>Worth another look</h3>' +
+        Q.missed.map(function (c) {
+          return '<a href="../index.html#/f/' + c.id + '" target="_blank">' + esc(c.name) +
+                 "<span>" + esc(c.sectionTitle + " › " + c.subsection) + "</span></a>";
+        }).join("") + "</div>" : '<p class="sub">Clean sweep.</p>') +
+      '<div class="row"><button class="primary" id="again">Another round</button>' +
+      '<button id="back">Change list</button></div>';
+    renderMathIn(app);
+    var src = Q.src, n = Q.qs.length;
+    document.getElementById("again").addEventListener("click", function () { start(src, n); });
+    document.getElementById("back").addEventListener("click", function () { setup(); });
+  }
+
+  // ---- keyboard --------------------------------------------------------------------------
+  // Registered once on the document rather than per render: render() replaces the option
+  // buttons every question, so a listener attached to them would have to be torn down each
+  // time, and any missed teardown would answer the question twice.
+  document.addEventListener("keydown", function (ev) {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    var tag = (ev.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "select" || tag === "textarea") return;
+    if (!Q) {                                   // still on the setup screen
+      if (ev.key === "Enter") { var go = document.getElementById("go"); if (go) { ev.preventDefault(); go.click(); } }
+      return;
+    }
+    if (Q.done) return;
+    var q = Q.qs[Q.i];
+    if (ev.key === "Enter" || ev.key === " ") {
+      var nx = document.getElementById("next");
+      if (nx) { ev.preventDefault(); nx.click(); }
+      return;
+    }
+    if (q && q.answered === null && /^[1-4]$/.test(ev.key)) {
+      var k = +ev.key - 1;
+      if (k < q.options.length) { ev.preventDefault(); answer(k); }
+    }
+  });
+
+  // ---- helpers ---------------------------------------------------------------------------
+  function renderMathIn(root) {
+    if (!root || !window.renderMathInElement) return;
+    try {
+      renderMathInElement(root, {
+        delimiters: [{ left: "$", right: "$", display: false }],
+        throwOnError: false
+      });
+    } catch (e) {}
+  }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  setup();
+})();
+</script>
+</body>
+</html>

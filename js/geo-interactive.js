@@ -248,29 +248,72 @@
   } };
 
   // ---------- Power of a point ----------
+  // The whole point of the card is that the power belongs to P, not to any line, so
+  // the widget has to make that visible while standing still, not only while dragging.
+  // Three changes carry that: D is constrained to the circle so it reads as rotating
+  // the secant rather than wandering; OP and r are drawn so the |PO| minus r squared
+  // half of the caption has a picture; and a fan of ghost secants through P is drawn
+  // at rest, every one of them landing on the same product.
   W["power-of-a-point"] = { mount: function (host) {
     var cen = [215, 175], r = 115;
     mountGeo(host, {
       title: "Power of a point",
-      hint: "Drag P, or drag D to spin the secant.",
+      hint: "Drag P to move the point; drag D to swing the secant around it.",
       w: 430, h: 350,
-      init: { P: [360, 300], D: [120, 90] },
-      drag: { P: {}, D: {} },
+      init: { P: [372, 296], D: [120, 90] },
+      drag: {
+        P: {},
+        // Keeping D on the circle turns a wandering dot into a rotation handle.
+        D: { constrain: function (xy) { return projectToCircle(xy, cen, r); } }
+      },
       render: function (p) {
-        var ints = circleLine(cen, r, p.P, p.D);
-        var body = circ(cen, r, "gc") + dotS(cen, "gd", 2.5) + txt(add(cen, [8, 4]), "O");
+        var d = dist(p.P, cen);
+        var power = Math.abs(d * d - r * r);
+        var inside = d < r;
+        var body = circ(cen, r, "gc");
+
+        // Ghost secants: the invariance, visible at rest. Each spoke is a chord of the
+        // circle through P, so every one of them realizes the same product.
+        for (var k = 0; k < 6; k++) {
+          var ang = Math.PI * k / 6 + 0.22;
+          var gi = circleLine(cen, r, p.P, add(p.P, [Math.cos(ang) * 40, Math.sin(ang) * 40]));
+          if (gi) { var ge = lineSpan(gi[0], gi[1], 430, 350); body += seg(ge[0], ge[1], "gl"); }
+        }
+
+        // OP and the radius, so the OP^2 - r^2 side of the caption is drawn, not asserted.
+        body += seg(cen, p.P, "gl-dash");
+        var rEnd = add(cen, mul(norm(sub(p.P, cen)), r));
+        body += seg(cen, rEnd, "gl-gold") + txt(mid(cen, rEnd), "r", "gt-gold");
+        body += dotS(cen, "gd", 2.5) + txt(add(cen, [-2, -10]), "O");
+
         var cap;
+        var ints = circleLine(cen, r, p.P, p.D);
         if (ints) {
           var X = ints[0], Y = ints[1], e = lineSpan(X, Y, 430, 350);
           var pxpy = dist(p.P, X) * dist(p.P, Y);
-          var power = Math.abs(dist(p.P, cen) * dist(p.P, cen) - r * r);
           body += seg(e[0], e[1], "gl-acc") + dotS(X, "gd-gold", 4) + dotS(Y, "gd-gold", 4) +
-            txt(add(X, [6, -6]), "X", "gt-gold") + txt(add(Y, [6, -6]), "Y", "gt-gold");
-          cap = "PX · PY = <b>" + fmt(pxpy) + "</b> &nbsp;=&nbsp; |PO² − r²| = <b>" + fmt(power) + "</b>. Spin the secant with D — the product never changes.";
+            txt(add(X, [7, -7]), "X", "gt-gold") + txt(add(Y, [7, -7]), "Y", "gt-gold");
+          cap = "PX · PY = <b>" + fmt(pxpy) + "</b> &nbsp;=&nbsp; |OP² − r²| = <b>" + fmt(power) + "</b>. " +
+            "Swing the secant with D: the two lengths trade off, the product does not move.";
         } else {
-          cap = "The line misses the circle — drag D so the secant crosses it.";
+          cap = "The secant missed the circle — drag D back around the rim.";
         }
-        body += dotS(p.P, "gd-acc", 5) + txt(add(p.P, [10, 4]), "P", "gt-acc") + dotS(p.D, "gd", 3.5);
+
+        // Outside the circle the tangent is real, and PT^2 is the power directly, which
+        // is the form the write-up calls the most used. Inside, say so instead of hiding it.
+        if (!inside) {
+          var tl = Math.sqrt(power);
+          var half = Math.acos(Math.min(1, r / d));
+          var base = Math.atan2(p.P[1] - cen[1], p.P[0] - cen[0]);
+          var T = [cen[0] + r * Math.cos(base + half), cen[1] + r * Math.sin(base + half)];
+          body += seg(p.P, T, "gl-grn") + dotS(T, "gd-grn", 4) + txt(add(T, [8, 6]), "T", "gt");
+          cap += " Tangent: PT = <b>" + fmt(tl) + "</b>, and PT² = <b>" + fmt(tl * tl) + "</b> is the power itself.";
+        } else {
+          cap += " With P inside, the signed power OP² − r² = <b>−" + fmt(power) + "</b> is negative and no tangent exists.";
+        }
+
+        body += dotS(p.P, "gd-acc", 5) + txt(add(p.P, [11, 5]), "P", "gt-acc") +
+          dotS(p.D, "gd", 3.5) + txt(add(p.D, [9, -7]), "D", "gt");
         return { body: body, caption: cap };
       }
     });
@@ -1257,21 +1300,73 @@
   } };
 
   // ---------- Radical axis ----------
+  // The old version's caption was a fixed string, so dragging changed the picture and
+  // taught nothing. What the card is for is the equality, so the equality is now drawn
+  // and measured: Q rides the axis carrying its two tangent segments, and the two
+  // tangent lengths are printed side by side so they can be watched staying equal.
   W["radical-axis"] = { mount: function (host) {
     mountGeo(host, {
       title: "Radical axis",
-      hint: "Drag the two circle centers.",
+      hint: "Drag a center to move the circles, or slide Q along the axis.",
       w: 430, h: 340,
-      init: { O1: [150, 180], O2: [300, 190] },
-      drag: { O1: {}, O2: {} },
+      init: { O1: [140, 175], O2: [300, 195], Q: [230, 70] },
+      drag: {
+        O1: {}, O2: {},
+        // Q is only meaningful on the axis, so it is snapped there rather than
+        // left free: its whole job is to show the equality holding everywhere along it.
+        Q: { constrain: function (xy, pts) {
+          var d = dist(pts.O1, pts.O2) || 1;
+          var a = (d * d + 90 * 90 - 70 * 70) / (2 * d);
+          var u = norm(sub(pts.O2, pts.O1));
+          var foot = add(pts.O1, mul(u, a));
+          var n = norm(perp(sub(pts.O2, pts.O1)));
+          var t = dot(sub(xy, foot), n);
+          return add(foot, mul(n, t));
+        } }
+      },
       render: function (p) {
         var r1r = 90, r2r = 70, d = dist(p.O1, p.O2) || 1;
-        var a = (d * d + r1r * r1r - r2r * r2r) / (2 * d);            // distance from O1 to radical axis along center line
-        var foot0 = add(p.O1, mul(norm(sub(p.O2, p.O1)), a)), nrm = norm(perp(sub(p.O2, p.O1)));
+        var a = (d * d + r1r * r1r - r2r * r2r) / (2 * d);
+        var u = norm(sub(p.O2, p.O1));
+        var foot0 = add(p.O1, mul(u, a)), nrm = norm(perp(sub(p.O2, p.O1)));
+        // Q has to sit ON the axis for the whole demonstration to be true, and `constrain`
+        // alone cannot guarantee it: it runs only while Q itself is dragged, so Q starts
+        // off-axis and, worse, dragging a CENTER slides the axis out from under a
+        // stationary Q. Re-projecting here covers both. mountGeo calls render before it
+        // places the handles from the same object, so writing back keeps the grab target
+        // on the dot the reader sees.
+        p.Q = add(foot0, mul(nrm, dot(sub(p.Q, foot0), nrm)));
+        var ends = lineSpan(sub(foot0, mul(nrm, 10)), add(foot0, mul(nrm, 10)), 430, 340);
         var body = circ(p.O1, r1r, "gc") + circ(p.O2, r2r, "gc") +
-          seg(p.O1, p.O2, "gl-dash") + seg(sub(foot0, mul(nrm, 150)), add(foot0, mul(nrm, 150)), "gc-acc") +
-          dotS(p.O1, "gd-acc", 4.5) + dotS(p.O2, "gd-acc", 4.5) + txt(add(p.O1, [-6, 4]), "O₁") + txt(add(p.O2, [6, 4]), "O₂");
-        return { body: body, caption: "The radical axis (accent line) is perpendicular to the line of centers; every point on it has equal power to both circles (equal tangent lengths). For overlapping circles it passes through both intersection points." };
+          seg(p.O1, p.O2, "gl-dash") + seg(ends[0], ends[1], "gl-acc") +
+          rAngle(foot0, p.O2, add(foot0, mul(nrm, 30)), 11);
+
+        // The two tangent lengths from Q. Equal by definition of the axis, so printing
+        // both is the demonstration; the segments make it geometry rather than arithmetic.
+        var d1 = dist(p.Q, p.O1), d2 = dist(p.Q, p.O2);
+        var pw1 = d1 * d1 - r1r * r1r, pw2 = d2 * d2 - r2r * r2r;
+        var cap;
+        if (pw1 > 0 && pw2 > 0) {
+          var t1 = Math.sqrt(pw1), t2 = Math.sqrt(pw2);
+          var h1 = Math.acos(Math.min(1, r1r / d1)), b1 = Math.atan2(p.Q[1] - p.O1[1], p.Q[0] - p.O1[0]);
+          var T1 = [p.O1[0] + r1r * Math.cos(b1 - h1), p.O1[1] + r1r * Math.sin(b1 - h1)];
+          var h2 = Math.acos(Math.min(1, r2r / d2)), b2 = Math.atan2(p.Q[1] - p.O2[1], p.Q[0] - p.O2[0]);
+          var T2 = [p.O2[0] + r2r * Math.cos(b2 + h2), p.O2[1] + r2r * Math.sin(b2 + h2)];
+          body += seg(p.Q, T1, "gl-gold") + seg(p.Q, T2, "gl-grn") +
+            dotS(T1, "gd-gold", 3.5) + dotS(T2, "gd-grn", 3.5);
+          cap = "From Q the tangent lengths are <b>" + fmt(t1) + "</b> and <b>" + fmt(t2) + "</b>. " +
+            "Slide Q anywhere along the axis, or move a circle: they stay equal, because equal power is what the line means.";
+        } else {
+          cap = "Q has slid inside a circle, where no tangent exists — the powers are still equal, both negative. Slide Q outward.";
+        }
+        // txt() has no text-anchor, so a label always runs to the RIGHT of its x. At [-8, 5]
+        // the O₁ label therefore started just left of the centre and ran straight back over
+        // its own dot, with the dashed centre line through it as well — the dot was there but
+        // unreadable. Below the centre clears both, and O₂ keeps running outward as before.
+        body += dotS(p.O1, "gd-acc", 4.5) + dotS(p.O2, "gd-acc", 4.5) +
+          txt(add(p.O1, [-7, 21]), "O₁") + txt(add(p.O2, [8, 5]), "O₂") +
+          dotS(p.Q, "gd-acc", 5) + txt(add(p.Q, [10, -6]), "Q", "gt-acc");
+        return { body: body, caption: cap };
       }
     });
   } };

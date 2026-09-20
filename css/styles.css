@@ -132,9 +132,9 @@ body {
 .tool-btn.tool-btn-icon { font-size: 15px; line-height: 1; padding: 6px 10px; }
 
 /* Active-filter indicator on the Filters button. */
-#settings-btn { position: relative; }
-#settings-btn.has-filters { color: var(--accent); border-color: var(--accent); }
-#settings-btn.has-filters::after {
+#filters-btn { position: relative; }
+#filters-btn.has-filters { color: var(--accent); border-color: var(--accent); }
+#filters-btn.has-filters::after {
   content: "";
   position: absolute;
   top: -3px;
@@ -580,7 +580,13 @@ body {
 
 .subsection { margin-top: 34px; }
 
-.subsection > h3 {
+/* The one second-level heading in the app. The formula page's subsection heading is the
+   reference; the two Lists surfaces join it here rather than keeping their own near-copies,
+   which is how they drifted to 15px, no gold and no rule line in the first place. */
+.subsection > h3,
+.wiki-letter > h3,
+.list-section-title,
+.lists-subhead {
   margin: 0 0 14px;
   font-size: 17px;
   font-weight: 700;
@@ -590,7 +596,10 @@ body {
   gap: 10px;
 }
 
-.subsection > h3::after {
+.subsection > h3::after,
+.wiki-letter > h3::after,
+.list-section-title::after,
+.lists-subhead::after {
   content: "";
   flex: 1;
   height: 1px;
@@ -611,8 +620,6 @@ body {
   margin: 0 0 11px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
   color: var(--text-dim);
 }
 
@@ -630,6 +637,48 @@ body {
 
 .nav-cluster-link:hover { color: var(--text-dim); border-left-color: var(--accent); }
 
+/* ---------- Nav for the Lists surfaces ----------
+   Built on the Database navigator: .ln-sec/.ln-btn/.ln-items/.ln-item are joined onto the
+   .db-fam/.db-fam-btn/.db-years/.db-year rules above rather than restated, so the two
+   navigators are the same control and cannot drift apart. The search field is .db-search
+   unchanged. What makes sharing #sidebar with the formula tree safe lives in app.js: the
+   trees sit in #formula-nav and #list-nav, updateNavActive() is scoped to the former, and
+   the delegated sidebar listener hands anything inside #list-nav to listNavClick(). */
+
+#list-nav { display: flex; flex-direction: column; gap: 12px; padding-right: 8px; }
+.ln-btn { width: 100%; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; }
+.list-nav-back { display: block; padding: 2px 10px; font-size: 12.5px; color: var(--accent); text-decoration: none; }
+.list-nav-back:hover { text-decoration: underline; }
+.ln-empty { padding: 4px 12px; font-size: 12px; color: var(--text-faint); }
+
+/* "Did you mean": the library's best answer when it sits outside the list being searched.
+   One suggestion per line under the question, each marked with a turnstile, so two of them
+   read as a short list rather than as a row of chips. */
+.dym { margin: 0 0 20px; padding: 12px 16px; background: var(--bg-panel);
+       border: 1px solid var(--border); border-radius: 10px; max-width: 70ch; }
+.dym-label { margin: 0; font-size: 13.5px; font-weight: 650; color: var(--text); }
+.dym-note { font-weight: 500; color: var(--text-faint); }
+.dym-list { list-style: none; margin: 6px 0 0; padding: 0; }
+.dym-list li { display: flex; align-items: baseline; gap: 8px; padding: 3px 0 3px 4px; }
+.dym-list li::before { content: "\21B3"; color: var(--text-faint); font-size: 13px; }
+.dym-link { font-size: 13.5px; font-weight: 650; color: var(--accent); text-decoration: none; }
+.dym-link:hover { text-decoration: underline; }
+.dym-crumb { font-size: 11.5px; color: var(--text-dim); }
+
+/* ---------- Sections inside a study route ----------
+   A 141-card route is only usable if it is broken up. The heading is deliberately quieter
+   than the list's own title and louder than a card name, and the note sits directly under
+   it so the reader can decide whether to read the section at all. */
+
+.list-blurb { margin: 2px 0 18px; font-size: 14px; line-height: 1.6; color: var(--text-dim); }
+
+.list-section { margin-top: 34px; scroll-margin-top: 76px; }
+.list-section:first-child { margin-top: 8px; }
+
+
+.list-section-title { margin-bottom: 6px; }
+.list-section-note { margin: 0 0 14px; font-size: 13px; line-height: 1.55; color: var(--text-dim); }
+
 /* ---------- Formula cards ---------- */
 
 .cards { display: flex; flex-direction: column; gap: 12px; }
@@ -642,6 +691,61 @@ body {
   transition: border-color 0.15s, background 0.15s;
   position: relative;
 }
+
+/* Density and keyword tags, both driven from the Settings page by an attribute on <html>.
+   Attributes rather than a class so they sit alongside data-theme and data-layout, and so a
+   card needs no extra markup to respond to either. */
+html[data-density="compact"] .card { padding: 10px 13px 9px; }
+html[data-density="compact"] .cards { gap: 10px; }
+html[data-density="compact"] .formula-display { padding: 10px 12px; margin: 8px 0; }
+html[data-density="compact"] .subsection { margin-top: 24px; }
+html[data-density="compact"] .card-desc { font-size: 13px; }
+html[data-tags="off"] .card .tag-row { display: none; }
+
+/* Text size. Every override below MIRRORS THE SELECTOR OF THE RULE IT SCALES, which is the
+   whole trick: `.detail-head .card-name` is 25px while a list card's `.card-name` is 15.5px, so
+   a single `html[data-text="large"] .card-name` rule outranks the two-class detail rule and
+   shrinks the page title instead of growing it. Same name, two sizes, so two overrides.
+
+   Headings are included deliberately. Scaling only body text leaves every heading behind and
+   the page stops looking like one typeface at one scale — which is what the first attempt did.
+
+   Maths comes along for free: every KaTeX size in the app is em-relative
+   (.formula-display .katex is 1.18em, .card-desc .katex 1.02em, .key-forms .katex 1.05em), so
+   raising a container's px size carries its formulas with it. .formula-display carries no
+   font-size of its own, so it gets one here purely to give its KaTeX a larger multiplicand.
+   Body prose takes the biggest step (14px -> 17px, about 20%), since that is what a reader
+   asking for larger text is actually reading; headings are already large and grow less so
+   the ramp keeps its shape. */
+
+/* headings */
+html[data-text="large"] .section-header h2 { font-size: 29px; }
+html[data-text="large"] .detail-head .card-name { font-size: 28px; }
+html[data-text="large"] .subsection > h3,
+html[data-text="large"] .wiki-letter > h3,
+html[data-text="large"] .list-section-title,
+html[data-text="large"] .lists-subhead { font-size: 19px; }
+html[data-text="large"] .detail-body h4,
+html[data-text="large"] .key-forms h4,
+html[data-text="large"] .related h4,
+html[data-text="large"] .practice h4,
+html[data-text="large"] .interactive h4 { font-size: 16px; }
+
+/* body */
+html[data-text="large"] .card .card-name { font-size: 17.5px; }
+html[data-text="large"] .card-desc { font-size: 16px; }
+html[data-text="large"] .detail-summary { font-size: 17.5px; }
+html[data-text="large"] .detail-body p,
+html[data-text="large"] .detail-body li { font-size: 17px; }
+html[data-text="large"] .key-forms .detail-list li { font-size: 17px; }
+html[data-text="large"] .key-forms .kf-note { font-size: 14.5px; }
+html[data-text="large"] .wiki-list a { font-size: 15.5px; }
+html[data-text="large"] .formula-display { font-size: 1.12em; }
+
+/* supporting text, so captions and breadcrumbs do not stay stranded at the small size */
+html[data-text="large"] .diagram-cap { font-size: 14px; }
+html[data-text="large"] .detail-crumb { font-size: 13.5px; }
+html[data-text="large"] .card-crumb { font-size: 13px; }
 
 .card:hover { border-color: var(--border-light); background: var(--bg-card-hover); }
 
@@ -919,6 +1023,12 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
 
 .back-link:hover { text-decoration: underline; }
 
+/* Back links stack, one per line, and read as equals — the one-step breadcrumb is a second
+   way out, not a louder one. It goes on top: retracing the step you just took is the likelier
+   move, so it should be the first thing under the cursor. */
+.back-row { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; margin-bottom: 14px; }
+.back-row .back-link { margin-bottom: 0; }
+
 .detail-crumb { font-size: 12px; color: var(--text-faint); margin: 0 0 6px; }
 
 .detail-head {
@@ -966,6 +1076,11 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
 .key-forms .katex { font-size: 1.05em; }
 
 .detail-summary { font-size: 15px; color: var(--text); }
+/* Dark only. At full --text this paragraph is the brightest thing on the page, brighter than
+   the heading above it, and it sits directly under the formula box where it competes for the
+   eye. --text-dim settles it back into the page. Light mode is left exactly as it was: the
+   same token there is already dark-on-white and reads correctly. */
+:root[data-theme="dark"] .detail-summary { color: var(--text-dim); }
 
 .detail-body { margin-top: 4px; }
 
@@ -1060,22 +1175,47 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
 .prob-row .ref-ext-link:hover { text-decoration: underline; }
 
 /* Browse page: competition/year navigator */
-.db-layout { display: grid; grid-template-columns: 240px 1fr; gap: 22px; align-items: start; }
-.db-nav { position: sticky; top: calc(var(--topbar-h) + 16px); max-height: calc(100vh - var(--topbar-h) - 32px); overflow-y: auto; scrollbar-gutter: stable; padding-right: 4px; display: flex; flex-direction: column; gap: 12px; }
+/* Column geometry matches the Lists sidebar exactly -- 24px left edge, 214px wide, content
+   starting at 260 -- so moving between Database and Lists does not resize the navigator or
+   shift the page. 214 is what .sidebar leaves after its 24/12 padding and its stable
+   scrollbar gutter; the -4px on .db-nav reconciles .content's 28px padding with the
+   sidebar's 24px, since this navigator lives inside the content column rather than in
+   .sidebar the way #list-nav does. The matching +4px on the right keeps the box 214 wide
+   rather than letting the negative margin stretch it to 218.
+   The column is 220 rather than 214 because .db-nav scrolls on its own and so reserves a ~10px
+   scrollbar gutter INSIDE the column, where on Lists that gutter belongs to .sidebar and sits
+   outside the 214. 220 - 4 padding - 10 gutter leaves the same 206px of usable width, so the
+   search box and the buttons end on the same pixel as #list-nav's.
+   The gap then carries the rest: on Lists the main column is .content, whose own 28px padding
+   puts its text at 288; .db-main sits inside that padding with none of its own, so
+   28 + 220 + 40 = 288 lines the two surfaces up. */
+.db-layout { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
+.db-nav { margin-left: -4px; margin-right: 4px; position: sticky; top: calc(var(--topbar-h) + 16px); max-height: calc(100vh - var(--topbar-h) - 32px); overflow-y: auto; scrollbar-gutter: stable; padding-right: 4px; display: flex; flex-direction: column; gap: 12px; }
 .db-search { width: 100%; box-sizing: border-box; font: inherit; font-size: 13.5px; color: var(--text); background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; }
 .db-search:focus { outline: none; border-color: var(--accent); }
-.db-fam-list.searching { opacity: 0.5; }
-.db-fam { margin-bottom: 2px; }
-.db-fam-btn { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 650; color: var(--text); padding: 8px 10px; border-radius: 8px; }
-.db-fam-btn:hover { background: var(--bg-panel); }
-.db-fam-btn.active { background: var(--accent-soft); color: var(--accent); }
+.db-fam-list.searching,
+.ln-list.searching { opacity: 0.5; }
+.db-fam,
+.ln-sec { margin-bottom: 2px; }
+.db-fam-btn,
+.ln-btn { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 650; color: var(--text); padding: 8px 10px; border-radius: 8px; }
+.db-fam-btn:hover,
+.ln-btn:hover { background: var(--bg-panel); }
+.db-fam-btn.active,
+.ln-btn.active { background: var(--accent-soft); color: var(--accent); }
 .db-count { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--text-faint); }
-.db-fam-btn.active .db-count { color: var(--accent); }
-.db-years { display: none; flex-direction: column; padding: 2px 0 6px 10px; }
-.db-fam.open .db-years { display: flex; }
-.db-year { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 13px; color: var(--text-dim); padding: 5px 10px; border-left: 2px solid var(--border); border-radius: 0 6px 6px 0; }
-.db-year:hover { color: var(--text); border-left-color: var(--accent); }
-.db-year.active { color: var(--accent); font-weight: 650; border-left-color: var(--accent); background: var(--accent-soft); }
+.db-fam-btn.active .db-count,
+.ln-btn.active .db-count { color: var(--accent); }
+.db-years,
+.ln-items { display: none; flex-direction: column; padding: 2px 0 6px 10px; }
+.db-fam.open .db-years,
+.ln-sec.open .ln-items { display: flex; }
+.db-year,
+.ln-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 13px; color: var(--text-dim); padding: 5px 10px; border-left: 2px solid var(--border); border-radius: 0 6px 6px 0; }
+.db-year:hover,
+.ln-item:hover { color: var(--text); border-left-color: var(--accent); }
+.db-year.active,
+.ln-item.active { color: var(--accent); font-weight: 650; border-left-color: var(--accent); background: var(--accent-soft); }
 .db-main-title { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
 .db-main-year { color: var(--text-faint); font-weight: 600; }
 .db-group { margin-top: 22px; }
@@ -1086,7 +1226,9 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
    .db-layout rule so it wins in source order). */
 @media (max-width: 900px) {
   .db-layout { grid-template-columns: 1fr; gap: 14px; }
-  .db-nav { position: static; max-height: none; overflow: visible; }
+  /* margin-left goes back to 0: stacked, the navigator should sit on the content's own left
+     edge, not 4px outside it. */
+  .db-nav { margin-left: 0; margin-right: 0; position: static; max-height: none; overflow: visible; }
 }
 .prob-card { display: block; text-decoration: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; transition: border-color 0.12s; }
 .prob-card:hover { border-color: var(--accent); }
@@ -1359,10 +1501,18 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 
 .list-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* stretch, not start: a name long enough to wrap ("MATHCOUNTS Counting & Probability")
+     would otherwise leave its neighbours a line shorter and the row ragged again. */
+  align-items: stretch;
   gap: 14px;
   margin-bottom: 30px;
 }
+/* Tiles past the preview cap stay in this grid and are hidden by class, so revealing them
+   continues the existing rows instead of starting a detached second grid below a ragged one.
+   An explicit rule, not [hidden]: an author `display` beats the UA sheet's
+   [hidden] { display: none }, so the attribute alone would not hide a grid child either. */
+.list-grid.is-collapsed .list-extra { display: none; }
 .list-card {
   display: block;
   background: var(--bg-card);
@@ -1376,47 +1526,19 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 .list-card:hover { border-color: var(--accent); background: var(--bg-card-hover); transform: translateY(-2px); }
 .list-card-top { display: flex; align-items: flex-start; gap: 8px; }
 .list-emoji { font-size: 18px; }
-.list-name { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; line-height: 1.3; overflow-wrap: anywhere; }
-.list-builtin {
-  margin-left: auto;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 1px 7px;
-}
+.list-name { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; line-height: 1.3; overflow-wrap: break-word; }
 .list-card-count { font-size: 12.5px; color: var(--accent); font-weight: 600; margin-top: 8px; }
 .list-card-preview { font-size: 12px; color: var(--text-dim); margin-top: 6px; line-height: 1.45; }
 .list-card-preview.empty { color: var(--text-faint); font-style: italic; }
 
 /* ---------- List builder ---------- */
-.builder {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 18px 20px;
-}
-.builder h3 { margin: 0 0 4px; font-size: 16px; }
-.builder select, .builder input {
-  font: inherit;
-  font-size: 13px;
-  padding: 7px 10px;
-  color: var(--text);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.builder select:focus, .builder input:focus { outline: none; border-color: var(--accent); }
-.builder-count.none { color: var(--text-faint); }
-
 /* ---------- List detail ---------- */
 .list-detail-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; }
 .list-detail-head h2 { margin: 0; font-size: 24px; }
 .list-detail-count { color: var(--accent); font-weight: 600; font-size: 14px; }
-.list-detail-tools { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 20px; }
+/* margin-left:auto pushes the group to the far right of the header row, so the two
+   destructive buttons sit away from the list body rather than just above it. */
+.list-head-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .list-tool {
   font: inherit;
   font-size: 12.5px;
@@ -1436,29 +1558,18 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 .list-ico { color: var(--accent); font-size: 0.85em; }
 
 /* Lists overview sections + built-in study sets */
-.lists-section { margin-bottom: 34px; }
-.lists-subhead { font-size: 17px; margin: 0 0 3px; }
+/* Same 34px the formula page puts between .section-header and its first .subsection, so
+   "Study Routes" sits off the page header rather than against it. */
+.lists-section { margin: 34px 0; }
+.lists-subhead { margin-bottom: 6px; }
 .lists-subnote { font-size: 13px; color: var(--text-dim); margin: 0 0 14px; }
-.builtin-card .list-name { font-weight: 700; font-size: 14.5px; }
-.builtin-card .list-card-top { justify-content: space-between; gap: 8px; }
-.list-subject {
-  flex-shrink: 0;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 2px 8px;
-}
-.sub-geometry { color: var(--level-10); border-color: var(--level-10); }
-.sub-algebra { color: var(--level-12); border-color: var(--level-12); }
-.sub-number-theory { color: var(--level-aime); border-color: var(--level-aime); }
-.sub-counting { color: var(--level-mc); border-color: var(--level-mc); }
-.sub-methods { color: var(--gold); border-color: var(--gold); }
-.sub-mixed { color: var(--level-oly); border-color: var(--level-oly); }
+.builtin-card .list-name { font-weight: 700; font-size: 14.5px; display: block; }
+.builtin-card .list-card-top { display: block; }
+/* The grid's 30px bottom margin separates it from the NEXT section, but when a Show-more
+   button follows it that margin is just a gap inside one block. Collapse it there. */
+.list-grid:has(+ .list-more) { margin-bottom: 10px; }
+.list-more { margin-top: 4px; }
+
 .show-more-btn {
   margin-top: 4px;
   font: inherit;
@@ -1475,7 +1586,7 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 .show-more-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
 .builtin-note { color: var(--text-dim); font-size: 13px; margin: 2px 0 14px; }
 .b-lvl-chip.active { color: #fff; background: var(--accent); border-color: var(--accent); }
-#theme-btn { font-size: 18px; line-height: 1; }
+#settings-btn { font-size: 17px; line-height: 1; }
 
 .modal-overlay {
   position: fixed;
@@ -1526,7 +1637,93 @@ a.ptype-chip:hover { border-color: var(--accent); color: var(--accent); }
 .filter-chip.active { color: #fff; background: var(--accent); border-color: var(--accent); }
 .fc-count { opacity: 0.7; font-weight: 500; }
 .filter-chip.active .fc-count { opacity: 0.9; }
+/* Experimental corner of Settings. Deliberately looks like a side door rather than a setting:
+   these are links out to standalone pages in lab/, not preferences, so they get cards instead
+   of the .set-choice buttons every real option uses. */
+.settings-lab .settings-group-title { display: flex; align-items: center; gap: 9px; }
+.lab-tag {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-faint); border: 1px dashed var(--border-light);
+  border-radius: 999px; padding: 1px 8px;
+}
+.lab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.lab-card {
+  display: block; text-decoration: none; padding: 14px 16px;
+  background: var(--bg-panel); border: 1px dashed var(--border-light);
+  border-radius: 11px; transition: border-color 0.15s, background 0.15s;
+}
+.lab-card:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+.lab-name { display: block; font-size: 14.5px; font-weight: 650; color: var(--text); margin-bottom: 5px; }
+.lab-desc { display: block; font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
+@media (max-width: 720px) { .lab-row { grid-template-columns: 1fr; } }
+
+/* The Group toggle on a saved list. `.on` is the engaged state -- it is a mode the reader is
+   currently in, not an action, so it reads as pressed rather than as another button. */
+.list-tool.on {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .settings-hint { font-size: 12px; color: var(--text-faint); margin: 9px 0 0; }
+
+/* ---------- Settings page ----------
+   Reuses the filter modal's group headings so the page reads as part of the same app. Each
+   preference is a row of cards rather than a toggle, because every option needs a line of
+   explanation more than it needs to be compact. */
+.settings-page { display: flex; flex-direction: column; gap: 34px; margin-top: 30px; max-width: 70ch; }
+/* A group holds several options; each option keeps its own quieter label so the group heading
+   ("Appearance") and the option name ("Text size") stay distinguishable. */
+.settings-group > .set-opt + .set-opt { margin-top: 16px; }
+.set-sub { font-size: 12.5px; font-weight: 650; color: var(--text-dim); margin-bottom: 7px; }
+.set-choices { display: flex; flex-wrap: wrap; gap: 10px; }
+.set-choice {
+  flex: 1 1 210px; display: flex; flex-direction: column; gap: 3px; text-align: left;
+  font: inherit; padding: 11px 14px; cursor: pointer;
+  color: var(--text-dim); background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 10px;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.set-choice:hover { border-color: var(--accent); color: var(--text); }
+.set-choice.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.set-choice-label { font-size: 14px; font-weight: 650; }
+.set-choice-note { font-size: 12px; color: var(--text-faint); line-height: 1.45; }
+.set-choice.active .set-choice-note { color: var(--accent); opacity: 0.85; }
+
+/* ---------- Wiki layout ----------
+   A section as an A-Z index: the alphabet does the grouping, so subsections are folded away
+   in the sidebar too (see the data-layout rule below) and each formula is just a link.
+   column-width lets the browser pick the column count, so this collapses to one column on a
+   phone without a media query. */
+.wiki-letter { margin-top: 30px; scroll-margin-top: 76px; }
+.wiki-letter > h3 { margin-bottom: 8px; }
+.wiki-letter:first-of-type { margin-top: 18px; }
+.wiki-list {
+  list-style: none; margin: 0; padding: 0;
+  column-width: 210px; column-gap: 26px;
+}
+/* A bullet per entry, and rows packed tight. The separator used to be whitespace alone, which
+   needed a lot of it to read as a separation at all; with a marker doing that job the rows can
+   close right up and a whole subject fits on one screen. The 30px above each letter is what
+   keeps the groups apart. The bullet is a ::before rather than list-style because an outside
+   marker gets clipped at a column edge in multi-column layout. */
+.wiki-list li { break-inside: avoid; display: flex; gap: 7px; padding: 0; }
+.wiki-list li::before {
+  content: "\2022";
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-size: 13.5px; line-height: 1.5;
+}
+.wiki-list a {
+  font-size: 13.5px; line-height: 1.5;
+  color: var(--text); text-decoration: none;
+}
+.wiki-list a:hover { color: var(--accent); text-decoration: underline; }
+
+/* Wiki mode groups by letter, so the sidebar's subsection lists have nothing to point at.
+   Hiding them here rather than rebuilding the sidebar is deliberate: buildSidebar() runs once
+   and owns a delegated click listener, so rebuilding it per render would leak one each time. */
+html[data-layout="wiki"] .nav-subs { display: none; }
 .settings-actions { display: flex; justify-content: flex-end; }
 .settings-reset {
   font: inherit; font-size: 13px; color: var(--text-dim); background: transparent;
@@ -1660,6 +1857,11 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
 }
 .tool-in:focus { outline: none; border-color: var(--accent); }
+/* The range a numeric input actually accepts. Every one of these fields clamps silently in
+   JS, so a reader who types 99 into a field capped at 12 just watches their number change
+   with no explanation. min/max attributes alone do not show this — they only bound the
+   spinner. The range has to be on screen. */
+.tool-lim { font-size: 10.5px; color: var(--text-faint); margin-left: -2px; white-space: nowrap; }
 select.tool-in { cursor: pointer; }
 .tool-btn2 {
   font: inherit; font-size: 13px; font-weight: 600; color: #fff;

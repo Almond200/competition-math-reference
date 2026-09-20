@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 503
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 518
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -15,15 +15,18 @@ reference rather than people editing it.
 **Four headings, and no fifth.** A write-up uses `## Why it works`, `## How to use it`,
 `## On contests`, and optionally `## Key forms`. Do not invent another one. A card may gain or
 lose its Key forms block as its content changes — that is not "adding a subsection", which is
-what this rule is about. Census across 499 write-ups: Why it works 499, On contests 499, How to
-use it 498, Key forms 95, and one sanctioned exception (`mean-chain` carries a `## Full proof`
+what this rule is about. Census across 518 write-ups: Why it works 518, On contests 518, How to
+use it 518, Key forms 104, and one sanctioned exception (`mean-chain` carries a `## Full proof`
 holding complete proofs of the four mean inequalities, which genuinely is not a "why it works").
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
-  of related statements, which in practice means methods and patterns: 88 of the 89 cards in
-  `patterns.js` have one, against 7 of the 410 in the subject files. A formula card whose latex
+  of related statements, which in practice means methods and patterns: 93 of the 100 cards in
+  `patterns.js` have one, against 11 of the 418 in the subject files. A formula card whose latex
   already shows the statement does not get one; put the material in the prose instead.
-- Key forms lists the shapes a technique takes, not examples of it.
+- Key forms lists the shapes a technique takes, not examples of it. This is now gated:
+  `scan-conventions.py` fails on a bullet that is mostly concrete digits. Exactly one existed
+  (`squared-binomial-sum` carried "row $n = 4$: $1+16+36+16+1=70$"), so the rule was being kept
+  by habit rather than by anything enforcing it.
 - **No bold in body prose.** Markdown emphasis is never processed — the body is inserted as HTML
   and then typeset by KaTeX, so `**like this**` reaches the reader as literal asterisks. (A
   widget caption in `js/geo-interactive.js` or `js/math-tools.js` is a different context: those
@@ -501,6 +504,47 @@ and it is worth knowing what it looked like so it is not reintroduced:
 - A terse label is acceptable when it is established contest shorthand — `casework`, `CRT`,
   `Vieta`, `Ceva`, `AM-GM`, `LTE`. 163 of the links use one-word labels and most read correctly.
 
+## Curated lists drift, and nothing used to notice
+
+`built-in-lists.js` promises that a route is "every card carrying that level and subject, so a
+route is complete by construction rather than a hand-picked sample". It is edited by hand, so the
+promise decays every time a card is added: on 2026-09-20 an audit found **14 missing memberships
+across six cards** — `triangle-13-14-15`, `concyclicity-tests`, `absolute-value-identities`,
+`grid-path-fill`, `nested-subset-pairs`, `squared-binomial-sum` — every one of them added in a
+recent session by someone who updated the library and not the routes. Zero strays in the other
+direction, which is the signature of pure omission.
+
+This is worth internalising because the failure is *invisible*. A route with a card missing renders
+perfectly; it is just quietly less than it claims. `tools/check-lists.py` now enforces completeness
+both ways, but the habit matters more than the gate: **adding a card is not finished until it has
+joined every route it qualifies for.**
+
+Two related findings from the same audit:
+
+- **"Geometry Configurations" had become a catalogue.** 63 cards, of which 3 were high importance
+  and 35 were low or below, with only 18 reachable below AIME. A list whose blurb says "recurring
+  figures you should recognize on sight" cannot be half Newton-Gauss Line and Isotomic Conjugate.
+  It is now 28 cards; the rest moved to "Deeper Configurations" rather than being deleted.
+- **A list must not claim a `kind` it does not honour.** "Olympiad Heavy Hitters" was `kind:
+  "route"` while its own blurb read "Not a syllabus", and held 16 of the library's 192 olympiad
+  cards. Retagged `thinking`, with four real olympiad routes added alongside it.
+
+## Auto-sectioning a saved list: what the scoring has to defend against
+
+A saved list is a flat array, so `autoSections()` in `js/app.js` matches it against headings already
+written by hand — the built-in lists' 160 sections, the 23 `TAG_GROUPS` families, then the library's
+own subsections. Two things about it were learned the hard way and should not be undone:
+
+- **Do not merge same-titled sections across tiers.** The first version did, to improve coverage.
+  "Triangles: Sides, Areas & Radii" merged to ~40 ids and then out-scored the 5-card "Cevians &
+  Ratios" for a list whose cevian cards it barely described. Small, specific candidates are the
+  point of the whole exercise.
+- **Score `|hit|^2 / |candidate|`, never `|hit|` alone.** A 37-card route section overlapping six of
+  a reader's cards wins on raw count while saying almost nothing about them. The denominator is what
+  demands the heading actually be *about* the cards it collects.
+- **Subject names are not an acceptable fallback.** Grouping leftovers under "Geometry" or "Number
+  Theory" was tried and removed: it tells the reader nothing the cards do not already show.
+
 ## Measuring search: the cache trap
 
 `js/search-semantic.js` fetches `search-vectors.json` and `.bin` **from JavaScript**, so for a
@@ -524,9 +568,9 @@ If `cards` does not equal the card count `validate-problem-db.js` reports, stop 
 you are about to read is meaningless. The same trap already bit `eval-queries.json` once, which
 is why `tools/search-eval.html` carries its own cache-buster.
 
-### Standing state, measured 2026-09-11 against a verified-fresh index
+### Standing state, measured 2026-09-20 against a verified-fresh index
 
-**154/171 top-1, 97.1% top-3, MRR 0.936**, name and jargon 100%, paraphrase 90.6%. Three
+**155/171 top-1, 96.5% top-3, MRR 0.937**, name and jargon 100%, paraphrase 92.5%. Three
 regressions are long-standing and accepted; the fourth is new and **not** attributable to the
 cards added that day:
 
@@ -540,3 +584,115 @@ cards added that day:
 
 Do **not** press "Download as baseline" to make a regression disappear. The baseline is the
 record of what was true when the ranking was last deliberately tuned.
+
+## Reorganising the taxonomy
+
+Seven new subsections were added on 2026-09-14, all **intra-file moves** of existing cards. The card
+count did not change (512 before and after), and search held at 154/171.
+
+| New subsection | n | out of |
+|---|---|---|
+| Geometry › Derived Triangles & Conjugates | 7 | Advanced Triangle Theorems 29 → 22 |
+| Geometry › Tangent Circles & Chains | 7 | Circles 24 → 17 |
+| Geometry › Vectors & Coordinates in Space | 7 | Solid Geometry 20 → 14, Coordinate & Grid 16 → 12 |
+| Geometry › Transformations in the Coordinate Plane | 3 | Coordinate & Grid |
+| Number Theory › Quadratic Residues | 5 | Modular Arithmetic 19 → 14 |
+| Number Theory › Continued Fractions & Representations | 5 | Special Numbers & Sequences 14 → 9 |
+| Counting › Expectation & Variance | 6 | Probability 16 → 10 |
+
+**The rule that governed all of it:** cards in `patterns.js` carry `type` and `subject`; cards in the
+four subject files carry neither. A cross-file move changes a card's type, drops it out of
+Methods/Patterns browsing, and forces a search-index rebuild. So every move was intra-file, and that
+single constraint rejected functional equations, conics, generating functions and region counting,
+each of which had only one or two cards inside the relevant file.
+
+Two title-dependent chips had to be handled:
+
+- `point-plane-distance` held `solid-geometry` **only because its old title said "Solid"** — its own
+  keywords matched nothing in that regex. Rather than contort the new title, the keyword
+  `"solid geometry"` was added so the card earns the chip. That is the general fix for this class.
+- "Transformations in the Coordinate Plane" keeps the word **Coordinate** deliberately. "Transformations
+  of the Plane" or "Isometries of the Plane" would strip `coordinate-geometry` from all three cards.
+
+The move also **fixed a bug**: `expected-fixed-points`, `variance-independence` and `order-statistics`
+were missing the `expected-value` chip and now have it.
+
+Two corrections to the original audit below: the quadratic-residue block is **five** cards, not seven
+(`primitive-roots`, `multiplicative-order` and `carmichael-function` are order theory, not
+residuacity), and `CARD_DIAGRAM_IDS` is a **set of card ids**, read as `CARD_DIAGRAM_IDS.has(f.id)`,
+so it is **not** a risk for any move — it was wrongly listed as something to check.
+
+### The original audit (what remains undone)
+
+Raised because the library has roughly doubled and the section titles were set when it was much
+smaller. This is written up rather than done, because the cost is unusually asymmetric: the content
+gain is zero and several things read subsection titles as data. What follows is the evidence, so a
+later pass can act on it without re-deriving anything.
+
+### What breaks on a rename, and how loudly
+
+| Mechanism | Where | Failure mode |
+|---|---|---|
+| `ALSO_LISTED_IN` | `js/app.js` ~809 | Hardcodes the literal string `"Trigonometric Identities"` and the section id `"algebra"`. `find(x => x.title === title)` then `if (!sub) return;` — renaming that subsection **silently drops five mirrored cards** with no warning. The single most fragile string in the file. |
+| `TOPIC_RULES` | `js/app.js` ~882 | `sub.title` is concatenated into the haystack the topic regexes run against, so subsection titles *create* topic chips. Renaming changes `#/topic/...` membership. Roughly 30 topic assignments exist only because of a title. |
+| `ctxWords` | `js/app.js` ~849 | Section and subsection titles are an indexed search field. Renaming moves keyword-search rankings. |
+| Related-cards | `js/app.js` ~2295 | `+3` for a shared subsection, `+1` for a shared section. Moving a card rewires its Related list. |
+| `sectionFilters` | `js/app.js` ~1302 | Keyed by **section id** in `localStorage`. Renaming a section id silently resets saved filters for existing readers. |
+
+Subsection *order* is safe: anchors are positional but regenerated every render, and no route
+addresses them. Card ids are safe everywhere — details, examples, diagrams, problems, built-in lists,
+`link-aliases.json` and the search vectors are all id-keyed. `tools/build-search-index.py` keys
+`section` off the **file name**, not the section object, so moving a card between subsections needs no
+index rebuild; moving it between files does.
+
+### A bug that is worth fixing on its own
+
+Because `TOPIC_RULES` matches against titles, several subsections currently mis-tag their contents:
+
+- `"Divisor Functions & Totient"` matches `/totient/` in the *modular-arithmetic* rule, so nine
+  divisor cards (`number-of-divisors`, `sum-of-divisors`, `mobius-inversion`, …) wrongly carry a
+  **modular arithmetic** chip.
+- `"Stars & Bars / Distributions"` matches `/distribution/` in the *probability* rule, so
+  `stars-and-bars` and `stars-bars-upper-bound` carry a **probability** chip.
+- `"Symmetry, Partitions & Posets"` matches `/partition/` in the *stars-bars* rule, so
+  `dilworths-theorem`, `sperners-theorem` and friends carry a **stars & bars** chip.
+- `"Polygons & Quadrilaterals"` cross-tags both ways, and the tools subsection
+  `"Counting & Probability"` gives pure counting methods a **probability** chip.
+
+This is independent of any reorganisation: the fix is to stop feeding `sub.title` into the topic
+haystack, or to anchor the regexes. Doing that first would also de-risk every rename below.
+
+### Titles that no longer describe their contents
+
+- **Geometry › "Projective Geometry & Inversion" (8) contains no inversion card.** The inversion
+  cards are `inversion-properties` and `pole-polar`, both in `patterns.js` under Methods. Either drop
+  "& Inversion" or move one in.
+- **Counting › "Pigeonhole & Double Counting" (4) contains no double-counting card** — `double-counting`
+  is in Methods. It also holds `handshake-lemma`, which is graph theory and belongs beside
+  `eulerian-paths`, which already depends on it.
+- **Geometry › "Advanced Triangle Theorems" (29)** is three groups wearing one title: fundamentals
+  that are not advanced (`law-of-sines`, `law-of-cosines`, `angle-bisector-theorem`,
+  `projection-formula`), five derived triangles (`pedal-`, `orthic-`, `medial-`, `contact-`,
+  `excentral-triangle`), and two conjugacies (`isogonal-`, `isotomic-conjugate`). All seven of the
+  latter are already grouped as `"triangle centers"` in `TAG_GROUPS`, which is a ready-made answer.
+- **Geometry › "Ratios & Constants to Memorize" (5)** holds two things that are not constants
+  (`isoperimetric-facts`, `inscribed-square`).
+
+### Sizes
+
+Geometry, before the 2026-09-14 split `[4, 5, 8, 10, 12, 13, 16, 18, 18, 20, 24, 29]` · Algebra `[4, 4, 5, 5, 11, 14, 15, 18, 20]` ·
+Number Theory `[5, 8, 10, 10, 12, 14, 19]` · Counting `[1, 3, 4, 7, 8, 8, 9, 9, 16]`.
+
+Counting has a **one-card subsection** (`sprague-grundy` alone under "Combinatorial Game Theory"),
+which renders as a heading over a single card and takes a full sidebar row. It would become a real
+subsection by absorbing `losing-positions` and `turn-based-games`, which are the same subject filed
+elsewhere. The 19-card "Modular Arithmetic" contains a self-contained seven-card quadratic-residue
+block that is the most obvious clean split in the library.
+
+### Clusters split across sections
+
+Roots of unity (5 places), generating functions (4), combinatorial game theory (3), symmetry/group
+counting (2), the floor function (5), absolute value (5), and the twelvefold way (4). `TOPIC_RULES`
+already has cross-section topics for `generating-functions` and `functions` precisely because no
+subsection holds them — which is the argument that topics, not subsections, are the right home for
+these, and that the taxonomy may not need to change at all.

@@ -100,15 +100,27 @@ window.MATH_SECTIONS.push({
           id: "binomial-row-sums",
           name: "Row Sums & Alternating Sums",
           latex: String.raw`\sum_{k=0}^{n} \binom{n}{k} = 2^n, \qquad \sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0`,
+          latexPlain: String.raw`\binom{n}{0} + \binom{n}{1} + \binom{n}{2} + \cdots + \binom{n}{n} = 2^n, \qquad \binom{n}{0} - \binom{n}{1} + \binom{n}{2} - \cdots \pm \binom{n}{n} = 0`,
           description: String.raw`Set $x = y = 1$ (or $x = 1, y = -1$) in the binomial theorem. Consequence: a set has as many even-sized subsets as odd-sized ones ($2^{n-1}$ each).`,
-          keywords: ["subsets", "2 to n", "alternating", "even odd subsets"],
+          keywords: ["subsets", "2 to n", "alternating", "even odd subsets", "pascal's triangle", "pascals triangle", "row of pascal's triangle", "sum of a row", "row sum", "pascal triangle row", "sum of binomial coefficients"],
           importance: "high",
           level: ["AMC10", "AMC12"]
+        },
+        {
+          id: "nested-subset-pairs",
+          name: "Nested Subset Pairs",
+          latex: String.raw`\#\{(A, B) : A \subseteq B \subseteq S\} = \sum_{k=0}^{n} \binom{n}{k} 2^k = 3^n, \qquad |S| = n`,
+          latexPlain: String.raw`\#\{(A, B) : A \subseteq B \subseteq S\} = \binom{n}{0}\cdot 2^0 + \binom{n}{1}\cdot 2^1 + \cdots + \binom{n}{n}\cdot 2^n = 3^n, \qquad |S| = n`,
+          description: String.raw`Count by element, not by set. Each of the $n$ elements lands in exactly one of three places — inside $A$ (so inside $B$ too), inside $B$ but outside $A$, or outside both — and the choices are independent, giving $3^n$. Summing over the size of $B$ instead gives $\sum_k \binom nk 2^k$, which is the binomial theorem at $x = 2$, so the two counts agree. The same argument extends: a chain $A_1 \subseteq A_2 \subseteq \cdots \subseteq A_m \subseteq S$ has $(m+1)^n$ choices, since each element picks the first set it enters, or none.`,
+          keywords: ["nested subsets", "one subset inside another", "pairs of subsets", "3 to the n", "3^n subsets", "a subset of b", "choose two subsets one contained in the other", "chain of subsets", "sum of binomial times 2^k", "count by element"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         },
         {
           id: "hockey-stick",
           name: "Hockey Stick Identity",
           latex: String.raw`\sum_{i=r}^{n} \binom{i}{r} = \binom{n+1}{r+1}, \qquad \binom{r}{r} + \binom{r+1}{r} + \binom{r+2}{r} + \cdots + \binom{n}{r} = \binom{n+1}{r+1}`,
+          latexPlain: String.raw`\binom{r}{r} + \binom{r+1}{r} + \binom{r+2}{r} + \cdots + \binom{n}{r} = \binom{n+1}{r+1}`,
           description: String.raw`Summing down a diagonal of Pascal's triangle. Proof: repeatedly absorb terms with Pascal's rule.`,
           keywords: ["hockey stick", "diagonal sum", "christmas stocking", "hockey stick identity", "christmas stocking identity", "diagonal sum in pascal"],
           importance: "medium",
@@ -118,8 +130,19 @@ window.MATH_SECTIONS.push({
           id: "vandermonde",
           name: "Vandermonde's Identity",
           latex: String.raw`\sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k} = \binom{m+n}{r}, \qquad \binom{m}{0}\binom{n}{r} + \binom{m}{1}\binom{n}{r-1} + \cdots + \binom{m}{r}\binom{n}{0} = \binom{m+n}{r}`,
-          description: String.raw`Choose $r$ from a group of $m + n$ by splitting on how many come from the first group. Special case: $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$.`,
+          latexPlain: String.raw`\binom{m+n}{k} = \binom{m}{0}\binom{n}{k} + \binom{m}{1}\binom{n}{k-1} + \binom{m}{2}\binom{n}{k-2} + \cdots + \binom{m}{k}\binom{n}{0}`,
+          description: String.raw`Choose $r$ from a group of $m + n$ by splitting on how many come from the first group. The case $m = r = n$ collapses to a single coefficient, $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$, and is common enough to have its own card.`,
           keywords: ["vandermonde", "convolution", "sum of squares of binomials", "central binomial"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "squared-binomial-sum",
+          name: "Sum of Squared Binomial Coefficients",
+          latex: String.raw`\sum_{k=0}^{n} \binom{n}{k}^2 = \binom{2n}{n}`,
+          latexPlain: String.raw`\binom{n}{0}^2 + \binom{n}{1}^2 + \binom{n}{2}^2 + \cdots + \binom{n}{n}^2 = \binom{2n}{n}`,
+          description: String.raw`Split $2n$ objects into two halves of $n$ and choose $n$ of them: if $k$ come from the first half then $n-k$ come from the second, and $\binom{n}{k}\binom{n}{n-k} = \binom{n}{k}^2$. Summing over $k$ counts the same choices, so the squares add to the central binomial coefficient. It is Vandermonde's identity at $m = r = n$, but it earns its own name because the answer is a single coefficient rather than a convolution, and because it is the probability that two people flipping $n$ coins each get the same number of heads.`,
+          keywords: ["sum of squared binomial coefficients", "sum of squares of binomials", "binomial squares add to central", "2n choose n", "central binomial coefficient", "same number of heads", "two people flipping coins", "n choose k squared"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -127,6 +150,7 @@ window.MATH_SECTIONS.push({
           id: "alternating-squared-binomials",
           name: "Alternating Sum of Squared Binomial Coefficients",
           latex: String.raw`\sum_{k=0}^{2n} (-1)^k \binom{2n}{k}^2 = (-1)^n \binom{2n}{n}, \qquad \sum_{k=0}^{m} (-1)^k \binom{m}{k}^2 = 0 \;\;(m \text{ odd})`,
+          latexPlain: String.raw`\binom{n}{0}^2 - \binom{n}{1}^2 + \binom{n}{2}^2 - \cdots \pm \binom{n}{n}^2 = \begin{cases} (-1)^{n/2}\binom{n}{n/2} & n \text{ even} \\ 0 & n \text{ odd} \end{cases}`,
           description: String.raw`The alternating companion to $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$. Both come from reading off one coefficient of $(1-x)^m(1+x)^m = (1-x^2)^m$: for even $m = 2n$ the middle term survives with a sign, and for odd $m$ there is no middle term at all, so the sum vanishes.`,
           keywords: ["alternating sum of squared binomials", "alternating binomial squares", "minus one to the k binomial squared", "central binomial with sign", "1 minus x squared expansion", "vanishes for odd n"],
           importance: "low",
@@ -136,6 +160,7 @@ window.MATH_SECTIONS.push({
           id: "committee-chair",
           name: "Committee–Chair Identity",
           latex: String.raw`k\binom{n}{k} = n\binom{n-1}{k-1}, \qquad \sum_{k=0}^{n} k\binom{n}{k} = n \cdot 2^{n-1}`,
+          latexPlain: String.raw`k\binom{n}{k} = n\binom{n-1}{k-1}, \qquad 1\binom{n}{1} + 2\binom{n}{2} + \cdots + n\binom{n}{n} = n \cdot 2^{n-1}`,
           description: String.raw`Pick a committee with a chair two ways: committee first or chair first. Differentiating $(1+x)^n$ gives the sum version.`,
           keywords: ["absorption", "k choose", "weighted sum", "committee"],
           importance: "medium",
@@ -162,7 +187,8 @@ window.MATH_SECTIONS.push({
         {
           id: "weighted-binomial-sums",
           name: "Weighted Binomial Sums",
-          latex: String.raw`\sum_{k=0}^{n} k\binom{n}{k} = n \cdot 2^{n-1}, \qquad \sum_{k=0}^{n} k^2\binom{n}{k} = n(n+1)2^{n-2}, \qquad \sum_k k(k-1)\binom{n}{k} = n(n-1)2^{n-2}`,
+          latex: String.raw`\sum_{k=0}^{n} k\binom{n}{k} = n \cdot 2^{n-1}, \qquad \sum_{k=0}^{n} k^2\binom{n}{k} = n(n+1) \cdot 2^{n-2}, \qquad \sum_k k(k-1)\binom{n}{k} = n(n-1) \cdot 2^{n-2}`,
+          latexPlain: String.raw`1\binom{n}{1} + 2\binom{n}{2} + \cdots + n\binom{n}{n} = n \cdot 2^{n-1}, \qquad 1^2\binom{n}{1} + 2^2\binom{n}{2} + \cdots + n^2\binom{n}{n} = n(n+1) \cdot 2^{n-2}, \qquad 2\cdot 1\binom{n}{2} + 3\cdot 2\binom{n}{3} + \cdots + n(n-1)\binom{n}{n} = n(n-1) \cdot 2^{n-2}`,
           description: String.raw`Differentiate $(1+x)^n$ once (then set $x = 1$) for the first sum; differentiate twice, or split $k^2 = k(k-1) + k$ and absorb twice, for the second. The same machinery evaluates $\sum k(k-1)\binom{n}{k} = n(n-1)2^{n-2}$ and beyond.`,
           keywords: ["k squared binomial", "derivative trick", "weighted sum", "absorption twice"],
           importance: "lower",
@@ -209,6 +235,7 @@ window.MATH_SECTIONS.push({
           id: "derangements",
           name: "Derangements",
           latex: String.raw`D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!} = \left[\frac{n!}{e}\right] \;(\text{nearest integer})`,
+          latexPlain: String.raw`D_n = n!\left(1 - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \cdots \pm \frac{1}{n!}\right) = \left[\frac{n!}{e}\right] \;(\text{nearest integer})`,
           description: String.raw`Permutations with no fixed point. $D_1 = 0, D_2 = 1, D_3 = 2, D_4 = 9, D_5 = 44$; recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$. As $n \to \infty$, $P(\text{derangement}) \to \frac{1}{e}$.`,
           keywords: ["no fixed point", "hat check", "wrong envelopes", "subfactorial", "exactly k fixed points"],
           importance: "medium",
@@ -392,24 +419,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "expected-value",
-          name: "Expected Value & Linearity",
-          latex: String.raw`E[X] = \sum x_i\, p_i, \qquad E[X + Y] = E[X] + E[Y] \;\;\textbf{always}`,
-          description: String.raw`Linearity needs no independence — the key to hard expected-value problems. Decompose $X$ into indicator variables: $E[X] = \sum P(\text{event}_i)$.`,
-          keywords: ["expectation", "linearity", "indicator variables", "average"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "tail-sum-expectation",
-          name: "Tail-Sum Formula for Expectation",
-          latex: String.raw`E[X] = \sum_{k=1}^{\infty} P(X \ge k) \;\;(X \in \mathbb{Z}_{\ge 0}), \qquad E[X] = \int_0^{\infty} P(X > t)\, dt \;\;(X \ge 0)`,
-          description: String.raw`For a nonnegative-integer $X$, the expectation is the sum of the tail probabilities $P(X \ge k)$ — often far easier than $\sum k\, P(X = k)$ because the "$\ge k$" event is simple. The continuous analog integrates the survival function $P(X > t)$.`,
-          keywords: ["tail sum", "survival function", "expected value", "sum of probabilities", "layer cake", "expected maximum"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "markovs-inequality",
           name: "Markov's Inequality",
           latex: String.raw`X \ge 0, \; a \gt 0 \implies P(X \ge a) \le \frac{E[X]}{a}`,
@@ -446,24 +455,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "variance-independence",
-          name: "Variance & Products of Independent Variables",
-          latex: String.raw`\operatorname{Var}(X) = E[X^2] - E[X]^2, \qquad E[XY] = E[X]\,E[Y] \;\;(X, Y \text{ indep.})`,
-          description: String.raw`Unlike expectation, $E[XY] = E[X]E[Y]$ and $\operatorname{Var}(X + Y) = \operatorname{Var}(X) + \operatorname{Var}(Y)$ do require independence.`,
-          keywords: ["variance", "independent product", "second moment", "variance of a sum", "variance adds when independent", "independent variance"],
-          importance: "lower",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "expected-fixed-points",
-          name: "Expected Fixed Points & Exactly-k Formula",
-          latex: String.raw`E[\#\text{fixed points}] = 1, \qquad P(\text{exactly } k) = \frac{\binom{n}{k} D_{n-k}}{n!}`,
-          description: String.raw`Linearity with indicators: each position is fixed with probability $\frac{1}{n}$, so the expectation is exactly 1 for every $n$. The exact distribution uses derangement numbers $D_{n-k}$.`,
-          keywords: ["fixed points", "matching hats", "indicator", "derangement distribution"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "coprime-probability",
           name: "Probability Two Random Integers Are Coprime",
           latex: String.raw`P(\gcd = 1) = \frac{6}{\pi^2}`,
@@ -471,24 +462,6 @@ window.MATH_SECTIONS.push({
           keywords: ["coprime probability", "zeta", "squarefree density", "6 over pi squared"],
           importance: "lowest",
           level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "order-statistics",
-          name: "Order Statistics on $[0, 1]$",
-          latex: String.raw`E[\max] = \frac{n}{n+1}, \qquad E[\min] = \frac{1}{n+1}, \qquad E[\text{gap}] = \frac{1}{n+1}, \qquad P(\max \le x) = x^n, \qquad E[\max - \min] = \frac{n - 1}{n + 1}, \qquad \text{discrete: } k \text{ draws from } \{1, \dots, n\} \Rightarrow E[\max] = \frac{k(n+1)}{k+1}`,
-          description: String.raw`Choose $n$ numbers independently and uniformly from $[0,1]$: sorted, they sit on average at $\frac{1}{n+1}, \frac{2}{n+1}, \dots, \frac{n}{n+1}$ — the $n+1$ gaps are exchangeable, so each expects $\frac{1}{n+1}$. Also $P(\max \le x) = x^n$ and $E[\max - \min] = \frac{n-1}{n+1}$.`,
-          keywords: ["expected maximum", "expected minimum", "uniform random", "sorted", "gaps", "spacings", "expected range"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "total-expectation",
-          name: "Law of Total Expectation",
-          latex: String.raw`E[X] = \sum_i P(A_i)\, E[X \mid A_i], \qquad E[\text{total}] = E[N] \cdot E[X]`,
-          description: String.raw`Partition the sample space into cases $A_i$: the overall expectation is the probability-weighted average of the case expectations. For a random number $N$ of i.i.d. contributions, Wald's identity gives $E[\text{total}] = E[N] \cdot E[X]$.`,
-          keywords: ["conditional expectation", "tower rule", "casework expectation", "weighted average", "first step", "wald"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
         },
         {
           id: "bayes-theorem",
@@ -507,6 +480,65 @@ window.MATH_SECTIONS.push({
           keywords: ["probability generating function", "pgf", "expected value derivative", "variance from pgf", "sum of independent", "moment"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
+        }
+      ]
+    },
+    {
+      title: "Expectation & Variance",
+      formulas: [
+        {
+          id: "expected-value",
+          name: "Expected Value & Linearity",
+          latex: String.raw`E[X] = \sum x_i\, p_i, \qquad E[X + Y] = E[X] + E[Y] \;\;\textbf{always}`,
+          description: String.raw`Linearity needs no independence — the key to hard expected-value problems. Decompose $X$ into indicator variables: $E[X] = \sum P(\text{event}_i)$.`,
+          keywords: ["expectation", "linearity", "indicator variables", "average"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "tail-sum-expectation",
+          name: "Tail-Sum Formula for Expectation",
+          latex: String.raw`E[X] = \sum_{k=1}^{\infty} P(X \ge k) \;\;(X \in \mathbb{Z}_{\ge 0}), \qquad E[X] = \int_0^{\infty} P(X > t)\, dt \;\;(X \ge 0)`,
+          description: String.raw`For a nonnegative-integer $X$, the expectation is the sum of the tail probabilities $P(X \ge k)$ — often far easier than $\sum k\, P(X = k)$ because the "$\ge k$" event is simple. The continuous analog integrates the survival function $P(X > t)$.`,
+          keywords: ["tail sum", "survival function", "expected value", "sum of probabilities", "layer cake", "expected maximum"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "total-expectation",
+          name: "Law of Total Expectation",
+          latex: String.raw`E[X] = \sum_i P(A_i)\, E[X \mid A_i], \qquad E[\text{total}] = E[N] \cdot E[X]`,
+          description: String.raw`Partition the sample space into cases $A_i$: the overall expectation is the probability-weighted average of the case expectations. For a random number $N$ of i.i.d. contributions, Wald's identity gives $E[\text{total}] = E[N] \cdot E[X]$.`,
+          keywords: ["conditional expectation", "tower rule", "casework expectation", "weighted average", "first step", "wald"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "expected-fixed-points",
+          name: "Expected Fixed Points & Exactly-k Formula",
+          latex: String.raw`E[\#\text{fixed points}] = 1, \qquad P(\text{exactly } k) = \frac{\binom{n}{k} D_{n-k}}{n!}`,
+          description: String.raw`Linearity with indicators: each position is fixed with probability $\frac{1}{n}$, so the expectation is exactly 1 for every $n$. The exact distribution uses derangement numbers $D_{n-k}$.`,
+          keywords: ["fixed points", "matching hats", "indicator", "derangement distribution"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "variance-independence",
+          name: "Variance & Products of Independent Variables",
+          latex: String.raw`\operatorname{Var}(X) = E[X^2] - E[X]^2, \qquad E[XY] = E[X]\,E[Y] \;\;(X, Y \text{ indep.})`,
+          description: String.raw`Unlike expectation, $E[XY] = E[X]E[Y]$ and $\operatorname{Var}(X + Y) = \operatorname{Var}(X) + \operatorname{Var}(Y)$ do require independence.`,
+          keywords: ["variance", "independent product", "second moment", "variance of a sum", "variance adds when independent", "independent variance"],
+          importance: "lower",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "order-statistics",
+          name: "Order Statistics on $[0, 1]$",
+          latex: String.raw`E[\max] = \frac{n}{n+1}, \qquad E[\min] = \frac{1}{n+1}, \qquad E[\text{gap}] = \frac{1}{n+1}, \qquad P(\max \le x) = x^n, \qquad E[\max - \min] = \frac{n - 1}{n + 1}, \qquad \text{discrete: } k \text{ draws from } \{1, \dots, n\} \Rightarrow E[\max] = \frac{k(n+1)}{k+1}`,
+          description: String.raw`Choose $n$ numbers independently and uniformly from $[0,1]$: sorted, they sit on average at $\frac{1}{n+1}, \frac{2}{n+1}, \dots, \frac{n}{n+1}$ — the $n+1$ gaps are exchangeable, so each expects $\frac{1}{n+1}$. Also $P(\max \le x) = x^n$ and $E[\max - \min] = \frac{n-1}{n+1}$.`,
+          keywords: ["expected maximum", "expected minimum", "uniform random", "sorted", "gaps", "spacings", "expected range"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         }
       ]
     },

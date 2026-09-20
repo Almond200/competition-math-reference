@@ -13,11 +13,11 @@ window.MATH_SECTIONS.push({
     {
       title: "Geometry",
       groups: [
-        { title: "Angle & configuration chasing", ids: ["angle-chasing", "directed-angles", "auxiliary-lines", "phantom-point", "perp-to-angle-bisector"] },
-        { title: "Ratios, masses & areas", ids: ["mass-points", "area-method", "ravi-substitution"] },
-        { title: "Transformations & inversion", ids: ["spiral-similarity", "homothety-monge", "inversion-properties", "affine-transformations", "pole-polar"] },
-        { title: "Coordinate & algebraic bashes", ids: ["coordinate-bash", "trig-bash", "complex-bash", "barycentric-coordinates"] },
-        { title: "Working in three dimensions", ids: ["solid-tactics", "cross-section-method", "cavalieris-principle"] }
+        { title: "Angle & Configuration Chasing", ids: ["angle-chasing", "directed-angles", "auxiliary-lines", "phantom-point", "perp-to-angle-bisector"] },
+        { title: "Ratios, Masses & Areas", ids: ["mass-points", "area-method", "ravi-substitution"] },
+        { title: "Transformations & Inversion", ids: ["spiral-similarity", "homothety-monge", "inversion-properties", "affine-transformations", "pole-polar"] },
+        { title: "Coordinate & Algebraic Bashes", ids: ["coordinate-bash", "trig-bash", "complex-bash", "barycentric-coordinates"] },
+        { title: "Working in Three Dimensions", ids: ["solid-tactics", "cross-section-method", "cavalieris-principle"] }
       ],
       formulas: [
         {
@@ -246,11 +246,11 @@ window.MATH_SECTIONS.push({
       title: "Algebra",
       groups: [
         { title: "Substitutions", ids: ["log-substitution", "weierstrass-substitution", "trig-substitution", "functional-substitution", "sp-substitution", "normalization"] },
-        { title: "Factoring & rewriting", ids: ["sfft", "completing-the-square", "forced-difference-of-squares", "rationalizing", "denesting-radicals"] },
-        { title: "Polynomials & their roots", ids: ["newtons-sums", "symmetric-polynomial-strategies", "lagrange-interpolation", "root-transformations"] },
-        { title: "Sums & sequences", ids: ["telescoping", "finite-differences", "double-summation", "largest-term-ratio"] },
-        { title: "Inequalities & optimization", ids: ["sos-method", "smoothing-method", "tangent-line-trick"] },
-        { title: "Graphs, estimates & rates", ids: ["abs-value-graphing", "abs-value-relations", "sqrt-approximation", "multi-leg-rates"] }
+        { title: "Factoring & Rewriting", ids: ["sfft", "completing-the-square", "forced-difference-of-squares", "rationalizing", "denesting-radicals"] },
+        { title: "Polynomials & Their Roots", ids: ["newtons-sums", "symmetric-polynomial-strategies", "lagrange-interpolation", "root-transformations"] },
+        { title: "Sums & Sequences", ids: ["telescoping", "finite-differences", "double-summation", "largest-term-ratio"] },
+        { title: "Inequalities & Optimization", ids: ["sos-method", "smoothing-method", "tangent-line-trick"] },
+        { title: "Graphs, Estimates & Rates", ids: ["abs-value-graphing", "abs-value-relations", "sqrt-approximation", "multi-leg-rates"] }
       ],
       formulas: [
         {
@@ -450,7 +450,7 @@ window.MATH_SECTIONS.push({
           keywords: ["graphing absolute value", "absolute value relation", "two variable absolute value", "nested absolute value", "symmetry to remove absolute values", "solve for x positive and reflect", "reflect into the other quadrants", "region in the plane", "taxicab", "diamond region", "four copies", "graph an absolute value inequality", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        },,
+        },
         {
           id: "trig-substitution",
           name: "Trigonometric Substitution",
@@ -544,10 +544,10 @@ window.MATH_SECTIONS.push({
     {
       title: "Number Theory",
       groups: [
-        { title: "Choosing the right lens", ids: ["choose-modulus", "exponent-tracking", "recognition-numbers"] },
-        { title: "Lifting & descent", ids: ["lte", "hensel-lifting", "vieta-jumping"] },
-        { title: "The gcd machinery", ids: ["extended-euclidean-algorithm", "gcd-substitution"] },
-        { title: "Bounding & factoring to finish", ids: ["bounding-diophantine", "squeeze-between-squares", "factor-pair-counting", "fermat-two-squares"] }
+        { title: "Choosing the Right Lens", ids: ["choose-modulus", "exponent-tracking", "recognition-numbers"] },
+        { title: "Lifting & Descent", ids: ["lte", "hensel-lifting", "vieta-jumping"] },
+        { title: "The GCD Machinery", ids: ["extended-euclidean-algorithm", "gcd-substitution"] },
+        { title: "Bounding & Factoring to Finish", ids: ["bounding-diophantine", "squeeze-between-squares", "factor-pair-counting", "fermat-two-squares"] }
       ],
       formulas: [
         {
@@ -687,11 +687,11 @@ window.MATH_SECTIONS.push({
     {
       title: "Counting & Probability",
       groups: [
-        { title: "Reframing the count", ids: ["complementary-counting", "bijection-method", "double-counting", "symmetry-probability"] },
-        { title: "Building & splitting", ids: ["constructive-counting", "casework-method", "uniform-overcount", "pie"] },
-        { title: "Recursion & states", ids: ["recursive-counting", "states-recursion-prob", "transfer-matrix-method"] },
-        { title: "Algebraic machinery", ids: ["generating-function-method", "indicator-variables"] },
-        { title: "Existence arguments", ids: ["invariants-coloring", "extremal-principle", "probabilistic-method"] }
+        { title: "Reframing the Count", ids: ["complementary-counting", "bijection-method", "double-counting", "symmetry-probability"] },
+        { title: "Building & Splitting", ids: ["constructive-counting", "casework-method", "uniform-overcount", "pie"] },
+        { title: "Recursion & States", ids: ["recursive-counting", "states-recursion-prob", "transfer-matrix-method"] },
+        { title: "Algebraic Machinery", ids: ["generating-function-method", "indicator-variables"] },
+        { title: "Existence Arguments", ids: ["invariants-coloring", "extremal-principle", "probabilistic-method"] }
       ],
       formulas: [
         {
@@ -896,6 +896,17 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
+          id: "ellipse-tangent-line",
+          name: "Ellipse Tangent to a Line (Minimum Focal Sum)",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`\text{ellipse with foci } F_1, F_2 \text{ tangent to } \ell \text{ at } T \iff T = \arg\min_{P \in \ell}\ \left(PF_1 + PF_2\right)`,
+          description: String.raw`The ellipses with foci $F_1$ and $F_2$ are the level curves of $PF_1 + PF_2$, so the smallest one meeting a line touches it, and the point of tangency is where that sum is least. It is the reflection trick read as a level curve: reflect $F_1$ over $\ell$ and the minimum sits where $F_1'F_2$ crosses.`,
+          keywords: ["ellipse tangent to a line", "minimum sum of distances to two foci", "shortest focal sum", "reflection trick ellipse", "level curve of focal sum", "tangent point minimises", "ellipse tangent to the x axis", "method", "pattern"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "surface-shortest-path",
           name: "Shortest Path on a Surface (Unfold the Net)",
           type: "pattern",
@@ -905,6 +916,28 @@ window.MATH_SECTIONS.push({
           keywords: ["shortest path surface", "unfold", "net", "spider and fly", "ant on a box", "geodesic", "develop surface", "cylinder unroll", "cone sector", "shortest route on a box", "method", "pattern"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        },
+        {
+          id: "triangle-13-14-15",
+          name: "The 13-14-15 Triangle",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`13\text{-}14\text{-}15:\quad s = 21,\ [ABC] = 84,\ r = 4,\ R = \tfrac{65}{8}`,
+          description: String.raw`The altitude to the side of length $14$ is exactly $12$ and lands $5$ along it, cutting the triangle into a $5$-$12$-$13$ and a $9$-$12$-$15$ right triangle. That split is why every quantity in it comes out rational: area $84$, inradius $4$, circumradius $\tfrac{65}{8}$, exradii $\tfrac{21}{2}, 12, 14$, and even $\cos$ of the angles opposite $13$ and $15$ are $\tfrac{3}{5}$ and $\tfrac{5}{13}$. Problem setters reach for it whenever they want a scalene triangle with clean numbers, so spotting the side triple is often the entire first step.`,
+          keywords: ["13-14-15", "13 14 15 triangle", "heronian triangle", "integer sides integer area", "area 84", "5-12-13 and 9-12-15", "consecutive integer sides", "altitude 12", "inradius 4", "circumradius 65/8", "nice triangle", "method", "pattern"],
+          importance: "medium",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "angle-bisector-circumcircle",
+          name: "Angle Bisector Extended to the Circumcircle",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`AB\cdot AC = AL\cdot AD,\qquad LB\cdot LC = LA\cdot LD,\qquad DB = DC`,
+          description: String.raw`Extend the bisector of $\angle A$ until it meets the circumcircle again at $D$. Then $D$ is the midpoint of arc $BC$ not containing $A$, so $DB=DC$ (and $D$ is the center of the circle through $B$, $C$, the incenter, and the $A$-excenter — the incenter–excenter lemma). Two length relations finish most configurations: because $\triangle ABL\sim\triangle ADC$ (the bisected angle at $A$ is shared and $\angle ABL=\angle ADC$ subtend arc $AC$), $AB\cdot AC = AL\cdot AD$, so $AD=\dfrac{bc}{AL}$; and Power of the Point $L$ on chord $BC$ gives $LB\cdot LC = LA\cdot LD$. Pair these with the bisector length $AL=\sqrt{bc\left[1-\left(\tfrac{a}{b+c}\right)^2\right]}$ to recover the whole extended chord.`,
+          keywords: ["angle bisector extended", "circumcircle", "arc midpoint", "DB = DC", "power of a point", "bc = AL AD", "incenter excenter", "extended bisector length", "bisector meets circle"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         },
         {
           id: "rotation-trick",
@@ -933,8 +966,8 @@ window.MATH_SECTIONS.push({
     {
       title: "Algebra",
       groups: [
-        { title: "Recognizing the shape", ids: ["infinite-nest", "palindromic-polynomials", "piecewise-graph-counting", "periodic-sequences"] },
-        { title: "Pairing & filtering", ids: ["fx-pairing", "roots-of-unity-filter", "median-minimizes-abs", "shifted-polynomial-construction"] }
+        { title: "Recognizing the Shape", ids: ["infinite-nest", "palindromic-polynomials", "piecewise-graph-counting", "periodic-sequences"] },
+        { title: "Pairing & Filtering", ids: ["fx-pairing", "roots-of-unity-filter", "median-minimizes-abs", "shifted-polynomial-construction"] }
       ],
       formulas: [
         {
@@ -976,6 +1009,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "algebra",
           latex: String.raw`\sum_{k \equiv r \,(\mathrm{mod}\, n)} \binom{m}{k} = \frac{1}{n} \sum_{j=0}^{n-1} \omega^{-jr} (1 + \omega^j)^m, \qquad \binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}`,
+          latexPlain: String.raw`\binom{m}{r} + \binom{m}{r+n} + \binom{m}{r+2n} + \cdots = \frac{1}{n}\left[(1+\omega^0)^m + \omega^{-r}(1+\omega)^m + \cdots + \omega^{-(n-1)r}(1+\omega^{n-1})^m\right], \qquad \binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}`,
           description: String.raw`Extracts every $n$-th coefficient of a generating function using $\omega = e^{2\pi i/n}$. E.g. $\binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}$.`,
           keywords: ["roots of unity filter", "filter", "every third", "generating function", "coefficient extraction", "extract coefficients", "pattern"],
           importance: "medium",
@@ -1005,9 +1039,9 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "periodic-sequences",
+          name: "Periodicity in Recursive Sequences",
           type: "pattern",
           subject: "algebra",
-          name: "Periodicity in Recursive Sequences",
           latex: String.raw`a_n \text{ eventually repeats with period } p:\ \ a_n = a_{\,n \bmod p}`,
           description: String.raw`Nonlinear recursions built from a fixed rational rule (like $t_n = \frac{5t_{n-1}+1}{25t_{n-2}}$ or $a_{n+1} = |a_n| - a_{n-1}$) are very often periodic: iterate by hand until the initial pair reappears, confirm one full extra cycle, then reduce the target index modulo the period. Watch for pre-periods (a few irregular terms before the cycle starts).`,
           keywords: ["periodic", "cycle", "recursion repeats", "index mod period", "iterate", "periodic recurrence", "period of recursion", "cyclic sequence", "lyness cycle", "mobius map order", "recurrence period", "tan addition recurrence", "1/(1-x)", "recursive", "todd equation", "period 8 recurrence", "x_n over x_{n-1}", "multiplicative periodic recurrence", "period 6 cycle", "pattern"],
@@ -1068,8 +1102,8 @@ window.MATH_SECTIONS.push({
     {
       title: "Counting & Probability",
       groups: [
-        { title: "Symmetry & group counting", ids: ["burnsides-lemma", "polya-enumeration", "reflection-principle"] },
-        { title: "Placement & position", ids: ["gap-method", "counting-blocks", "losing-positions", "geometric-probability"] }
+        { title: "Symmetry & Group Counting", ids: ["burnsides-lemma", "polya-enumeration", "reflection-principle"] },
+        { title: "Placement & Position", ids: ["gap-method", "counting-blocks", "grid-path-fill", "losing-positions", "geometric-probability"] }
       ],
       formulas: [
         {
@@ -1082,6 +1116,17 @@ window.MATH_SECTIONS.push({
           keywords: ["game", "nim", "p positions", "winning strategy", "periodic pattern", "take away", "method", "game analysis", "pattern"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "grid-path-fill",
+          name: "Counting Paths by Filling the Grid",
+          type: "pattern",
+          subject: "counting",
+          latex: String.raw`N(\text{cell}) = \sum_{\text{cells that step to it}} N(\cdot), \qquad N(\text{start}) = 1, \qquad N(\text{blocked}) = 0`,
+          description: String.raw`Write $1$ at the start, then sweep the grid writing in each cell the sum of the cells that can step into it. The number at the destination is the answer. A blocked cell is simply a $0$, which is what makes this beat the closed form: $\binom{m+n}{m}$ counts right/up paths only on a clear grid, and once two or three squares are removed, subtracting paths through each one turns into inclusion-exclusion over their intersections. The sweep never gets harder. It also does not care what the step set is — right and up reproduce Pascal's triangle, and allowing a diagonal step as well gives the Delannoy numbers $1, 3, 13, 63, 321, \dots$ down the main diagonal.`,
+          keywords: ["counting paths with obstacles", "blocked squares", "potholes", "pipe stepping", "label the grid", "fill in the grid", "grid path dynamic programming", "paths avoiding a point", "how many ways to get from a to b", "pascal grid", "delannoy", "diagonal steps", "walk on a grid", "method", "pattern"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "gap-method",

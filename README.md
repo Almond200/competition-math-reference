@@ -1,8 +1,8 @@
 # Competition Math Reference
 
-A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 492 cards
+A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 518 cards
 covering formulas, general techniques, and recurring problem formats, plus a database of
-~500 past contest problems cross-linked to the cards their solutions run through.
+1357 past contest problems cross-linked to the cards their solutions run through.
 
 Fully static: no build step, no server, no dependencies to install.
 
@@ -47,7 +47,7 @@ Hybrid retrieval, rebuilt from scratch and measured rather than tuned by eye.
 Press `/` to focus the box, `Esc` to clear.
 
 `tools/search-eval.html` runs 171 labelled queries against the live app and diffs every one
-against `tools/eval-baseline.json`. Current: 154/171 top-1, 97.1% top-3, MRR 0.935.
+against `tools/eval-baseline.json`. Current: 155/171 top-1, 96.5% top-3, MRR 0.937.
 **Wait for the semantic vectors to load before reading results**, or the run under-reports
 by about two points.
 
@@ -57,12 +57,23 @@ by about two points.
   to the tiers from `high` down to `lowest`.
 - **Problem database** (`Database`) lists past contest problems by year and family, each
   linked to the cards its solution uses, with a one-line strategy note.
-- **Study lists** (`Lists`) let you star cards and build filtered sets.
+- **Study lists** (`Lists`) hold 27 curated sets alongside your own. Twelve contest routes
+  (tier x subject) plus four olympiad ones are *complete by construction* — every card
+  carrying that level and subject is in them, which `tools/check-lists.py` enforces. A list
+  you build yourself is grouped into sections automatically, by matching its cards against
+  the hand-written section headings already used across the built-in lists.
 - **Diagrams** are computed from exact geometry rather than sketched, so every point is a
   true intersection, foot or tangency. Configuration-heavy cards also show their figure on
   the card face.
 - **Interactive widgets** on selected cards: drag the vertices and watch the invariant hold.
 - **Advanced search** builds a query from tag chips across the whole library.
+- **Settings** (`#/settings`) cover theme, density, text size, section layout (cards or a
+  wiki-style A-Z index), keyword chips, figures on card faces, and **notation** — a card
+  offering an expanded form shows its terms written out instead of a sigma.
+- **Experimental** toys, in `lab/`, opening in their own tab and loading only the data
+  files so they cannot destabilise the app: a **Formula Web** that draws every card as a
+  node and traces the shortest chain of authored links between any two, and a **Quiz** that
+  shows a statement and figure and asks you to name it.
 - Light and dark themes; KaTeX throughout; `copy tex` and `copy asy` on every card.
 
 ## Running
@@ -92,10 +103,18 @@ js/data/diagrams/*.js          computed SVG figures, keyed by card id
 js/data/problems/*.js          contest problem database
 js/geo-interactive.js          draggable geometry widgets
 js/search-semantic.js          semantic channel (loads js/data/search-vectors.*)
+js/data/built-in-lists.js      curated study lists: routes, configurations, curiosities
+lab/                           experimental pages (formula web, quiz) + their shared loader
 tools/build-search-index.py    offline: rebuilds the embeddings and glossary
 tools/search-eval.html         search relevance harness
 tools/validate-problem-db.js   checks every problem's card and topic ids resolve
+tools/scan-conventions.py      the census behind CONVENTIONS.md; fails on a broken rule
+tools/check-diagrams.py        every figure fits its canvas and no two labels collide
+tools/check-lists.py           list ids resolve, and every route is complete
+tools/check-lab.sh             parse-checks the inline script of each lab page
 ```
+
+Run all five checkers before committing; each exits non-zero on a finding.
 
 A card's write-up, examples and diagram are all keyed by its id in flat maps, so **moving a
 card between files only moves the card object**; nothing else needs to follow it.

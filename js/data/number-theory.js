@@ -203,9 +203,9 @@ window.MATH_SECTIONS.push({
         {
           id: "modular-basics",
           name: "Congruence Rules",
-          latex: String.raw`a \equiv b \pmod m \iff m \mid (a - b); \qquad ka \equiv kb \pmod m \implies a \equiv b \pmod{m / \gcd(k, m)}`,
-          description: String.raw`Congruences add, subtract, multiply, and raise to powers termwise — treat $\equiv$ almost like $=$. The one thing you cannot do is divide freely: cancelling a factor $k$ shrinks the modulus to $m/\gcd(k,m)$, so cancellation is clean only when $\gcd(k, m) = 1$ (otherwise use the modular inverse, which exists exactly then).`,
-          keywords: ["modular arithmetic", "congruence", "mod rules", "cancellation", "cannot divide", "add multiply mod", "residue"],
+          latex: String.raw`x \equiv a,\; y \equiv b \pmod m \implies \begin{cases} x \pm y \equiv a \pm b \\ xy \equiv ab \\ x/y \equiv ab^{-1} & \text{if } \gcd(b,m)=1 \end{cases} \qquad ka \equiv kb \implies a \equiv b \pmod{m/\gcd(k,m)}`,
+          description: String.raw`Congruences add, subtract and multiply termwise, so $\equiv$ behaves almost like $=$. Division works too, but only as multiplication by an inverse: if $\gcd(y, m) = 1$ then $x/y$ means $x y^{-1}$, and that inverse exists exactly when $y$ and $m$ are coprime. Cancelling a common factor $k$ instead shrinks the modulus to $m/\gcd(k,m)$. Exponents are the one place the pattern breaks: you may reduce a base mod $m$ freely, but an exponent reduces mod $\varphi(m)$, never mod $m$.`,
+          keywords: ["modular arithmetic", "congruence", "mod rules", "cancellation", "cannot divide", "add multiply mod", "residue", "divide mod n", "a mod n divided by b mod n", "termwise rules", "reduce the exponent"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
@@ -282,24 +282,6 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10"]
         },
         {
-          id: "squares-mod-small",
-          name: "Quadratic Residues",
-          latex: String.raw`x^2 \bmod 4 \in \{0, 1\}, \qquad x^2 \bmod 8 \in \{0, 1, 4\}, \qquad x^2 \bmod 9 \in \{0,1,4,7\}`,
-          description: String.raw`First move for "no integer solutions" proofs: check the equation mod 4, 8, 9, or 16. Odd squares are $1 \pmod 8$.`,
-          keywords: ["squares mod 4", "no solutions", "residues", "parity of squares", "small moduli"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "eulers-criterion",
-          name: "Euler's Criterion",
-          latex: String.raw`a^{\frac{p-1}{2}} \equiv \left(\frac{a}{p}\right) \pmod{p}`,
-          description: String.raw`For odd prime $p$: the power is $+1$ if $a$ is a nonzero square mod $p$, $-1$ otherwise. $-1$ is a square mod $p$ iff $p \equiv 1 \pmod 4$.`,
-          keywords: ["quadratic residue", "legendre symbol", "minus one square", "euler criterion", "quadratic residue test", "a to the (p-1)/2 mod p"],
-          importance: "low",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "last-digit-patterns",
           name: "Last Digits of Squares & Cubes mod 9",
           latex: String.raw`n^2 \bmod 10 \in \{0, 1, 4, 5, 6, 9\}, \qquad n^3 \bmod 9 \in \{0, 1, 8\}`,
@@ -318,15 +300,6 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "quadratic-reciprocity",
-          name: "Quadratic Reciprocity",
-          latex: String.raw`\left(\tfrac{p}{q}\right)\left(\tfrac{q}{p}\right) = (-1)^{\frac{p-1}{2}\cdot\frac{q-1}{2}}, \quad \left(\tfrac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}, \quad \left(\tfrac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}, \quad \left(\tfrac{a}{p}\right) \equiv a^{(p-1)/2}\!\pmod p`,
-          description: String.raw`For odd primes $p \ne q$: the symbols agree unless both are $3 \pmod 4$. Supplements: $\left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}$ and $\left(\frac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}$ (so 2 is a QR iff $p \equiv \pm 1 \bmod 8$).`,
-          keywords: ["reciprocity", "legendre symbol", "is a square mod p", "quadratic reciprocity", "legendre symbol reciprocity", "law of quadratic reciprocity"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
           id: "crt-solution-counting",
           name: "Counting Solutions via CRT",
           latex: String.raw`\#\{x \bmod mn : f(x) \equiv 0\} = \#\{x \bmod m\} \cdot \#\{x \bmod n\} \quad (\gcd(m,n)=1)`,
@@ -334,24 +307,6 @@ window.MATH_SECTIONS.push({
           keywords: ["count solutions", "congruence", "multiply", "automorphic numbers"],
           importance: "medium",
           level: ["AIME"]
-        },
-        {
-          id: "jacobi-symbol",
-          name: "Jacobi Symbol",
-          latex: String.raw`\left(\frac{a}{n}\right) = \prod_i \left(\frac{a}{p_i}\right)^{e_i}, \qquad \left(\frac{a}{n}\right)\!\left(\frac{b}{n}\right) = \left(\frac{ab}{n}\right), \qquad \left(\frac{m}{n}\right)\!\left(\frac{n}{m}\right) = (-1)^{\frac{m-1}{2}\frac{n-1}{2}}`,
-          description: String.raw`For odd $n = \prod p_i^{e_i}$, the Jacobi symbol is the product of the Legendre symbols over $n$'s prime factors. It is fully multiplicative in the top and bottom and obeys the same reciprocity and supplementary laws as the Legendre symbol — so you can evaluate $\left(\frac{a}{p}\right)$ rapidly by flipping and reducing, with no need to factor the numbers along the way (the practical algorithm for Legendre symbols). Caveat: $\left(\frac{a}{n}\right) = 1$ does not prove $a$ is a quadratic residue mod $n$; only $-1$ certifies a non-residue.`,
-          keywords: ["jacobi symbol", "generalized legendre symbol", "quadratic reciprocity", "multiplicative symbol", "odd modulus", "compute without factoring", "kronecker"],
-          importance: "lowest",
-          level: ["Olympiad"]
-        },
-        {
-          id: "gauss-lemma-qr",
-          name: "Gauss's Lemma (Quadratic Residues)",
-          latex: String.raw`\left(\frac{a}{p}\right) = (-1)^{\mu}, \qquad \mu = \#\Big\{ 1 \le k \le \tfrac{p-1}{2} : \ (ka \bmod p) > \tfrac{p}{2} \Big\}`,
-          description: String.raw`To decide whether $a$ is a quadratic residue mod an odd prime $p$, look at the least positive residues of $a, 2a, \dots, \frac{p-1}{2}a$ and count how many exceed $p/2$ (the "negative" ones); the Legendre symbol is $(-1)$ to that count $\mu$. It is the workhorse behind the proofs of quadratic reciprocity and of the supplementary law $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$.`,
-          keywords: ["gauss lemma", "quadratic residue", "legendre symbol", "negative least residues", "count residues", "reciprocity proof", "supplementary law"],
-          importance: "lowest",
-          level: ["Olympiad"]
         },
         {
           id: "freshmans-dream",
@@ -370,6 +325,56 @@ window.MATH_SECTIONS.push({
           keywords: ["n^k - n", "n^3 - n divisible by 6", "n^5 - n divisible by 30", "fermat little consequence", "universal divisor", "2730", "consecutive integers"],
           importance: "low",
           level: ["AMC12", "AIME"]
+        }
+      ]
+    },
+    {
+      title: "Quadratic Residues",
+      formulas: [
+        {
+          id: "squares-mod-small",
+          name: "Quadratic Residues",
+          latex: String.raw`x^2 \bmod 4 \in \{0, 1\}, \qquad x^2 \bmod 8 \in \{0, 1, 4\}, \qquad x^2 \bmod 9 \in \{0,1,4,7\}`,
+          description: String.raw`First move for "no integer solutions" proofs: check the equation mod 4, 8, 9, or 16. Odd squares are $1 \pmod 8$.`,
+          keywords: ["squares mod 4", "no solutions", "residues", "parity of squares", "small moduli"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "eulers-criterion",
+          name: "Euler's Criterion",
+          latex: String.raw`a^{\frac{p-1}{2}} \equiv \left(\frac{a}{p}\right) \pmod{p}`,
+          description: String.raw`For odd prime $p$: the power is $+1$ if $a$ is a nonzero square mod $p$, $-1$ otherwise. $-1$ is a square mod $p$ iff $p \equiv 1 \pmod 4$.`,
+          keywords: ["quadratic residue", "legendre symbol", "minus one square", "euler criterion", "quadratic residue test", "a to the (p-1)/2 mod p"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "quadratic-reciprocity",
+          name: "Quadratic Reciprocity",
+          latex: String.raw`\left(\tfrac{p}{q}\right)\left(\tfrac{q}{p}\right) = (-1)^{\frac{p-1}{2}\cdot\frac{q-1}{2}}, \quad \left(\tfrac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}, \quad \left(\tfrac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}, \quad \left(\tfrac{a}{p}\right) \equiv a^{(p-1)/2}\!\pmod p`,
+          description: String.raw`For odd primes $p \ne q$: the symbols agree unless both are $3 \pmod 4$. Supplements: $\left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}$ and $\left(\frac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}$ (so 2 is a QR iff $p \equiv \pm 1 \bmod 8$).`,
+          keywords: ["reciprocity", "legendre symbol", "is a square mod p", "quadratic reciprocity", "legendre symbol reciprocity", "law of quadratic reciprocity"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "jacobi-symbol",
+          name: "Jacobi Symbol",
+          latex: String.raw`\left(\frac{a}{n}\right) = \prod_i \left(\frac{a}{p_i}\right)^{e_i}, \qquad \left(\frac{a}{n}\right)\!\left(\frac{b}{n}\right) = \left(\frac{ab}{n}\right), \qquad \left(\frac{m}{n}\right)\!\left(\frac{n}{m}\right) = (-1)^{\frac{m-1}{2}\frac{n-1}{2}}`,
+          description: String.raw`For odd $n = \prod p_i^{e_i}$, the Jacobi symbol is the product of the Legendre symbols over $n$'s prime factors. It is fully multiplicative in the top and bottom and obeys the same reciprocity and supplementary laws as the Legendre symbol — so you can evaluate $\left(\frac{a}{p}\right)$ rapidly by flipping and reducing, with no need to factor the numbers along the way (the practical algorithm for Legendre symbols). Caveat: $\left(\frac{a}{n}\right) = 1$ does not prove $a$ is a quadratic residue mod $n$; only $-1$ certifies a non-residue.`,
+          keywords: ["jacobi symbol", "generalized legendre symbol", "quadratic reciprocity", "multiplicative symbol", "odd modulus", "compute without factoring", "kronecker"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
+          id: "gauss-lemma-qr",
+          name: "Gauss's Lemma (Quadratic Residues)",
+          latex: String.raw`\left(\frac{a}{p}\right) = (-1)^{\mu}, \qquad \mu = \#\Big\{ 1 \le k \le \tfrac{p-1}{2} : \ (ka \bmod p) > \tfrac{p}{2} \Big\}`,
+          description: String.raw`To decide whether $a$ is a quadratic residue mod an odd prime $p$, look at the least positive residues of $a, 2a, \dots, \frac{p-1}{2}a$ and count how many exceed $p/2$ (the "negative" ones); the Legendre symbol is $(-1)$ to that count $\mu$. It is the workhorse behind the proofs of quadratic reciprocity and of the supplementary law $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$.`,
+          keywords: ["gauss lemma", "quadratic residue", "legendre symbol", "negative least residues", "count residues", "reciprocity proof", "supplementary law"],
+          importance: "lowest",
+          level: ["Olympiad"]
         }
       ]
     },
@@ -416,6 +421,7 @@ window.MATH_SECTIONS.push({
           id: "lucas-theorem",
           name: "Lucas' Theorem",
           latex: String.raw`\binom{m}{n} \equiv \prod_{i} \binom{m_i}{n_i} \pmod{p}`,
+          latexPlain: String.raw`\binom{m}{n} \equiv \binom{m_0}{n_0}\binom{m_1}{n_1}\cdots\binom{m_k}{n_k} \pmod{p}, \qquad m = (m_k\ldots m_1m_0)_p`,
           description: String.raw`Compare base-$p$ digits: $\binom{m}{n}$ mod $p$ is the product of digit-wise binomials. $\binom{m}{n}$ is odd iff the binary digits of $n$ are a submask of $m$'s.`,
           keywords: ["binomial mod p", "base p digits", "odd binomial", "pascal parity"],
           importance: "medium",
@@ -617,15 +623,6 @@ window.MATH_SECTIONS.push({
       title: "Special Numbers & Sequences",
       formulas: [
         {
-          id: "farey-sequences",
-          name: "Farey Sequences & Mediants",
-          latex: String.raw`\frac{a}{b}, \frac{c}{d} \text{ Farey neighbors} \iff bc - ad = 1; \qquad \text{mediant} = \frac{a + c}{b + d}`,
-          description: String.raw`$F_n$ lists reduced fractions in $[0,1]$ with denominator $\le n$ in order. The mediant of two neighbors is the first fraction to appear between them (in $F_{b+d}$). $|F_n| \approx \frac{3n^2}{\pi^2}$.`,
-          keywords: ["farey", "mediant", "neighbors", "stern brocot", "fractions between"],
-          importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "wolstenholme",
           name: "Wolstenholme's Theorem",
           latex: String.raw`\binom{2p}{p} \equiv 2 \pmod{p^3} \quad (p \ge 5)`,
@@ -649,24 +646,6 @@ window.MATH_SECTIONS.push({
           latex: String.raw`F_n = 2^{2^n} + 1, \qquad F_0 F_1 \cdots F_{n-1} = F_n - 2`,
           description: String.raw`The product identity shows distinct Fermat numbers are pairwise coprime — hence infinitely many primes. Only $F_0, \dots, F_4$ ($3, 5, 17, 257, 65537$) are known to be prime.`,
           keywords: ["fermat number", "pairwise coprime", "product identity", "65537"],
-          importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "continued-fraction-convergents",
-          name: "Continued Fraction Convergents",
-          latex: String.raw`p_k q_{k-1} - p_{k-1} q_k = (-1)^{k-1}`,
-          description: String.raw`Consecutive convergents $\frac{p_k}{q_k}$ of a continued fraction are Farey neighbors — the same $|bc - ad| = 1$ relation. Convergents give the best rational approximations, e.g. $\frac{22}{7}$ and $\frac{355}{113}$ for $\pi$.`,
-          keywords: ["continued fraction", "convergents", "best approximation", "farey neighbors"],
-          importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
-          id: "floor-sum-reciprocity",
-          name: "Floor-Sum Reciprocity",
-          latex: String.raw`\sum_{k=1}^{q-1} \left\lfloor \frac{kp}{q} \right\rfloor = \frac{(p-1)(q-1)}{2} \qquad (\gcd(p, q) = 1)`,
-          description: String.raw`The floors count lattice points under the diagonal of a $p \times q$ rectangle — and by symmetry the diagonal (which hits no interior lattice point when $\gcd = 1$) splits the $(p-1)(q-1)$ interior points evenly. Equivalently $\lfloor \frac{kp}{q} \rfloor + \lfloor \frac{(q-k)p}{q} \rfloor = p - 1$ pairs terms.`,
-          keywords: ["floor sum", "lattice points under line", "reciprocity", "diagonal"],
           importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
@@ -707,6 +686,47 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "carmichael-numbers",
+          name: "Carmichael Numbers & Pseudoprimes",
+          latex: String.raw`\text{composite } n \text{ with } b^{n-1} \equiv 1 \pmod n \ \forall \gcd(b,n)=1; \quad \text{Korselt: } n \text{ squarefree},\ (p-1)\mid(n-1)\ \forall p\mid n`,
+          description: String.raw`A Fermat pseudoprime to base $b$ is a composite $n$ that nonetheless passes Fermat's test $b^{n-1}\equiv 1$; a Carmichael number passes it for every base coprime to $n$ — an "absolute" pseudoprime that fools the Fermat primality test entirely. Korselt's criterion characterizes them: squarefree with $(p-1)\mid(n-1)$ for each prime factor. The smallest is $561 = 3\cdot 11\cdot 17$. (Not to be confused with the Carmichael function $\lambda(n)$.)`,
+          keywords: ["carmichael number", "fermat pseudoprime", "korselt criterion", "561", "absolute pseudoprime", "primality test fooled"],
+          importance: "lower",
+          level: ["Olympiad"]
+        },
+        {
+          id: "base10-curiosities",
+          name: "Base-10 Curiosities",
+          latex: String.raw`\tfrac17 = 0.\overline{142857}, \quad 153 = 1^3+5^3+3^3, \quad 6174 = \text{Kaprekar's constant}`,
+          description: String.raw`Cool-to-know decimal quirks. Cyclic number $142857$: $\frac17 = 0.\overline{142857}$, and multiplying by $1$–$6$ just rotates its digits ($2\times = 285714$, …), while $\times 7 = 999999$. Narcissistic (Armstrong) numbers equal the sum of their own digits each raised to the digit-count: $153 = 1^3+5^3+3^3$ (also $370, 371, 407$). Kaprekar's constant $6174$: take any 4-digit number (not all identical digits), subtract the ascending arrangement from the descending, and repeat — you reach $6174$ within $7$ steps and stay there. Rarely "useful," always fun.`,
+          keywords: ["142857", "cyclic number", "1/7 decimal", "narcissistic number", "armstrong number", "153", "kaprekar constant", "6174", "digit curiosities", "recreational"],
+          importance: "lowest",
+          level: ["MATHCOUNTS"]
+        }
+      ]
+    },
+    {
+      title: "Continued Fractions & Representations",
+      formulas: [
+        {
+          id: "farey-sequences",
+          name: "Farey Sequences & Mediants",
+          latex: String.raw`\frac{a}{b}, \frac{c}{d} \text{ Farey neighbors} \iff bc - ad = 1; \qquad \text{mediant} = \frac{a + c}{b + d}`,
+          description: String.raw`$F_n$ lists reduced fractions in $[0,1]$ with denominator $\le n$ in order. The mediant of two neighbors is the first fraction to appear between them (in $F_{b+d}$). $|F_n| \approx \frac{3n^2}{\pi^2}$.`,
+          keywords: ["farey", "mediant", "neighbors", "stern brocot", "fractions between"],
+          importance: "lowest",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "continued-fraction-convergents",
+          name: "Continued Fraction Convergents",
+          latex: String.raw`p_k q_{k-1} - p_{k-1} q_k = (-1)^{k-1}`,
+          description: String.raw`Consecutive convergents $\frac{p_k}{q_k}$ of a continued fraction are Farey neighbors — the same $|bc - ad| = 1$ relation. Convergents give the best rational approximations, e.g. $\frac{22}{7}$ and $\frac{355}{113}$ for $\pi$.`,
+          keywords: ["continued fraction", "convergents", "best approximation", "farey neighbors"],
+          importance: "lowest",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "beatty-theorem",
           name: "Beatty's Theorem (Rayleigh)",
           latex: String.raw`\alpha, \beta \text{ irrational},\ \tfrac1\alpha + \tfrac1\beta = 1 \;\Rightarrow\; \{\lfloor n\alpha\rfloor\} \text{ and } \{\lfloor n\beta\rfloor\} \text{ partition } \mathbb{Z}^+`,
@@ -725,22 +745,13 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
-          id: "carmichael-numbers",
-          name: "Carmichael Numbers & Pseudoprimes",
-          latex: String.raw`\text{composite } n \text{ with } b^{n-1} \equiv 1 \pmod n \ \forall \gcd(b,n)=1; \quad \text{Korselt: } n \text{ squarefree},\ (p-1)\mid(n-1)\ \forall p\mid n`,
-          description: String.raw`A Fermat pseudoprime to base $b$ is a composite $n$ that nonetheless passes Fermat's test $b^{n-1}\equiv 1$; a Carmichael number passes it for every base coprime to $n$ — an "absolute" pseudoprime that fools the Fermat primality test entirely. Korselt's criterion characterizes them: squarefree with $(p-1)\mid(n-1)$ for each prime factor. The smallest is $561 = 3\cdot 11\cdot 17$. (Not to be confused with the Carmichael function $\lambda(n)$.)`,
-          keywords: ["carmichael number", "fermat pseudoprime", "korselt criterion", "561", "absolute pseudoprime", "primality test fooled"],
-          importance: "lower",
-          level: ["Olympiad"]
-        },
-        {
-          id: "base10-curiosities",
-          name: "Base-10 Curiosities",
-          latex: String.raw`\tfrac17 = 0.\overline{142857}, \quad 153 = 1^3+5^3+3^3, \quad 6174 = \text{Kaprekar's constant}`,
-          description: String.raw`Cool-to-know decimal quirks. Cyclic number $142857$: $\frac17 = 0.\overline{142857}$, and multiplying by $1$–$6$ just rotates its digits ($2\times = 285714$, …), while $\times 7 = 999999$. Narcissistic (Armstrong) numbers equal the sum of their own digits each raised to the digit-count: $153 = 1^3+5^3+3^3$ (also $370, 371, 407$). Kaprekar's constant $6174$: take any 4-digit number (not all identical digits), subtract the ascending arrangement from the descending, and repeat — you reach $6174$ within $7$ steps and stay there. Rarely "useful," always fun.`,
-          keywords: ["142857", "cyclic number", "1/7 decimal", "narcissistic number", "armstrong number", "153", "kaprekar constant", "6174", "digit curiosities", "recreational"],
+          id: "floor-sum-reciprocity",
+          name: "Floor-Sum Reciprocity",
+          latex: String.raw`\sum_{k=1}^{q-1} \left\lfloor \frac{kp}{q} \right\rfloor = \frac{(p-1)(q-1)}{2} \qquad (\gcd(p, q) = 1)`,
+          description: String.raw`The floors count lattice points under the diagonal of a $p \times q$ rectangle — and by symmetry the diagonal (which hits no interior lattice point when $\gcd = 1$) splits the $(p-1)(q-1)$ interior points evenly. Equivalently $\lfloor \frac{kp}{q} \rfloor + \lfloor \frac{(q-k)p}{q} \rfloor = p - 1$ pairs terms.`,
+          keywords: ["floor sum", "lattice points under line", "reciprocity", "diagonal"],
           importance: "lowest",
-          level: ["MATHCOUNTS"]
+          level: ["AIME", "Olympiad"]
         }
       ]
     }

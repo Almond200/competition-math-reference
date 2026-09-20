@@ -9,7 +9,7 @@ $P(n,k)$: fill $k$ slots in order — $n$ choices, then $n-1$, down to $n-k+1$. 
 ## How to use it
 The decision is always "does order matter?", and when in doubt count the ordered version and divide by the overcount — that is safer than guessing, because the overcount is usually easy to name.
 
-Three habits cover most problems. Read $P(n,k)$ as filling slots one at a time with a shrinking menu, which is how "chains of choices" problems appear in disguise. Use the complementary framing $\binom nk=\binom n{n-k}$ whenever the smaller side is easier to count. And when the objects are not all distinct, switch to the multiset formula rather than trying to patch $\binom nk$.
+Three habits cover most problems. Read $P(n,k)$ as filling slots one at a time with a shrinking menu, which is how "chains of choices" problems appear in disguise. Use the [[complementary-counting|complementary framing]] $\binom nk=\binom n{n-k}$ whenever the smaller side is easier to count. And when the objects are not all distinct, switch to [[multiset-permutations|the multiset formula]] rather than trying to patch $\binom nk$.
 
 The common error is mixing the two within one problem — counting an ordered stage and an unordered stage and then multiplying without checking that the second count does not depend on the first.
 
@@ -146,6 +146,24 @@ When the sum has a factor of $k$ in it, substitution alone will not reach it —
 
 ## On contests
 "How many subsets have even size" ($2^{n-1}$), weighted sums via clever substitution, and the roots-of-unity filter's base case. AMC 12 loves substitute-and-evaluate identities.`,
+
+"nested-subset-pairs": String.raw`## Key forms
+- $\#\{(A,B):A\subseteq B\subseteq S\}=3^n$ — three destinations per element
+- $\sum_{k=0}^{n}\binom nk 2^k=3^n$ — the same count organised by $|B|$
+- chains $A_1\subseteq\cdots\subseteq A_m\subseteq S$ give $(m+1)^n$
+
+## Why it works
+Build the pair element by element rather than set by set. For each element of $S$ there are exactly three consistent possibilities: it belongs to $A$, in which case it belongs to $B$ as well; it belongs to $B$ only; or it belongs to neither. The fourth combination, in $A$ but not $B$, is precisely what $A\subseteq B$ forbids. The elements are independent, so the count is $3^n$.
+
+Organising the same count by the size of $B$ gives the identity. There are $\binom nk$ sets $B$ of size $k$, and once $B$ is fixed any of its $2^k$ subsets serves as $A$, so the total is $\sum_k\binom nk 2^k$. That is $(1+2)^n$ by the binomial theorem, so both routes give $3^n$ and each proves the other.
+
+## How to use it
+Recognise the shape: two sets with one required to sit inside the other, and a question asking how many such pairs exist. Counting by element is immediate, while counting by size leads to a binomial sum you then have to evaluate — so use the element argument to get the answer and the sum only if the problem asks for that form.
+
+The extension is worth remembering because it is free. A chain of $m$ nested sets inside $S$ gives each element $m+1$ choices: the first set in the chain it enters, or none at all. Two nested sets is the $m=2$ case, $3^n$.
+
+## On contests
+The AMC and AIME phrasings hide it well — ordered pairs of subsets with a containment condition, or a question about $A\cap B=A$, which is the same statement. Anything of the form "count something for each element independently" beats summing [[binomial-row-sums|binomial row sums]] by hand; if you find yourself evaluating $\sum\binom nk 2^k$, the element argument was available.`,
 
 "hockey-stick": String.raw`## Why it works
 Telescoping Pascal: $\binom{n+1}{r+1} = \binom{n}{r} + \binom{n}{r+1}$, expand the last term repeatedly. Combinatorially: to choose $r+1$ from $\{1..n+1\}$, condition on the largest element chosen — the cases are the diagonal terms.
@@ -411,7 +429,7 @@ Whenever a problem constrains an iterate of $f$, translate it immediately into w
 One family is worth knowing in closed form, because it comes up whenever something steps around a ring: moving $k$ places at a time around $n$ positions splits the $n$ elements into exactly $\\gcd(n,k)$ cycles, each of length $n/\\gcd(n,k)$. The orbit of a single element closes as soon as $mk \\equiv 0 \\pmod n$, which first happens at $m = n/\\gcd(n,k)$, and the orbits partition the ring.
 
 ## On contests
-The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are exactly the divisors of $k$; 2026 AIME I Problem 7 is that question with $k = 6$. [[derangements|Derangements]] ask the complementary question about fixed points, averaging over cycle structure is what [[burnsides-lemma|Burnside's lemma]] does, and counting by *number* of cycles rather than by type is [[stirling-first-kind|Stirling numbers of the first kind]].`,
+The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are exactly the divisors of $k$; 2026 AIME I Problem 7 is that question with $k = 6$. [[derangements|Derangements]] ask the complementary question about fixed points, averaging over cycle structure is what [[burnsides-lemma|Burnside's lemma]] does, and counting by how many cycles there are, rather than by their type, is [[stirling-first-kind|Stirling numbers of the first kind]].`,
 
 "stirling-first-kind": String.raw`## Why it works
 Permutations decompose uniquely into disjoint cycles; $c(n,k)$ counts those with exactly $k$ cycles. Recursion: element $n$ starts its own cycle ($c(n-1,k-1)$) or inserts into any of $n-1$ positions inside existing cycles ($(n-1)c(n-1,k)$).
@@ -636,14 +654,14 @@ The whole difficulty is inventing the boxes. You control that design. Pick a fea
 The signature of a pigeonhole problem is a guarantee — "prove there must exist," "show two of them," a specific number appearing as $k+1$. On AMC/AIME it shows up quietly inside divisibility and geometry existence problems; the art is always the choice of pigeons and holes, never the principle itself.`,
 
 "handshake-lemma": String.raw`## Why it works
-Summing degrees counts each edge at its two endpoints — so the total is even, forcing evenly many odd-degree vertices.
+Summing degrees [[double-counting|counts each edge at its two endpoints]] — so the total is even, forcing evenly many odd-degree vertices.
 
 ## How to use it
 Use it in two directions. Forwards, it converts degree information into an edge count, which is how "each of $n$ people shakes $k$ hands" problems are solved.
 
-Backwards, it is a parity obstruction: since the odd-degree vertices come in pairs, any configuration requiring an odd number of them is impossible. "Can seven people each shake exactly three hands?" is answered instantly — the degree sum would be $21$, an odd number, so no such graph exists.
+Backwards, it is a [[invariants-coloring|parity obstruction]]: since the odd-degree vertices come in pairs, any configuration requiring an odd number of them is impossible. "Can seven people each shake exactly three hands?" is answered instantly — the degree sum would be $21$, an odd number, so no such graph exists.
 
-The lemma also underlies Eulerian path conditions, where the count of odd-degree vertices must be $0$ or $2$, and that count being even is precisely why $1$ or $3$ never occurs.
+The lemma also underlies [[eulerian-paths|Eulerian path conditions]], where the count of odd-degree vertices must be $0$ or $2$, and that count being even is precisely why $1$ or $3$ never occurs.
 
 ## On contests
 Party-handshake parity questions and graph-flavored AMC problems; the double-count template extends to tournaments, committees, and face-edge counts in polyhedra.`,
@@ -794,6 +812,25 @@ Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n
 
 ## On contests
 The elegant path on AMC/AIME counting: any time the answer to a strange-looking count is a clean binomial, a bijection is the intended solution. Also the safest way to handle "sequences with constraints" — transform the constraint away rather than casing on it.`,
+
+"grid-path-fill": String.raw`## Key forms
+- $N(\text{cell})=\sum N(\text{cells that step into it})$, with $N(\text{start})=1$ — the whole method
+- a blocked cell is $N=0$, not a special case — the sweep does not change shape
+- right/up on a clear grid rebuilds Pascal's triangle, so the answer is $\binom{m+n}{m}$
+- right/up/diagonal gives the Delannoy numbers, $1,3,13,63,321,\dots$ along the main diagonal
+
+## Why it works
+Every path into a cell arrives by exactly one final step, so the paths reaching that cell are partitioned by which neighbour they came from. Adding the neighbours' counts therefore counts each path once. That is the same argument as [[recursive-counting|classifying by the last step]], drawn on the grid rather than written as a table, which is why no separate justification is needed: the grid is the recursion.
+
+A removed square needs no new idea. Nothing can stand there, so it holds $0$, and every later sum that would have drawn on it draws on nothing instead.
+
+## How to use it
+Write $1$ at the start. Sweep in an order that fills a cell only after everything stepping into it is already filled — for right/up steps, the bottom row left to right, then the next row up, and so on. Each cell gets the sum of its left and lower neighbours, plus the lower-left diagonal if diagonal steps are allowed. Read the answer off the destination.
+
+Compare with the closed form before choosing. On a clear grid $\binom{m+n}{m}$ is instant and the sweep is a waste. With one forbidden point, subtracting the paths through it is still easy: paths to it times paths from it. From two obstacles on, that subtraction becomes [[pie|inclusion-exclusion]] over the ways a path can meet several of them, and the bookkeeping is where the mistakes live. The sweep costs the same no matter how many squares are gone.
+
+## On contests
+The standard MATHCOUNTS and AMC phrasing is a street map: shortest routes from one corner to another with a closed intersection or a missing block. Filling the grid answers those in one pass, and it is the only practical method once the obstacles interact. Keep [[grid-paths|the binomial count]] for the clear-grid case and reach for the sweep the moment a square is missing.`,
 
 "recursive-counting": String.raw`## Key forms
 - $a_n=\sum(\text{ways to finish})\times a_{\text{smaller}}$ — classify by the last step or the last block
@@ -1199,6 +1236,23 @@ The standard applications are families of lattice paths forbidden to touch, and 
 
 ## On contests
 Olympiad / Putnam level; recognizing "non-intersecting lattice paths" as a determinant is the key move behind many exact product-formula counts.`,
+
+"squared-binomial-sum": String.raw`## Key forms
+- $\sum_{k=0}^{n}\binom nk^2=\binom{2n}{n}$ — the squares of one row of Pascal's triangle
+- $\binom{2n}{n}/4^n$ — the chance two people flipping $n$ coins each tie
+
+## Why it works
+Count the ways to choose $n$ things from $2n$, having split the $2n$ into two halves of size $n$. Any such choice takes some number $k$ from the first half and the remaining $n-k$ from the second, so the choices with a given $k$ number $\binom nk\binom n{n-k}$. Since $\binom n{n-k}=\binom nk$, that is $\binom nk^2$, and summing over $k$ counts every choice exactly once. The total is $\binom{2n}{n}$.
+
+It is [[vandermonde|Vandermonde's identity]] with $m=r=n$, but the special case behaves differently from the general one: the answer collapses to a single binomial coefficient instead of staying a convolution, which is what makes it usable in the middle of a computation.
+
+## How to use it
+Recognise it whenever squares of binomial coefficients are being summed, and replace the whole sum with one coefficient. The reverse direction matters just as much: a lone $\binom{2n}{n}$ can be opened up into $\sum_k\binom nk^2$ when you need a sum to compare against another sum.
+
+The probability reading is the one worth carrying. Two people each flip $n$ fair coins; the chance they get the same number of heads is $\sum_k\binom nk^2/4^n$, which the identity turns into $\binom{2n}{n}/4^n$. Everything else follows by symmetry — the two of them are equally likely to be ahead, so each wins with probability $\tfrac12\left(1-\binom{2n}{n}/4^n\right)$.
+
+## On contests
+AIME uses it to close a sum that would otherwise need generating functions, and AMC uses the coin version. The signed companion, [[alternating-squared-binomials|the alternating sum of squared binomials]], comes from the same $(1-x)^m(1+x)^m$ expansion and is worth learning alongside it.`,
 
 "alternating-squared-binomials": String.raw`## Why it works
 Compare the coefficient of $x^m$ on both sides of $(1-x)^m(1+x)^m = (1-x^2)^m$.

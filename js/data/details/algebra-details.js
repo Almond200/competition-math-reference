@@ -4,22 +4,22 @@ window.MATH_DETAILS = window.MATH_DETAILS || {};
 Object.assign(window.MATH_DETAILS, {
 
 "quadratic-formula": String.raw`## Why it works
-Complete the square on $ax^2 + bx + c = 0$: divide by $a$, add $\left(\frac{b}{2a}\right)^2$ to both sides, take the root. The discriminant $\Delta = b^2 - 4ac$ is what sits under the radical, hence controls the nature of the roots.
+[[vertex-form|Complete the square]] on $ax^2 + bx + c = 0$: divide by $a$, add $\left(\frac{b}{2a}\right)^2$ to both sides, take the root. The discriminant $\Delta = b^2 - 4ac$ is what sits under the radical, hence controls the nature of the roots.
 
 ## How to use it
-Before grinding the formula, check for factoring and for Vieta shortcuts (sum/product may be all the problem needs). $\Delta$ answers qualitative questions alone: real/distinct/rational roots, tangency of a line to a parabola ($\Delta = 0$), and integer-solution feasibility ($\Delta$ must be a perfect square for rational roots of integer quadratics).
+Before grinding the formula, check for factoring and for [[vietas-quadratic|Vieta shortcuts]] (sum/product may be all the problem needs). $\Delta$ answers qualitative questions alone: real/distinct/rational roots, [[tangency-condition|tangency of a line to a parabola]] ($\Delta = 0$), and integer-solution feasibility ($\Delta$ must be a perfect square for rational roots of integer quadratics).
 
 ## On contests
 "For how many integer $k$ does this quadratic have rational/integer roots" = perfect-square discriminant analysis, a recurring AMC/AIME pattern. Tangency-via-discriminant handles many circle/parabola contact problems without calculus.`,
 
 "vietas-quadratic": String.raw`## Why it works
-Factor $ax^2 + bx + c = a(x - r)(x - s)$ and expand: matching coefficients gives $r + s = -\frac{b}{a}$, $rs = \frac{c}{a}$.
+Factor $ax^2 + bx + c = a(x - r)(x - s)$ and expand ([[vietas-general|the same argument at any degree]]): matching coefficients gives $r + s = -\frac{b}{a}$, $rs = \frac{c}{a}$.
 
 ## How to use it
-Compute symmetric expressions of roots without finding the roots: $r^2 + s^2 = (r+s)^2 - 2rs$, $\frac{1}{r} + \frac{1}{s} = \frac{r+s}{rs}$, $|r - s| = \frac{\sqrt{\Delta}}{|a|}$. Also in reverse: numbers with known sum $s$ and product $p$ are roots of $x^2 - sx + p = 0$.
+Compute symmetric expressions of roots without finding the roots: $r^2 + s^2 = (r+s)^2 - 2rs$, $\frac{1}{r} + \frac{1}{s} = \frac{r+s}{rs}$, $|r - s| = \frac{\sqrt{\Delta}}{|a|}$, the [[quadratic-formula|discriminant]] again. Also in reverse: numbers with known sum $s$ and product $p$ are roots of $x^2 - sx + p = 0$.
 
 ## On contests
-Endless AMC use. The reverse direction cracks systems like $x + y = 7$, $xy = 12$ instantly, and "minimal polynomial" constructions on AIME.`,
+Endless AMC use. The reverse direction cracks systems like $x + y = 7$, $xy = 12$ instantly, and "minimal polynomial" constructions on AIME. For power sums of the roots rather than these low symmetric ones, [[newtons-sums|Newton's sums]] take over.`,
 
 "vietas-general": String.raw`## Why it works
 Expand $a_n(x - r_1)\cdots(x - r_n)$: the coefficient of $x^{n-k}$ collects all products of $k$ roots with sign $(-1)^k$. That is exactly the elementary symmetric polynomial $e_k$. Written out for a monic quartic $x^4+bx^3+cx^2+dx+e$, that reads $\sum r=-b$, $\sum_{i\lt j}r_ir_j=c$, $\sum r_ir_jr_k=-d$ and $\prod r=e$ — the signs simply alternate as the number of roots in each product grows.
@@ -115,7 +115,7 @@ Quartic equations on AMC 12/AIME with symmetric coefficients are begging for thi
 Complete the square: $y = a\left(x + \frac{b}{2a}\right)^2 + c - \frac{b^2}{4a}$. The squared term is minimized (or maximized, $a\lt 0$) exactly at $x = -\frac{b}{2a}$, and symmetry about that vertical line is manifest.
 
 ## How to use it
-Optimization without calculus. The symmetry fact is used more than the extremum: roots average to $-\frac{b}{2a}$; equal function values occur at points equidistant from the axis; "the parabola passes through $(p, k)$ and $(q, k)$" pins the axis at $x = \frac{p+q}{2}$.
+Optimization without calculus, and the reason [[max-product-fixed-sum|a fixed sum maximises its product in the middle]]. The symmetry fact is used more than the extremum: [[vietas-quadratic|roots average]] to $-\frac{b}{2a}$; equal function values occur at points equidistant from the axis; "the parabola passes through $(p, k)$ and $(q, k)$" pins the axis at $x = \frac{p+q}{2}$.
 
 ## On contests
 Max-area/max-product problems on AMC 10 are quadratic vertices in disguise. Symmetric-point pairs give the axis instantly, often collapsing a system of conditions to one equation.`,
@@ -247,13 +247,15 @@ The shift-and-subtract derivation matters more than the formula — it also crac
 Infinite geometric setups (bouncing balls' total distance, shaded fractal areas, probabilities of "first success on turn $k$") pervade AMC and AIME. Two-series tricks: sum of even-index terms is $\frac{ar^{\,\cdot}}{1-r^2}$-flavored — split by parity when asked.`,
 
 "power-sums": String.raw`## Why it works
-$\sum k$ is Gauss pairing. $\sum k^2$ and $\sum k^3$ follow by telescoping $(k+1)^3 - k^3$ and $(k+1)^4 - k^4$, or induction. The cube-sum-equals-square-of-sum identity also has a beautiful counting proof (count ordered pairs of divisors... or the L-shaped gnomon picture).
+$\sum_{k=1}^{n} k$ is Gauss pairing. $\sum_{k=1}^{n} k^2$ and $\sum_{k=1}^{n} k^3$ follow by telescoping $(k+1)^3 - k^3$ and $(k+1)^4 - k^4$, or induction. The cube-sum-equals-square-of-sum identity also has a beautiful counting proof (count ordered pairs of divisors... or the L-shaped gnomon picture).
 
 ## How to use it
-Any polynomial summed over $1..n$ reduces to these three (plus $\sum 1 = n$). Sum of odds $= n^2$, sum of evens $= n(n+1)$. For sums over other ranges, subtract prefix sums.
+Any polynomial summed over $k = 1$ to $n$ reduces to these three, plus $\sum_{k=1}^{n} 1 = n$. Sum of odds $= n^2$, sum of evens $= n(n+1)$.
+
+Every formula on this card starts at $k = 1$, so a sum that starts anywhere else needs the prefix subtracted first: $\sum_{k=a}^{b} f(k) = \sum_{k=1}^{b} f(k) - \sum_{k=1}^{a-1} f(k)$. The upper limit of the piece you remove is $a-1$, not $a$; using $a$ silently drops the $k = a$ term. The same care applies to the odd and even sums, whose last terms are $2n-1$ and $2n$ rather than $n$, so "the even numbers up to $100$" means $n = 50$.
 
 ## On contests
-Direct evaluations, telescoping setups, and "find $n$ such that the sum is a perfect square" Diophantine questions. The $\left(\sum k\right)^2 = \sum k^3$ identity is periodically tested verbatim.`,
+Direct evaluations, telescoping setups, and "find $n$ such that the sum is a perfect square" Diophantine questions. The $\left(\sum_{k=1}^{n} k\right)^2 = \sum_{k=1}^{n} k^3$ identity is periodically tested verbatim.`,
 
 "telescoping": String.raw`## Key forms
 - if each term can be written as $f(k)-f(k+1)$, the sum collapses to $f(\text{first})-f(\text{last}+1)$ — every interior term cancels against its neighbour, so only the two ends survive
@@ -434,7 +436,7 @@ Occasional but decisive on AMC 12 / AIME — these problems are engineered so th
 Definitions: repeated multiplication for integer exponents, extended to rationals via roots and to negatives via reciprocals so that the addition law $a^{m+n} = a^m a^n$ stays true. Insisting on that one law forces every other rule: division subtracts, giving $\frac{a^m}{a^n}=a^{m-n}$ and hence $a^0=1$ and $a^{-n}=\frac{1}{a^n}$; a power of a power multiplies, giving $(a^m)^n=a^{mn}$ and $(ab)^n=a^nb^n$; and a fractional exponent is a root, so $a^{m/n}=\sqrt[n]{a^m}$.
 
 ## How to use it
-Contest equations want a common base: $4^x = 8^{y}$ → $2^{2x} = 2^{3y}$ → $2x = 3y$. Tower disambiguation: $a^{b^c}$ means $a^{(b^c)}$. Comparisons like $2^{300}$ vs $3^{200}$: take 100th roots ($8$ vs $9$).
+Contest equations want a common base: $4^x = 8^{y}$ → $2^{2x} = 2^{3y}$ → $2x = 3y$. Tower disambiguation: $a^{b^c}$ means $a^{(b^c)}$. Comparisons like $2^{300}$ vs $3^{200}$: take 100th roots ($8$ vs $9$); when the exponents share no convenient factor, take [[log-rules|logarithms]] instead.
 
 ## On contests
 Base-matching solves most AMC exponential equations; root-taking settles size comparisons; and careful tower parsing prevents the standard misread. Combine with mod arithmetic for last-digit questions.`,
@@ -508,7 +510,7 @@ The conversion hub: given one trig value, produce the others (watch quadrant sig
 "Given $\sin\theta + \cos\theta = k$, find $\sin\theta\cos\theta$" — square and use the identity ($= \frac{k^2-1}{2}$): a permanent AMC favorite. Same squaring trick powers $\sin^3 + \cos^3$ and friends via factoring.`,
 
 "common-angle-values": String.raw`## Why it works
-The $45$-$45$-$90$ triangle (legs $1$, hypotenuse $\sqrt2$) and the $30$-$60$-$90$ triangle (sides $1, \sqrt3, 2$) give the values directly as opposite/hypotenuse and adjacent/hypotenuse. The $0^\circ$ and $90^\circ$ entries are the degenerate limits on the unit circle, where $\tan 90^\circ$ blows up (undefined).
+The [[special-right-triangles|two special right triangles]] — legs $1$ with hypotenuse $\sqrt2$, and sides $1, \sqrt3, 2$ — give the values directly as opposite/hypotenuse and adjacent/hypotenuse. The $0^\circ$ and $90^\circ$ entries are the degenerate limits on the unit circle, where $\tan 90^\circ$ blows up (undefined).
 
 ## How to use it
 Memorize the first quadrant once, then reach any angle by taking its reference angle to the $x$-axis and attaching the quadrant sign (ASTC). Know the radian conversions ($\frac{\pi}{6}, \frac{\pi}{4}, \frac{\pi}{3}$) cold — they are the default at AMC 12 / AIME level.
@@ -553,13 +555,13 @@ Choose the $\cos 2\theta$ form that eliminates what you don't want: $2\cos^2 - 1
 Halving/doubling cascades ($\cos\frac{\theta}{2}$ chains), the identity $\sin\theta\cos\theta = \frac{\sin 2\theta}{2}$ inside areas, and power-reduction in AIME sums. Fluency in all three $\cos 2\theta$ forms is assumed by problem writers.`,
 
 "half-angle": String.raw`## Why it works
-Solve the power-reduction forms of $\cos 2\theta$ for the half angle. The tangent versions come from quotienting and clever multiplication by conjugates.
+Solve the power-reduction forms of the [[double-angle|double-angle identities]] for the half angle. The tangent versions come from quotienting and clever multiplication by conjugates.
 
 ## How to use it
-Exact values at $22.5^\circ, 15^\circ, 7.5^\circ$ by repeated halving. The $\tan\frac{\theta}{2} = \frac{1-\cos\theta}{\sin\theta} = \frac{\sin\theta}{1+\cos\theta}$ forms are radical-free — prefer them in geometry (half-angle of a known triangle angle). In triangle problems: $\tan\frac{A}{2} = \frac{r}{s-a}$ connects to the incircle.
+Exact values at $22.5^\circ, 15^\circ, 7.5^\circ$ by repeated halving. The $\tan\frac{\theta}{2} = \frac{1-\cos\theta}{\sin\theta} = \frac{\sin\theta}{1+\cos\theta}$ forms are radical-free — prefer them in geometry (half-angle of a known triangle angle). In triangle problems $\tan\frac{A}{2} = \frac{r}{s-a}$ connects the half angle to [[inradius-area|the incircle]], which [[half-angle-tangent-identity|the half-angle tangent identity]] states in full.
 
 ## On contests
-AIME triangle-trig hybrids use $\tan\frac{A}{2} = \frac{r}{s-a}$ heavily. Nested radicals like $\sqrt{2 + \sqrt2}$ decode as $2\cos 22.5^\circ$ — see also the trig substitution method.`,
+AIME triangle-trig hybrids use $\tan\frac{A}{2} = \frac{r}{s-a}$ heavily. Nested radicals like $\sqrt{2 + \sqrt2}$ decode as $2\cos 22.5^\circ$ — see also [[trig-substitution|the trig substitution method]].`,
 
 "product-sum": String.raw`## Why it works
 Add/subtract pairs of angle-addition formulas: e.g. $\cos(a-b) - \cos(a+b) = 2\sin a\sin b$. The sum-to-product versions are the same equations with substituted variables $a = \frac{x+y}{2}$, $b = \frac{x-y}{2}$.
@@ -800,7 +802,7 @@ The two-term multiplicative rule is the additive one in disguise. Taking logarit
 Todd's equation $x_{n+1}=\frac{1+x_n+x_{n-1}}{x_{n-2}}$ is the third-order member of the same family as Lyness. It carries two independent invariants — quantities unchanged by the map — and their level sets are closed curves, which is what pins every orbit to period 8 regardless of the starting triple.
 
 ## How to use it
-Compute terms exactly (fractions, not decimals) until the initial state recurs; the number of steps is the period $p$. Then $a_n$ depends only on $n \bmod p$ — but align the offset carefully, especially with a pre-period. Recognizing one of the canonical maps above hands you the period before you compute. The Fibonacci case has its own name, the [[pisano-periods|Pisano periods]], and the general modular case is [[periodicity-mod-m|hunting the cycle mod $m$]].
+Compute terms exactly (fractions, not decimals) until the initial state recurs; the number of steps is the period $p$. Then $a_n$ depends only on $n \bmod p$ — but align the offset carefully, especially with a pre-period. Recognizing one of the canonical maps above hands you the period before you compute. The Fibonacci case has its own name, the [[pisano-periods|Pisano periods]], and the general modular case is [[periodicity-mod-m|hunting the cycle]] mod $m$.
 
 ## On contests
 "Find $t_{2020}$" (2020 AIME II #6, period 5-ish after simplification) and endless AMC versions. Contest recursions asking about term two thousand-something are begging you to find a cycle — compute six to ten terms before trying anything clever. The Lyness 5-cycle, the period-6 $a_n-a_{n-1}$ and its multiplicative twin $\frac{x_n}{x_{n-1}}$, Todd's period-8 equation, and the period-9 $|a_n|-a_{n-1}$ are the famous named cases — recognising any of them hands you the period with no computation.`,
@@ -849,7 +851,7 @@ A permanent AMC answer-choice trap: 45 sits among the options whenever the answe
 "relative-motion": String.raw`## Why it works
 Velocities subtract vectorially: in the reference frame of one object, the other moves at the velocity difference, turning a two-body chase into a one-body gap-closing problem. Currents and walkways add a constant drift to the still-medium velocity.
 
-A circular track is the same idea with the gap wrapping around. Two runners starting together are at the same point again exactly when the distance between them, measured along the track, has changed by a whole number of laps. Running the same way, that separation grows at $v_1 - v_2$, so the first meeting is when the faster has run exactly one lap more than the slower — not one lap total, one lap *more*. Running opposite ways the separation closes at $v_1 + v_2$, so they meet when their two distances add to one full lap. After that, meetings repeat at the same interval, and the $k$th meeting is simply $k$ times the first.
+A circular track is the same idea with the gap wrapping around. Two runners starting together are at the same point again exactly when the distance between them, measured along the track, has changed by a whole number of laps. Running the same way, that separation grows at $v_1 - v_2$, so the first meeting is when the faster has run exactly one lap more than the slower, which is one lap of separation rather than one lap in total. Running opposite ways the separation closes at $v_1 + v_2$, so they meet when their two distances add to one full lap. After that, meetings repeat at the same interval, and the $k$th meeting is simply $k$ times the first.
 
 ## How to use it
 Chases: time = initial gap ÷ (speed difference). Meetings: gap ÷ (speed sum). Round trips in a current: upstream and downstream speeds are $v \mp c$, and the round-trip average is below $v$ (harmonic effect). Crossing a river: aim upstream so the along-stream component cancels, or land downstream and use components; the crossing time depends only on the across-stream component.
@@ -1038,6 +1040,25 @@ That is the two-variable half of the topic. For what a single bar does to the gr
 
 ## On contests
 A regular AMC shape, asked either as an area or as a count of lattice points, and the reason "taxicab distance" problems are tractable at all. The tell is bars around both variables, or bars nested inside a shift: the moment you see either, stop solving and start reflecting. The nested case is the one people lose time on, because splitting it into sign cases produces sixteen branches where the symmetry produces four identical pictures.`,
+
+"absolute-value-identities": String.raw`## Key forms
+- $|ab|=|a||b|$, $\left|\frac ab\right|=\frac{|a|}{|b|}$, $|a^n|=|a|^n$ — absolute value is multiplicative
+- $|ax+b|=|a|\left|x+\frac ba\right|$ — the factoring move, and the one worth drilling
+- $|a|^2=a^2$ and $\sqrt{a^2}=|a|$ — the pair that lets you square bars away and get them back
+- $|a+b|$ obeys no identity, only the triangle inequality
+
+## Why it works
+Every one of these follows from $|t|=\pm t$ by checking signs, but the shorter reason is that $|t|$ is the distance from $t$ to $0$, and scaling a number by $a$ scales its distance from $0$ by $|a|$. Multiplication stretches the number line, so absolute value passes through it; addition slides one point relative to another, so it does not, and the most that survives is $|a+b|\le|a|+|b|$.
+
+The factoring identity is the multiplicative rule read backwards. Since $ax+b=a\left(x+\frac ba\right)$, taking absolute values gives $|a|\left|x+\frac ba\right|$ directly.
+
+## How to use it
+Use it to turn any linear expression inside bars into a distance, which is the form every absolute-value equation and inequality wants to be in. $|3x-12|=3|x-4|$, so $|3x-12|\lt 6$ is "within $2$ of $4$", giving $2\lt x\lt 6$ with no casework.
+
+Watch the sign of the coefficient. The factor outside is $|a|$, not $a$: $|-2x+4|=2|x-2|$, and writing $-2|x-2|$ makes a non-negative quantity negative. Squaring is the other reliable move, since $|a|=|b|$ and $a^2=b^2$ say the same thing, which clears bars from both sides of an equation at once.
+
+## On contests
+Most often a setup step rather than the answer: pulling the coefficient out converts a messy $|ax+b|$ into a distance and the problem becomes a picture on the number line. Nested bars are the AMC version, and they unfold from the inside using these same rules — see [[abs-value-graphing|graphing nested absolute values]] when the count of solutions is what is wanted.`,
 
 "absolute-value-rules": String.raw`## Why it works
 $|x|$ is the distance from $x$ to $0$, so $|x - c|$ is the distance from $x$ to $c$. "Within $a$" becomes a two-sided band $-a \lt  x - c \lt  a$; "farther than $a$" becomes two rays. And $\sqrt{x^2} = |x|$ (not $x$) because the principal square root is never negative.

@@ -160,7 +160,7 @@ window.MATH_SECTIONS.push({
           keywords: ["hexagon diagonal", "regular hexagon diagonals", "long diagonal", "short diagonal", "diagonal of a hexagon", "opposite vertices hexagon", "s root 3", "two diagonal lengths"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
-        },,
+        },
         {
           id: "regular-dodecagon",
           name: "Regular Dodecagon of Side $s$",
@@ -258,12 +258,21 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "trig-area",
-          name: "Trigonometric Area",
-          latex: String.raw`A = \frac{1}{2} a b \sin C = 2R^2 \sin A \sin B \sin C`,
-          description: String.raw`Two sides and the included angle, maximized when $C = 90^\circ$. The all-angles form $A = 2R^2\sin A\sin B\sin C$ needs no side lengths at all.`,
-          keywords: ["sine", "included angle", "SAS", "area", "area of a triangle using sine", "area with sine", "half ab sin C", "2R^2 sin A sin B sin C", "area from angles and circumradius"],
-          importance: "low",
+          name: "Area of a Triangle Using Sine",
+          latex: String.raw`A = \tfrac{1}{2} a b \sin C`,
+          description: String.raw`Base times height with the height written as $b\sin C$, so two sides and the angle between them are enough. Largest at $C = 90^\circ$, and unchanged when $C$ is replaced by its supplement, which is what makes it the engine behind area ratios for triangles sharing an angle.`,
+          keywords: ["sine", "included angle", "SAS", "area", "area of a triangle using sine", "area with sine", "half ab sin C", "two sides and the included angle", "area from two sides and the included angle"],
+          importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "trig-area-circumradius",
+          name: "Area from the Angles and the Circumradius",
+          latex: String.raw`A = 2R^2 \sin A \sin B \sin C`,
+          description: String.raw`The one area formula that needs no side length at all: substitute $a = 2R\sin A$ and $b = 2R\sin B$ into $\tfrac12ab\sin C$. Reach for it only when a problem hands you $R$ together with the angles, which is rare; its steadier role is as an identity, since dividing by $R$ turns it into $\tfrac{2A}{R} = 4R\sin A\sin B\sin C$.`,
+          keywords: ["area from angles", "circumradius area", "2R^2 sin A sin B sin C", "all-angles area formula", "area without side lengths"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "max-rectangle-in-triangle",
@@ -313,9 +322,9 @@ window.MATH_SECTIONS.push({
         {
           id: "right-triangle-inradius",
           name: "Right Triangle Inradius",
-          latex: String.raw`r = \frac{a + b - c}{2}, \qquad R = \frac{c}{2}`,
-          description: String.raw`For legs $a, b$ and hypotenuse $c$. Also, by Thales, the circumradius of a right triangle is $R = \frac{c}{2}$ (hypotenuse is a diameter).`,
-          keywords: ["right triangle", "inradius", "hypotenuse", "Thales", "circumradius"],
+          latex: String.raw`r = \frac{a + b - c}{2}, \qquad R = \frac{c}{2}, \qquad a + b = 2r + 2R`,
+          description: String.raw`For legs $a, b$ and hypotenuse $c$. By Thales the hypotenuse is a diameter, so $R = \frac{c}{2}$. Adding the two gives the memorable rearrangement $a + b = 2r + 2R$: in a right triangle the legs sum to twice the inradius plus twice the circumradius, which turns a question about $r$ and $R$ into one about the legs and back.`,
+          keywords: ["right triangle", "inradius", "hypotenuse", "Thales", "circumradius", "a + b = 2r + 2R", "legs sum to 2r plus 2R"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -356,10 +365,19 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "incircle-excircle-homothety",
+          name: "Incircle to Excircle Homothety",
+          latex: String.raw`\frac{r}{r_a} = \frac{s-a}{s}, \qquad A,\; D',\; E \ \text{collinear}`,
+          description: String.raw`The dilation centered at $A$ that carries the incircle to the $A$-excircle has ratio $\frac{s}{s-a}$, since both circles sit in the same angle at $A$. It sends the incircle's touch point on $BC$ to the excircle's touch point only after a half-turn, so what it actually sends to $E$ is $D'$, the point of the incircle diametrically opposite $D$ — which is why $A$, $D'$ and $E$ are collinear.`,
+          keywords: ["homothety", "incircle excircle", "Nagel", "touch point antipode", "collinear", "dilation at a vertex", "r over ra", "extouch"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "exradii",
           name: "Excircles & Exradii",
           latex: String.raw`r_a = \frac{A}{s - a} = s \tan\tfrac{A}{2}, \qquad \frac{1}{r} = \frac{1}{r_a} + \frac{1}{r_b} + \frac{1}{r_c}, \qquad r\, r_a r_b r_c = A^2, \qquad r_a = 4R\sin\tfrac A2\cos\tfrac B2\cos\tfrac C2`,
-          description: String.raw`The excircle opposite $A$ touches side $a$ and the extensions of the other two sides; its radius satisfies $A = r_a(s-a)$, mirroring $A = rs$. The tangent length from $A$ to its excircle is exactly $s$. Also $r_a = s\tan\frac{A}{2}$ while $r = (s-a)\tan\frac{A}{2}$, and the three exradii sum to $r_a + r_b + r_c = 4R + r$.`,
+          description: String.raw`The excircle opposite $A$ touches side $a$ and the extensions of the other two sides; its radius satisfies $A = r_a(s-a)$, mirroring $A = rs$. The tangent length from $A$ to its excircle is exactly $s$. Also $r_a = s\tan\frac{A}{2}$ while $r = (s-a)\tan\frac{A}{2}$, and the three exradii sum to $r_a + r_b + r_c = 4R + r$. Dividing those two tangent expressions gives $\frac{r}{r_a} = \frac{s-a}{s}$, which is the ratio of the homothety at $A$ carrying the incircle to the $A$-excircle.`,
           keywords: ["excircle", "exradius", "exradius formula", "exradii", "s minus a", "escribed circle", "tangent length s", "ra", "r_a + r_b + r_c = 4R + r", "sum of exradii"],
           importance: "medium",
           level: ["AIME"]
@@ -426,27 +444,18 @@ window.MATH_SECTIONS.push({
         {
           id: "angle-bisector-theorem",
           name: "Angle Bisector Theorem",
-          latex: String.raw`\frac{AB}{AC} = \frac{BD}{DC}`,
-          description: String.raw`If the bisector from $A$ meets $BC$ at $D$, it splits the opposite side in the ratio of the adjacent sides. The incenter divides that bisector in ratio $AI : ID = (b+c) : a$.`,
-          keywords: ["angle bisector", "ratio", "opposite side", "adjacent sides"],
+          latex: String.raw`\frac{AB}{AC} = \frac{BD}{DC} \quad \text{(internal)}, \qquad \frac{AB}{AC} = \frac{BD'}{D'C} \quad \text{(external)}`,
+          description: String.raw`If the bisector from $A$ meets $BC$ at $D$, it splits the opposite side in the ratio of the adjacent sides. The external bisector obeys the same ratio but divides $BC$ externally, meeting the line beyond the nearer of $B$ and $C$ — and it misses the line entirely when $AB = AC$, since then it is parallel to $BC$. The incenter divides the internal bisector in ratio $AI : ID = (b+c) : a$.`,
+          keywords: ["angle bisector", "ratio", "opposite side", "adjacent sides", "external angle bisector", "external bisector theorem", "divides externally", "external division"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "angle-bisector-length",
           name: "Length of an Angle Bisector",
-          latex: String.raw`d^2 = ab - mn`,
-          description: String.raw`The bisector of angle $C$ has length $d$, where $a, b$ are the two sides meeting at $C$ and $m, n$ are the segments it cuts the opposite side $AB$ into. (Equivalently $d^2 = ab\left[1 - \left(\tfrac{c}{a+b}\right)^2\right]$.)`,
-          keywords: ["angle bisector length", "cevian", "segments", "length of an angle bisector", "angle bisector cevian length", "bisector length formula"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "angle-bisector-circumcircle",
-          name: "Angle Bisector Extended to the Circumcircle",
-          latex: String.raw`AB\cdot AC = AL\cdot AD,\qquad LB\cdot LC = LA\cdot LD,\qquad DB = DC`,
-          description: String.raw`Extend the bisector of $\angle A$ until it meets the circumcircle again at $D$. Then $D$ is the midpoint of arc $BC$ not containing $A$, so $DB=DC$ (and $D$ is the center of the circle through $B$, $C$, the incenter, and the $A$-excenter — the incenter–excenter lemma). Two length relations finish most configurations: because $\triangle ABL\sim\triangle ADC$ (the bisected angle at $A$ is shared and $\angle ABL=\angle ADC$ subtend arc $AC$), $AB\cdot AC = AL\cdot AD$, so $AD=\dfrac{bc}{AL}$; and Power of the Point $L$ on chord $BC$ gives $LB\cdot LC = LA\cdot LD$. Pair these with the bisector length $AL=\sqrt{bc\left[1-\left(\tfrac{a}{b+c}\right)^2\right]}$ to recover the whole extended chord.`,
-          keywords: ["angle bisector extended", "circumcircle", "arc midpoint", "DB = DC", "power of a point", "bc = AL AD", "incenter excenter", "extended bisector length", "bisector meets circle"],
+          latex: String.raw`d^2 = ab - mn \quad \text{(internal)}, \qquad d'^2 = m'n' - ab \quad \text{(external)}`,
+          description: String.raw`The bisector of angle $C$ has length $d$, where $a, b$ are the two sides meeting at $C$ and $m, n$ are the segments it cuts the opposite side $AB$ into; equivalently $d = \tfrac{2ab\cos(C/2)}{a+b}$. The external bisector reverses the subtraction: with $m', n'$ the distances from its foot $D'$ to $A$ and $B$, $d'^2 = m'n' - ab$, or $d' = \tfrac{2ab\sin(C/2)}{|a-b|}$. That denominator is the catch — when $a = b$ the external bisector runs parallel to $AB$ and no such length exists.`,
+          keywords: ["angle bisector length", "cevian", "segments", "length of an angle bisector", "angle bisector cevian length", "bisector length formula", "external bisector length", "external angle bisector"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -593,25 +602,12 @@ window.MATH_SECTIONS.push({
           keywords: ["morley theorem", "angle trisectors", "morley triangle", "equilateral from trisectors", "surprising"],
           importance: "lowest",
           level: ["Olympiad"]
-        },
-        {
-          id: "isogonal-conjugate",
-          name: "Isogonal Conjugate",
-          latex: String.raw`\angle(AP,\text{bis }A) = \angle(\text{bis }A, AP^*) \text{ at each vertex} \;\Rightarrow\; AP^*, BP^*, CP^* \text{ concur at } P^*`,
-          description: String.raw`Reflect the cevians $AP, BP, CP$ across the respective angle bisectors; the three reflected lines always concur, at the isogonal conjugate $P^*$. The classic pairs: circumcenter $O \leftrightarrow$ orthocenter $H$, centroid $G \leftrightarrow$ symmedian (Lemoine) point $K$, the incenter is its own conjugate, and the Fermat points $\leftrightarrow$ the isodynamic points. $P$ and $P^*$ share a common pedal circle. This is core machinery for advanced triangle configurations — recognizing an isogonal pair collapses many concurrency/collinearity problems.`,
-          keywords: ["isogonal conjugate", "reflect cevian over bisector", "O and H conjugate", "symmedian point", "incenter self conjugate", "isodynamic", "common pedal circle"],
-          importance: "low",
-          level: ["Olympiad"]
-        },
-        {
-          id: "isotomic-conjugate",
-          name: "Isotomic Conjugate",
-          latex: String.raw`\text{reflect each cevian foot over the side's midpoint} \Rightarrow \text{new cevians concur}`,
-          description: String.raw`The isotomic conjugate reflects each cevian's foot on a side over that side's midpoint; the three new cevians concur at $P^*$. The centroid is its own isotomic conjugate, and the Gergonne and Nagel points form an isotomic pair. It pairs with isogonal conjugation to generate the standard "conjugate" identities among triangle centers, and (via barycentrics) has the clean coordinate form $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.`,
-          keywords: ["isotomic conjugate", "reflect foot over midpoint", "centroid self conjugate", "gergonne nagel pair", "barycentric reciprocal", "triangle center"],
-          importance: "lowest",
-          level: ["Olympiad"]
-        },
+        }
+      ]
+    },
+    {
+      title: "Derived Triangles & Conjugates",
+      formulas: [
         {
           id: "pedal-triangle",
           name: "Pedal Triangle & Its Area",
@@ -655,6 +651,24 @@ window.MATH_SECTIONS.push({
           description: String.raw`The excentral triangle has the three excenters as vertices. The incenter $I$ of $ABC$ is its orthocenter, and $ABC$ is exactly its orthic triangle (the altitude feet of $I_AI_BI_C$ are $A, B, C$). Its angles are $\frac{\pi}{2}-\frac A2$, its sides are $4R\cos\frac A2, 4R\cos\frac B2, 4R\cos\frac C2$, its circumradius is $2R$, and its area is $\frac{2R}{r}[ABC]$. Best of all, the nine-point circle of the excentral triangle is the circumcircle of $ABC$ — so $A, B, C$ and the arc midpoints all lie on it. Recognizing this collapses a tangle of incenter/excenter conditions into a single orthocentric configuration.`,
           keywords: ["excentral triangle", "three excenters", "incenter is orthocenter", "ABC is orthic triangle", "circumradius 2R", "excenter configuration", "arc midpoints", "excentral sides 4R cos", "excentral area 2R/r"],
           importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "isogonal-conjugate",
+          name: "Isogonal Conjugate",
+          latex: String.raw`\angle(AP,\text{bis }A) = \angle(\text{bis }A, AP^*) \text{ at each vertex} \;\Rightarrow\; AP^*, BP^*, CP^* \text{ concur at } P^*`,
+          description: String.raw`Reflect the cevians $AP, BP, CP$ across the respective angle bisectors; the three reflected lines always concur, at the isogonal conjugate $P^*$. The classic pairs: circumcenter $O \leftrightarrow$ orthocenter $H$, centroid $G \leftrightarrow$ symmedian (Lemoine) point $K$, the incenter is its own conjugate, and the Fermat points $\leftrightarrow$ the isodynamic points. $P$ and $P^*$ share a common pedal circle. This is core machinery for advanced triangle configurations — recognizing an isogonal pair collapses many concurrency/collinearity problems.`,
+          keywords: ["isogonal conjugate", "reflect cevian over bisector", "O and H conjugate", "symmedian point", "incenter self conjugate", "isodynamic", "common pedal circle"],
+          importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "isotomic-conjugate",
+          name: "Isotomic Conjugate",
+          latex: String.raw`\text{reflect each cevian foot over the side's midpoint} \Rightarrow \text{new cevians concur}`,
+          description: String.raw`The isotomic conjugate reflects each cevian's foot on a side over that side's midpoint; the three new cevians concur at $P^*$. The centroid is its own isotomic conjugate, and the Gergonne and Nagel points form an isotomic pair. It pairs with isogonal conjugation to generate the standard "conjugate" identities among triangle centers, and (via barycentrics) has the clean coordinate form $(x:y:z) \mapsto (1/x : 1/y : 1/z)$.`,
+          keywords: ["isotomic conjugate", "reflect foot over midpoint", "centroid self conjugate", "gergonne nagel pair", "barycentric reciprocal", "triangle center"],
+          importance: "lowest",
           level: ["Olympiad"]
         }
       ]
@@ -850,9 +864,9 @@ window.MATH_SECTIONS.push({
         {
           id: "power-of-a-point",
           name: "Power of a Point",
-          latex: String.raw`PA \cdot PB = PC \cdot PD = PT^2`,
-          description: String.raw`Chords through an interior point, or secants from an exterior point, give equal products; a tangent length $PT$ squares to the same value. The power of $P$ equals $|OP^2 - r^2|$.`,
-          keywords: ["intersecting chords", "secant", "tangent", "PT squared", "power"],
+          latex: String.raw`\operatorname{pow}(P) = OP^2 - r^2 \quad\Longrightarrow\quad \overline{PA} \cdot \overline{PB} = \overline{PC} \cdot \overline{PD} = PT^2`,
+          description: String.raw`The power is one number belonging to the point, not to any line: fix $P$, and every line you draw through it meets the circle in two points whose distances multiply to that same $OP^2 - r^2$. Signed, it is negative inside, zero on the circle, positive outside, so the familiar equal-product statements are one fact seen in three configurations rather than three facts.`,
+          keywords: ["intersecting chords", "secant", "tangent", "PT squared", "power", "independent of the line", "OP squared minus r squared", "equal products"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -929,33 +943,6 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
         {
-          id: "common-tangent-lengths",
-          name: "Common Tangents Between Two Circles",
-          latex: String.raw`t_{\text{ext}} = \sqrt{d^2 - (r_1 - r_2)^2}, \qquad t_{\text{int}} = \sqrt{d^2 - (r_1 + r_2)^2}, \qquad t = 2\sqrt{r_1 r_2} \;\;(\text{tangent circles})`,
-          description: String.raw`Lengths of the external and internal common tangents between circles of radii $r_1, r_2$ with centers $d$ apart.`,
-          keywords: ["external tangent", "internal tangent", "two circles", "distance between centers", "2 sqrt r1 r2", "tangent circle chain"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "descartes-circle-theorem",
-          name: "Descartes' Circle Theorem",
-          latex: String.raw`(k_1 + k_2 + k_3 + k_4)^2 = 2(k_1^2 + k_2^2 + k_3^2 + k_4^2)`,
-          description: String.raw`For four mutually tangent circles with curvatures $k_i = \frac{1}{r_i}$. If one circle contains the others, its curvature is negative. A line counts as curvature $0$.`,
-          keywords: ["four tangent circles", "curvature", "kissing circles", "apollonian"],
-          importance: "low",
-          level: ["AIME"]
-        },
-        {
-          id: "caseys-theorem",
-          name: "Casey's Theorem",
-          latex: String.raw`t_{12}t_{34} + t_{14}t_{23} = t_{13}t_{24}`,
-          description: String.raw`Generalized Ptolemy: for four circles tangent to a fifth circle (all internally or all externally), where $t_{ij}$ is the external tangent length between circles $i, j$. Points count as radius-0 circles.`,
-          keywords: ["generalized ptolemy", "tangent circles", "tangent lengths", "casey theorem", "generalized ptolemy", "tangent lengths between circles"],
-          importance: "lowest",
-          level: ["AIME", "Olympiad"]
-        },
-        {
           id: "butterfly-theorem",
           name: "The Butterfly Theorem",
           latex: String.raw`MX = MY`,
@@ -968,8 +955,8 @@ window.MATH_SECTIONS.push({
           id: "radical-axis",
           name: "Radical Axis & Radical Center",
           latex: String.raw`\{P : \operatorname{pow}(P, \omega_1) = \operatorname{pow}(P, \omega_2)\} = \text{a line} \perp O_1O_2`,
-          description: String.raw`Points with equal power to two circles form a line perpendicular to the line of centers — through the intersection points when the circles meet. For three circles, the three radical axes concur at the radical center, from which all tangent lengths to the three circles are equal. Compute it by subtracting circle equations (the quadratic terms cancel).`,
-          keywords: ["radical axis", "radical center", "equal power", "subtract circle equations", "common chord"],
+          description: String.raw`When two circles meet, their common chord is this line, so the chord can be had without ever locating the intersection points: subtract the two circle equations and the quadratic terms cancel, leaving it. It is always perpendicular to the line of centers, which hands you a direction for free, and every point on it has equal tangent lengths to both circles, which turns a length question into a single equation. Three circles give three axes concurring at the radical center.`,
+          keywords: ["radical axis", "radical center", "equal power", "subtract circle equations", "common chord", "perpendicular to line of centers", "equal tangent lengths", "concurrency"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },
@@ -981,15 +968,6 @@ window.MATH_SECTIONS.push({
           keywords: ["common chord", "two intersecting circles", "radical axis", "chord length", "circle intersection", "length of common chord"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "tangent-circles",
-          name: "Tangent Circles & the Line of Centers",
-          latex: String.raw`d = R + r \ \text{(external)}, \qquad d = |R - r| \ \text{(internal)}`,
-          description: String.raw`Two tangent circles touch at a point that lies on the line joining their centers, so the distance $d$ between centers is fixed by the radii alone: $R + r$ when they touch from outside, $|R - r|$ when one lies inside the other. This is the move that turns a tangency condition into a length equation. The same quantity classifies every other position: $d \gt R + r$ separate, $|R-r| \lt d \lt R+r$ crossing, $d \lt |R-r|$ nested. All of it carries over verbatim to spheres, where it is usually the fastest way to place a ball resting inside or outside another.`,
-          keywords: ["tangent circles", "externally tangent", "internally tangent", "distance between centers", "line of centers", "circle packing", "touching circles", "tangency point collinear", "two circles tangent"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "miquels-theorem",
@@ -1017,6 +995,56 @@ window.MATH_SECTIONS.push({
           keywords: ["reim theorem", "reims theorem", "two circles parallel chords", "concyclic from parallel", "antiparallel", "angle chasing lemma"],
           importance: "lower",
           level: ["Olympiad"]
+        }
+      ]
+    },
+    {
+      title: "Tangent Circles & Chains",
+      formulas: [
+        {
+          id: "descartes-circle-theorem",
+          name: "Descartes' Circle Theorem",
+          latex: String.raw`(k_1 + k_2 + k_3 + k_4)^2 = 2(k_1^2 + k_2^2 + k_3^2 + k_4^2)`,
+          description: String.raw`For four mutually tangent circles with curvatures $k_i = \frac{1}{r_i}$. If one circle contains the others, its curvature is negative. A line counts as curvature $0$.`,
+          keywords: ["four tangent circles", "curvature", "kissing circles", "apollonian"],
+          importance: "low",
+          level: ["AIME"]
+        },
+        {
+          id: "arbelos",
+          name: "The Arbelos",
+          latex: String.raw`[\text{arbelos}] = \tfrac{\pi}{4}\,BD^2, \qquad BD = 2\sqrt{ab}, \qquad r_{\text{twin}} = \frac{ab}{a+b}`,
+          description: String.raw`Cut two semicircles on diameters $AB = 2a$ and $BC = 2b$ out of the semicircle on $AC$, all on the same side. The leftover region's area is exactly that of the circle whose diameter is the perpendicular $BD$ to $AC$ at $B$, and Archimedes' two circles squeezed against that perpendicular, one in each lobe, turn out to have the same radius $\frac{ab}{a+b}$.`,
+          keywords: ["arbelos", "shoemaker's knife", "Archimedes twin circles", "semicircles", "three semicircles", "twin circles equal radii"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "corner-circle-chain",
+          name: "Circles Inscribed in a Corner",
+          latex: String.raw`r_k = d_k\sin\theta, \qquad \frac{r_{k+1}}{r_k} = \frac{1+\sin\theta}{1-\sin\theta}, \qquad \frac{1}{\sqrt{r_3}} = \frac{1}{\sqrt{r_1}} + \frac{1}{\sqrt{r_2}}`,
+          description: String.raw`A circle tangent to both sides of an angle has its center on the bisector, at distance $d = r/\sin\theta$ from the vertex where $2\theta$ is the angle. Chaining tangent circles into the corner therefore multiplies the radius by a fixed factor each step, so the radii form a geometric progression. The last relation is the flat case: three mutually tangent circles all touching one line.`,
+          keywords: ["inscribed in an angle", "tangent to two lines", "sangaku", "chain of tangent circles", "geometric progression of radii", "corner circles", "circles in a wedge"],
+          importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "caseys-theorem",
+          name: "Casey's Theorem",
+          latex: String.raw`t_{12}t_{34} + t_{14}t_{23} = t_{13}t_{24}`,
+          description: String.raw`Generalized Ptolemy: for four circles tangent to a fifth circle (all internally or all externally), where $t_{ij}$ is the external tangent length between circles $i, j$. Points count as radius-0 circles.`,
+          keywords: ["generalized ptolemy", "tangent circles", "tangent lengths", "casey theorem", "generalized ptolemy", "tangent lengths between circles"],
+          importance: "lowest",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "tangent-circles",
+          name: "Tangent Circles & the Line of Centers",
+          latex: String.raw`d = R + r \ \text{(external)}, \qquad d = |R - r| \ \text{(internal)}`,
+          description: String.raw`Two tangent circles touch at a point that lies on the line joining their centers, so the distance $d$ between centers is fixed by the radii alone: $R + r$ when they touch from outside, $|R - r|$ when one lies inside the other. This is the move that turns a tangency condition into a length equation. The same quantity classifies every other position: $d \gt R + r$ separate, $|R-r| \lt d \lt R+r$ crossing, $d \lt |R-r|$ nested. All of it carries over verbatim to spheres, where it is usually the fastest way to place a ball resting inside or outside another.`,
+          keywords: ["tangent circles", "externally tangent", "internally tangent", "distance between centers", "line of centers", "circle packing", "touching circles", "tangency point collinear", "two circles tangent"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "mixtilinear-incircle",
@@ -1026,6 +1054,15 @@ window.MATH_SECTIONS.push({
           keywords: ["mixtilinear incircle", "tangent to two sides and circumcircle", "tangency point collinear incenter", "arc midpoint", "olympiad configuration", "homothety incircle circumcircle"],
           importance: "lower",
           level: ["Olympiad"]
+        },
+        {
+          id: "common-tangent-lengths",
+          name: "Common Tangents Between Two Circles",
+          latex: String.raw`t_{\text{ext}} = \sqrt{d^2 - (r_1 - r_2)^2}, \qquad t_{\text{int}} = \sqrt{d^2 - (r_1 + r_2)^2}, \qquad t = 2\sqrt{r_1 r_2} \;\;(\text{tangent circles})`,
+          description: String.raw`Lengths of the external and internal common tangents between circles of radii $r_1, r_2$ with centers $d$ apart.`,
+          keywords: ["external tangent", "internal tangent", "two circles", "distance between centers", "2 sqrt r1 r2", "tangent circle chain"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         }
       ]
     },
@@ -1036,10 +1073,19 @@ window.MATH_SECTIONS.push({
           id: "cyclic-opposite-angles",
           name: "Cyclic Quadrilateral Opposite Angles",
           latex: String.raw`A + C = 180^\circ, \qquad B + D = 180^\circ`,
-          description: String.raw`A quadrilateral is cyclic (inscribable in a circle) iff opposite angles are supplementary — the standard test for cyclicity.`,
-          keywords: ["cyclic", "supplementary", "inscribed quadrilateral", "test"],
+          description: String.raw`A quadrilateral is cyclic (inscribable in a circle) iff opposite angles are supplementary — the standard test for cyclicity. The same fact is often quoted the other way round: produce a side and the exterior angle equals the opposite interior angle, since both are $180^\circ$ minus the interior angle at that vertex. Spotting the exterior version is usually what makes a diagram with a produced side worth chasing.`,
+          keywords: ["cyclic", "supplementary", "inscribed quadrilateral", "test", "exterior angle equals opposite interior angle", "exterior angle of a cyclic quadrilateral", "produced side"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "concyclicity-tests",
+          name: "Tests for a Cyclic Quadrilateral",
+          latex: String.raw`A + C = 180^\circ \qquad \iff\; \angle ACB = \angle ADB \qquad \iff\; PA \cdot PC = PB \cdot PD \qquad \iff\; AC \cdot BD = AB \cdot CD + BC \cdot AD`,
+          description: String.raw`Four ways to prove four points lie on one circle, all equivalences rather than one-way implications, and all written here for $ABCD$ taken in order around the circle. Supplementary opposite angles is the usual one. Equal angles subtending the same segment works when no quadrilateral is drawn — but only for vertices on the same side of that segment; from opposite sides the angles come out supplementary instead, which is the same statement wearing a disguise. With $P$ the point where the diagonals cross, the power of a point converse turns the whole thing into one length equation; the same test works from an external point, where two secants give $PA \cdot PB = PC \cdot PD$. Ptolemy is the metric test: $AC \cdot BD \le AB \cdot CD + BC \cdot AD$ always, with equality exactly when the four points are concyclic in that order. A fifth, for a point against a triangle: $P$ lies on the circumcircle of $ABC$ precisely when the feet of the perpendiculars from $P$ to the three sides are collinear.`,
+          keywords: ["prove four points are concyclic", "concyclicity test", "cyclic quadrilateral test", "show points lie on a circle", "power of a point converse", "ptolemy equality test", "simson line test", "same segment equal angles", "opposite angles supplementary", "is it cyclic"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
         },
         {
           id: "ptolemys-theorem",
@@ -1096,6 +1142,15 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
+          id: "cyclic-perpendicular-diagonals",
+          name: "Cyclic Quadrilateral with Perpendicular Diagonals",
+          latex: String.raw`a^2 + c^2 = b^2 + d^2 = 4R^2`,
+          description: String.raw`Opposite sides pair up: because perpendicular diagonals force the two arcs they cut off to be supplementary, each pair of opposite sides has squares summing to the squared diameter. The diagonals' intersection is also the anticenter, so the perpendicular dropped from it to any side, extended, bisects the opposite side — Brahmagupta's theorem.`,
+          keywords: ["perpendicular diagonals", "orthodiagonal", "cyclic quadrilateral", "anticenter", "Brahmagupta theorem", "maltitude", "opposite sides squared", "4R squared"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "cyclic-quad-radius",
           name: "Circumradius of a Cyclic Quadrilateral",
           latex: String.raw`R = \frac{1}{4K}\sqrt{(ab+cd)(ac+bd)(ad+bc)}`,
@@ -1146,15 +1201,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12"]
         },
         {
-          id: "reflection-coordinates",
-          name: "Reflecting a Point over a Line",
-          latex: String.raw`P' = P - \frac{2(ax_0 + by_0 + c)}{a^2 + b^2}\,(a, b)`,
-          description: String.raw`Reflection of $(x_0, y_0)$ over $ax + by + c = 0$: step twice the signed distance along the normal. Instant special cases: over the $x$-axis $(x, -y)$; over $y = x$ swap to $(y, x)$; over $y = -x$ to $(-y, -x)$; over a vertical line $x = k$ to $(2k - x, y)$.`,
-          keywords: ["reflect point", "reflection over line", "mirror image", "over y equals x", "normal direction"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
           id: "shoelace-formula",
           name: "Shoelace Formula",
           latex: String.raw`A = \frac{1}{2} \left| \sum_{i=1}^{n} (x_i y_{i+1} - y_i x_{i+1}) \right|`,
@@ -1200,33 +1246,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "reflection-composition",
-          name: "Composing Two Reflections",
-          latex: String.raw`\text{reflect in } \ell_1, \text{ then } \ell_2: \quad \text{rotation by } 2\theta \text{ about } \ell_1 \cap \ell_2, \qquad \ell_1 \parallel \ell_2 : \ \text{translation by } 2d`,
-          description: String.raw`Two reflections never leave another reflection behind. When the mirrors meet at angle $\theta$ the composite is a rotation through $2\theta$ about their intersection; when they are parallel at distance $d$ it is a translation by $2d$ across them. Order matters, since swapping the mirrors reverses the turn.`,
-          keywords: ["composition of reflections", "two reflections make a rotation", "rotation by twice the angle", "double reflection", "composing isometries", "reflect then reflect", "mirror pair"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "rotation-90",
-          name: "Rotating a Point",
-          latex: String.raw`(x, y) \xrightarrow{90^\circ \text{ ccw}} (-y, x), \qquad (x,y) \xrightarrow{\theta} (x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)`,
-          description: String.raw`Rotation about the origin. For rotation about another point, translate that point to the origin first. Complex-number form: multiply by $e^{i\theta}$.`,
-          keywords: ["rotation", "transformation", "90 degrees", "counterclockwise"],
-          importance: "medium",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "ellipse-tangent-line",
-          name: "Ellipse Tangent to a Line (Minimum Focal Sum)",
-          latex: String.raw`\text{ellipse with foci } F_1, F_2 \text{ tangent to } \ell \text{ at } T \iff T = \arg\min_{P \in \ell}\ \left(PF_1 + PF_2\right)`,
-          description: String.raw`The ellipses with foci $F_1$ and $F_2$ are the level curves of $PF_1 + PF_2$, so the smallest one meeting a line touches it, and the point of tangency is where that sum is least. It is the reflection trick read as a level curve: reflect $F_1$ over $\ell$ and the minimum sits where $F_1'F_2$ crosses.`,
-          keywords: ["ellipse tangent to a line", "minimum sum of distances to two foci", "shortest focal sum", "reflection trick ellipse", "level curve of focal sum", "tangent point minimises", "ellipse tangent to the x axis"],
-          importance: "low",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "conic-sections",
           name: "Conic Sections",
           latex: String.raw`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 - b^2), \qquad \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 + b^2), \qquad x^2 = 4py`,
@@ -1252,15 +1271,38 @@ window.MATH_SECTIONS.push({
           keywords: ["section formula", "divide segment ratio", "internal division", "external division", "weighted point", "dividing a segment"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
+        }
+      ]
+    },
+    {
+      title: "Transformations in the Coordinate Plane",
+      formulas: [
+        {
+          id: "reflection-coordinates",
+          name: "Reflecting a Point over a Line",
+          latex: String.raw`P' = P - \frac{2(ax_0 + by_0 + c)}{a^2 + b^2}\,(a, b)`,
+          description: String.raw`Reflection of $(x_0, y_0)$ over $ax + by + c = 0$: step twice the signed distance along the normal. Instant special cases: over the $x$-axis $(x, -y)$; over $y = x$ swap to $(y, x)$; over $y = -x$ to $(-y, -x)$; over a vertical line $x = k$ to $(2k - x, y)$.`,
+          keywords: ["reflect point", "reflection over line", "mirror image", "over y equals x", "normal direction"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
-          id: "vector-dot-product",
-          name: "Dot Product",
-          latex: String.raw`\vec{u} \cdot \vec{v} = u_1 v_1 + u_2 v_2 = |\vec{u}|\,|\vec{v}| \cos\theta`,
-          description: String.raw`Measures alignment: positive for an acute angle, exactly $0$ when $\vec{u} \perp \vec{v}$, negative for obtuse. Gives the angle via $\cos\theta = \frac{\vec{u} \cdot \vec{v}}{|\vec{u}||\vec{v}|}$ and the scalar projection of $\vec{u}$ onto $\vec{v}$ as $\frac{\vec{u} \cdot \vec{v}}{|\vec{v}|}$.`,
-          keywords: ["dot product", "scalar product", "angle between vectors", "perpendicular zero", "projection"],
+          id: "reflection-composition",
+          name: "Composing Two Reflections",
+          latex: String.raw`\text{reflect in } \ell_1, \text{ then } \ell_2: \quad \text{rotation by } 2\theta \text{ about } \ell_1 \cap \ell_2, \qquad \ell_1 \parallel \ell_2 : \ \text{translation by } 2d`,
+          description: String.raw`Two reflections never leave another reflection behind. When the mirrors meet at angle $\theta$ the composite is a rotation through $2\theta$ about their intersection; when they are parallel at distance $d$ it is a translation by $2d$ across them. Order matters, since swapping the mirrors reverses the turn.`,
+          keywords: ["composition of reflections", "two reflections make a rotation", "rotation by twice the angle", "double reflection", "composing isometries", "reflect then reflect", "mirror pair"],
           importance: "medium",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "rotation-90",
+          name: "Rotating a Point",
+          latex: String.raw`(x, y) \xrightarrow{90^\circ \text{ ccw}} (-y, x), \qquad (x,y) \xrightarrow{\theta} (x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)`,
+          description: String.raw`Rotation about the origin. For rotation about another point, translate that point to the origin first. Complex-number form: multiply by $e^{i\theta}$.`,
+          keywords: ["rotation", "transformation", "90 degrees", "counterclockwise"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         }
       ]
     },
@@ -1363,33 +1405,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "distance-3d",
-          name: "Distance in Three Dimensions",
-          latex: String.raw`d = \sqrt{(\Delta x)^2 + (\Delta y)^2 + (\Delta z)^2}, \quad M = \left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}, \frac{z_1+z_2}{2}\right)`,
-          description: String.raw`One Pythagorean step per axis, so every planar coordinate identity survives unchanged: the midpoint still averages coordinatewise, and the point dividing $P_1P_2$ in ratio $k:1$ is still $\frac{P_1 + kP_2}{1+k}$. Fixing $d = r$ turns the formula into the sphere $(x-a)^2 + (y-b)^2 + (z-c)^2 = r^2$.`,
-          keywords: ["distance in 3d", "distance in space", "three dimensional distance", "distance between two points in space", "midpoint in space", "sphere equation", "xyz coordinates", "space coordinates"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
-          id: "space-diagonal",
-          name: "Space Diagonal of a Rectangular Prism",
-          latex: String.raw`d = \sqrt{\ell^2 + w^2 + h^2}`,
-          description: String.raw`3D Pythagorean Theorem. For a cube of side $s$: face diagonal $s\sqrt{2}$, space diagonal $s\sqrt{3}$. From a box's three face diagonals $p, q, r$: $d = \sqrt{\frac{p^2+q^2+r^2}{2}}$.`,
-          keywords: ["box", "diagonal", "3d distance", "cube"],
-          importance: "high",
-          level: ["MATHCOUNTS", "AMC10"]
-        },
-        {
-          id: "cross-product-area",
-          name: "Vector Cross Product",
-          latex: String.raw`[\triangle] = \frac{1}{2}\left|\vec{u} \times \vec{v}\right|, \qquad V_{\text{tetrahedron}} = \frac{1}{6}\left|\vec{u} \cdot (\vec{v} \times \vec{w})\right|`,
-          description: String.raw`With $\vec{u}, \vec{v}, \vec{w}$ the edge vectors from one vertex. The fastest route to areas and volumes of coordinate-defined triangles and tetrahedra in 3D — the shoelace formula's big sibling.`,
-          keywords: ["cross product", "triple product", "3d coordinates", "tetrahedron volume", "determinant"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "de-guas-theorem",
           name: "De Gua's Theorem",
           latex: String.raw`A_0^2 = A_1^2 + A_2^2 + A_3^2, \qquad \frac{1}{h^2} = \frac{1}{a^2} + \frac{1}{b^2} + \frac{1}{c^2}`,
@@ -1453,6 +1468,47 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
+          id: "pappus-centroid",
+          name: "Pappus's Centroid Theorems",
+          latex: String.raw`V = 2\pi d \cdot A, \qquad S = 2\pi d \cdot L, \qquad \text{torus: } V = 2\pi^2 R r^2, \; S = 4\pi^2 R r`,
+          description: String.raw`Revolve a plane region about an external axis in its plane: the solid's volume is the area $A$ times the distance the region's centroid travels, $2\pi d$. Revolve a plane curve instead and its surface area is the arc length $L$ times $2\pi d$. So the whole problem reduces to finding a centroid. For a torus (revolve a disk of radius $r$ whose center is $R$ from the axis) this gives $V = 2\pi R \cdot \pi r^2 = 2\pi^2 R r^2$ and $S = 2\pi R \cdot 2\pi r = 4\pi^2 R r$ instantly.`,
+          keywords: ["pappus", "centroid theorem", "solid of revolution", "volume of revolution", "surface of revolution", "torus volume", "torus surface"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        }
+      ]
+    },
+    {
+      title: "Vectors & Coordinates in Space",
+      formulas: [
+        {
+          id: "distance-3d",
+          name: "Distance in Three Dimensions",
+          latex: String.raw`d = \sqrt{(\Delta x)^2 + (\Delta y)^2 + (\Delta z)^2}, \quad M = \left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}, \frac{z_1+z_2}{2}\right)`,
+          description: String.raw`One Pythagorean step per axis, so every planar coordinate identity survives unchanged: the midpoint still averages coordinatewise, and the point dividing $P_1P_2$ in ratio $k:1$ is still $\frac{P_1 + kP_2}{1+k}$. Fixing $d = r$ turns the formula into the sphere $(x-a)^2 + (y-b)^2 + (z-c)^2 = r^2$.`,
+          keywords: ["distance in 3d", "distance in space", "three dimensional distance", "distance between two points in space", "midpoint in space", "sphere equation", "xyz coordinates", "space coordinates"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "space-diagonal",
+          name: "Space Diagonal of a Rectangular Prism",
+          latex: String.raw`d = \sqrt{\ell^2 + w^2 + h^2}`,
+          description: String.raw`3D Pythagorean Theorem. For a cube of side $s$: face diagonal $s\sqrt{2}$, space diagonal $s\sqrt{3}$. From a box's three face diagonals $p, q, r$: $d = \sqrt{\frac{p^2+q^2+r^2}{2}}$.`,
+          keywords: ["box", "diagonal", "3d distance", "cube"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10"]
+        },
+        {
+          id: "cross-product-area",
+          name: "Vector Cross Product",
+          latex: String.raw`[\triangle] = \frac{1}{2}\left|\vec{u} \times \vec{v}\right|, \qquad V_{\text{tetrahedron}} = \frac{1}{6}\left|\vec{u} \cdot (\vec{v} \times \vec{w})\right|`,
+          description: String.raw`With $\vec{u}, \vec{v}, \vec{w}$ the edge vectors from one vertex. The fastest route to areas and volumes of coordinate-defined triangles and tetrahedra in 3D — the shoelace formula's big sibling.`,
+          keywords: ["cross product", "triple product", "3d coordinates", "tetrahedron volume", "determinant"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "plane-intercept-form",
           name: "Equation of a Plane from Its Intercepts",
           latex: String.raw`\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1 \quad\Longleftrightarrow\quad bc\,x + ca\,y + ab\,z = abc`,
@@ -1466,7 +1522,7 @@ window.MATH_SECTIONS.push({
           name: "Point-to-Plane Distance",
           latex: String.raw`d = \frac{|ax_0 + by_0 + cz_0 + d_0|}{\sqrt{a^2 + b^2 + c^2}}`,
           description: String.raw`Distance from $(x_0, y_0, z_0)$ to the plane $ax + by + cz + d_0 = 0$ — the 3D twin of point-to-line distance, with $(a, b, c)$ the plane's normal vector. Find a plane through three points via the cross product of two edge vectors (that cross product is the normal).`,
-          keywords: ["distance to plane", "normal vector", "3d distance", "plane equation"],
+          keywords: ["distance to plane", "normal vector", "3d distance", "plane equation", "solid geometry"],
           importance: "medium",
           level: ["AIME"]
         },
@@ -1480,13 +1536,13 @@ window.MATH_SECTIONS.push({
           level: ["AIME"]
         },
         {
-          id: "pappus-centroid",
-          name: "Pappus's Centroid Theorems",
-          latex: String.raw`V = 2\pi d \cdot A, \qquad S = 2\pi d \cdot L, \qquad \text{torus: } V = 2\pi^2 R r^2, \; S = 4\pi^2 R r`,
-          description: String.raw`Revolve a plane region about an external axis in its plane: the solid's volume is the area $A$ times the distance the region's centroid travels, $2\pi d$. Revolve a plane curve instead and its surface area is the arc length $L$ times $2\pi d$. So the whole problem reduces to finding a centroid. For a torus (revolve a disk of radius $r$ whose center is $R$ from the axis) this gives $V = 2\pi R \cdot \pi r^2 = 2\pi^2 R r^2$ and $S = 2\pi R \cdot 2\pi r = 4\pi^2 R r$ instantly.`,
-          keywords: ["pappus", "centroid theorem", "solid of revolution", "volume of revolution", "surface of revolution", "torus volume", "torus surface"],
+          id: "vector-dot-product",
+          name: "Dot Product",
+          latex: String.raw`\vec{u} \cdot \vec{v} = u_1 v_1 + u_2 v_2 = |\vec{u}|\,|\vec{v}| \cos\theta`,
+          description: String.raw`Measures alignment: positive for an acute angle, exactly $0$ when $\vec{u} \perp \vec{v}$, negative for obtuse. Gives the angle via $\cos\theta = \frac{\vec{u} \cdot \vec{v}}{|\vec{u}||\vec{v}|}$ and the scalar projection of $\vec{u}$ onto $\vec{v}$ as $\frac{\vec{u} \cdot \vec{v}}{|\vec{v}|}$.`,
+          keywords: ["dot product", "scalar product", "angle between vectors", "perpendicular zero", "projection"],
           importance: "medium",
-          level: ["AIME", "Olympiad"]
+          level: ["AMC12", "AIME"]
         }
       ]
     },

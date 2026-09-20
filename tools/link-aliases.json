@@ -17,6 +17,9 @@
   "abs-value-relations": [
    "Graphing Absolute Value Relations"
   ],
+  "absolute-value-identities": [
+   "Absolute Value Identities"
+  ],
   "absolute-value-rules": [
    "Absolute Value Rules"
   ],
@@ -73,6 +76,9 @@
    "Apollonius's Theorem",
    "Apolloniuss",
    "Apollonius’s"
+  ],
+  "arbelos": [
+   "The Arbelos"
   ],
   "arctan-telescoping": [
    "Arctangent Addition",
@@ -365,6 +371,9 @@
   "complex-basics": [
    "Modulus, Conjugate"
   ],
+  "concyclicity-tests": [
+   "Tests for a Cyclic Quadrilateral"
+  ],
   "conditional-probability": [
    "Conditional Probability",
    "Conditional Probability & Bayes"
@@ -407,6 +416,9 @@
   "coprime-residue-sum": [
    "Sum of Coprime Residues"
   ],
+  "corner-circle-chain": [
+   "Circles Inscribed in a Corner"
+  ],
   "cosecant-cotangent-square-sums": [
    "Finite Sums of Squared Cosecants",
    "Finite Sums of Squared Cosecants and Cotangents"
@@ -442,6 +454,9 @@
   ],
   "cyclic-opposite-angles": [
    "Cyclic Quadrilateral Opposite Angles"
+  ],
+  "cyclic-perpendicular-diagonals": [
+   "Cyclic Quadrilateral with Perpendicular Diagonals"
   ],
   "cyclic-quad-diagonals": [
    "Cyclic Quadrilateral Diagonals"
@@ -783,6 +798,9 @@
   "graph-coloring": [
    "Graph Coloring Bounds"
   ],
+  "grid-path-fill": [
+   "Counting Paths by Filling the Grid"
+  ],
   "grid-paths": [
    "Lattice Grid Paths"
   ],
@@ -871,6 +889,9 @@
   "incenter-excenter-lemma": [
    "Fact 5",
    "Incenter–Excenter Lemma"
+  ],
+  "incircle-excircle-homothety": [
+   "Incircle to Excircle Homothety"
   ],
   "incircle-excircle-touch": [
    "Excircle Touch Points",
@@ -1185,6 +1206,9 @@
   ],
   "necklace-formula": [
    "Necklace Counting Formula"
+  ],
+  "nested-subset-pairs": [
+   "Nested Subset Pairs"
   ],
   "newtons-line": [
    "Newton–Gauss Line"
@@ -1617,6 +1641,9 @@
   "square-of-sum": [
    "a+b+c"
   ],
+  "squared-binomial-sum": [
+   "Sum of Squared Binomial Coefficients"
+  ],
   "squares-mod-small": [
    "Quadratic Residues"
   ],
@@ -1769,7 +1796,11 @@
    "Triangular Numbers"
   ],
   "trig-area": [
-   "Trigonometric Area"
+   "Area of a Triangle Using Sine"
+  ],
+  "trig-area-circumradius": [
+   "Area from the Angles",
+   "Area from the Angles and the Circumradius"
   ],
   "trig-bash": [
    "Trig Bashing"

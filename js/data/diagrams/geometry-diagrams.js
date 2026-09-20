@@ -107,8 +107,8 @@
     `<circle cx="${r1(p[0])}" cy="${r1(p[1])}" r="${r}" fill="${c}"/>`;
   const circ = (cen, r, c = FNT, w = 1.5, fill = "none", dash = "") =>
     `<circle cx="${r1(cen[0])}" cy="${r1(cen[1])}" r="${r1(r)}" fill="${fill}" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
-  const poly = (pts, c = DIM, w = 2, fill = "none") =>
-    `<polygon points="${pts.map(pf).join(" ")}" fill="${fill}" stroke="${c}" stroke-width="${w}"/>`;
+  const poly = (pts, c = DIM, w = 2, fill = "none", dash = "") =>
+    `<polygon points="${pts.map(pf).join(" ")}" fill="${fill}" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
   const txt = (p, s, c = DIM, size = 13, anchor = "middle") =>
     `<text x="${r1(p[0])}" y="${r1(p[1])}" fill="${c}" font-size="${size}" text-anchor="${anchor}">${s}</text>`;
   function angleArc(P, Q, R, ra, c = ACC, double = false) {
@@ -263,17 +263,6 @@
     ]);
   })()];
 
-  DIAGRAMS["quadrilateral-diagonal-area"] = [(() => {
-    const p = [80, 95], q = [335, 65], r = [305, 275], s = [105, 245];
-    const X = lineInt(p, r, q, s);
-    return wrap(420, 310, [
-      poly([p, q, r, s], DIM, 2), seg(p, r, ACC, 2), seg(q, s, GLD, 2),
-      angleArc(X, r, s, 20, GRN), txt(add(X, [-6, 30]), "θ", GRN),
-      txt(add(lerp(p, r, 0.25), [12, 0]), "d₁", ACC), txt(add(lerp(q, s, 0.22), [16, 0]), "d₂", GLD),
-      cap(420, 310, "A = ½ d₁ d₂ sin θ")
-    ]);
-  })()];
-
   DIAGRAMS["regular-polygon-area"] = [(() => {
     const cen = [210, 158], v = [0, 1, 2, 3, 4, 5].map(i => onC(cen, 115, 30 + 60 * i));
     const ap = foot(cen, v[1], v[2]);
@@ -395,6 +384,38 @@
       txt(add(mid(A, B), [-14, -2]), "c", ACC, 12), txt(add(mid(A, C), [15, -2]), "b", ORG, 12),
       cap(430, 330, "AB / AC = BD / DC  (bisector from A; BD and DC are colored to match the ratio)")
     ]);
+  })() , (() => {
+    // Its own triangle, not the shared one: with AB and AC close in length the external
+    // bisector is nearly parallel to BC and its foot lands thousands of pixels off canvas.
+    // At AB : AC = 110 : 230 the foot sits at x = 53, comfortably inside the frame.
+    const Bv = [190, 255], Cv = [340, 255], Av = [129, 163.5];
+    const c = dist(Av, Bv), b = dist(Av, Cv);
+    const D = lerp(Bv, Cv, c / (b + c));          // internal foot
+    const D2 = lerp(Bv, Cv, c / (c - b));         // external foot, outside segment BC
+    const ext = add(Av, mul(norm(sub(D2, Av)), dist(Av, D2) * 1.06));
+    // The external angle at A is the one between ray AB and CA *continued past A*, so
+    // without that continuation drawn the gold ray appears to bisect nothing. E is the
+    // far end of it; the two ticked arcs are the halves it cuts (73.6° each).
+    const E = add(Av, mul(norm(sub(Av, Cv)), 86));
+    return wrap(430, 330, [
+      // Only the part OUTSIDE segment BC, so it reads as the line continued rather than
+      // vanishing beneath the triangle's own base edge — which is what the previous
+      // D2-to-C line did for most of its length.
+      seg(add(Bv, [-14, 0]), add(D2, [-24, 0]), DIM, 1.6, "6 4"),
+      txt([Math.round((D2[0] + Bv[0]) / 2) - 8, D2[1] - 12], "BC extended", DIM, 11),
+      seg(Av, E, DIM, 1.6, "5 4"),
+      txt(add(E, [10, -12]), "CA extended", DIM, 11),
+      poly([Av, Bv, Cv], ACC, 2, ACCS),
+      seg(Av, D, GRN, 2.2), dot(D, GRN, 3.5), txt(add(D, [0, 18]), "D", GRN, 12),
+      seg(Av, ext, GLD, 2.2), dot(D2, GLD, 4), txt(add(D2, [0, 18]), "D′", GLD, 12),
+      angleArc(Av, E, D2, 30, GLD, true), angleArc(Av, D2, Bv, 30, GLD, true),
+      rightAngle(Av, D, D2, 11, FNT),
+      // Straight up is the one direction neither arc sweeps, so the vertex label goes
+      // there rather than through vlab(), which aims at the shared triangle's centroid.
+      txt(add(Av, [0, -15]), "A", DIM, 13.5), vlab(Bv, "B"), vlab(Cv, "C"),
+      dot(Av, ACC, 4), dot(Bv, ACC, 4), dot(Cv, ACC, 4),
+      cap(430, 330, "the gold ray halves the external angle at A (both ticked arcs), and splits BC outside: BD′/D′C = AB/AC")
+    ]);
   })()];
 
   DIAGRAMS["angle-bisector-length"] = [(() => {
@@ -415,6 +436,40 @@
       txt(add(mid(Av, D), [0, 18]), "m", GLD, 12), txt(add(mid(D, Bv), [0, 18]), "n", PUR, 12),
       txt(add(mid(Cv, Av), [-15, -2]), "b", ORG, 12.5), txt(add(mid(Cv, Bv), [15, -2]), "a", GRN, 12.5),
       cap(430, 330, "d² = ab − mn  (bisector of angle C; sides a, b meet at C, and m, n split AB)")
+    ]);
+  })() , (() => {
+    // The external bisector of the same angle; d'^2 = m'n' - ab, the internal formula with
+    // the subtraction reversed. The foot sits at t = b/(b-a) along AB, so as a approaches b
+    // it runs away to infinity — an isosceles-ish triangle throws it thousands of pixels off
+    // canvas. These sides are 197 : 104, putting D' at x = 337 with room for its label.
+    const Av = [40, 250], Bv = [180, 250], Cv = [210, 150];
+    const b = dist(Cv, Av), a = dist(Cv, Bv);
+    const D2 = lerp(Av, Bv, b / (b - a));            // external foot, outside segment AB
+    const ray = add(Cv, mul(norm(sub(D2, Cv)), dist(Cv, D2) * 1.05));
+    // AC continued past C: the external angle at C is between that continuation and CB,
+    // and the gold ray halves it. Without the continuation there is no visible angle.
+    const E = add(Cv, mul(norm(sub(Cv, Av)), 78));
+    return wrap(430, 330, [
+      seg(add(Bv, [14, 0]), add(D2, [22, 0]), DIM, 1.6, "6 4"),
+      txt([Math.round((D2[0] + Bv[0]) / 2) + 6, D2[1] + 20], "AB extended", DIM, 11),
+      seg(Cv, E, DIM, 1.6, "5 4"),
+      txt(add(E, [16, -8]), "AC extended", DIM, 11),
+      seg(Cv, Av, ORG, 2.2), seg(Cv, Bv, GRN, 2.2),
+      seg(Av, Bv, DIM, 1.8),
+      seg(Cv, ray, GLD, 2.4), dot(D2, GLD, 4),
+      txt(add(D2, [6, 18]), "D′", GLD, 12),
+      angleArc(Cv, E, ray, 26, GLD, true), angleArc(Cv, ray, Bv, 26, GLD, true),
+      txt(add(Cv, [-4, -14]), "C", DIM, 13.5),
+      txt(add(Av, [-14, 6]), "A", DIM, 13.5), txt(add(Bv, [-15, 19]), "B", DIM, 13.5),
+      txt(add(mid(Cv, D2), [16, -4]), "d′", GLD, 14),
+      txt(add(mid(Cv, Av), [-4, -10]), "b", ORG, 12.5), txt(add(mid(Cv, Bv), [-12, 0]), "a", GRN, 12.5),
+      // m' = AD' and n' = BD' overlap as spans, so they get their own stacked rules below
+      // the base rather than a midpoint label each, which would read as adjacent pieces.
+      // Labels sit a third of the way along, not at the midpoint: the m′ midpoint lands
+      // directly under B and collides with its vertex label.
+      seg([Av[0], 284], [D2[0], 284], GLD, 1.4), txt([Av[0] + (D2[0] - Av[0]) / 3, 280], "m′", GLD, 11.5),
+      seg([Bv[0], 302], [D2[0], 302], PUR, 1.4), txt([Bv[0] + (D2[0] - Bv[0]) / 2, 298], "n′", PUR, 11.5),
+      cap(430, 330, "d′² = m′n′ − ab  (external bisector of C; its foot D′ lies outside AB)")
     ]);
   })()];
 
@@ -597,8 +652,16 @@
     const cen = [160, 165], R = 92, P = [392, 240];
     const T = tangentPoints(cen, R, P)[1];
     const [Aa, Bb] = circleLineInts(cen, R, P, [140, 205]);
+    // O, OP and r are drawn because the common value of every product is OP^2 - r^2,
+    // and without them the card's headline quantity appears nowhere in the figure.
+    // This panel is also the card-face thumbnail (CARD_DIAGRAM_IDS), so it has to
+    // read on its own: hence the value named in the caption rather than only the ratio.
+    const rEnd = add(cen, mul(norm(sub(P, cen)), R));
     return wrap(430, 330, [
       circ(cen, R, FNT, 1.5), dot(P, DIM, 4), txt(add(P, [12, 4]), "P"),
+      seg(cen, P, DIM, 1.3, "5 4"),
+      seg(cen, rEnd, GLD, 1.8), txt(add(mid(cen, rEnd), [2, -8]), "r", GLD, 12),
+      dot(cen, DIM, 3), txt(add(cen, [-11, 5]), "O", DIM, 12),
       seg(P, T, GLD, 2), dot(T, GLD, 4), txt(add(T, [4, -12]), "T", GLD),
       seg(cen, T, FNT, 1.3, "4 3"), rightAngle(T, cen, P, 10, GLD),
       seg(P, Bb, ACC, 2), dot(Aa, ACC, 4), dot(Bb, ACC, 4),
@@ -606,7 +669,7 @@
       seg(P, circleLineInts(cen, R, P, [150, 115])[0], GRN, 1.8),
       dot(circleLineInts(cen, R, P, [150, 115])[0], GRN, 4), dot(circleLineInts(cen, R, P, [150, 115])[1], GRN, 4),
       txt(add(circleLineInts(cen, R, P, [150, 115])[1], [0, -11]), "C", GRN), txt(add(circleLineInts(cen, R, P, [150, 115])[0], [-14, -4]), "D", GRN),
-      cap(430, 330, "every line through P balances: PA · PB = PC · PD = PT²")
+      cap(430, 330, "one number belongs to P: PA · PB = PC · PD = PT² = OP² − r², whichever line you draw")
     ]);
   })(), (() => {
     // P inside the circle: intersecting chords.
@@ -620,7 +683,7 @@
       dot(Aa, ACC, 4), dot(Bb, ACC, 4), dot(Cc, GRN, 4), dot(Dd, GRN, 4),
       txt(away(Aa, cen, 14), "A", ACC), txt(away(Bb, cen, 14), "B", ACC),
       txt(away(Cc, cen, 14), "C", GRN), txt(away(Dd, cen, 14), "D", GRN),
-      cap(430, 330, "P inside: the two chord pieces still balance, PA · PB = PC · PD (intersecting chords)")
+      cap(430, 330, "P inside: same invariant, now signed negative — PA · PB = PC · PD = r² − OP²")
     ]);
   })()];
 
@@ -862,7 +925,66 @@
     circ(QCEN, QR, FNT, 1.5), poly([QA, QB, QC2, QD], DIM, 2), quadLabels(),
     angleArc(QA, QD, QB, 22, ACC), angleArc(QC2, QB, QD, 22, GLD),
     cap(430, 340, "∠A + ∠C = 180°")
-  ])];
+  ]), (() => {
+    // The same quadrilateral, one side produced. Supplementary opposite angles says the same
+    // thing as "an exterior angle equals the opposite interior angle", because the exterior
+    // angle at B is 180° − ∠B and ∠D is 180° − ∠B too. Deliberately the SAME figure as panel 1
+    // so the reader sees one fact, not two. AB is the side produced because extending BC sends
+    // the ray off the bottom of the canvas.
+    const F = add(QB, mul(sub(QB, QA), 0.34));
+    return wrap(430, 340, [
+      circ(QCEN, QR, FNT, 1.5),
+      seg(QB, F, DIM, 1.6, "6 4"),
+      poly([QA, QB, QC2, QD], DIM, 2), quadLabels(),
+      angleArc(QB, QC2, F, 21, GRN, true),          // exterior angle at B
+      angleArc(QD, QC2, QA, 21, GRN, true),         // interior angle at D
+      dot(F, DIM, 3.2), txt(add(F, [11, 5]), "E", DIM, 12),
+      txt(add(QB, [26, 22]), "exterior", GRN, 11),
+      cap(430, 340, "produce AB to E: the exterior angle ∠CBE is 180° − ∠B, and so is ∠D — the ticked angles are equal, which is the supplementary rule said the other way round")
+    ]);
+  })()];
+
+  DIAGRAMS["concyclicity-tests"] = [(() => {
+    // Panel 1: the two angle tests on one circle. C and D sit on the SAME side of AB, which is
+    // the condition the equal-angle test needs; the supplementary pair is the same picture read
+    // with a vertex on the far side, so both tests share a figure rather than needing two.
+    const O = [214, 150], R = 108;
+    const A = onC(O, R, 202), B = onC(O, R, 338);
+    const C = onC(O, R, 268), D = onC(O, R, 296);   // same side of AB as each other
+    const E = onC(O, R, 78);                         // the far side
+    return wrap(430, 330, [
+      circ(O, R, FNT, 1.6),
+      seg(A, B, DIM, 2),
+      seg(A, C, ACC, 1.8), seg(B, C, ACC, 1.8),
+      seg(A, D, ACC, 1.8), seg(B, D, ACC, 1.8),
+      seg(A, E, GLD, 1.6), seg(B, E, GLD, 1.6),
+      angleArc(C, A, B, 19, ACC, true), angleArc(D, A, B, 19, ACC, true),
+      angleArc(E, A, B, 19, GLD, false),
+      dot(A, DIM, 4), dot(B, DIM, 4), dot(C, ACC, 4), dot(D, ACC, 4), dot(E, GLD, 4),
+      txt(add(A, [-15, 4]), "A", DIM, 12.5), txt(add(B, [15, 4]), "B", DIM, 12.5),
+      txt(add(C, [-4, 20]), "C", ACC, 12.5), txt(add(D, [8, 19]), "D", ACC, 12.5),
+      txt(add(E, [2, -12]), "E", GLD, 12.5),
+      cap(430, 330, "C and D are on the same side of AB, so the ticked angles are equal; E is on the far side, so its angle is the supplement — the two angle tests are one picture")
+    ]);
+  })(), (() => {
+    // Panel 2: the metric tests, on ONE labelling. A, B, C, D go round the circle in order, so
+    // the same four letters serve both statements: the diagonals AC and BD meet at P, giving
+    // PA·PC = PB·PD, and those same diagonals are the ones Ptolemy multiplies. P is solved for
+    // rather than placed, since the equal products are the whole claim.
+    const O = [214, 152], R = 104;
+    const [A, B, C, D] = [175, 250, 320, 50].map(a => onC(O, R, a));
+    const P = lineInt(A, C, B, D);
+    return wrap(430, 330, [
+      circ(O, R, FNT, 1.6),
+      poly([A, B, C, D], ACC, 2),
+      seg(A, C, GLD, 1.7, "5 4"), seg(B, D, GLD, 1.7, "5 4"),
+      dot(P, GLD, 4.5), dot(A, ACC, 4), dot(B, ACC, 4), dot(C, ACC, 4), dot(D, ACC, 4),
+      txt(add(P, [10, -6]), "P", GLD, 12.5),
+      txt(add(A, [-15, 0]), "A", ACC, 12), txt(add(B, [-9, 16]), "B", ACC, 12),
+      txt(add(C, [13, 8]), "C", ACC, 12), txt(add(D, [13, 14]), "D", ACC, 12),
+      cap(430, 330, "the diagonals meet at P, so PA·PC = PB·PD tests it from inside, and those same diagonals give Ptolemy: AC·BD = AB·CD + BC·AD")
+    ]);
+  })()];
 
   DIAGRAMS["ptolemys-theorem"] = [wrap(430, 340, [
     circ(QCEN, QR, FNT, 1.5),
@@ -881,25 +1003,6 @@
     txt(add(mid(QC2, QD), [0, 16]), "c", DIM, 12), txt(add(mid(QD, QA), [-14, 0]), "d", DIM, 12),
     cap(430, 340, "A = √((s−a)(s−b)(s−c)(s−d))")
   ])];
-
-  DIAGRAMS["pitots-theorem"] = [(() => {
-    const cen = [210, 172], r = 84;
-    const angs = [-65, 25, 115, 205];
-    const tp = angs.map(a => onC(cen, r, a));
-    const dir = angs.map(a => [-Math.sin(rad(a)), Math.cos(rad(a))]);
-    const V = angs.map((_, i) => {
-      const j = (i + 1) % 4;
-      return lineInt(tp[i], add(tp[i], dir[i]), tp[j], add(tp[j], dir[j]));
-    });
-    return wrap(430, 340, [
-      poly(V, DIM, 2), circ(cen, r, ACC, 1.6),
-      ...tp.map(p => dot(p, ACC, 3.5)),
-      ...V.map((p, i) => txt(add(away(p, cen, 16), [0, 4]), "ABCD"[i], DIM, 12.5)),
-      txt(away(mid(V[0], V[1]), cen, 13), "a", GLD, 12.5), txt(away(mid(V[1], V[2]), cen, 13), "b", ACC, 12.5),
-      txt(away(mid(V[2], V[3]), cen, 13), "c", GLD, 12.5), txt(away(mid(V[3], V[0]), cen, 13), "d", ACC, 12.5),
-      cap(430, 340, "an incircle exists ⟺ a + c = b + d (opposite sides balance)")
-    ]);
-  })()];
 
   DIAGRAMS["ptolemy-equilateral"] = [(() => {
     const cen = [210, 168], R = 126;
@@ -1185,6 +1288,35 @@
       massBadge(add(away(C, CEN, 30), [0, -6]), "2"),
       massBadge(add(D, [0, 24]), "6"),
       cap(430, 330, "BD:DC = 1:2, AE:EC = 2:3  ⇒  AP:PD = 6:3 = 2:1")
+    ]);
+  })(), (() => {
+    // Same triangle, same masses as panel 1, because the point is a comparison. One mass
+    // assignment ALWAYS yields three concurrent cevians -- that is Ceva -- so the third cevian
+    // is not free: masses 3, 4, 2 force AF:FB = m_B:m_A = 4:3, and it is the only cevian from C
+    // that reaches P. The contrast cevian is 1:2 rather than the median: the median is the more
+    // natural wrong guess but misses P by only 15px, which reads as a drawing error instead of
+    // a fact. At 1:2 the miss is 53px and unmistakable.
+    const D = lerp(B, C, 1 / 3), E = lerp(A, C, 2 / 5);
+    const P = lineInt(A, D, B, E);
+    const Fc = lerp(A, B, 4 / 7);          // AF:FB = 4:3 -- concurrent
+    const Fm = lerp(A, B, 1 / 3);          // AF:FB = 1:2 -- any other ratio misses P
+    const X = lineInt(C, Fm, A, D);        // where the median actually crosses AD
+    return wrap(430, 330, [
+      ABC(),
+      seg(A, D, ACC, 1.8), seg(B, E, ACC, 1.8),
+      seg(C, Fc, GRN, 1.8),
+      seg(C, Fm, PNK, 1.7, "5 4"),
+      dot(P, GRN, 5), dot(X, PNK, 4),
+      dot(Fc, GRN, 3.2), dot(Fm, PNK, 3.2),
+      txt(add(P, [13, -7]), "P", GRN, 12.5),
+      // The two feet are only 20px apart on AB, so the ratio labels are thrown to opposite
+      // sides of it rather than stacked, which is what the collision checker caught.
+      txt(add(Fc, [-17, -6]), "4:3", GRN, 11.5),
+      txt(add(Fm, [18, 10]), "1:2", PNK, 11.5),
+      massBadge(add(away(A, CEN, 30), [16, 0]), "3"),
+      massBadge(add(away(B, CEN, 30), [0, -3]), "4"),
+      massBadge(add(away(C, CEN, 30), [0, -6]), "2"),
+      cap(430, 330, "the masses force the third cevian: only AF:FB = m_B:m_A = 4:3 (green) reaches P — any other ratio (pink) misses, which is exactly Ceva's condition")
     ]);
   })()];
 
@@ -1550,7 +1682,10 @@
   // The ellipse through the minimising point is the smallest one that reaches the line, so it
   // touches. Drawn with the reflection construction beside it, since they are the same fact.
   DIAGRAMS["ellipse-tangent-line"] = [(() => {
-    const yAx = 268, F1 = [132, 168], F2 = [318, 120];
+    // The reflection lands at 2*yAx - F1.y, so the line cannot sit low in the frame or the
+    // reflected focus drops off the bottom edge: at yAx = 268 with F1.y = 168 it was at 368
+    // on a 330-tall canvas, taking its dot and label with it. 244/172 puts it at 316.
+    const yAx = 244, F1 = [132, 172], F2 = [318, 120];
     const F1r = [F1[0], 2 * yAx - F1[1]];                 // F1 reflected over the line
     const T = (() => {                                    // where F1'F2 crosses the line
       const t = (yAx - F1r[1]) / (F2[1] - F1r[1]);
@@ -1611,48 +1746,335 @@
   })()];
 
   DIAGRAMS["insphere-radius"] = [(() => {
-    const a = [80, 268], b = [340, 268], c = [215, 62];
-    const I = incenterOf(a, b, c), f = foot(I, b, c);
+    // A tetrahedron with its insphere, not a triangle with its incircle: this card is about a
+    // polyhedron, and the flat version said nothing the 2D inradius card had not already said.
+    // Same viewing angle as regular-tetrahedron, so the two read as the same solid.
+    const b1 = [96, 266], b2 = [334, 266], b3 = [256, 208], apex = [206, 60];
+    const cen = [(b1[0] + b2[0] + b3[0] + apex[0]) / 4, (b1[1] + b2[1] + b3[1] + apex[1]) / 4];
+    const r = 44;
     return wrap(430, 310, [
-      poly([a, b, c], DIM, 2), circ(I, dist(I, foot(I, a, b)), ACC, 1.8),
-      dot(I, ACC, 3.5), txt(add(I, [-14, -4]), "I", ACC, 12.5), seg(I, f, ACC, 1.8, "4 3"),
-      txt(add(mid(I, f), [4, -8]), "r", ACC), rightAngle(f, I, [340, 268], 9, ACC),
-      cap(430, 310, "joining the center to every face: V = ⅓ r S — the 3D twin of A = rs")
+      seg(b1, b3, FNT, 1.4, "5 4"), seg(b2, b3, FNT, 1.4, "5 4"), seg(apex, b3, FNT, 1.4, "5 4"),
+      circ(cen, r, ACC, 1.8, ACCS),
+      `<ellipse cx="${r1(cen[0])}" cy="${r1(cen[1])}" rx="${r}" ry="${r1(r * 0.34)}" fill="none" stroke="${ACC}" stroke-width="1" stroke-dasharray="4 3"/>`,
+      seg(b1, b2, DIM, 2), seg(apex, b1, DIM, 2), seg(apex, b2, DIM, 2),
+      dot(cen, ACC, 3.5), txt(add(cen, [-16, -7]), "I", ACC, 12.5),
+      seg(cen, add(cen, [0, r]), GLD, 1.6, "4 3"),
+      txt(add(cen, [11, r - 7]), "r", GLD, 12),
+      cap(430, 310, "the sphere touching every face: joining I to each face cuts the solid into pyramids of height r, so V = ⅓ r S — the 3D twin of A = rs")
     ]);
   })()];
 
   DIAGRAMS["cross-section-method"] = [(() => {
-    const O = [215, 158], R = 112, rt = 30;
-    const c1 = onC(O, R - rt, 118), c2 = onC(O, R - rt, 62);
-    return wrap(430, 320, [
+    // A REAL projection, not ellipses arranged to suggest one. The previous attempt drew the
+    // torus as three concentric ellipses -- one of which (rx = Rmajor, ry = rtube) is not a
+    // feature of a torus at all -- and put the cutting plane face-on to the viewer, where a
+    // plane is indistinguishable from a background rectangle.
+    //
+    // Both are fixed by giving the scene a camera. Azimuth 52 degrees turns the cutting plane
+    // (the x-z plane) away from face-on so it projects to a slanted parallelogram and reads as
+    // a plane in space. Elevation matters more than it looks: at 22 degrees the torus is nearly
+    // edge-on and reads as a flat ring, because its hole never opens. 38 degrees opens it. The torus is
+    // then the actual parametric surface ((Rm + r cos v)cos u, (Rm + r cos v)sin u, r sin v)
+    // sampled as tube rings and projected, which is what makes it look like a torus.
+    const TH = 52 * Math.PI / 180, PH = 38 * Math.PI / 180;
+    const st = Math.sin(TH), ct = Math.cos(TH), sp = Math.sin(PH), cp = Math.cos(PH);
+    const O = [215, 180], R = 96, rt = 22, Rm = R - rt;   // internally tangent: Rm + rt = R
+    // Orthographic camera. Screen y is negated because SVG counts downwards.
+    const P3 = (x, y, z) => [O[0] + (-x * st + y * ct), O[1] - (-(x * ct + y * st) * sp + z * cp)];
+    const depth = (x, y, z) => (x * ct + y * st) * cp + z * sp;
+    const tubeRing = (u, n) => {
+      const pts = [];
+      for (let k = 0; k < n; k++) {
+        const v = 2 * Math.PI * k / n, rad = Rm + rt * Math.cos(v);
+        pts.push(P3(rad * Math.cos(u), rad * Math.sin(u), rt * Math.sin(v)));
+      }
+      return pts;
+    };
+    const lonRing = (v, n) => {          // constant v: a circle running the long way round
+      const pts = [], rad = Rm + rt * Math.cos(v), zz = rt * Math.sin(v);
+      for (let k = 0; k < n; k++) {
+        const u = 2 * Math.PI * k / n;
+        pts.push(P3(rad * Math.cos(u), rad * Math.sin(u), zz));
+      }
+      return pts;
+    };
+    const planeCircle = (rad, n) => {    // a circle drawn IN the cutting plane (y = 0)
+      const pts = [];
+      for (let k = 0; k < n; k++) {
+        const t = 2 * Math.PI * k / n;
+        pts.push(P3(rad * Math.cos(t), 0, rad * Math.sin(t)));
+      }
+      return pts;
+    };
+
+    // Only the NEAR half is ribbed, and sparsely. Twenty rings round the whole torus put 52px
+    // circles 22px apart and the result was a ball of wool; the far side doubles the crossings
+    // for nothing, since the outer equator and the dashed hole already place it. Even on the
+    // near side the rings foreshorten into a cluster, so five is the most that reads -- the two
+    // bold rings the plane cuts are themselves tube circles and carry most of the 3D cue.
+    const NU = 10, ribs = [];
+    for (let i = 0; i < NU; i++) {
+      const u = 2 * Math.PI * i / NU;
+      if (depth(Rm * Math.cos(u), Rm * Math.sin(u), 0) > 0) {
+        ribs.push(poly(tubeRing(u, 26), FNT, 0.8, "none"));
+      }
+    }
+    const S = 130;
+    return wrap(430, 360, [
+      // the cutting plane: a real square in the x-z plane, so its projection is a slanted
+      // parallelogram rather than an axis-aligned box
+      poly([P3(S, 0, S), P3(S, 0, -S), P3(-S, 0, -S), P3(-S, 0, S)],
+           FNT, 1.1, "rgba(120,140,190,0.07)"),
+      poly(planeCircle(R, 72), FNT, 1, "none"),          // where the plane meets the sphere
+      circ(O, R, FNT, 1.6),                              // the sphere, kept quiet: the torus is the subject
+      poly(lonRing(Math.PI, 72), ACC, 1.1, "none", "5 4"), // the hole, dashed: it is behind the tube
+      ...ribs,
+      poly(lonRing(0, 72), ACC, 1.6, "none"),            // the outer equator
+      poly(tubeRing(0, 48), ACC, 2.6, "none"),           // the two rings the plane actually cuts
+      poly(tubeRing(Math.PI, 48), ACC, 2.6, "none"),
+      seg(P3(0, 0, -120), P3(0, 0, 125), FNT, 1.3, "5 4"),
+      txt([O[0], 52], "axis", FNT, 11),
+      txt([340, 104], "sphere", DIM, 11.5),
+      txt([250, 300], "torus", ACC, 11.5),
+      txt([116, 348], "cutting plane", FNT, 10.5, "start"),
+      cap(430, 360, "a torus inside a sphere, and the plane through their common axis — it meets the tube in the two bold rings, which are the circles panel 2 draws")
+    ]);
+  })(), (() => {
+    // Panel 2 is that same plane, now looked at straight on. The two bold rings above become
+    // true circles here, each tangent to the sphere's great circle because Rm + r = R.
+    const O = [215, 178], R = 112, rt = 30, d = R - rt;
+    const c1 = [O[0] - d, O[1]], c2 = [O[0] + d, O[1]];
+    return wrap(430, 360, [
       circ(O, R, DIM, 2), dot(O, DIM, 3.5),
-      seg([215, 30], [215, 290], FNT, 1.3, "5 4"),
-      circ(c1, rt, ACC, 1.8), circ(c2, rt, ACC, 1.8),
+      seg([O[0], 50], [O[0], 310], FNT, 1.3, "5 4"),
+      circ(c1, rt, ACC, 2.4), circ(c2, rt, ACC, 2.4),
       dot(c1, ACC, 3), dot(c2, ACC, 3),
-      txt(add(c2, [20, 4]), "r", ACC, 12),
-      seg(O, lerp(O, c2, (R + 0) / dist(O, c2)), GLD, 1.6, "4 3"),
-      txt(add(mid(O, c2), [16, 2]), "R − r", GLD, 11.5),
-      txt([215, 22], "axis", FNT, 11),
-      cap(430, 320, "slice through the axis: sphere + torus become a circle and two tube circles")
+      seg(O, c2, GLD, 1.6, "4 3"),
+      txt(add(mid(O, c2), [0, -9]), "R − r", GLD, 11.5),
+      seg(c2, add(c2, [rt, 0]), ACC, 1.6),
+      txt(add(c2, [14, -8]), "r", ACC, 12),
+      txt([O[0], 42], "axis", FNT, 11),
+      txt(add(c1, [0, -44]), "tube", ACC, 11.5),
+      cap(430, 360, "looking straight at that plane: the sphere is a circle, the tube is two circles of radius r whose centres sit R − r from the axis, each touching it")
     ]);
   })()];
 
   // ---------- Advanced additions (radical axis, Miquel, symmedian, ...) ----------
 
+  // Panel 1 shows the equality rather than asserting it: a point on the axis with its two
+  // tangent segments drawn, equal by construction. Panel 2 is the intersecting case, which
+  // is what every problem in the database actually uses -- there the axis is the common chord.
+  // Every side replaced by an angle: the figure shows the circumcircle with R marked and
+  // the three angles labelled, and no side length named anywhere, which is the whole point.
+  DIAGRAMS["trig-area-circumradius"] = [(() => {
+    const O = [215, 172], R = 108;
+    const A = onC(O, R, -104), B = onC(O, R, 152), C = onC(O, R, 34);
+    return wrap(430, 330, [
+      circ(O, R, FNT, 1.5),
+      poly([A, B, C], ACC, 2, ACCS),
+      seg(O, A, GLD, 1.8), txt(add(mid(O, A), [-11, 2]), "R", GLD, 12),
+      dot(O, DIM, 3), txt(add(O, [10, 12]), "O", DIM, 12),
+      dot(A, ACC, 4), dot(B, ACC, 4), dot(C, ACC, 4),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      angleArc(A, B, C, 20), angleArc(B, C, A, 20), angleArc(C, A, B, 20),
+      cap(430, 330, "no side length appears: A = 2R\u00b2 sin A sin B sin C")
+    ]);
+  })()];
+
+  // Built from the arc condition rather than nudged into place: perpendicular diagonals
+  // hold exactly when the two arcs they cut off are supplementary, so choosing the arcs
+  // as 70 and 110 degrees guarantees the right angle at P closes to machine precision.
+  DIAGRAMS["cyclic-perpendicular-diagonals"] = [(() => {
+    const O = [212, 168], R = 112;
+    const A = onC(O, R, 0), B = onC(O, R, 70), C = onC(O, R, 170), D = onC(O, R, 280);
+    const P = lineInt(A, C, B, D);
+    const F = foot(P, A, B);                       // perpendicular from P to side AB
+    const M = mid(C, D);                           // which, produced, lands on the midpoint of CD
+    return wrap(430, 330, [
+      circ(O, R, FNT, 1.5),
+      poly([A, B, C, D], ACC, 2, ACCS),
+      seg(A, C, DIM, 1.8), seg(B, D, DIM, 1.8),
+      rightAngle(P, A, B, 12, GLD),
+      seg(F, M, GLD, 1.8, "5 4"),
+      dot(F, GLD, 3.5), dot(M, GLD, 4), dot(P, GLD, 4.5),
+      txt(add(P, [9, 13]), "P", GLD, 12),
+      txt(add(M, [10, 5]), "M", GLD, 12),
+      dot(A, ACC, 4), dot(B, ACC, 4), dot(C, ACC, 4), dot(D, ACC, 4),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"), vlab(D, "D"),
+      cap(430, 330, "a² + c² = b² + d² = 4R², and the perpendicular from P to AB bisects CD at M")
+    ]);
+  })()];
+
+  // Incircle, A-excircle, and the dilation at A that carries one to the other. D' is the
+  // antipode of the incircle touch point, and A, D', E come out collinear by construction.
+  DIAGRAMS["incircle-excircle-homothety"] = [(() => {
+    const A = [172, 44], B = [70, 250], C = [332, 250];
+    const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+    const I = incenterOf(A, B, C);
+    const D = foot(I, B, C), r = dist(I, D);
+    const Dp = add(mul(I, 2), mul(D, -1));          // antipode of D on the incircle
+    const per = -a + b + c;
+    const IA = [(-a * A[0] + b * B[0] + c * C[0]) / per, (-a * A[1] + b * B[1] + c * C[1]) / per];
+    const E = foot(IA, B, C), ra = dist(IA, E);
+    const ray = add(A, mul(norm(sub(E, A)), dist(A, E) * 1.04));
+    // The A-excircle here has radius 236 against a 330-tall canvas, so drawing it whole
+    // would spill far past the frame and show as a meaningless clipped band. A 40-degree
+    // arc either side of the tangency point stays on canvas and still reads as "a larger
+    // circle touching BC from below", which is all the figure needs it to say.
+    const arcQ = add(IA, rotv(sub(E, IA), rad(-40)));
+    const arcR = add(IA, rotv(sub(E, IA), rad(40)));
+    return wrap(430, 330, [
+      angleArc(IA, arcQ, arcR, ra, FNT),
+      poly([A, B, C], ACC, 2, ACCS),
+      seg(B, add(C, mul(norm(sub(C, B)), 84)), FNT, 1.2, "4 4"),
+      circ(I, r, GLD, 1.8),
+      seg(A, ray, GRN, 1.8),
+      dot(I, GLD, 3), dot(D, GLD, 4), dot(Dp, GRN, 4.5), dot(E, GRN, 4.5),
+      txt(add(D, [-4, 15]), "D", GLD, 12), txt(add(Dp, [-13, 1]), "D′", GRN, 12),
+      txt(add(E, [4, 16]), "E", GRN, 12), txt(add(I, [11, 4]), "I", GLD, 12),
+      dot(A, ACC, 4), dot(B, ACC, 4), dot(C, ACC, 4),
+      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
+      cap(430, 330, "the dilation at A sends the incircle to the excircle, D′ to E — so A, D′, E are collinear")
+    ]);
+  })()];
+
+  // Semicircles are drawn as two quarter-arcs rather than one half-arc: angleArc normalizes
+  // its sweep into (-pi, pi], so a 180-degree call sits exactly on the boundary and which
+  // way it bulges is luck. Two 90-degree calls are unambiguous.
+  const semiUp = (cen, R, c, w) =>
+    angleArc(cen, onC(cen, R, 180), onC(cen, R, 270), R, c) +
+    angleArc(cen, onC(cen, R, 270), onC(cen, R, 0), R, c);
+
+  DIAGRAMS["arbelos"] = [(() => {
+    // Panel 1 is an EQUALITY, so the two shapes sit side by side and are both derived from
+    // the same a, b. The previous version superimposed the comparison circle at a hardcoded
+    // [330,118]; measured, it ran x 260..400 straight through the arbelos at x 46..334, and
+    // its label landed inside the figure. Nothing in the checklist catches that, so the
+    // layout is now computed and asserted disjoint instead of eyeballed.
+    const aa = 40, bb = 66, base = 250;
+    const A = [20, base], B = [A[0] + 2 * aa, base], C = [A[0] + 2 * (aa + bb), base];
+    const Obig = mid(A, C), Rbig = aa + bb;
+    const BD = 2 * Math.sqrt(aa * bb);
+    const D = [B[0], base - BD];
+    // The circle whose diameter is BD, placed to the right of the arbelos with a real gap.
+    const eqR = BD / 2, gap = 36;
+    const eqC = [C[0] + gap + eqR, base - Rbig / 2 - 4];
+    // Three arcs bound the region and no helper can express that: angleArc and semiUp
+    // hardcode fill="none", poly is straight-edged, circ fills a whole disc. One raw path,
+    // in the same idiom the sector and segment figures already use.
+    const arc = (r, to, sweep) => `A ${r1(r)} ${r1(r)} 0 0 ${sweep} ${pf(to)}`;
+    const region = `<path d="M ${pf(A)} ${arc(Rbig, C, 1)} ${arc(bb, B, 0)} ${arc(aa, A, 0)} Z" fill="${ACCS}" stroke="none"/>`;
+    return wrap(430, 330, [
+      region,
+      semiUp(Obig, Rbig, DIM, 1.8),
+      semiUp(mid(A, B), aa, FNT, 1.5),
+      semiUp(mid(B, C), bb, FNT, 1.5),
+      seg(A, C, DIM, 1.6),
+      seg(B, D, GLD, 2), dot(D, GLD, 3.5), txt(add(D, [-10, -6]), "D", GLD, 12),
+      circ(eqC, eqR, GLD, 1.8, GLDS),
+      seg(add(eqC, [-eqR - 26, 0]), add(eqC, [-eqR - 14, 0]), DIM, 1.6),
+      seg(add(eqC, [-eqR - 26, 6]), add(eqC, [-eqR - 14, 6]), DIM, 1.6),
+      txt(add(eqC, [0, eqR + 18]), "circle on BD", GLD, 11.5),
+      dot(A, DIM, 3.5), dot(B, DIM, 3.5), dot(C, DIM, 3.5),
+      txt(add(A, [-2, 17]), "A", DIM, 12), txt(add(B, [0, 17]), "B", DIM, 12), txt(add(C, [3, 17]), "C", DIM, 12),
+      cap(430, 330, "the shaded arbelos and the circle on BD have the same area, πab")
+    ]);
+  })(), (() => {
+    // Archimedes' twin circles, on their own so they are not lost in the area figure.
+    const aa = 54, bb = 90;
+    const A = [46, 250], B = [A[0] + 2 * aa, 250], C = [A[0] + 2 * (aa + bb), 250];
+    const Obig = mid(A, C), Rbig = aa + bb;
+    const D = [B[0], B[1] - 2 * Math.sqrt(aa * bb)];
+    const tw = aa * bb / (aa + bb);
+    const L = [B[0] - tw, B[1] - Math.sqrt(4 * aa * tw)];
+    const R = [B[0] + tw, B[1] - Math.sqrt(4 * bb * tw)];
+    return wrap(430, 330, [
+      semiUp(Obig, Rbig, DIM, 1.8),
+      semiUp(mid(A, B), aa, FNT, 1.5),
+      semiUp(mid(B, C), bb, FNT, 1.5),
+      seg(A, C, DIM, 1.6),
+      seg(B, D, GLD, 1.6, "5 4"),
+      circ(L, tw, GRN, 2, "rgba(76,195,138,0.13)"),
+      circ(R, tw, GRN, 2, "rgba(76,195,138,0.13)"),
+      dot(L, GRN, 3), dot(R, GRN, 3),
+      seg(L, add(L, [tw, 0]), GRN, 1.4), seg(R, add(R, [tw, 0]), GRN, 1.4),
+      dot(A, DIM, 3.5), dot(B, DIM, 3.5), dot(C, DIM, 3.5),
+      txt(add(A, [-3, 17]), "A", DIM, 12), txt(add(B, [0, 17]), "B", DIM, 12), txt(add(C, [3, 17]), "C", DIM, 12),
+      cap(430, 330, "the two circles wedged against BD have equal radii ab/(a+b), however lopsided the lobes")
+    ]);
+  })()];
+
+  DIAGRAMS["corner-circle-chain"] = [(() => {
+    const V = [52, 168], half = 22;              // half-angle, so the full corner is 44 degrees
+    const th = rad(half), k = (1 + Math.sin(th)) / (1 - Math.sin(th));
+    const bis = [Math.cos(0), Math.sin(0)];      // bisector along +x from V
+    const up = [Math.cos(-th), Math.sin(-th)], dn = [Math.cos(th), Math.sin(th)];
+    const parts = [
+      seg(V, add(V, mul(up, 372)), DIM, 1.8),
+      seg(V, add(V, mul(dn, 372)), DIM, 1.8),
+      seg(V, add(V, mul(bis, 366)), FNT, 1.2, "5 4")
+    ];
+    let r = 9.2;
+    for (let i = 0; i < 4; i++) {
+      const d = r / Math.sin(th);
+      const cen = add(V, mul(bis, d));
+      parts.push(circ(cen, r, i === 1 ? ACC : FNT, i === 1 ? 2 : 1.5));
+      if (i === 1) {
+        const T = add(cen, mul(up, 0));
+        parts.push(dot(cen, ACC, 3));
+        parts.push(txt(add(cen, [0, -r - 8]), "r", ACC, 12));
+      }
+      r *= k;
+    }
+    parts.push(dot(V, DIM, 3.5), txt(add(V, [-11, 5]), "V", DIM, 12));
+    parts.push(cap(430, 330, "centers on the bisector, r = d sin θ — so the radii form a geometric progression"));
+    return wrap(430, 330, parts);
+  })()];
+
   DIAGRAMS["radical-axis"] = [(() => {
-    const c1 = [150, 160], r1c = 92, c2 = [285, 160], r2c = 70;
-    // Radical axis of two circles: x = (d^2 + r1^2 - r2^2) / (2d) along the center line.
+    // Genuinely disjoint circles: at d = 190 against r1 + r2 = 126 the two tangent
+    // segments from Q land far apart. Touching circles put both tangent points on the
+    // tangency point, which collapses the figure to a single visible line.
+    const c1 = [128, 170], r1c = 74, c2 = [318, 176], r2c = 52;
     const d = dist(c1, c2);
-    const xw = (d * d + r1c * r1c - r2c * r2c) / (2 * d);
-    const P0 = lerp(c1, c2, xw / d);
-    return wrap(430, 320, [
+    const a = (d * d + r1c * r1c - r2c * r2c) / (2 * d);
+    const u = norm(sub(c2, c1)), n = perp(u);
+    const F = add(c1, mul(u, a));
+    const Q = add(F, mul(n, -96));
+    const T1 = tangentPoints(c1, r1c, Q)[0], T2 = tangentPoints(c2, r2c, Q)[1];
+    return wrap(430, 330, [
       circ(c1, r1c, DIM, 1.8), circ(c2, r2c, DIM, 1.8),
-      dot(c1, DIM, 3), dot(c2, DIM, 3), seg(c1, c2, FNT, 1.3, "5 4"),
-      seg([P0[0], 34], [P0[0], 286], GLD, 2),
-      rightAngle([P0[0], 160], [P0[0], 100], c2, 10, GLD),
-      txt([P0[0] + 10, 44], "radical axis", GLD, 12, "start"),
-      txt(add(c1, [-4, 16]), "O₁", DIM, 12), txt(add(c2, [6, 16]), "O₂", DIM, 12),
-      cap(430, 320, "the locus of points with equal power to both circles — a line ⊥ O₁O₂ (through the common chord when they intersect)")
+      seg(c1, c2, FNT, 1.3, "5 4"),
+      seg(add(F, mul(n, -128)), add(F, mul(n, 128)), ACC, 2),
+      rightAngle(F, c2, add(F, mul(n, 30)), 11, GLD),
+      seg(Q, T1, GLD, 1.8), seg(Q, T2, GRN, 1.8),
+      dot(T1, GLD, 3.5), dot(T2, GRN, 3.5),
+      dot(Q, ACC, 4.5), txt(add(Q, [11, -5]), "Q", ACC, 12),
+      dot(c1, DIM, 3), dot(c2, DIM, 3),
+      txt(add(c1, [-6, 16]), "O\u2081", DIM, 12), txt(add(c2, [8, 16]), "O\u2082", DIM, 12),
+      cap(430, 330, "every Q on the axis has equal tangent lengths to both circles, and the axis is \u22a5 O\u2081O\u2082")
+    ]);
+  })(), (() => {
+    // Two circles that actually meet: here the radical axis IS the common chord, which
+    // is the case the contest problems turn on.
+    const c1 = [175, 168], r1c = 96, c2 = [272, 168], r2c = 78;
+    const d = dist(c1, c2);
+    const a = (d * d + r1c * r1c - r2c * r2c) / (2 * d);
+    const u = norm(sub(c2, c1)), n = perp(u);
+    const F = add(c1, mul(u, a));
+    const half = Math.sqrt(Math.max(0, r1c * r1c - a * a));
+    const A = add(F, mul(n, half)), B = add(F, mul(n, -half));
+    return wrap(430, 330, [
+      circ(c1, r1c, DIM, 1.8), circ(c2, r2c, DIM, 1.8),
+      seg(c1, c2, FNT, 1.3, "5 4"),
+      seg(add(F, mul(n, half + 46)), add(F, mul(n, -half - 46)), ACC, 2),
+      seg(A, B, GLD, 2.6),
+      dot(A, GLD, 4.5), dot(B, GLD, 4.5),
+      txt(add(A, [10, -6]), "A", GLD, 12), txt(add(B, [10, 13]), "B", GLD, 12),
+      rightAngle(F, c2, A, 11, GLD),
+      dot(c1, DIM, 3), dot(c2, DIM, 3),
+      txt(add(c1, [-8, 16]), "O\u2081", DIM, 12), txt(add(c2, [8, 16]), "O\u2082", DIM, 12),
+      cap(430, 330, "when the circles meet, the common chord AB is the radical axis \u2014 subtract the equations to get it without finding A or B")
     ]);
   })()];
 
@@ -2200,15 +2622,32 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
-  DIAGRAMS["skew-lines-distance"] = [wrap(430, 320, [
-    seg([50, 210], [390, 250], ACC, 2),
-    seg([120, 60], [360, 140], GLD, 2),
-    seg([215, 229], [232, 97], GRN, 2, "6 4"),
-    dot([215, 229], GRN, 3.5), dot([232, 97], GRN, 3.5),
-    txt([240, 168], "d", GRN, 14),
-    txt([70, 195], "line 1", ACC, 11.5), txt([130, 50], "line 2", GLD, 11.5),
-    cap(430, 320, "project P₂ − P₁ onto the common perpendicular d₁ × d₂")
-  ])];
+  DIAGRAMS["skew-lines-distance"] = [(() => {
+    // Two bare segments on a blank canvas look like they cross. A faint floor gives the picture
+    // depth, and dropping line 2 onto it shows the line passing over rather than through —
+    // which is the whole content of the word "skew".
+    const fl = [[52, 216], [278, 272], [396, 212], [166, 164]];   // floor parallelogram
+    const lift = 92;
+    const up = p => [p[0], p[1] - lift];
+    const a1 = [72, 214], a2 = [382, 240];                        // line 1, lying on the floor
+    const s1 = [156, 180], s2 = [344, 228];                       // line 2's shadow on the floor
+    const b1 = up(s1), b2 = up(s2);                               // line 2, lifted off it
+    const T = up(lerp(s1, s2, 0.44)), B = lerp(a1, a2, 0.40);
+    return wrap(430, 320, [
+      poly(fl, FNT, 1, "rgba(120,140,190,0.05)"),
+      seg(s1, s2, FNT, 1, "4 4"),
+      seg(s1, b1, FNT, 1, "3 3"), seg(s2, b2, FNT, 1, "3 3"),
+      seg(a1, a2, ACC, 2.2),
+      seg(b1, b2, GLD, 2.2),
+      seg(B, T, GRN, 2.2),
+      dot(B, GRN, 3.8), dot(T, GRN, 3.8),
+      txt(add(mid(B, T), [14, 2]), "d", GRN, 14),
+      txt(add(a1, [6, 18]), "line 1", ACC, 11.5, "start"),
+      txt(add(b1, [2, -11]), "line 2", GLD, 11.5, "start"),
+      txt(add(mid(s1, s2), [24, 15]), "its shadow", FNT, 10.5),
+      cap(430, 320, "the lines never meet — line 2 passes above line 1, and d is the only segment perpendicular to both: project P₂ − P₁ onto d₁ × d₂")
+    ]);
+  })()];
 
   DIAGRAMS["isoperimetric-facts"] = [(() => {
     const k = 11;                                  // px per unit — every shape has perimeter 20·k
@@ -2562,20 +3001,6 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
-  DIAGRAMS["projection-formula"] = [(() => {
-    const H = foot(A, B, C);
-    return wrap(430, 330, [
-      seg(B, H, GLD, 2.6), seg(H, C, PUR, 2.6),           // projections BH, HC
-      seg(A, B, ACC, 2.2), seg(A, C, ORG, 2.2),           // sides c, b
-      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
-      seg(A, H, FNT, 1.6, "5 4"), rightAngle(H, C, A, 11, FNT),
-      dot(H, DIM, 3.5), txt(add(H, [4, 20]), "H", DIM, 12),
-      txt(add(mid(B, H), [-6, 20]), "c cos B", GLD, 10.5), txt(add(mid(H, C), [8, 20]), "b cos C", PUR, 10.5),
-      txt(add(mid(A, B), [-14, -2]), "c", ACC, 12.5), txt(add(mid(A, C), [15, -2]), "b", ORG, 12.5),
-      cap(430, 330, "a = BH + HC = c cos B + b cos C  (each side's projection onto BC is colored to match)")
-    ]);
-  })()];
-
   DIAGRAMS["triangle-half-angle-identities"] = [(() => {
     const I = incenterOf(A, B, C), O = circumcenterOf(A, B, C);
     const r = dist(I, foot(I, B, C)), R = dist(O, A);
@@ -2693,26 +3118,6 @@ DIAGRAMS["trig-ceva"] = [(() => {
   // ---------- Added: advanced geometry ----------
   const vdot = (p, q) => p[0] * q[0] + p[1] * q[1];
   const farFrom = (pair, p) => (dist(pair[0], p) > dist(pair[1], p) ? pair[0] : pair[1]);
-
-  DIAGRAMS["same-base-area-ratio"] = [(() => {
-    const Aq = [150, 70], Dq = [345, 58], Cq = [362, 250], Bq = [70, 272];
-    const P = lineInt(Aq, Cq, Bq, Dq);
-    const RED = "#e2555f", REDS = "rgba(226,85,95,0.15)";
-    return wrap(430, 320, [
-      poly([Aq, Bq, Dq], ACC, 1.6, ACCS),
-      poly([Cq, Bq, Dq], RED, 1.6, REDS),
-      seg(Bq, Dq, FNT, 1.6, "5 4"),
-      seg(Aq, P, ACC, 3), seg(P, Cq, RED, 3),
-      poly([Aq, Dq, Cq, Bq], DIM, 2),
-      dot(P, DIM, 3.5), dot(Aq, ACC), dot(Bq, ACC), dot(Cq, ACC), dot(Dq, ACC),
-      txt(add(mid(mid(Aq, Bq), P), [-2, 0]), "Area₁", ACC, 12.5),
-      txt(add(mid(mid(Cq, Dq), P), [10, 4]), "Area₂", RED, 12.5),
-      txt(add(away(Aq, P, 15), [0, 3]), "A", DIM, 13.5), txt(add(away(Bq, P, 15), [0, 6]), "B", DIM, 13.5),
-      txt(add(away(Cq, P, 15), [3, 3]), "C", DIM, 13.5), txt(add(away(Dq, P, 15), [2, 0]), "D", DIM, 13.5),
-      txt(add(P, [12, -5]), "P", DIM, 13),
-      cap(430, 320, "Triangles ABD (blue) and CBD (red) share base BD; the diagonal AC crosses it at P, so [ABD]/[CBD] = AP/PC.")
-    ]);
-  })()];
 
   DIAGRAMS["isogonal-conjugate"] = [(() => {
     const P = [200, 172];
@@ -3126,20 +3531,75 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
+  DIAGRAMS["triangle-13-14-15"] = [(() => {
+    // Exact coordinates, not a sketch: with the 14-side on the axis from (0,0) to (14,0), the
+    // apex solves x^2+y^2 = 13^2 against (x-14)^2+y^2 = 15^2 and lands on the lattice point
+    // (5,12). Drawing it to scale is the point of the figure -- the whole card is that the foot
+    // is integral, so the triangle really is two Pythagorean triples sharing the altitude.
+    const k = 19, ox = 60, oy = 270;
+    const pt = (x, y) => [ox + k * x, oy - k * y];
+    const B = pt(0, 0), C = pt(14, 0), A = pt(5, 12), H = pt(5, 0);
+    return wrap(430, 320, [
+      poly([A, B, H], "none", 0, ACCS),                 // 5-12-13
+      poly([A, H, C], "none", 0, GLDS),                 // 9-12-15
+      poly([A, B, C], DIM, 2),
+      seg(A, H, ORG, 2),
+      rightAngle(H, A, C, 11, ORG),
+      dot(A, DIM, 4), dot(B, DIM, 4), dot(C, DIM, 4), dot(H, ORG, 4),
+      txt(add(A, [0, -12]), "A", DIM, 12.5),
+      txt(add(B, [-14, 6]), "B", DIM, 12.5),
+      txt(add(C, [14, 6]), "C", DIM, 12.5),
+      txt(add(H, [0, 20]), "H", ORG, 12),
+      txt(add(mid(A, B), [-17, 0]), "13", ACC, 12.5),
+      txt(add(mid(A, C), [17, 0]), "15", GLD, 12.5),
+      txt(add(mid(B, H), [0, -9]), "5", DIM, 12),
+      txt(add(mid(H, C), [0, -9]), "9", DIM, 12),
+      txt(add(mid(A, H), [13, 0]), "12", ORG, 12.5),
+      cap(430, 320, "the altitude to the side 14 is 12 and lands 5 from B: a 5-12-13 glued to a 9-12-15, so [ABC] = 84")
+    ]);
+  })()];
+
   DIAGRAMS["surface-shortest-path"] = [(() => {
     const x0 = 60, x1 = 180, x2 = 360, yT = 70, yB = 190;
     const S = [x0, yB], E = [x2, yT];
     return wrap(430, 270, [
       poly([[x0, yT], [x1, yT], [x1, yB], [x0, yB]], DIM, 1.8, ACCS),
       poly([[x1, yT], [x2, yT], [x2, yB], [x1, yB]], DIM, 1.8, GLDS),
-      seg([x1, yT], [x1, yB], FNT, 1.4, "5 4"),        // fold line
+      seg([x1, yT], [x1, yB], ORG, 1.8, "5 4"),        // fold line (same colour as panel 2's edge)
       seg(S, E, ACC, 2.4),                              // straight (shortest) path
       dot(S, "var(--text)", 4.5), dot(E, "var(--text)", 4.5),
       txt(add(S, [-6, 16]), "S", "var(--text)", 12.5), txt(add(E, [8, -4]), "E", "var(--text)", 12.5),
       txt([(x0 + x1) / 2, yB + 18], "a", DIM, 12.5), txt([(x1 + x2) / 2, yB + 18], "b", DIM, 12.5),
       txt([x0 - 14, (yT + yB) / 2], "c", DIM, 12.5),
-      txt([x1, yT - 8], "fold", FNT, 11),
+      txt([x1, yT - 8], "fold", ORG, 11),
       cap(430, 270, "unfold the two faces flat: the shortest surface path is the straight segment, length √((a+b)² + c²)")
+    ]);
+  })(), (() => {
+    // The same journey before unfolding, so the two panels read as one argument. S and E are
+    // opposite corners; the path crosses the two shaded faces and bends only where it meets the
+    // shared edge, at height c·a/(a+b) -- the height the straight line in panel 1 predicts, which
+    // is the whole content of the unfolding. The space diagonal is drawn faint because it is
+    // SHORTER (170 against 219 here) and is the trap the write-up warns about: it leaves the surface.
+    const a = 80, b = 120, c = 90;
+    const P = proj3([212, 185], 1.15, AX3);
+    const B = box3(P, b, a, c);
+    const S = B.pts[1], E = B.pts[7];
+    const X = P(b, a, c * a / (a + b));
+    return wrap(430, 290, [
+      poly([B.pts[1], B.pts[2], B.pts[6], B.pts[5]], "none", 0, ACCS),   // crossed first, width a
+      poly([B.pts[3], B.pts[2], B.pts[6], B.pts[7]], "none", 0, GLDS),   // crossed second, width b
+      ...B.edges,
+      seg(B.pts[2], B.pts[6], ORG, 2.6),                                 // the fold: a NEAR edge, so solid
+      seg(S, E, PNK, 1.6, "4 4"),                                        // space diagonal: off-surface
+      seg(S, X, ACC, 2.4), seg(X, E, ACC, 2.4),
+      dot(S, "var(--text)", 4.5), dot(E, "var(--text)", 4.5), dot(X, ACC, 3.5),
+      txt(add(S, [-6, 16]), "S", "var(--text)", 12.5),
+      txt(add(E, [9, -4]), "E", "var(--text)", 12.5),
+      txt(add(P(b, a / 2, 0), [0, 16]), "a", DIM, 12.5),
+      txt(add(P(b / 2, a, 0), [6, 16]), "b", DIM, 12.5),
+      txt(add(P(0, a, c / 2), [12, 4]), "c", DIM, 12.5),
+      txt(add(B.pts[6], [0, -10]), "fold", ORG, 11),
+      cap(430, 290, "the same two faces on the solid: the path bends only at the fold edge, while the pink space diagonal is shorter but leaves the surface")
     ]);
   })()];
 
@@ -3227,22 +3687,6 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
-  DIAGRAMS["median-to-hypotenuse"] = [(() => {
-    const Ap = [110, 78], Cp = [110, 258], Bp = [382, 258], M = mid(Ap, Bp), R = dist(M, Ap);
-    const tick = (P, Q) => { const m = mid(P, Q), d = mul(norm(perp(sub(Q, P))), 5); return seg(sub(m, d), add(m, d), ACC, 2); };
-    return wrap(460, 360, [
-      circ(M, R, FNT, 1.3, "none", "5 4"),
-      poly([Ap, Bp, Cp], DIM, 2),
-      rightAngle(Cp, Ap, Bp, 12),
-      seg(Cp, M, GLD, 2),
-      tick(Ap, M), tick(M, Bp), tick(Cp, M),
-      dot(M, GRN, 4), dot(Ap, DIM, 3.5), dot(Bp, DIM, 3.5), dot(Cp, DIM, 3.5),
-      txt(add(Ap, [-14, 2]), "A", DIM, 12.5), txt(add(Bp, [12, 4]), "B", DIM, 12.5), txt(add(Cp, [-14, 4]), "C", DIM, 12.5),
-      txt(add(M, [8, -8]), "M", GRN, 12.5),
-      cap(460, 360, "M, the hypotenuse midpoint, is the circumcenter: MA = MB = MC = half the hypotenuse")
-    ]);
-  })()];
-
   DIAGRAMS["equal-chords-arcs"] = [(() => {
     const O = [210, 190], R = 140, d = 72;
     const chord = (deg) => { const n = [Math.cos(rad(deg)), Math.sin(rad(deg))], m = [O[0] + d * n[0], O[1] + d * n[1]], t = [-n[1], n[0]], h = Math.sqrt(R * R - d * d); return { m: m, P: [m[0] + h * t[0], m[1] + h * t[1]], Q: [m[0] - h * t[0], m[1] - h * t[1]] }; };
@@ -3257,24 +3701,6 @@ DIAGRAMS["trig-ceva"] = [(() => {
       tick(O, c1.m), tick(O, c2.m),
       dot(O, DIM, 3.5), txt(add(O, [0, -8]), "O", DIM, 11.5),
       cap(430, 380, "equal chords ⟺ equal arcs (gold) ⟺ equal distance from the center (ticks)")
-    ]);
-  })()];
-
-  DIAGRAMS["incenter-area-split"] = [(() => {
-    const I = incenterOf(A, B, C);
-    const fBC = foot(I, B, C);
-    return wrap(430, 340, [
-      poly([B, I, C], "none", 0, ACCS),
-      poly([C, I, A], "none", 0, GLDS),
-      poly([A, I, B], "none", 0, "rgba(76,195,138,0.14)"),
-      triangle(),
-      seg(I, A, DIM, 1.5), seg(I, B, DIM, 1.5), seg(I, C, DIM, 1.5),
-      circ(I, dist(I, fBC), FNT, 1.2, "none", "4 3"),
-      seg(I, fBC, GLD, 1.6), txt(add(mid(I, fBC), [11, 0]), "r", GLD, 12),
-      dot(I, "var(--text)", 4), txt(add(I, [9, 5]), "I", "var(--text)", 12),
-      vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
-      txt(add(mid(B, C), [0, 18]), "a", DIM, 12), txt(add(mid(C, A), [16, 0]), "b", DIM, 12), txt(add(mid(A, B), [-15, 0]), "c", DIM, 12),
-      cap(430, 340, "join I to the vertices: [BIC] : [CIA] : [AIB] = a : b : c, each its side's share of the perimeter")
     ]);
   })()];
 
@@ -3295,10 +3721,12 @@ DIAGRAMS["trig-ceva"] = [(() => {
   })()];
 
   DIAGRAMS["altitude-bisector-angle"] = [(() => {
+    // Canvas is 392 tall, not 340: the circumcircle reaches y = 378 and was being
+    // sliced flat along the bottom edge.
     const O = circumcenterOf(A, B, C);
     const fa = foot(A, B, C);
     const c = dist(A, B), b = dist(A, C), L = lerp(B, C, c / (b + c));
-    return wrap(430, 340, [
+    return wrap(430, 392, [
       circ(O, dist(O, A), FNT, 1.0, "none", "5 4"),
       triangle(),
       seg(A, fa, ACC, 1.8), seg(A, L, GLD, 1.9), seg(A, O, GRN, 1.6, "5 4"),
@@ -3309,7 +3737,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(O, [10, 4]), "O", GRN, 11.5),
       txt(add(fa, [-4, 18]), "alt", ACC, 10.5), txt(add(L, [6, 18]), "bis", GLD, 10.5),
       txt(add(A, [46, 44]), "|B−C|/2", GLD, 10.5),
-      cap(430, 340, "the A-bisector (gold) bisects the angle between the A-altitude and AO — they are isogonal — so each half is |B−C|/2")
+      cap(430, 392, "the A-bisector (gold) bisects the angle between the A-altitude and AO — they are isogonal — so each half is |B−C|/2")
     ]);
   })()];
 
@@ -3402,9 +3830,17 @@ DIAGRAMS["trig-ceva"] = [(() => {
   // ---------- figures for cards that do not read without one ----------
 
   DIAGRAMS["median-to-hypotenuse"] = [(() => {
-    const Bp = [80, 250], Cp = [360, 250], Ap = [80, 70];   // right angle at B
+    // Legs 180 and 240 with hypotenuse 300 -- a 3-4-5, which is this card's own worked example
+    // (6-8-10) scaled by 30. Sized so the circumcircle FITS: R = 150 centred at [215,170] clears
+    // every edge of the 430x340 canvas by 20px. The previous construction had R = 166.4 centred
+    // at y = 160 on a canvas only 320 tall, so the circle -- the whole subject of the figure --
+    // was sliced flat at the top AND the bottom.
+    const Bp = [95, 260], Cp = [335, 260], Ap = [95, 80];   // right angle at B
     const M = mid(Ap, Cp), R = dist(M, Ap);
-    return wrap(430, 320, [
+    // Push the two hypotenuse R labels perpendicular to AC, on the side away from B, so neither
+    // sits on top of the segment it is measuring.
+    const off = mul(norm(perp(sub(Cp, Ap))), -16);
+    return wrap(430, 340, [
       circ(M, R, FNT, 1.3, "none", "5 4"),
       poly([Ap, Bp, Cp], DIM, 2),
       rightAngle(Bp, Ap, Cp, 12, DIM),
@@ -3413,8 +3849,8 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(Ap, [-14, -4]), "A", DIM, 12.5), txt(add(Bp, [-14, 6]), "B", DIM, 12.5),
       txt(add(Cp, [14, 6]), "C", DIM, 12.5), txt(add(M, [12, -8]), "M", ACC, 12.5),
       txt(add(mid(Bp, M), [-6, 18]), "R", ACC, 12),
-      txt(add(mid(Ap, M), [-14, 0]), "R", FNT, 12), txt(add(mid(M, Cp), [4, -12]), "R", FNT, 12),
-      cap(430, 320, "M is the midpoint of the hypotenuse, so MA = MB = MC = R: M is the circumcentre and AC is a diameter")
+      txt(add(mid(Ap, M), off), "R", FNT, 12), txt(add(mid(M, Cp), off), "R", FNT, 12),
+      cap(430, 340, "M is the midpoint of the hypotenuse, so MA = MB = MC = R: M is the circumcentre and AC is a diameter")
     ]);
   })()];
 
@@ -3538,9 +3974,11 @@ DIAGRAMS["trig-ceva"] = [(() => {
   })()];
 
   DIAGRAMS["triangle-sin2-sum-ratio"] = [(() => {
+    // Canvas is 392 tall, not 350: the circumcircle reaches y = 378 and was being
+    // sliced flat along the bottom edge.
     const I = incenterOf(A, B, C), O = circumcenterOf(A, B, C);
     const r = dist(I, foot(I, B, C)), R = dist(O, A);
-    return wrap(430, 350, [
+    return wrap(430, 392, [
       circ(O, R, FNT, 1.4),
       ABC(),
       circ(I, r, ACC, 1.8),
@@ -3549,7 +3987,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(O, [10, -7]), "O", GLD, 12), txt(add(I, [10, -7]), "I", ACC, 12),
       txt(add(mid(O, A), [-13, 0]), "R", GLD, 12),
       txt(add(mid(I, foot(I, B, C)), [10, 2]), "r", ACC, 12),
-      cap(430, 350, "the whole sine ratio collapses to 2r/R, so only the incircle and circumcircle radii matter, not the shape")
+      cap(430, 392, "the whole sine ratio collapses to 2r/R, so only the incircle and circumcircle radii matter, not the shape")
     ]);
   })()];
 
@@ -3585,7 +4023,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       dot(Xa, ACC, 4.5), dot(Yb, ACC, 4.5), dot(Zc, ACC, 4.5), dot(O, DIM, 3),
       txt(add(P(170, 0, 0), [-8, 14]), "x", FNT, 12),
       txt(add(P(0, 250, 0), [12, 6]), "y", FNT, 12),
-      txt(add(P(0, 0, 235), [0, -10]), "z", FNT, 12),
+      txt(add(P(0, 0, 235), [9, -2]), "z", FNT, 12),   // centred above the tip would clip the top edge
       txt(add(Xa, [-16, 12]), "(a,0,0)", ACC, 11.5),
       txt(add(Yb, [22, 10]), "(0,b,0)", ACC, 11.5),
       txt(add(Zc, [6, -10]), "(0,0,c)", ACC, 11.5),
@@ -3614,7 +4052,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       dot(O, DIM, 3.5), dot(far, ACC, 3.5), dot(img1, ACC, 3.5),
       txt(add(O, [-13, -7]), "O", DIM, 12),
       txt(add(c1, [0, 4]), "circle through O", ACC, 10.5),
-      txt(add(img1, [92, -8]), "becomes a line", ACC, 11),
+      txt(add(img1, [104, -16]), "becomes a line", ACC, 11),
       txt(add(c2, [4, -42]), "circle missing O", GLD, 10.5),
       txt(add(c2i, [-4, 34]), "stays a circle", GLD, 11),
       cap(430, 340, "lines and circles are one family here: a circle through the centre flattens to a line, one missing it stays a circle")

@@ -31,10 +31,10 @@ Solvability test for $ax + by = c$: check $\gcd(a,b) \mid c$. One solution comes
 Word problems ("stamps of 5¢ and 8¢..."), constructing modular inverses (solve $ax \equiv 1$), and existence arguments. The "consecutive solutions differ by $\frac{b}{g}$" fact answers "smallest positive $x$" questions.`,
 
 "divisibility-rules": String.raw`## Why it works
-All are congruences of powers of 10: $10 \equiv 1 \pmod{3, 9}$ (digit sums), $10 \equiv -1 \pmod{11}$ (alternating sums), $10^k \equiv 0 \pmod{2^k, 5^k}$ (last $k$ digits), and $1000 \equiv -1 \pmod{7, 11, 13}$ (3-digit block alternation, since $1001 = 7 \cdot 11 \cdot 13$).
+All are [[modular-basics|congruences]] of powers of 10: $10 \equiv 1 \pmod{3, 9}$ ([[digit-sum-mod-9|digit sums]]), $10 \equiv -1 \pmod{11}$ (alternating sums), $10^k \equiv 0 \pmod{2^k, 5^k}$ (last $k$ digits), and $1000 \equiv -1 \pmod{7, 11, 13}$ (3-digit block alternation, since $1001 = 7 \cdot 11 \cdot 13$).
 
 ## How to use it
-Composite moduli split into coprime pieces: divisible by 72 ⟺ by 8 and by 9 (check separately — last three digits and digit sum). For unknown-digit puzzles, the rules become linear equations in the digits.
+Composite moduli [[crt|split into coprime pieces]]: divisible by 72 ⟺ by 8 and by 9 (check separately — last three digits and digit sum). For unknown-digit puzzles, the rules become linear equations in the digits.
 
 ## On contests
 "Find digit $d$ so that $\overline{12d34}$ is divisible by 11"-type problems at MATHCOUNTS/AMC 10; the $1001$ factorization powers slicker problems ($\overline{abcabc} = abc \cdot 1001$ is divisible by 7, 11, 13 — a classic).`,
@@ -351,19 +351,19 @@ Guarantees a prime in $(n, 2n)$ — enough for existence arguments ("some prime 
 Olympiad-leaning, but AIME-adjacent problems about primes in ranges or factorial factorizations sometimes want exactly this guarantee.`,
 
 "chicken-mcnugget": String.raw`## Why it works
-The numbers $ax + by$ with $x, y \ge 0$ hit every residue class mod $a$ starting from its smallest representative $by_r$; the largest gap is just below the largest smallest-representative, which computes to $ab - a - b$. Symmetry pairs representable $n$ with non-representable $ab - a - b - n$, giving the $\frac{(a-1)(b-1)}{2}$ count.
+The numbers $ax + by$ with $x, y \ge 0$ hit every [[modular-basics|residue class]] mod $a$ starting from its smallest representative $by_r$; the largest gap is just below the largest smallest-representative, which computes to $ab - a - b$. Symmetry pairs representable $n$ with non-representable $ab - a - b - n$, giving the $\frac{(a-1)(b-1)}{2}$ count.
 
 ## How to use it
-Requires $\gcd(a, b) = 1$ (otherwise only multiples of the gcd are ever representable — reduce first). For "which amounts exactly," work residue-by-residue mod the smaller number. Three denominations have no closed form — expect direct analysis.
+Requires $\gcd(a, b) = 1$, which is what [[bezouts-identity|makes every residue reachable at all]] (otherwise only multiples of the gcd are ever representable — reduce first). For "which amounts exactly," work residue-by-residue mod the smaller number. Three denominations have no closed form — expect direct analysis.
 
 ## On contests
 Coin/stamp problems on AMC 10/12 and AIME ("largest impossible score"). The symmetric pairing and the count of non-representables are both tested; remember both halves.`,
 
 "pythagorean-triples": String.raw`## Why it works
-A primitive triple has odd hypotenuse and one even leg; factoring $b^2 = c^2 - a^2 = (c-a)(c+a)$ with the two factors coprime-up-to-2 forces both to be (twice) squares — yielding the $m, n$ parametrization. Geometrically: rational points on the unit circle via lines through $(-1, 0)$.
+A primitive triple has odd hypotenuse and one even leg; factoring the [[pythagorean-theorem|Pythagorean relation]] as $b^2 = c^2 - a^2 = (c-a)(c+a)$ with the two factors coprime-up-to-2 forces both to be (twice) squares — yielding the $m, n$ parametrization. Geometrically: rational points on the unit circle via lines through $(-1, 0)$.
 
 ## How to use it
-Generate: coprime $m > n$, opposite parity. Structural facts for problems: exactly one leg divisible by 3, one by 4, one side by 5; area divisible by 6; inradius $r = n(m - n)\cdot$(scaling) — and for ANY right triangle with integer sides, $r$ is an integer.
+Generate: coprime $m > n$, opposite parity. Structural facts for problems: exactly one leg divisible by 3, one by 4, one side by 5; area divisible by 6; inradius $r = n(m - n)\cdot$(scaling) — and for [[right-triangle-inradius|ANY right triangle with integer sides]], $r$ is an integer.
 
 ## On contests
 "How many right triangles with leg 15" (factor $15^2 = (c-b)(c+b)$), perimeter/area matching problems, and AIME counting of triples with a fixed element — all flow from the parametrization or the difference-of-squares factoring.`,
@@ -447,7 +447,7 @@ Positional notation is a polynomial in the base; conversion is evaluation (to ba
 Digit-condition problems become polynomial equations in $b$ ("$\overline{abc}_b = $ something" → quadratic in $b$). Useful structural facts: $b^k$ is 1 followed by $k$ zeros; $b^k - 1$ is $k$ copies of the top digit; numbers with all digits equal factor as digit × repunit.
 
 ## On contests
-"In what base does $x^2 = \overline{XYZ}$" and palindrome-across-bases problems (AMC/AIME staples). Also binary/ternary tricks: Zeckendorf-like digit arguments, base-2 for subset weights, base-3 for balanced ternary (weights problems).`,
+"In what base does $x^2 = \overline{XYZ}$" and palindrome-across-bases problems (AMC/AIME staples). Also binary/ternary tricks: [[zeckendorf-theorem|Zeckendorf]]-like digit arguments, base-2 for subset weights, base-3 for balanced ternary (weights problems).`,
 
 "lattice-points-gcd": String.raw`## Why it works
 Parametrize the segment: interior lattice points occur at parameter values $\frac{j}{g}$ with $g = \gcd(a, b)$ — the direction vector $\frac{(a, b)}{g}$ is the primitive step, taken $g$ times.
@@ -742,6 +742,10 @@ Object.assign(window.MATH_DETAILS, {
 
 "modular-basics": String.raw`## Why it works
 $a \equiv b \pmod m$ means $m$ divides $a - b$, i.e. $a$ and $b$ leave the same remainder. Since divisibility survives adding, subtracting, and multiplying the differences, so do congruences: if $a \equiv b$ and $c \equiv d$, then $a \pm c \equiv b \pm d$ and $ac \equiv bd$, hence $a^k \equiv b^k$. Division is the exception because $m \mid k(a-b)$ does not force $m \mid (a-b)$ unless $k$ and $m$ share no factor.
+
+Division is the case worth stating positively, because the card's usual phrasing ("you cannot divide") leaves it sounding forbidden. It is not: if $x \equiv a$ and $y \equiv b \pmod m$ and $\gcd(b, m) = 1$, then $x/y \equiv ab^{-1} \pmod m$, where $b^{-1}$ denotes [[modular-inverse|the modular inverse]] of $b$. Division by $b$ is exactly multiplication by $b^{-1}$, and the only hypothesis is that $b$ and $m$ share no factor. What fails is dividing by something sharing a factor with the modulus, and that failure is the cancellation rule below rather than a ban.
+
+Exponents are the genuine exception to "treat $\equiv$ like $=$". Bases reduce freely: $x \equiv a$ gives $x^k \equiv a^k$. Exponents do not. From $k \equiv j \pmod m$ you may not conclude $a^k \equiv a^j \pmod m$; the exponent reduces modulo $\varphi(m)$, not modulo $m$, and only when $\gcd(a, m) = 1$. Take $3^{14} \pmod{10}$, whose true value is $9$. Reducing the exponent modulo $10$ would give $3^4 \equiv 1$, which is wrong; reducing it modulo $\varphi(10) = 4$ gives $3^2 \equiv 9$, which is right. The base $3$ is coprime to $10$, which is what licenses the second reduction. That is [[eulers-theorem|Euler's theorem]], with [[fermats-little-theorem|Fermat]] as the prime case.
 
 ## How to use it
 Reduce early and often — replace any number by its remainder before multiplying, to keep values small. The rule that trips people up is cancellation: from $ka \equiv kb \pmod m$ you get $a \equiv b \pmod{m / \gcd(k, m)}$, not mod $m$. So $6x \equiv 6y \pmod{15}$ only gives $x \equiv y \pmod 5$. When $\gcd(k, m) = 1$ the cancellation is clean and, equivalently, $k$ has a [[modular-inverse|modular inverse]] you can multiply by. When it isn't $1$, either shrink the modulus as above or split into cases.
