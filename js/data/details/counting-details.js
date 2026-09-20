@@ -295,10 +295,18 @@ Run the two-question checklist first. AMC and AIME sample every cell of the tabl
 An element in exactly $t$ of the sets is counted $\binom{t}{1} - \binom{t}{2} + \binom{t}{3} - \cdots = 1$ time (alternating binomial sum), so the alternating formula counts every covered element once.
 
 ## How to use it
-Use for unions of overlapping conditions, or flip to count "none of the conditions" (complement of the union). Symmetric cases collapse to $\sum (-1)^{j+1}\binom{k}{j}N_j$ where $N_j$ counts elements in some fixed $j$ conditions. Two/three sets: draw the Venn diagram and fill from the inside out.
+The principle exists to fix a specific failure: adding overlapping counts double-counts the overlaps, and there is no way to avoid that by being careful. Inclusion-exclusion is the correction term, and its real payoff is that counting an intersection is usually far easier than counting a union — "divisible by both 3 and 5" is one division, while "divisible by 3 or 5" is not directly countable at all. So the principle trades a hard count for several easy ones.
+
+Almost always, flip it. Problems ask for "none of these conditions", and that is the complement of the union, so the answer is the total minus the inclusion-exclusion sum — which is why this card and [[complementary-counting|complementary counting]] appear together on 8 of its 28 problems, more than any other pairing. Counting what you do not want and subtracting is the default move, not a trick.
+
+When the conditions are symmetric the sum collapses. If every choice of $j$ conditions has the same intersection size $N_j$, the whole alternating sum becomes $\sum(-1)^{j+1}\binom kj N_j$, turning $2^k$ terms into $k$ of them. That collapse is what makes forbidden-position and surjection problems tractable, and spotting the symmetry is the entire step.
+
+For two or three sets, stop computing and draw. A Venn diagram filled from the innermost region outwards is faster and much harder to get wrong than the formula.
 
 ## On contests
-Divisibility unions, derangement-style forbidden positions, surjection counts, and seating with forbidden adjacencies. On AIME, PIE with symmetric terms is the default for "avoid all of these patterns" problems.`,
+Almost never alone — 2 of 28 — because it is a correction applied to counts something else produced. Its partners are [[complementary-counting|complementary counting]] (8) and [[casework-method|casework]] (6), which is the honest picture: set up cases, count them, then correct the overlaps.
+
+Four shapes recur: divisibility unions, forbidden positions of the derangement family, counting surjections, and seatings with forbidden adjacencies. The last three are all symmetric, so the collapsed form applies and the work is choosing $N_j$ correctly.`,
 
 "derangements": String.raw`## Why it works
 [[pie|PIE]] over the events "element $i$ is fixed": $D_n = \sum_j (-1)^j\binom{n}{j}(n-j)! = n!\sum \frac{(-1)^j}{j!}$ — the truncated $e^{-1}$ series, whence the nearest-integer form. The recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$ conditions on where element 1 goes and whether the swap closes.
@@ -810,8 +818,12 @@ A one-to-one correspondence pairs the two sets off perfectly, so they have the s
 ## How to use it
 Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ stars and bars (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
 
+A bijection replaces the set you cannot count with one you can, and the reason to hunt for one is that it removes the casework rather than organising it. Casework on a constraint is always available and always long; a bijection that absorbs the constraint into the objects themselves makes the count immediate. Strictly increasing sequences with a gap condition become ordinary subsets once you subtract $0,1,2,\dots$ from the terms; lattice paths become arrangements of two letters; subsets with no two adjacent elements become shorter subsets with no condition at all.
+
 ## On contests
-The elegant path on AMC/AIME counting: any time the answer to a strange-looking count is a clean binomial, a bijection is the intended solution. Also the safest way to handle "sequences with constraints" — transform the constraint away rather than casing on it.`,
+The elegant path on AMC and AIME counting, alone in 3 of its 27 problems. Its partners name the two families it usually serves: [[binomial-row-sums|row sums of Pascal's triangle]] (4 problems) and [[base-conversion|base representations]] (3), the latter because writing a number in base two is itself a bijection between integers and subsets.
+
+The tell is the answer. If a strange-looking count comes out as a clean binomial coefficient or a power of two, a bijection was the intended route, and finding it afterwards is how you learn to see it next time.`,
 
 "grid-path-fill": String.raw`## Key forms
 - $N(\text{cell})=\sum N(\text{cells that step into it})$, with $N(\text{start})=1$ — the whole method
@@ -945,6 +957,7 @@ Object.assign(window.MATH_DETAILS, {
 - the closest pair of points — nothing is nearer, which rules out any construction that would produce a shorter distance
 - a minimal counterexample — build a smaller one from it and the minimality is contradicted, which is infinite descent run over a finite set
 - well-ordering: every non-empty set of positive integers has a least element — the guarantee that "smallest" exists at all
+- an optimum over a constrained set — it sits at an extreme of the constraints, so test the boundary rather than the interior
 
 ## Why it works
 A finite collection, or any set of positive integers, has a largest and a smallest member. Naming one hands you a property no other element has. The maximum admits no larger neighbour and the minimum no smaller one, so if you can show the extreme object could be pushed a little further, you have contradicted the very thing that defined it. That is the entire method: not constructing an object, but showing that the extreme one cannot behave the way the problem assumes.
@@ -956,8 +969,10 @@ Pick the extreme that matches the structure. The longest path or chain traps its
 
 Then push on it, in one of two directions: show the extremal object forces the configuration you want, or show it could be extended or improved, which is the contradiction. Before either, make sure the extreme exists, which is immediate for a finite set and is well-ordering for the positive integers, but needs an argument on an infinite set of reals.
 
+There is a second, lighter use of the same word, and it is the one that turns up on the AMC and AIME. When a quantity is being maximized or minimized over a constrained set, the optimum sits at an extreme of the constraints, not in the middle of them, so the work is to identify which boundary and check it rather than to search. Minimizing a positive fraction means the smallest admissible numerator against the largest admissible denominator; maximizing a spread means pushing every unit of a fixed total out to the ends. The two readings share the instinct, look at the extreme case, but not the payoff: this one evaluates a candidate, while the combinatorial principle above derives a contradiction. When the pushing is done one step at a time and each step is shown not to hurt, that is [[smoothing-method|smoothing]] rather than this.
+
 ## On contests
-An olympiad workhorse for existence and impossibility proofs, especially graph and grid problems, combinatorial geometry, and "show some configuration must occur". On AIME it appears more quietly, for instance in justifying that a smallest solution exists before bounding it. When a problem resists direct construction, ask what the largest or smallest object must look like.`
+An olympiad workhorse for existence and impossibility proofs, especially graph and grid problems, combinatorial geometry, and "show some configuration must occur". The optimization reading is what carries it below olympiad level, and it is the more common sighting here: of the problems this library tags with the card, all of them are AMC or AIME questions asking for a largest or smallest value, where naming the extreme configuration is the whole solution and no contradiction is ever drawn. When a problem resists direct construction, ask what the largest or smallest object must look like; when it asks for an optimum, ask which constraint is tight.`
 
 });
 
@@ -1130,7 +1145,7 @@ Object.assign(window.MATH_DETAILS, {
 - $\det(xI-M)$ — its characteristic polynomial is the linear recurrence these counts satisfy
 
 ## Why it works
-Matrix multiplication sums over intermediate states, so the $(i,j)$ entry of $M^n$ counts exactly the length-$n$ walks from state $i$ to state $j$ in the transition graph — and those walks are precisely the valid sequences. Sandwiching with boundary vectors, $a_n = \mathbf u^{\top} M^n \mathbf v$, restricts to the allowed start and end states. Since $M$ is a fixed $k\times k$ matrix, its characteristic polynomial $\det(xI-M)$ hands you a linear recurrence of order at most $k$ that the counts obey.
+[[matrix-multiplication|Matrix multiplication]] sums over intermediate states, so the $(i,j)$ entry of $M^n$ counts exactly the length-$n$ walks from state $i$ to state $j$ in the transition graph — and those walks are precisely the valid sequences. Sandwiching with boundary vectors, $a_n = \mathbf u^{\top} M^n \mathbf v$, restricts to the allowed start and end states. Since $M$ is a fixed $k\times k$ matrix, its characteristic polynomial $\det(xI-M)$ hands you a linear recurrence of order at most $k$ that the counts obey.
 
 ## How to use it
 Pick states that record just enough recent history to enforce the rule (for "no two adjacent $1$'s," the state is the last symbol; for a tiling, the last column's fill). Put a $1$ or a weight in $M$ for each legal transition, set $\mathbf u,\mathbf v$ from the boundary, and compute $M^n$ — or read off the recurrence from $\det(xI-M)$ and iterate. Example: binary strings with no two consecutive $1$'s use $M=\begin{pmatrix}1&1\\1&0\end{pmatrix}$, whose powers give Fibonacci counts.

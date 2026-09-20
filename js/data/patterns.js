@@ -250,7 +250,8 @@ window.MATH_SECTIONS.push({
         { title: "Polynomials & Their Roots", ids: ["newtons-sums", "symmetric-polynomial-strategies", "lagrange-interpolation", "root-transformations"] },
         { title: "Sums & Sequences", ids: ["telescoping", "finite-differences", "double-summation", "largest-term-ratio"] },
         { title: "Inequalities & Optimization", ids: ["sos-method", "smoothing-method", "tangent-line-trick"] },
-        { title: "Graphs, Estimates & Rates", ids: ["abs-value-graphing", "abs-value-relations", "sqrt-approximation", "multi-leg-rates"] }
+        { title: "Graphs, Estimates & Rates", ids: ["abs-value-graphing", "abs-value-relations", "sqrt-approximation", "multi-leg-rates"] },
+        { title: "Systems & Determinants", ids: ["symmetric-linear-system", "cofactor-expansion"] }
       ],
       formulas: [
         {
@@ -296,6 +297,28 @@ window.MATH_SECTIONS.push({
           keywords: ["fundamental theorem of symmetric polynomials", "symmetric polynomial", "symmetric function of the roots", "elementary symmetric polynomials", "complex number evaluation trick", "plug in a value", "evaluate the polynomial at", "product over the roots", "never find the roots", "expressions in the roots", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "symmetric-linear-system",
+          name: "Symmetric & Cyclic Linear Systems",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\text{each equation} = S + (\text{one variable}) \;\Longrightarrow\; \text{add all } n: \;\; (n+1)S = \sum_i c_i`,
+          description: String.raw`When every equation of a system says the same thing about a different variable, do not eliminate. Add all of them at once: the symmetric part collapses into a multiple of the grand total $S$, one subtraction then recovers each variable individually, and a system that looked like $n$ unknowns becomes one line of arithmetic. The cyclic version, where each equation ties one unknown to the next, closes the same way by substituting around the loop until you return to where you started.`,
+          keywords: ["add all the equations", "symmetric system", "cyclic system", "grand total", "sum of all variables", "solve without elimination", "substitute around the cycle", "method"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "cofactor-expansion",
+          name: "Expanding a Determinant",
+          type: "method",
+          subject: "algebra",
+          latex: String.raw`\det A = \sum_{j} (-1)^{i+j} a_{ij} M_{ij} \qquad (\text{any fixed row } i, \text{ or any fixed column})`,
+          description: String.raw`Expand along whichever row or column carries the most zeros, since each zero deletes a whole minor; row operations may be used first to manufacture them, because adding a multiple of one row to another leaves the value unchanged. For a banded family of matrices this is not a computation but a derivation: expanding $D_n$ along its first row reduces it to $D_{n-1}$ and $D_{n-2}$, and the determinant problem becomes a linear recurrence.`,
+          keywords: ["cofactor expansion", "expand along a row", "minor", "laplace expansion", "tridiagonal determinant", "determinant recurrence", "pick the row with zeros", "method"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
         },
         {
           id: "lagrange-interpolation",
@@ -843,8 +866,8 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{take the extreme object (largest / smallest / closest)}`,
-          description: String.raw`When you cannot build the object directly, look at the most extreme one that already exists and ask what it is unable to do. Take the longest path in a graph: it cannot be extended, so every neighbour of its endpoint must already lie on the path, and that one observation usually forces the structure you were asked to find. The same move against a smallest counterexample gives a contradiction instead, because producing a smaller one shows the assumed smallest was not smallest. Largest, smallest, closest, longest: each comes with something it provably cannot do, and that is the whole leverage.`,
-          keywords: ["extremal principle", "largest smallest", "minimal counterexample", "closest pair", "consider the extreme", "well ordering", "method"],
+          description: String.raw`When you cannot build the object directly, look at the most extreme one that already exists and ask what it is unable to do. Take the longest path in a graph: it cannot be extended, so every neighbour of its endpoint must already lie on the path, and that one observation usually forces the structure you were asked to find. The same move against a smallest counterexample gives a contradiction instead, because producing a smaller one shows the assumed smallest was not smallest. Largest, smallest, closest, longest: each comes with something it provably cannot do, and that is the whole leverage. The word carries a second, lighter sense on the AMC and AIME: an optimum over a constrained set sits at an extreme of the constraints, so you evaluate the boundary case instead of searching the interior.`,
+          keywords: ["extremal principle", "largest smallest", "minimal counterexample", "closest pair", "consider the extreme", "well ordering", "optimum at the boundary", "push to the extreme case", "which constraint is tight", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },

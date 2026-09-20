@@ -8,10 +8,18 @@ Object.assign(window.MATH_DETAILS, {
 The cleanest proof is by similar triangles: the [[altitude-hypotenuse|altitude to the hypotenuse]] splits the right triangle into two smaller triangles, each similar to the original. Writing the similarity ratios gives $a^2 = pc$ and $b^2 = qc$, and adding them yields $a^2 + b^2 = (p+q)c = c^2$. There are hundreds of other proofs — rearrangement proofs tile a square two ways.
 
 ## How to use it
-Beyond the direct computation, watch for its converse (checking whether a triangle is right), and for chances to create right triangles by dropping altitudes. Many "find the length" problems are two Pythagorean equations in two unknowns after one well-chosen altitude.
+Three shapes carry almost every use, and the third is the one people miss.
+
+Manufacture the triangle. Problems rarely hand you a right angle; you make one, and where you drop the perpendicular is the whole decision. Dropped to a chord the foot is its midpoint, so the half-chord, the distance from the centre and the radius close into $R^2 = d^2 + \left(\tfrac{\ell}{2}\right)^2$ — that one configuration sits behind a large share of all circle problems. In three dimensions the same move is a [[cross-section-method|slice through the axis]], which turns a tangency between solids into a plane right triangle.
+
+Read it as the distance formula. Any coordinate computation is already using it, so a configuration that resists synthetic treatment can be re-read as Pythagoras with names attached, and the converse runs the other way: $a^2+b^2-c^2$ is positive, zero or negative exactly as the angle is acute, right or obtuse, which is often the entire question.
+
+Write it twice and subtract. Two right triangles sharing a piece give two equations in the same unknowns, and the subtraction — not the theorem — is what does the work. When the squared terms match they cancel and leave a linear equation, which is the same mechanism that makes a [[radical-axis|radical axis]] straight. When they do not, what survives is a [[difference-of-squares|difference of squares]] and factors. Either way a two-unknown mess collapses to one equation in one step.
 
 ## On contests
-Ubiquitous at every level. Recognizing the standard triples $(3,4,5)$, $(5,12,13)$, $(7,24,25)$, $(8,15,17)$, $(9,40,41)$, $(20,21,29)$ — and their multiples — saves minutes: contest writers deliberately build problems around them. Also the source of the distance formula and every "hidden right angle" trick (angles in semicircles, tangent ⟂ radius).`,
+Ubiquitous, but the shape of its appearances is the useful part: of the 75 problems this library tags with it, only five use it alone. It is nearly always the closing step of a configuration something else set up — [[similar-figures-ratios|similar triangles]] on 13 of them, [[tangent-circles|tangent circles]] on 9, a [[cross-section-method|cross-section]] on 5. Take that as advice. When a problem looks like Pythagoras the real question is what produces the right triangle, not what to do once you have it.
+
+The triples earn their memorisation separately. $(3,4,5)$, $(5,12,13)$, $(7,24,25)$, $(8,15,17)$, $(9,40,41)$, $(20,21,29)$ and their multiples are built into problems deliberately, and spotting one mid-computation removes the algebra rather than shortening it.`,
 
 "special-right-triangles": String.raw`## Why it works
 The 45-45-90 ratio comes from cutting a square along its diagonal; the 30-60-90 ratio from cutting an [[equilateral-triangle-facts|equilateral triangle]] along an altitude. Both are one [[pythagorean-theorem|Pythagorean]] computation away from their parent figure.
@@ -53,10 +61,16 @@ MATHCOUNTS and early AMC use it directly; later problems embed it in tiling ques
 Similarity scales every length by the same factor $k$. Area is a product of two lengths, so it scales by $k^2$; volume by $k^3$. This holds for any figures, not just triangles — including curved ones.
 
 ## How to use it
-Identify one matched pair of lengths to find $k$, then convert freely between length, area, and volume data. In triangle configurations, parallel lines are the main similarity generator: a line parallel to one side cuts off a similar triangle. For areas split by cevians and parallel lines, combine with the base-ratio principle.
+What similarity buys is a change of units: one matched pair of lengths fixes $k$, and from then on every length, area and volume in the figure is known in terms of one unknown instead of many. That is the payoff to look for — not "these triangles are similar" but "the figure now has one degree of freedom".
+
+Finding the similarity is the real step, and in triangle work it nearly always comes from a parallel line: a line parallel to one side cuts off a similar triangle, so every midpoint, every trapezoid and every cevian through a parallel is a similarity waiting to be named. A right angle does it too, since [[altitude-hypotenuse|the altitude to the hypotenuse]] splits a right triangle into two copies of itself, and so does a shared angle plus an equal angle from [[inscribed-angle-theorem|the same arc]].
+
+Then push the ratio through the right power. Lengths scale by $k$, areas by $k^2$, volumes by $k^3$, and the leftovers matter as much as the parts: a parallel cut at ratio $k$ leaves areas $k^2 : (1-k^2)$, and a pyramid cut parallel to its base leaves a frustum holding $1-k^3$ of the volume. Nested similar figures give a [[geometric-series|geometric series]] rather than a finite sum, which is what makes infinite-dissection problems tractable at all.
 
 ## On contests
-The single highest-frequency idea in AMC geometry. Classic patterns: a parallel cut creating area ratio $k^2 : (1 - k^2)$; nested similar triangles giving [[geometric-series|geometric series]] of areas; cones/pyramids cut by planes parallel to the base (volume ratio $k^3$ — the frustum leftovers are $1 - k^3$).`,
+The highest-frequency idea in AMC geometry, and unusually often the whole solution — it stands alone in 12 of the 72 problems tagged here, far more than most tools manage. When it is not alone its partner is almost always [[pythagorean-theorem|Pythagoras]] (13 problems): the similarity pins the ratio, and Pythagoras turns it into a number.
+
+The recurring shapes are a parallel cut across a triangle, a cone or pyramid sliced parallel to its base, and a chain of nested figures whose areas form a geometric series. All three are recognisable before any computation, which is the point of knowing them by name.`,
 
 "midsegment-theorem": String.raw`## Why it works
 The midsegment triangle is the image of the original under a [[homothety-monge|homothety]] (scaling) of factor $-\tfrac{1}{2}$ centered at the centroid — or directly: the two halves of the sides force a triangle similar with ratio $\tfrac{1}{2}$, so the midsegment is parallel and half as long.
@@ -212,10 +226,16 @@ AIME trig-geometry problems routinely require the extended form: given the circu
 Drop an altitude and apply the Pythagorean theorem to both pieces, or expand $|\vec{a} - \vec{b}|^2 = |\vec{a}|^2 + |\vec{b}|^2 - 2\vec{a}\cdot\vec{b}$ — the cosine term is the [[vector-dot-product|dot product]].
 
 ## How to use it
-Two modes: forward (two sides + included angle → third side) and backward (three sides → any angle via $\cos C = \frac{a^2+b^2-c^2}{2ab}$). The sign of $a^2 + b^2 - c^2$ classifies the angle as acute/right/obtuse — often all a problem needs. In cyclic quadrilaterals, apply it to both triangles sharing a diagonal and use $\cos(180^\circ - \theta) = -\cos\theta$ to solve for the diagonal.
+It is the exchange rate between sides and angles, and it runs both ways. Forwards, two sides and the included angle give the third side. Backwards, three sides give any angle through $\cos C = \frac{a^2+b^2-c^2}{2ab}$, so a triangle specified entirely by lengths becomes a triangle with known angles — which is what lets [[trig-area|the sine area formula]] finish a problem that started with no angles in it at all.
+
+Often you need the sign and not the value. $a^2+b^2-c^2$ is positive, zero or negative exactly as $C$ is acute, right or obtuse, so questions about the shape of a triangle are settled without computing anything.
+
+The move worth rehearsing is the shared diagonal. In a cyclic quadrilateral the two triangles either side of a diagonal have supplementary angles at the far vertices, so writing the law of cosines in both and using $\cos(180^\circ-\theta)=-\cos\theta$ gives two expressions for the same diagonal that differ only in the sign of one cosine. Equating them solves that cosine out immediately, and the diagonal then drops out in terms of the four sides alone — that cancellation is the entire trick, and it is why [[ptolemys-theorem|Ptolemy]] problems so often fall to this instead.
 
 ## On contests
-The cyclic-quadrilateral diagonal trick is a top AIME pattern. [[stewarts-theorem|Stewart's theorem]] is this applied twice; Ptolemy problems frequently fall to it directly. When a problem gives three sides and asks anything angular, this is the opener.`,
+Almost never the whole problem: of the 44 problems tagged here exactly one uses it alone. It is the step that converts a configuration into numbers once something else has produced the sides — most often alongside [[trig-area|the sine area formula]] (6 problems) or in an [[equilateral-triangle-facts|equilateral]] setting (4), where the $60^\circ$ and $120^\circ$ cases collapse the cosine to $\pm\tfrac12$ and the formula becomes $a^2+b^2\mp ab$.
+
+The trigger is blunt: three sides given and anything angular asked. The cyclic-quadrilateral diagonal is the recurring AIME shape, and [[stewarts-theorem|Stewart's theorem]] is this same law applied to the two halves of a cevian, so a problem about a cevian length is usually this in disguise.`,
 
 "law-cosines-60-120": String.raw`## Why it works
 Plug $\cos 60^\circ = \frac{1}{2}$ or $\cos 120^\circ = -\frac{1}{2}$ into the law of cosines; the cross term becomes $\mp ab$.
@@ -879,13 +899,13 @@ Read it in whichever direction the problem needs. Given a line and two points on
 Shows up as an optimisation wearing a conic costume, and as the reason a tangency condition pins an otherwise underdetermined ellipse on AIME coordinate problems. If a configuration fixes two points and asks to minimise a sum of distances to a line, the ellipse picture and the reflection trick are the same move, so reach for whichever is quicker to draw.`,
 
 "conic-sections": String.raw`## Why it works
-Each conic is a distance locus: ellipse = constant sum of focal distances $2a$, hyperbola = constant difference $2a$, parabola = equal distance to focus and directrix. The $c$-relations ($c^2 = a^2 - b^2$ for ellipses, $c^2 = a^2 + b^2$ for hyperbolas) come from evaluating the locus condition at a vertex.
+Slice a double cone with a plane and the angle of the cut decides what you get: shallower than the cone's own slope closes the section into an ellipse, parallel to it opens a parabola, steeper cuts both nappes and gives a hyperbola. The Dandelin spheres, inscribed in the cone and tangent to the cutting plane, turn that picture into the focal definitions, since each sphere touches the plane at a focus and the tangent-length equality from a point does the rest. That is why one family of curves has three names.
 
 ## How to use it
-Convert freely between the equation and the focal description — most contest problems hand you one and need the other. Key facts: the hyperbola's asymptotes $y = \pm\frac{b}{a}x$ bound direction slopes of points at infinity; a parabola $x^2 = 4py$ has focus $(0, p)$; reflection properties (rays from one focus bounce to the other) occasionally star in AMC problems. That reflection property is also what ties an ellipse to a minimisation: the tangent line makes equal angles with the two focal radii, so among all points of a line tangent to the ellipse, the point of tangency is the one minimising the sum of distances to the foci, and every other point of the line lies on a larger ellipse of the same family. It is the same construction as [[reflection-shortest-path|reflecting one point across the line]], read as a level curve instead of a path.
+Let the problem's own wording pick the card. A constant sum of distances is [[ellipse-properties|an ellipse]], a constant difference is [[hyperbola-properties|a hyperbola]], and a distance matched against a line is [[parabola-focus-directrix|a parabola]]. A single ratio covers all three at once, which is [[eccentricity|eccentricity]], and when the curve arrives as an unlabelled second-degree equation, [[conic-classification|the sign of the discriminant]] names it without any rearranging. Keep the two $c$-relations straight by remembering which quantity is largest: on an ellipse $a$ is, on a hyperbola $c$ is.
 
 ## On contests
-AMC 12 tests standard forms and focal definitions directly. On AIME, conics appear as constraint curves for optimization or counting — 2024 AIME I #9 (rhombus with vertices on a hyperbola, diagonal bound governed by the asymptote slopes) is the recent model.`,
+AMC 12 tests the standard forms and the focal definitions directly. On the AIME conics appear as constraint curves for an optimization or a count, and the recognition step, that some quantity the problem constructed is a constant sum or difference, is where the difficulty sits. Every conic problem in this library's database is of that second kind.`,
 
 "insphere-radius": String.raw`## Why it works
 Join the center of the inscribed sphere to every face: the polyhedron splits into pyramids, one per face, each with apex height $r$. Summing $\frac{1}{3}(\text{face area}) \cdot r$ gives $V = \frac{1}{3} r S$ — the same dissection that proves $A = rs$ in the plane.
@@ -2237,5 +2257,89 @@ Mind the order, because composing the other way rotates by $-2\theta$. It is the
 
 ## On contests
 Iterated-reflection problems on the AIME reduce to finding the order of the resulting rotation, turning a geometry question into a divisibility one. Related: [[reflection-coordinates|reflecting a point over a line]] gives the single-reflection formulas, and [[rotation-90|rotating a point]] handles the quarter-turn special case.`,
+
+
+"vector-projection": String.raw`## Why it works
+Demand that $\vec u$ split as $c\vec v$ plus something perpendicular to $\vec v$. Dotting the split with $\vec v$ kills the perpendicular piece and leaves $\vec u \cdot \vec v = c\,(\vec v \cdot \vec v)$, which is the coefficient in the formula and the only value of $c$ that can work. Since [[vector-dot-product|the dot product]] equals $\lvert \vec u \rvert \lvert \vec v \rvert \cos\theta$, that coefficient times $\lvert \vec v \rvert$ is just $\lvert \vec u \rvert \cos\theta$: the shadow $\vec u$ casts on the direction of $\vec v$.
+
+## How to use it
+Two payoffs, and the second is the one usually wanted. First, the component along a direction: a force, a displacement or a side resolved onto an axis is this formula and nothing else. Second, and more useful on contests, the leftover $\vec u - \operatorname{proj}_{\vec v}\vec u$ is perpendicular to $\vec v$ and is the shortest vector from the line spanned by $\vec v$ to the tip of $\vec u$, so its length is a distance. That is where [[point-line-distance|the point-to-line distance]] and [[point-plane-distance|the point-to-plane distance]] come from, both of which are this leftover measured against a unit normal.
+
+## On contests
+It shows up as the step you did not know had a name. Dropping a foot of a perpendicular in coordinates, resolving a slanted displacement onto a grid direction, or finding where a point lands on a line are all one projection. Watch the sign: the scalar $\vec u \cdot \vec v / \lvert \vec v \rvert$ is negative when the angle is obtuse, which means the foot lies behind the tail of $\vec v$, and a problem asking for a point on a segment rather than on a whole line needs that checked.`,
+
+"rotation-reflection-matrices": String.raw`## Why it works
+A linear map is determined by where it sends the two basis vectors, and those images are the columns of its matrix. A rotation by $\theta$ sends $(1,0)$ to $(\cos\theta, \sin\theta)$ and $(0,1)$ to $(-\sin\theta, \cos\theta)$, which is $R_\theta$ read column by column; the reflection matrix comes out the same way from the images of the axes. Because both preserve lengths and angles, their columns are perpendicular unit vectors, so [[determinant-geometric|the determinant]] has absolute value $1$, positive for a rotation and negative for a reflection since a reflection reverses orientation.
+
+## How to use it
+Composing becomes multiplying, which is the whole reason to leave synthetic language. $R_\alpha R_\beta = R_{\alpha + \beta}$ recovers [[angle-addition|the angle addition formulas]] as a byproduct, and $F_\beta F_\alpha = R_{2(\beta - \alpha)}$ is exactly the statement that [[reflection-composition|two reflections compose to a rotation]] by twice the angle between the mirrors, now as a one-line computation rather than an angle chase. For a rotation about a center other than the origin, translate the center to the origin, apply $R_\theta$, and translate back. The quarter-turn cases are common enough that [[rotation-90|the coordinate swaps]] are worth knowing without the matrix.
+
+## On contests
+AMC 12 and AIME rarely say "matrix", so this is a tool you bring rather than one you are handed. It pays when a problem composes several transformations and asks what the net effect is: multiplying two or three of these is mechanical, while chasing the same composition synthetically invites a sign error. It is also the cleanest way to see why a rotation by $60^\circ$ and a reflection can never be equal, since one has determinant $1$ and the other $-1$.`,
+
+
+"ellipse-properties": String.raw`## Why it works
+Put the foci at $(\pm c, 0)$ and impose $PF_1 + PF_2 = 2a$. Clearing the two radicals leaves $\frac{x^2}{a^2} + \frac{y^2}{a^2 - c^2} = 1$, so writing $b^2 = a^2 - c^2$ produces the standard form and the relation $a^2 = b^2 + c^2$ at the same time. The fastest way to see that relation without algebra is to stand at the end of the minor axis: both focal distances are equal, so each is $a$, and the right triangle with legs $b$ and $c$ has hypotenuse $a$.
+
+## How to use it
+Read the problem for which of $a$, $b$, $c$ it hands you and convert immediately, since contests state the condition in whichever of the three languages is least convenient. A constant sum of distances to two fixed points is $2a$ with the foci given. A stated equation gives $a$ and $b$, and $c$ follows. An area gives the product $ab$. The one to watch is orientation: $a$ is the larger denominator, so if the $y^2$ denominator is bigger, the foci sit on the $y$-axis and every formula transposes.
+
+## On contests
+The recurring AIME shape is a constant focal sum arriving in disguise. In 2005 AIME II #15 two tangency conditions give $CF_1 = 16 - r$ and $CF_2 = 4 + r$, whose sum is $20$ regardless of $r$, and that alone identifies the locus as an ellipse. In 2022 AIME II #12 each given equation places a point on an ellipse with known foci. In both, recognizing the sum is the problem; the algebra afterward is routine. Pair this with [[eccentricity|eccentricity]] when the question compares two ellipses, and with [[conic-reflective-property|the reflective property]] when it asks for a minimum.`,
+
+"hyperbola-properties": String.raw`## Why it works
+The same derivation as the ellipse with $\lvert PF_1 - PF_2 \rvert = 2a$ instead of a sum. Now $c > a$, since the difference of two sides of a triangle is less than the third, so $a^2 - c^2$ is negative and the standard form carries a minus sign with $b^2 = c^2 - a^2$. The asymptotes come out of the equation rather than from a limit: replacing the $1$ by $0$ gives $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 0$, which factors as $\left(\frac{x}{a} - \frac{y}{b}\right)\left(\frac{x}{a} + \frac{y}{b}\right) = 0$, a pair of lines through the center. Far from the center the $1$ is negligible against terms growing like $x^2$, so the curve hugs them.
+
+## How to use it
+When a problem constrains points on a hyperbola and asks for a bound, the asymptotes usually supply it, because they cap the slopes the curve can reach. Substituting a line $y = mx$ into the equation gives a real intersection only when $\lvert m \rvert \lt  b/a$, and an infimum that is never attained is the standard consequence. The rectangular case deserves separate recognition: $a = b$ makes the asymptotes perpendicular, and a $45^\circ$ rotation turns the curve into $xy = k$, so any problem about the graph of a reciprocal is a hyperbola problem in other coordinates.
+
+## On contests
+2024 AIME I #9 is the model: a rhombus centered at the origin has its diagonals along $y = mx$ and $y = -x/m$, both must meet the hyperbola, and the infimum of $BD^2$ is governed entirely by the asymptote slopes. The answer is a number the curve approaches and never reaches, which is exactly what asymptotes produce, and reading the problem as a hyperbola problem rather than a rhombus problem is the whole insight.`,
+
+"parabola-focus-directrix": String.raw`## Why it works
+Impose $\operatorname{dist}(P, F) = \operatorname{dist}(P, \ell)$ with $F = (0, p)$ and $\ell: y = -p$. Squaring gives $x^2 + (y-p)^2 = (y+p)^2$, and the $y^2$ and $p^2$ terms cancel on both sides, leaving $x^2 = 4py$. Almost nothing survives the cancellation, which is why the parabola has the simplest equation of the three conics and why $p$ is the only parameter it has. Setting $y = p$ recovers the latus rectum: $x^2 = 4p^2$, so the chord runs from $-2p$ to $2p$ and has length $\lvert 4p \rvert$.
+
+## How to use it
+Translate between the two descriptions on sight. A problem giving $y = ax^2$ has focal distance $p = \frac{1}{4a}$ from the vertex, so a wide parabola has a distant focus. A problem giving a focus and a directrix is asking you to write the equation. The equidistance definition itself is often the shortcut: a distance to the focus can be replaced by a vertical distance to the directrix, which turns an optimization over a curve into one over a line. [[vertex-form|The vertex formula]] $x = -\frac{b}{2a}$ is the algebraic companion to this card and locates the vertex before any of this applies.
+
+## On contests
+Parabolas reach the AIME as constraint curves rather than as objects to describe. 2021 AIME I #15 combines two of them into a circle by taking the right linear combination, and 2025 AIME I #9 intersects a parabola with its own rotated image, where the shortcut is noticing the symmetry axis of the rotation rather than substituting. On the AMC the focus-directrix pair is tested directly, and the trap is a parabola opening sideways, where $x$ and $y$ swap roles throughout.`,
+
+"eccentricity": String.raw`## Why it works
+Fix a focus $F$ and a line $\ell$, and take all $P$ with $PF = e \cdot \operatorname{dist}(P, \ell)$. Squaring gives a second-degree equation whose $x^2$ and $y^2$ coefficients differ by a factor involving $1 - e^2$, so the sign of $1 - e^2$ alone decides whether the curve closes up, opens once, or opens twice. That is the unified construction: the three conics are one locus with one parameter. For an ellipse or hyperbola, comparing this with the two-focus definition gives $e = c/a$ and puts the directrix at $x = a/e$.
+
+## How to use it
+Use it whenever a problem compares two conics rather than describing one. Since $e$ is a ratio of lengths it survives any scaling, so two ellipses are similar exactly when their eccentricities match, and then every corresponding length is in one fixed ratio. Every parabola has $e = 1$, so all parabolas are similar, which surprises people and occasionally answers a question outright. The value also reads as a shape: $e$ near $0$ is nearly circular, $e$ near $1$ nearly a parabola, and large $e$ gives a hyperbola with wide-open branches.
+
+## On contests
+2025 AMC 12A #14 cannot be done without this card. Two ellipses have equal eccentricity, so they are similar, and an area ratio of $2025$ forces every linear ratio to $45$ — in particular the ratio of their $c$ values, which converts a statement about areas into a statement about focal distances. The rest is bookkeeping. If a problem says "the same eccentricity", it is telling you the two curves are similar and inviting you to work in ratios.`,
+
+"conic-classification": String.raw`## Why it works
+Rotating the axes by $\theta$ mixes $x$ and $y$ linearly, and a direct computation shows $B^2 - 4AC$ comes out unchanged; translating changes only $D$, $E$ and $F$. So the quantity is a property of the curve, not of the coordinates chosen to write it, and it may be read off the equation as given. Its sign measures how the second-degree part factors: negative and it does not factor over the reals, which forces a closed curve, zero and it is a perfect square, which is the parabolic boundary case, positive and it splits into two real directions, which become the hyperbola's asymptotes.
+
+## How to use it
+Compute $B^2 - 4AC$ before doing anything else, since it tells you what you are looking at and therefore which card to reach for. If $B = 0$ the axes are already aligned, and [[completing-the-square|completing the square]] in each variable finishes the job. If $B \ne 0$ and you need more than the type, rotate by $\cot 2\theta = \frac{A-C}{B}$ to clear it. Always check the degenerate possibilities before trusting the classification, since the same sign covers them: a negative discriminant admits a single point or the empty set, a zero one admits a repeated or parallel line pair, and a positive one admits two crossing lines.
+
+## On contests
+This is a recognition tool more than a computation. 2021 AIME I #15 turns on exactly it: a particular combination of two parabola equations kills the asymmetry and leaves an equation that completes into a circle, which is why the four intersection points are concyclic. Seeing that the combination is still a conic, and which one, is the step that makes the problem tractable. Degenerate cases also show up as answer-choice traps whenever a parameter is allowed to vary.`,
+
+"conic-reflective-property": String.raw`## Why it works
+Take a point $T$ on an ellipse and move slightly along the tangent. To first order the sum $PF_1 + PF_2$ must not change, since $T$ already sits on the level curve where that sum is $2a$. The rate at which each focal distance changes is the cosine of the angle between the tangent direction and that focal radius, so the two cosines must cancel, which says the tangent makes equal angles with the two radii. That is the reflection law. On a parabola the second focus is at infinity, so the second radius points along the axis and a ray from the focus leaves parallel to it.
+
+## How to use it
+The contest form is almost never about light. Read it as a level-curve statement: the ellipses with foci $F_1, F_2$ are the level sets of $PF_1 + PF_2$, so the smallest one meeting a given line touches it, and the point of tangency is where that sum is least. Every other point of the line lies on a larger ellipse, hence gives a larger sum. That reduces the minimization to [[reflection-shortest-path|reflecting one focus across the line]] and taking a straight segment, and [[ellipse-tangent-line|the tangency pattern]] is this idea packaged as a recognizable shape.
+
+## On contests
+1985 AIME #11 is the classic: an ellipse tangent to an axis, where tangency means that touch point minimizes the focal sum, so reflecting a focus solves it in one line. The property also appears stated outright on the AMC, usually as a whispering gallery or a satellite dish, where the answer is simply that rays from one focus arrive at the other or leave parallel. The hyperbola's version, that a ray aimed at the far focus reflects away from the near one, is the rarest of the three.`,
+
+
+"projected-area-cosine": String.raw`## Why it works
+Set up coordinates so the two planes meet along the $x$-axis at angle $\theta$. Projection fixes every $x$ and multiplies every coordinate measured across the line of intersection by $\cos\theta$, so it is a linear map that scales one direction by $1$ and the perpendicular one by $\cos\theta$. A linear map multiplies every area by the absolute value of [[determinant-geometric|its determinant]], which here is $1 \cdot \cos\theta$. That the factor does not depend on the region is the whole content, and it is why the statement holds for a circle, a polygon and anything else at once.
+
+## How to use it
+Use it in the backwards direction almost always. A tilted plane cuts a solid and you are asked for the area of the section; projecting the section straight down onto a face of the solid usually gives a region you can compute with elementary geometry, and dividing by $\cos\theta$ recovers the real area. Getting $\theta$ is the only subtlety: it is the dihedral angle between the cutting plane and the plane you projected onto, most reliably found as the angle between their normal vectors using [[vector-dot-product|the dot product]], not by eye. A circle projects to an ellipse with the same major axis and the minor axis shortened by $\cos\theta$, so the area $\pi ab$ agrees with this rule.
+
+## On contests
+This is the card that makes a class of AIME solids tractable without any integration. 2015 AIME I #15 is the clearest: the slanted section of a cylinder is its own shadow on the base stretched by a constant factor, so the area follows from a [[circular-segment|circular segment]] and one cosine. 2019 HMMT February Geometry #9 is the same move, finding the pentagonal section of a box by projecting onto the bottom face and dividing by the cosine of the angle between the two normals. Two things it is not: a shadow cast by a nearby lamp, which is a central projection and scales by similar triangles instead, and the projection of a single length, which is [[vector-projection|the vector projection]] and carries no area at all.`,
 
 });

@@ -5,7 +5,7 @@ window.MATH_SECTIONS.push({
   id: "algebra",
   group: "formulas",
   title: "Algebra",
-  blurb: "Polynomials, factoring tricks, series, inequalities, logarithms, complex numbers, and trigonometry.",
+  blurb: "Polynomials, factoring tricks, series, inequalities, logarithms, complex numbers, trigonometry, and the matrix and linear-system notation the rest of the library leans on.",
   subsections: [
     {
       title: "Polynomials & Equations",
@@ -143,6 +143,56 @@ window.MATH_SECTIONS.push({
           description: String.raw`The resultant $\operatorname{Res}(f,g)$ (the determinant of the Sylvester matrix) vanishes exactly when $f$ and $g$ share a root — so setting it to $0$ eliminates a variable from two polynomial equations. The discriminant is the resultant of $f$ with its derivative $f'$ (up to a constant): $\Delta_f = 0$ iff $f$ has a repeated root, and its sign counts real vs. complex roots. Generalizes the familiar $b^2-4ac$ (degree 2) and the cubic discriminant to any degree, and is the clean way to state tangency/double-root conditions.`,
           keywords: ["resultant", "discriminant", "repeated root", "double root", "common root", "eliminate variable", "sylvester matrix", "product of differences", "tangency condition"],
           importance: "lowest",
+          level: ["Olympiad"]
+        }
+      ]
+    },
+    {
+      title: "Matrices, Determinants & Linear Systems",
+      formulas: [
+        {
+          id: "determinant-basics",
+          name: "Determinant of a Small Matrix",
+          latex: String.raw`\begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc, \qquad \begin{vmatrix} a & b & c \\ d & e & f \\ g & h & i \end{vmatrix} = aei + bfg + cdh - ceg - bdi - afh`,
+          description: String.raw`One number attached to a square array. The $3 \times 3$ expansion above is Sarrus's rule, three downward diagonals minus three upward ones, and it does not extend to larger sizes. The properties carry the weight: swapping two rows flips the sign, adding a multiple of one row to another changes nothing, scaling a row scales the determinant, and $\det(AB) = \det A \cdot \det B$. A determinant is zero exactly when the rows are dependent, which is the form most contest uses take.`,
+          keywords: ["determinant", "2x2 determinant", "3x3 determinant", "sarrus rule", "ad minus bc", "row operations on a determinant", "determinant zero dependent rows", "det AB"],
+          importance: "medium",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "determinant-geometric",
+          name: "The Determinant as Signed Area",
+          latex: String.raw`\begin{vmatrix} u_1 & u_2 \\ v_1 & v_2 \end{vmatrix} = \pm[\text{parallelogram on } \vec u, \vec v], \qquad [ABC] = \frac{1}{2}\begin{vmatrix} x_B - x_A & y_B - y_A \\ x_C - x_A & y_C - y_A \end{vmatrix}`,
+          description: String.raw`A $2 \times 2$ determinant is the signed area of the parallelogram spanned by its rows, and a $3 \times 3$ one is the signed volume of the parallelepiped; the sign records orientation. Three points are therefore collinear exactly when that determinant vanishes, and four points are coplanar under the same test one dimension up. The same number says what a linear map does to area: every region's area is multiplied by $\lvert \det \rvert$.`,
+          keywords: ["determinant area", "signed area", "collinearity test", "coplanarity test", "parallelepiped volume", "orientation sign", "area scale factor of a linear map", "cross product determinant"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "matrix-multiplication",
+          name: "Matrix Multiplication & Powers",
+          latex: String.raw`(AB)_{ij} = \sum_{k} a_{ik} b_{kj}, \qquad AB \ne BA \text{ in general}, \qquad (A^n)_{ij} = \#\{\text{walks } i \to j \text{ of length } n\}`,
+          description: String.raw`Entry $(i,j)$ of $AB$ pairs row $i$ of $A$ against column $j$ of $B$, so the product is defined only when the inner sizes agree. Multiplication is associative and distributive but not commutative, and $I$ is the identity. The counting reading is the one contests use: if $A$ is the adjacency matrix of a graph, $(A^n)_{ij}$ counts walks of length $n$ from $i$ to $j$, because the sum above is exactly "choose the intermediate vertex".`,
+          keywords: ["matrix multiplication", "matrix product", "matrix power", "adjacency matrix walks", "identity matrix", "not commutative", "row times column", "counting walks"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "cramers-rule",
+          name: "Cramer's Rule",
+          latex: String.raw`A\mathbf{x} = \mathbf{b}, \quad \det A \ne 0 \implies x_i = \frac{\det A_i}{\det A}, \qquad A_i = A \text{ with column } i \text{ replaced by } \mathbf{b}`,
+          description: String.raw`Solves a square linear system one unknown at a time, without eliminating the others, which is what makes it worth knowing when a problem asks for a single variable out of three. The condition $\det A \ne 0$ is the whole solvability story: nonzero gives exactly one solution, while zero gives either none or infinitely many, and which of the two depends on whether $\mathbf{b}$ is consistent with the dependent rows.`,
+          keywords: ["cramers rule", "solve a linear system", "unique solution", "determinant nonzero", "one variable at a time", "no solution or infinitely many", "square system", "consistency"],
+          importance: "low",
+          level: ["AIME"]
+        },
+        {
+          id: "eigenvalues-characteristic",
+          name: "Eigenvalues & the Characteristic Polynomial",
+          latex: String.raw`A\mathbf{v} = \lambda \mathbf{v} \iff \det(A - \lambda I) = 0, \qquad \sum_i \lambda_i = \operatorname{tr} A, \qquad \prod_i \lambda_i = \det A`,
+          description: String.raw`An eigenvector is a direction the matrix only stretches, and $\lambda$ is the stretch factor; they exist exactly where $A - \lambda I$ is singular, which is the characteristic polynomial. Its coefficients are visible without solving it: the roots sum to the trace and multiply to the determinant. Since $A^n$ has eigenvalues $\lambda_i^n$ on the same eigenvectors, this is how a matrix power turns into a closed form and how a transfer matrix produces its linear recurrence.`,
+          keywords: ["eigenvalue", "eigenvector", "characteristic polynomial", "det A minus lambda I", "trace equals sum of eigenvalues", "diagonalization", "matrix power closed form", "spectrum"],
+          importance: "lower",
           level: ["Olympiad"]
         }
       ]

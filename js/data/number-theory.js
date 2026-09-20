@@ -653,7 +653,7 @@ window.MATH_SECTIONS.push({
           id: "lattice-points-gcd",
           name: "Lattice Points on a Segment",
           latex: String.raw`\#\{\text{lattice points strictly between } (0,0) \text{ and } (a, b)\} = \gcd(a, b) - 1, \qquad \#\{\text{grid squares crossed}\} = m + n - \gcd(m, n)`,
-          description: String.raw`Pairs with Pick's Theorem for lattice-polygon problems: total boundary points on the segment including endpoints is $\gcd(a,b) + 1$.`,
+          description: String.raw`Pairs with Pick's Theorem for lattice-polygon problems: total boundary points on the segment including endpoints is $\gcd(a,b) + 1$. In three dimensions the same inclusion-exclusion counts the unit cubes a diagonal passes through: $a + b + c - \gcd(a,b) - \gcd(b,c) - \gcd(c,a) + \gcd(a,b,c)$.`,
           keywords: ["lattice", "segment", "visible points", "gcd", "squares crossed by diagonal", "diagonal of grid"],
           importance: "medium",
           level: ["AMC12", "AIME"]

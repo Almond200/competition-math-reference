@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 518
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 534
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -15,8 +15,8 @@ reference rather than people editing it.
 **Four headings, and no fifth.** A write-up uses `## Why it works`, `## How to use it`,
 `## On contests`, and optionally `## Key forms`. Do not invent another one. A card may gain or
 lose its Key forms block as its content changes — that is not "adding a subsection", which is
-what this rule is about. Census across 518 write-ups: Why it works 518, On contests 518, How to
-use it 518, Key forms 104, and one sanctioned exception (`mean-chain` carries a `## Full proof`
+what this rule is about. Census across 534 write-ups: Why it works 534, On contests 534, How to
+use it 534, Key forms 106, and one sanctioned exception (`mean-chain` carries a `## Full proof`
 holding complete proofs of the four mean inequalities, which genuinely is not a "why it works").
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
@@ -210,6 +210,9 @@ Then classify it, because that decides where a card would go:
 | multi-leg distance-rate-time: the leg times $\frac{d_i}{v_i}$ add to the total while the distances add to $D$ | **method** | 2013 I #1, 2012 I #4, 2012 II #4, 2008 II #2 | `multi-leg-rates` (Methods › Algebra). 2007 I #2 was recorded as a fifth sighting and was a mis-sighting: each walker there moves at a single speed, so nothing is multi-leg. It is retagged on `casework-method`, its actual crux |
 | counting with a uniform overcount: build every object exactly $k$ times, divide by $k$, and repair the objects built fewer times | **method** | 1997 #10, 2002 I #5, 1993 #8 | `uniform-overcount` (Methods › Counting & Probability) |
 | adding two numbers drops the digit sum by $9$ per carry, $s(a+b)=s(a)+s(b)-9c$ | formula | 2015 I #8, 1999 #5 | `digit-sum-carries` (Bases, Digits & Decimals) |
+| a symmetric or cyclic linear system: add all $n$ equations to collapse the symmetric part into the grand total, or substitute around the loop | **method** | 1986 #4, 1986 #14, 2024 II #4, 2024 10B #25 | `symmetric-linear-system` (Methods &rsaquo; Algebra). All four had been tagged with whatever the surrounding algebra happened to be |
+| expanding a determinant along its sparsest row, which turns a banded family into a linear recurrence | **method** | 2011 II #11 | `cofactor-expansion` (Methods &rsaquo; Algebra). 2011 II #11 hands you a tridiagonal matrix outright and was tagged `linear-recurrence` alone |
+| orthogonal projection onto a plane multiplies every area by $\cos\theta$, so a slanted section is its shadow divided by $\cos\theta$ | formula | 2015 I #15, 2019 HMMT Feb Geo #9 | `projected-area-cosine` (Solid Geometry). **Two of this row's original sightings were wrong and were dropped on reading them**: 1996 #4 is a point-light shadow, which is a central projection scaling by similar triangles, and 2008 II #11 projects a length rather than an area |
 
 #### Closed by a clause on a card that already existed
 
@@ -218,6 +221,9 @@ Then classify it, because that decides where a card would go:
 | perpendicular bisector of a chord passes through the center | `equal-chords-arcs` — it carried the forward direction, not the locus reading that finds a circumcenter |
 | a step of size $k$ around an $n$-cycle splits into $\gcd(n,k)$ cycles | `permutation-cycle-structure` — it reasoned about orbits but never stated the count |
 | a polyline whose segments share an angle has net displacement (length)$\cdot\cos\theta$ | `projection-formula` — it stated the triangle case only |
+| in a regular polygon, $R^2 = a^2 + (s/2)^2$ | `regular-polygon-area` — it named the apothem without relating it to $R$ and $s$. The clause also records why the annulus between the two circles depends only on the side length |
+| reflecting a **graph** in $y = x$ gives the inverse relation | `reflection-coordinates` — it had the point-level swap $(x,y) \to (y,x)$ but not the function-level reading |
+| the three-dimensional lattice-crossing count | `lattice-points-gcd` — the same inclusion-exclusion one dimension up. 1996 #14 was tagged `gcd-lcm-product`, which is the product identity and is not used there; it now carries `lattice-points-gcd` |
 
 #### Closed as already covered
 
@@ -240,18 +246,13 @@ Then classify it, because that decides where a card would go:
 |---|---|---|---|
 | unwind a recursion that terminates only on a sparse set of inputs into a closed form on each interval between them | **method** | 2021 II #15 | none; `first-order-recurrence` and `linear-recurrence` both assume a fixed-step recurrence |
 | invert a digit-sum condition using the fact that the least positive integer with base-$b$ digit sum $s$ is strictly increasing in $s$ | **method** | 2020 II #5 | none; `base-conversion` handles representation, not this monotonicity |
-| in a regular polygon the circumradius, the apothem and half a side form a right triangle, so $R^2 = a^2 + (s/2)^2$ | formula | 2009 12A #19 | **one clause on `regular-polygon-area`**, which names the apothem but never relates it to $R$ and $s$. It is why the annulus between a regular polygon's two circles depends only on the side length, not on the number of sides |
-| reflecting a graph in $y = x$ gives the inverse relation, so a graph symmetric about that line is its own inverse | formula | 2024 12A #25 | **one clause on `reflection-coordinates`**, which gives the point-level swap $(x,y) \to (y,x)$ but not the function-level reading. No card in the library mentions inverse functions at all |
-| orthogonal projection onto a plane multiplies areas by $\cos\theta$, so a slanted section is its shadow divided by $\cos\theta$ | formula | 2015 I #15 | none; `projection-formula` is the triangle side relation $a = b\cos C + c\cos B$, a different statement |
 | a circle of radius $r$ rolling without slipping around the outside of a radius-$R$ circle turns through $\frac Rr + 1$ full rotations, not $\frac Rr$ | formula | 2014 I #10 | none; the coin-rotation count appears nowhere, and `circle-basics` gives only $\text{arc} = r\theta$ |
-| the **three-dimensional** lattice-crossing count, $a+b+c-\gcd(a,b)-\gcd(b,c)-\gcd(c,a)+\gcd(a,b,c)$ | formula | 1996 #14 | **one clause on `lattice-points-gcd`**. The row previously claimed the planar count was missing too; that was wrong, since the card's latex already states $m+n-\gcd(m,n)$ outright. 2007 II #5 had been tagged `gcd-lcm-product` for want of that owner and is now retagged. Only the 3D extension is genuinely absent |
 | the full solution set of a basic trig equation: $\sin\theta = \sin\alpha$ exactly when $\theta = \alpha + 2\pi k$ or $\theta = \pi - \alpha + 2\pi k$, with the analogous families for cosine and tangent | formula | 2002 II #10 | none; `common-angle-values` gives the value table and the reference-angle rule, and the addition and double-angle cards give identities, but no card states which angles share a given sine |
 | a $3\times3$ magic square's center is one third of the common line sum, and any two cells symmetric about it add to twice the center | formula | 1996 #1 | none; nothing in the library mentions magic squares, so the nearest owner used was `proportion-properties` for the averaging step |
 | a sum over all tuples of a product of per-coordinate terms factors into a product of per-coordinate sums, $\sum_{d_1,\ldots,d_k}\prod_i f(d_i) = \prod_i\left(\sum_d f(d)\right)$ | **method** | 1994 #5 | none states it directly. `sum-of-divisors` is the most familiar instance ($\sigma$ as a product of geometric sums) but presents it as a divisor formula, and `generating-function-method` is the coefficient-extraction version, which hides that the same expansion evaluated at $1$ totals every tuple |
 | the number of ways to split $n=ab$ with $\gcd(a,b)=1$ is $2^{\omega(n)}$, since each prime power must go wholly to one side; halve it for unordered or for $a\lt b$ | formula | 1991 #5 | none. `number-of-divisors` gives $d(n)=\prod(e_i+1)$ from the same factorization, but counts every divisor rather than the coprime splits, and no card mentions $\omega(n)$, the count of distinct primes |
 | the combinatorial reading of the Fibonacci numbers: tilings of a $1 \times n$ strip by squares and dominoes, and binary strings with no two adjacent $1$s, both number $F_{n+2}$ | **method** | 1990 #9 | **partly a misrecord, now corrected.** `binets-formula` does carry the sequence and its identities (closed form, Cassini, $\gcd(F_m,F_n)=F_{\gcd(m,n)}$, $\sum F_i = F_{n+2}-1$) and its keywords include Fibonacci, so the earlier claim that nothing covered Fibonacci was wrong. It was found by searching card *names* only. What is genuinely absent is the counting interpretation, which is how the sequence actually enters AMC/AIME problems; `binets-formula` is purely algebraic and `non-adjacent-selection` gives only the fixed-$k$ closed form |
 | the cotangent rule, $\cot A = \frac{b^2+c^2-a^2}{4K}$, whose immediate corollary is $\cot A + \cot B = \frac{c^2}{2K}$ | formula | 1989 #10 | none. It follows in one line from `law-of-cosines` and `trig-area` together, and those two are what 1989 #10 is tagged with, but no card states it. It is the standard way any $\cot$-of-a-triangle expression collapses to side lengths, so the derivation gets redone every time |
-| a small cyclic linear system, where each equation ties one unknown to the next and substituting around the cycle closes it; the symmetric case, each equation being the grand total plus one variable, collapses by adding all $n$ of them | **method** | 1986 #4, 2024 10B #25 | none. `symmetric-polynomial-strategies` is about symmetric functions of polynomial roots, a different object, and the library carries no card on linear systems at all. Possibly deliberate, since solving them is assumed, but the add-them-all move is a genuine recognition step rather than routine elimination |
 | an extremal set cut out by gap conditions is bounded by its densest periodic block: find the shortest repeating window, work out the most elements it can hold, then tile the range with copies and add the tail | **method** | 2024 10A #20 | none. `gap-method` supplies the minimum-gap bookkeeping and is what that problem is tagged with, but it counts selections of a fixed size rather than maximizing the size, and no card states the tile-the-range bound |
 | the center of a rotation is equidistant from every point and its image, so it is the intersection of the perpendicular bisectors of the point-image segments | **method** | 2023 10A #19 | none. `distance-midpoint` is what the problem is tagged with because squaring the two distance equations is how the center is actually found, and `reflection-composition` shows a rotation arises from two reflections, but no card gives the perpendicular-bisector locus. The register already carries the chord version of the same locus idea as a clause for `equal-chords-arcs` |
 | a region swept by independently varying parameters is the Minkowski sum of the segments they generate, and a sum of segments is a zonogon whose sides come in opposite parallel pairs, one pair per generator, so its perimeter is twice the total generator length | **method** | 2023 10B #24 | none. `affine-transformations` covers what a linear map preserves but never the image of a region, `minkowski-lattice` is the lattice-point theorem and unrelated, and the problem is tagged `distance-midpoint` only because measuring the three generators is the arithmetic that remains |
@@ -449,6 +450,24 @@ A move is safe for everything keyed by card id (problem tags, `TAG_GROUPS`, diag
 cross-links), so the checks that matter afterwards are: every card still has exactly one
 write-up, no duplicate ids, and the breadcrumb on the rendered page reads as intended.
 
+Three subsections were added on 2026-09-20, and unlike the 2026-09-14 batch these carry new cards
+rather than only moving old ones:
+
+- **Algebra &rsaquo; Matrices, Determinants & Linear Systems** (5 cards). The library already
+  invoked a determinant, a matrix power, a cofactor or an eigenvalue on eleven cards -- Heron,
+  Cayley-Menger, the cross product, the Sylvester matrix, Stirling numbers of the first kind,
+  Matrix-Tree, LGV, barycentrics, affine maps, Markov states, the transfer matrix -- and defined
+  none of them. Matrices are off the AMC/AIME syllabus; the justification is internal consistency
+  plus 2011 AIME II #11, which hands you a tridiagonal matrix and asks for its determinant.
+- **Geometry &rsaquo; Conics** (7 cards, one of them the existing `conic-sections` moved in and
+  retargeted as the overview). One `medium` card had been carrying all three curves across six
+  tagged problems, and the word "eccentricity" appeared nowhere in the library although 2025 AMC
+  12A #14 turns entirely on it.
+- A **Systems & Determinants** cluster inside Methods &rsaquo; Algebra, for the two method cards.
+
+When a card moves into a new subsection, check the curated lists as well as the routes: see the
+duplicate-placement gate in CONVENTIONS &sect;8, which exists because this batch broke it.
+
 ## Writing a cross-link
 
 `linkifyCards` (`js/app.js:2324`) renders `[[id|label]]` with **`label` verbatim**. The visible
@@ -570,17 +589,37 @@ is why `tools/search-eval.html` carries its own cache-buster.
 
 ### Standing state, measured 2026-09-20 against a verified-fresh index
 
-**155/171 top-1, 96.5% top-3, MRR 0.937**, name and jargon 100%, paraphrase 92.5%. Three
-regressions are long-standing and accepted; the fourth is new and **not** attributable to the
-cards added that day:
+**Compare warm to warm, and say which you ran.** The semantic index loads lazily, so a cold first
+run and a warm re-run disagree on a handful of near-tied queries in both directions; warm runs are
+reproducible to the individual query (three consecutive runs gave identical output). Over 534 cards
+the original 171 queries give **153 cold, 154 warm**, against the **155 warm** recorded before this
+work and the **153** stored in `eval-baseline.json`, which was itself a cold capture. Warm to warm
+that is a **net loss of one query out of 171** while the corpus grew 3%. It is small and it is
+real; do not report it as a measurement artifact.
 
-- `ratio between circumradius and inradius` expects `euler-distance-theorem`, which now sits at
-  **rank 7 fused / 12 lexical**, behind `equilateral-triangle-facts`, `right-triangle-inradius`,
-  `regular-tetrahedron` and `triangle-half-angle-identities`. It is present in the **lexical**
-  ranking too, so it is content growth in those cards — not a semantic drift and not the new
-  cards, which contain none of "ratio", "circumradius" or "inradius". Left unfixed deliberately:
-  this query has already cost one reverted promotion (the $\frac rR$ clause in `inradius-area`),
-  so it should be addressed by a measured change, not by eye.
+The query set is now **183**. Twelve were added for the matrices, conics and projection cards, and
+**eleven of the twelve rank first**; the miss is `is this equation an ellipse or a hyperbola`,
+where `conic-sections` takes the top slot and `conic-classification` sits third, which is a
+defensible answer to that phrasing rather than a failure.
+
+Two long-standing misses are unchanged and still deliberately unfixed:
+
+- `ratio between circumradius and inradius` expects `euler-distance-theorem` and does not reach
+  the top three, behind `equilateral-triangle-facts`, `right-triangle-inradius` and
+  `regular-tetrahedron`. It is present in the **lexical** ranking too, so it is content growth in
+  those cards rather than semantic drift. This query has already cost one reverted promotion (the
+  $\frac rR$ clause in `inradius-area`), so it should be addressed by a measured change, not by eye.
+- `quadrilateral whose vertices lie on a circle` expects `cyclic-opposite-angles` and returns
+  `concyclicity-tests` first, which is arguably the better answer to the literal question.
+
+No card added on 2026-09-20 appears in the top three of any query it was not written for, so the
+new content is not displacing correct answers; the movement came from re-embedding a corpus that
+grew 3%. The one clear casualty is `area of triangle formed by connecting midpoints of the sides`,
+where `varignons-theorem` now edges out `medial-triangle`. Varignon's keywords were the generic
+`midpoints, parallelogram, half area, varignon` -- four, the documented floor -- and were rewritten
+to be quadrilateral-specific, which is a better card either way but **did not move the ranking**:
+that query is decided by the semantic vector, not the keyword field. Recorded here so the next
+person does not repeat the attempt.
 
 Do **not** press "Download as baseline" to make a regression disappear. The baseline is the
 record of what was true when the ranking was last deliberately tuned.

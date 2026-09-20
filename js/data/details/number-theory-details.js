@@ -63,8 +63,12 @@ A divisor chooses an exponent $0..e_i$ independently for each prime — multiply
 ## How to use it
 Reverse-engineering is the contest skill: which $n$ have exactly 12 divisors? Factor 12 into factors each $\ge 2$ ($12 = 12, 6\cdot2, 4\cdot3, 3\cdot2\cdot2$) and translate to exponent patterns ($p^{11}, p^5q, p^3q^2, p^2qr$), then minimize/count as asked. Odd $d(n)$ ⟺ perfect square (divisors pair except $\sqrt n$).
 
+The formula converts a question about a number into a question about its exponents, and that is the whole reason it matters. "How many divisors" needs no divisors listed; "smallest number with exactly $k$ divisors" becomes a search over factorisations of $k$ into the exponent pattern, with the largest exponents assigned to the smallest primes; and "which numbers have an odd number of divisors" answers itself, since $\prod(e_i+1)$ is odd only when every $e_i$ is even — that is, only for perfect squares.
+
 ## On contests
-"Smallest number with exactly $k$ divisors," locker-door problems (squares!), and divisor-counting of factorials (exponents via [[legendres-formula|Legendre]] first). Among the most-tested NT facts at every level.`,
+Among the most-tested number-theory facts at every level, and self-contained in 4 of its 32 problems. Its partners are [[modular-basics|modular arithmetic]] and [[casework-method|casework]] (3 each), the usual shape being a divisibility condition that cuts the exponent patterns before the count is taken.
+
+Three shapes recur: smallest number with exactly $k$ divisors, the locker-door problem and its relatives (the answer is always the squares, by the odd-divisor fact above), and divisor-counting a factorial, which needs [[legendres-formula|Legendre's formula]] first to get the exponents.`,
 
 "sum-of-divisors": String.raw`## Why it works
 Expand the product $\prod_i(1 + p_i + \cdots + p_i^{e_i})$: choosing one term from each factor generates every divisor exactly once. Each factor is a [[geometric-series|geometric series]].
@@ -399,10 +403,16 @@ An olympiad tool — the standard "no Gaussian integers required" proof of [[fer
 Every representation of the equation in the form (linear factor)(linear factor) = constant corresponds to a divisor pair of the constant — and divisor pairs are counted by $d(N)$, adjusted for signs and symmetry.
 
 ## How to use it
-Standard pipeline: [[sfft|SFFT]] (or direct factoring) → count divisor pairs of the right-hand constant → filter by constraints (positivity, ordering, parity — both factors must have matching parity when the variables demand it). Negative divisor pairs count when variables may be negative.
+The whole idea is to stop solving and start counting. An equation in two unknowns has no general method, but once it is rearranged into (something)(something) $= N$ every solution corresponds to a factorisation of $N$ — and the number of factorisations is just [[number-of-divisors|the divisor count]]. A problem with no obvious method becomes a problem with a formula.
+
+The pipeline is fixed. Force a product with [[sfft|SFFT]] or direct factoring, count the divisor pairs of the constant, then filter. The filtering is where the marks are, and there are only three filters worth remembering: positivity (do negative factor pairs correspond to valid variables?), ordering (ordered or unordered — unordered is $d(N)/2$, except when $N$ is a perfect square, where the pair $\sqrt N\cdot\sqrt N$ has no partner and the count is $\frac{d(N)+1}{2}$), and parity (when the variables force both factors to share parity, as they do for [[difference-of-squares|a difference of squares]], the pairs of opposite parity are discarded).
+
+That parity filter is why this card and the difference of squares travel together: $n=(a-b)(a+b)$ is precisely this pipeline with a parity constraint attached.
 
 ## On contests
-"How many ordered pairs solve $\frac{1}{x} + \frac{1}{y} = \frac{1}{12}$" ($(x-12)(y-12) = 144$: $d(144) = 15$ positive pairs, plus negative-side analysis) — an AIME evergreen. The parity/positivity filtering is where care is needed.`,
+Almost never alone — 2 of 24 — and its constant companion is [[difference-of-squares|the difference of squares]] (6 problems), which is the step that manufactures the product in the first place.
+
+The evergreen is "how many ordered pairs solve $\frac1x+\frac1y=\frac1{12}$": rearranged it is $(x-12)(y-12)=144$, so the count is $d(144)=15$ positive pairs plus the negative-side analysis. Every problem of this family is the same three steps with a different constant, and the difficulty lives entirely in the filters.`,
 
 "difference-of-squares-rep": String.raw`## Why it works
 $n = (a-b)(a+b)$: the two factors have the same parity, so $n$ must be odd (both odd) or divisible by 4 (both even). Conversely, any valid factorization $n = st$ with $s \equiv t \pmod 2$ gives $a = \frac{s+t}{2}$, $b = \frac{t-s}{2}$.
@@ -446,8 +456,12 @@ Positional notation is a polynomial in the base; conversion is evaluation (to ba
 ## How to use it
 Digit-condition problems become polynomial equations in $b$ ("$\overline{abc}_b = $ something" → quadratic in $b$). Useful structural facts: $b^k$ is 1 followed by $k$ zeros; $b^k - 1$ is $k$ copies of the top digit; numbers with all digits equal factor as digit × repunit.
 
+What base problems really ask is for an equation to be read two ways. A digit string is a polynomial in the base, so a condition on digits is a polynomial condition on $b$ — usually a quadratic — while the digits themselves are constrained to $0 \le d \lt b$. Those two facts together are what make the problem finite: the polynomial gives candidates and the digit bounds eliminate almost all of them.
+
 ## On contests
-"In what base does $x^2 = \overline{XYZ}$" and palindrome-across-bases problems (AMC/AIME staples). Also binary/ternary tricks: [[zeckendorf-theorem|Zeckendorf]]-like digit arguments, base-2 for subset weights, base-3 for balanced ternary (weights problems).`,
+Alone in 4 of its 27 problems; the standing partner is [[casework-method|casework]] (6), because the digit bounds produce a small number of cases and someone has to check them.
+
+The recurring shapes are "in what base does this digit string equal that square", palindromes that survive a change of base, and the structural facts worth having ready: $b^k$ is a one followed by $k$ zeros, $b^k-1$ is $k$ copies of the top digit, and a repdigit factors as digit times repunit. Binary and ternary carry their own uses — base two for subset weights, balanced ternary for weighing problems where a weight may go on either pan.`,
 
 "lattice-points-gcd": String.raw`## Why it works
 Parametrize the segment: interior lattice points occur at parameter values $\frac{j}{g}$ with $g = \gcd(a, b)$ — the direction vector $\frac{(a, b)}{g}$ is the primitive step, taken $g$ times.
@@ -486,7 +500,7 @@ Pairwise coprimality gives infinitude of primes (each $F_n$ owns new primes). St
 Factoring $2^{32} - 1 = 3 \cdot 5 \cdot 17 \cdot 257 \cdot 65537$ via the telescoping product is a beloved AMC/AIME move; coprimality arguments and "when is $2^m + 1$ prime" reasoning recur.`,
 
 "continued-fraction-convergents": String.raw`## Why it works
-Convergents $\frac{p_k}{q_k}$ satisfy the recurrence $p_k = a_kp_{k-1} + p_{k-2}$ (same for $q$), and the determinant identity $p_kq_{k-1} - p_{k-1}q_k = (-1)^{k-1}$ follows by induction — each step is a unimodular matrix multiplication.
+Convergents $\frac{p_k}{q_k}$ satisfy the recurrence $p_k = a_kp_{k-1} + p_{k-2}$ (same for $q$), and the determinant identity $p_kq_{k-1} - p_{k-1}q_k = (-1)^{k-1}$ follows by induction — each step is a unimodular [[matrix-multiplication|matrix multiplication]].
 
 ## How to use it
 Best rational approximations with bounded denominator are convergents — the tool for "closest fraction to $\pi$ with denominator under 100" questions. The determinant identity gives instant solutions to $ax - by = \pm1$ ([[bezouts-identity|Bézout]] via continued fractions), and consecutive convergents are Farey neighbors.
@@ -733,8 +747,12 @@ In a symmetric equation, ordering the variables costs nothing (multiply the coun
 ## How to use it
 State the WLOG ordering explicitly, then bound the extreme variable by comparing it against the total: for $\frac1x + \frac1y + \frac1z = 1$ with $x \le y \le z$, we get $1 \le \frac{3}{x}$ so $x \le 3$, and $\frac1x \lt  1$ so $x \ge 2$. Enumerate each surviving value, substitute, and repeat on the smaller equation — often the two-variable step factors via [[sfft|SFFT]]. Finally, restore all permutations of each unordered solution. The same tactic bounds variables in $xyz = x + y + z$ and in equations where one side grows much faster than the other (compare growth rates to cap the exponent, then finite-check).
 
+What the method buys is worth stating plainly: it converts an unbounded search into a finite one. Before bounding, an equation in three positive integers has infinitely many candidates and no way to check them; after bounding the largest variable, there are a handful, and a handful can simply be listed. Nothing clever happens after that step, which is why the bound is the whole solution rather than the start of one.
+
 ## On contests
-The standard finisher for unit-fraction (Egyptian fraction) problems and small symmetric Diophantine systems on AIME and olympiads. It is the size-based complement to the modular approach: use a modulus to prove no solutions exist, and bounding to prove only finitely many do — then list them.`
+The standard finisher for unit-fraction (Egyptian fraction) problems and small symmetric Diophantine systems on AIME and olympiads. It is unusually self-contained — 11 of its 39 problems need nothing else, which puts it inside the library's ten most self-sufficient cards — because once the bound is found the rest is enumeration.
+
+It is the size-based complement to the modular approach, and the two divide the work cleanly: use [[modular-basics|a modulus]] to prove no solutions exist, and bounding to prove only finitely many do, then list them. When a problem resists both, it usually wants them together — a modulus to cut the residues, then a bound to cap what survives.`
 
 });
 
@@ -750,8 +768,14 @@ Exponents are the genuine exception to "treat $\equiv$ like $=$". Bases reduce f
 ## How to use it
 Reduce early and often — replace any number by its remainder before multiplying, to keep values small. The rule that trips people up is cancellation: from $ka \equiv kb \pmod m$ you get $a \equiv b \pmod{m / \gcd(k, m)}$, not mod $m$. So $6x \equiv 6y \pmod{15}$ only gives $x \equiv y \pmod 5$. When $\gcd(k, m) = 1$ the cancellation is clean and, equivalently, $k$ has a [[modular-inverse|modular inverse]] you can multiply by. When it isn't $1$, either shrink the modulus as above or split into cases.
 
+Beyond the mechanics, the reason to reach for a modulus at all is that it is the cheapest way to prove something is impossible. An equation that survives every algebraic attack often dies instantly mod 3, 4, 8 or 9, because those moduli have very few squares: a square is $0$ or $1$ mod $4$ and $0,1,4$ mod $8$, so any equation forcing a square to be $3 \bmod 4$ has no solutions at all and the search stops before it starts. That is the payoff — not computing a remainder, but replacing an infinite search with a finite check on residues.
+
+It is also the standard way to shrink a problem. Reducing a variable mod $m$ replaces infinitely many cases with $m$ of them, which is why this card is almost always followed by [[casework-method|casework]]: the modulus produces the cases, and the casework closes them.
+
 ## On contests
-The foundation under every modular problem — last-digit and remainder questions on MATHCOUNTS, and the setup for [[fermats-little-theorem|Fermat]], Euler, and [[crt|CRT]] on AMC/AIME. The single most common error is illegal division; the fix is always to track what $\gcd(k, m)$ does to the modulus.`
+The foundation under every modular problem — last-digit and remainder questions on MATHCOUNTS, and the setup for [[fermats-little-theorem|Fermat]], Euler, and [[crt|CRT]] on AMC/AIME. The pairing is very consistent: [[casework-method|casework]] shares 12 of the 61 problems tagged here, more than double any other partner, and only six use the modulus alone.
+
+The single most common error is illegal division; the fix is always to track what $\gcd(k, m)$ does to the modulus.`
 
 });
 

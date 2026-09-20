@@ -97,6 +97,22 @@ for blk in blocks[1:]:
     for c in sorted(have - should):
         route_bad.append("%s: %s does not qualify" % (lid, c))
 
+# A card listed twice in one list renders twice, under two different headings, and the route
+# check above cannot see it because it collects ids into a set. That is exactly how
+# `conic-sections` ended up in both "Coordinates & Transformations" and a new "Conics" section
+# when the card moved subsections: every existing gate passed and the route simply showed it
+# twice. Fatal, and it covers curated lists as well as routes.
+dupes = []
+for blk in blocks[1:]:
+    lid = blk[:blk.index('"')]
+    seen = {}
+    for tm in re.finditer(r'\{ title: "([^"]+)",(?:\n\s+note: "[^"]*",)?\n\s+ids: \[([^\]]*)\]', blk):
+        for c in re.findall(r'"([a-z0-9-]+)"', tm.group(2)):
+            if c in seen:
+                dupes.append("%s: %s appears in both %r and %r" % (lid, c, seen[c], tm.group(1)))
+            else:
+                seen[c] = tm.group(1)
+
 # Advisory, not fatal: a single-card section renders as a heading with nothing under it, which
 # is a presentation call rather than a broken promise. 17 exist today.
 thin = []
@@ -106,10 +122,12 @@ for blk in blocks[1:]:
         if len(re.findall(r'"([a-z0-9-]+)"', tm.group(2))) == 1:
             thin.append("%s: section %r holds a single card" % (lid, tm.group(1)))
 
-print("cards indexed: %d | route problems: %d | single-card sections: %d (advisory)"
-      % (len(meta), len(route_bad), len(thin)))
+print("cards indexed: %d | route problems: %d | duplicate placements: %d | single-card sections: %d (advisory)"
+      % (len(meta), len(route_bad), len(dupes), len(thin)))
 for r in route_bad[:25]:
     print("   " + r)
-if route_bad:
+for r in dupes[:25]:
+    print("   " + r)
+if route_bad or dupes:
     sys.exit(1)
 print("OK - every list id resolves and every route is complete")

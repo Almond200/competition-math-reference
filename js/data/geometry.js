@@ -7,7 +7,7 @@ window.MATH_SECTIONS.push({
   id: "geometry",
   group: "formulas",
   title: "Geometry",
-  blurb: "Triangles, circles, quadrilaterals, coordinates, and 3D — from the Pythagorean Theorem to Casey's Theorem.",
+  blurb: "Triangles, circles, quadrilaterals, conics, coordinates, and 3D — from the Pythagorean Theorem to Casey's Theorem.",
   subsections: [
     {
       title: "Fundamentals",
@@ -138,7 +138,7 @@ window.MATH_SECTIONS.push({
           id: "regular-polygon-area",
           name: "Regular Polygon Area",
           latex: String.raw`A = \tfrac{1}{2}ap = \tfrac{1}{2}nR^2\sin\tfrac{360^\circ}{n}, \qquad A_{\text{oct}} = 2(1+\sqrt2)\,s^2, \qquad A_{\text{dodec}} = 3R^2`,
-          description: String.raw`With apothem $a$, perimeter $p$, side $s$, circumradius $R$, and $n$ sides (so $p = ns$). The octagon's $2(1+\sqrt2)s^2$ and the dodecagon-in-radius-$R$ value of exactly $3R^2$ are the two special cases worth memorizing.`,
+          description: String.raw`With apothem $a$, perimeter $p$, side $s$, circumradius $R$, and $n$ sides (so $p = ns$). The octagon's $2(1+\sqrt2)s^2$ and the dodecagon-in-radius-$R$ value of exactly $3R^2$ are the two special cases worth memorizing. The three radii are tied by one right triangle: $R$, $a$ and half a side give $R^2 = a^2 + \left(\frac{s}{2}\right)^2$, which is why the ring between a regular polygon's circumcircle and incircle has area $\frac{\pi s^2}{4}$, depending on the side length alone and not on $n$.`,
           keywords: ["apothem", "perimeter", "regular", "n-gon area", "octagon area", "dodecagon area"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -238,7 +238,7 @@ window.MATH_SECTIONS.push({
           name: "Varignon's Theorem",
           latex: String.raw`[\text{Varignon parallelogram}] = \frac{1}{2}[ABCD]`,
           description: String.raw`Connecting the midpoints of the sides of any quadrilateral yields a parallelogram whose area is half the original's, with sides parallel to the diagonals.`,
-          keywords: ["midpoints", "parallelogram", "half area", "varignon"],
+          keywords: ["varignon", "midpoints of a quadrilateral", "varignon parallelogram", "quadrilateral midpoint figure", "inner parallelogram", "half the area of the quadrilateral", "diagonals become sides", "works for a non-convex quadrilateral"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         }
@@ -1246,15 +1246,6 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
-          id: "conic-sections",
-          name: "Conic Sections",
-          latex: String.raw`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 - b^2), \qquad \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 + b^2), \qquad x^2 = 4py`,
-          description: String.raw`Ellipse: distances to the two foci $(\pm c, 0)$ sum to $2a$, and the area is $\pi ab$. Hyperbola: the distances differ by $2a$, with asymptotes $y = \pm\frac{b}{a}x$. Parabola $x^2 = 4py$: each point is equidistant from the focus $(0, p)$ and the directrix $y = -p$.`,
-          keywords: ["ellipse", "hyperbola", "parabola", "focus", "directrix", "asymptotes", "foci", "standard form", "ellipse tangent to a line", "point of tangency minimizes focal sum", "ellipse reflection property"],
-          importance: "medium",
-          level: ["AMC12", "AIME"]
-        },
-        {
           id: "incenter-coordinates",
           name: "Center Coordinates as Weighted Averages",
           latex: String.raw`G = \frac{A + B + C}{3}, \qquad I = \frac{aA + bB + cC}{a + b + c}`,
@@ -1275,16 +1266,93 @@ window.MATH_SECTIONS.push({
       ]
     },
     {
+      title: "Conics",
+      formulas: [
+        {
+          id: "conic-sections",
+          name: "Conic Sections",
+          latex: String.raw`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 - b^2), \qquad \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \;\; (c^2 = a^2 + b^2), \qquad x^2 = 4py`,
+          description: String.raw`The three curves side by side, as one family. Each is a locus about its foci: the ellipse holds a constant sum of focal distances, the hyperbola a constant difference, and the parabola, with its second focus sent to infinity, a constant distance to a focus and a line. The standard forms above put each in its own coordinates; the individual cards carry the details, and the choice between them on a problem is usually made by which distance condition the problem states.`,
+          keywords: ["ellipse", "hyperbola", "parabola", "focus", "directrix", "asymptotes", "foci", "standard form", "conic", "distance locus", "which conic is it", "sum or difference of distances"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "ellipse-properties",
+          name: "Ellipse: Foci, Axes & Area",
+          latex: String.raw`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1, \quad a > b: \qquad PF_1 + PF_2 = 2a, \qquad c^2 = a^2 - b^2, \qquad [\text{ellipse}] = \pi ab`,
+          description: String.raw`The locus of points whose distances to $(\pm c, 0)$ sum to $2a$. The semi-major axis $a$ is half that constant sum, $b$ is the semi-minor axis, and $c$ is the focal distance from the center; evaluating the locus at the end of the minor axis gives $a^2 = b^2 + c^2$ directly. The area $\pi ab$ is the circle's $\pi r^2$ with the two radii separated, which is what an affine stretch of a circle does to it.`,
+          keywords: ["ellipse", "sum of distances to two foci", "semi-major axis", "semi-minor axis", "a squared equals b squared plus c squared", "area pi a b", "foci of an ellipse", "constant focal sum"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "hyperbola-properties",
+          name: "Hyperbola: Foci, Asymptotes & the Rectangular Case",
+          latex: String.raw`\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1: \qquad \lvert PF_1 - PF_2 \rvert = 2a, \qquad c^2 = a^2 + b^2, \qquad y = \pm\frac{b}{a}x, \qquad xy = k \text{ (rectangular)}`,
+          description: String.raw`Same construction with a difference of focal distances instead of a sum, which is why $c$ now exceeds $a$ and the sign in the $c$-relation flips. The asymptotes are the lines the branches approach: drop the $1$ from the equation and it factors into exactly those two lines, so their slopes $\pm b/a$ control every direction the curve can eventually take. Rotating the rectangular case $a = b$ by $45^\circ$ turns it into $xy = k$, the reciprocal graph.`,
+          keywords: ["hyperbola", "difference of distances", "asymptotes of a hyperbola", "slope b over a", "c squared equals a squared plus b squared", "rectangular hyperbola", "xy = k", "branches", "conjugate axis"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "parabola-focus-directrix",
+          name: "Parabola: Focus, Directrix & Latus Rectum",
+          latex: String.raw`x^2 = 4py: \quad \text{focus } (0, p), \quad \text{directrix } y = -p, \quad \text{latus rectum} = \lvert 4p \rvert, \qquad y = ax^2 \implies p = \frac{1}{4a}`,
+          description: String.raw`Every point is equidistant from the focus and the directrix, which is the definition the coordinate form encodes. The latus rectum, the focal chord perpendicular to the axis, has length $\lvert 4p \rvert$, so the coefficient in $x^2 = 4py$ is that chord read off directly. Going the other way, a parabola handed to you as $y = ax^2 + bx + c$ has $p = \frac{1}{4a}$, measured from its vertex along the axis of symmetry.`,
+          keywords: ["parabola", "focus and directrix", "equidistant from a point and a line", "latus rectum", "focal chord", "x squared equals 4py", "p equals 1 over 4a", "axis of symmetry"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "eccentricity",
+          name: "Eccentricity & the Focus-Directrix Definition",
+          latex: String.raw`e = \frac{c}{a} = \frac{PF}{\operatorname{dist}(P, \ell)}: \qquad e = 0 \text{ circle}, \quad 0 \lt  e \lt  1 \text{ ellipse}, \quad e = 1 \text{ parabola}, \quad e > 1 \text{ hyperbola}`,
+          description: String.raw`One number that names the shape and unifies all three curves: fix a focus $F$ and a directrix $\ell$, and the locus with $PF = e \cdot \operatorname{dist}(P, \ell)$ is an ellipse, a parabola or a hyperbola according as $e$ is below, equal to, or above $1$. Because $e$ is a ratio of two lengths, it is unchanged by scaling, so two conics of the same type are similar exactly when their eccentricities agree, and every parabola is similar to every other.`,
+          keywords: ["eccentricity", "e equals c over a", "focus directrix definition", "how round is the conic", "similar conics", "eccentricity classifies the conic", "all parabolas are similar", "directrix ratio"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "conic-classification",
+          name: "Classifying a General Second-Degree Equation",
+          latex: String.raw`Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0: \qquad B^2 - 4AC \lt  0 \text{ ellipse}, \quad = 0 \text{ parabola}, \quad > 0 \text{ hyperbola}`,
+          description: String.raw`The sign of $B^2 - 4AC$ decides the type, and it survives both rotation and translation, so you can classify without putting the curve into standard form. A nonzero $B$ only means the axes are tilted, and rotating by $\theta$ with $\cot 2\theta = \frac{A - C}{B}$ removes it. Each case has degenerate members, where the plane cuts the cone through its apex: a point or nothing at all, one line or a pair of parallel lines, and two crossing lines respectively.`,
+          keywords: ["classify a conic", "B squared minus 4AC", "discriminant of a conic", "xy term", "rotate the axes", "degenerate conic", "pair of lines", "second degree equation"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "conic-reflective-property",
+          name: "The Reflective Property of the Conics",
+          latex: String.raw`\text{ellipse: } F_1 \to F_2, \qquad \text{parabola: } F \to \text{parallel to the axis}, \qquad \text{hyperbola: } \text{toward } F_2 \to \text{away from } F_1`,
+          description: String.raw`The tangent at a point makes equal angles with the two focal radii, so a ray from one focus of an ellipse reflects to the other, and on a parabola, whose second focus is at infinity, a ray from the focus leaves parallel to the axis. This is a statement about tangency, and its usual contest form is an optimization: the tangent line is where a sum of focal distances is least, because every other point of that line lies on a larger member of the same family.`,
+          keywords: ["reflective property", "focal property", "ray from one focus to the other", "parabolic mirror", "tangent makes equal angles", "whispering gallery", "tangent minimizes focal sum", "equal angles with focal radii"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
+        }
+      ]
+    },
+    {
       title: "Transformations in the Coordinate Plane",
       formulas: [
         {
           id: "reflection-coordinates",
           name: "Reflecting a Point over a Line",
           latex: String.raw`P' = P - \frac{2(ax_0 + by_0 + c)}{a^2 + b^2}\,(a, b)`,
-          description: String.raw`Reflection of $(x_0, y_0)$ over $ax + by + c = 0$: step twice the signed distance along the normal. Instant special cases: over the $x$-axis $(x, -y)$; over $y = x$ swap to $(y, x)$; over $y = -x$ to $(-y, -x)$; over a vertical line $x = k$ to $(2k - x, y)$.`,
+          description: String.raw`Reflection of $(x_0, y_0)$ over $ax + by + c = 0$: step twice the signed distance along the normal. Instant special cases: over the $x$-axis $(x, -y)$; over $y = x$ swap to $(y, x)$; over $y = -x$ to $(-y, -x)$; over a vertical line $x = k$ to $(2k - x, y)$. Reflecting a whole graph rather than a point makes the $y = x$ case the inverse relation, so a curve symmetric about that line is its own inverse.`,
           keywords: ["reflect point", "reflection over line", "mirror image", "over y equals x", "normal direction"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "rotation-reflection-matrices",
+          name: "Rotation & Reflection Matrices",
+          latex: String.raw`R_\theta = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}, \qquad F_\alpha = \begin{pmatrix} \cos 2\alpha & \sin 2\alpha \\ \sin 2\alpha & -\cos 2\alpha \end{pmatrix}`,
+          description: String.raw`$R_\theta$ turns the plane about the origin and $F_\alpha$ reflects it in the line through the origin at angle $\alpha$; both send a point to a matrix times its coordinate column. Their determinants tell them apart, $+1$ for a rotation and $-1$ for a reflection, and composing is just multiplying, so $R_\alpha R_\beta = R_{\alpha+\beta}$ and $F_\beta F_\alpha = R_{2(\beta-\alpha)}$. Matrices about other centers are the same maps conjugated by a translation.`,
+          keywords: ["rotation matrix", "reflection matrix", "cos sin matrix", "composing rotations", "two reflections make a rotation", "determinant plus or minus one", "orthogonal matrix", "transformation in coordinates"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         },
         {
           id: "reflection-composition",
@@ -1394,6 +1462,15 @@ window.MATH_SECTIONS.push({
           keywords: ["cone", "slant height", "lateral area", "unroll", "sector"],
           importance: "medium",
           level: ["AMC10", "AMC12"]
+        },
+        {
+          id: "projected-area-cosine",
+          name: "Area Under Orthogonal Projection",
+          latex: String.raw`[\text{shadow}] = [\text{original}] \cdot \cos\theta \qquad\Longleftrightarrow\qquad [\text{slanted section}] = \frac{[\text{shadow}]}{\cos\theta}`,
+          description: String.raw`Project a plane region orthogonally onto another plane and every area is multiplied by $\cos\theta$, where $\theta$ is the dihedral angle between the two planes. One direction is fixed and one is squashed by $\cos\theta$, so the factor is the same for every region and ratios of areas survive. Read backwards it is the useful form: a slanted cross-section equals its shadow divided by $\cos\theta$, which computes an awkward tilted area from an easy flat one.`,
+          keywords: ["projected area", "area times cosine", "shadow of a region", "slanted cross-section", "dihedral angle", "area of an oblique section", "divide by cos theta", "orthogonal projection area"],
+          importance: "medium",
+          level: ["AIME"]
         },
         {
           id: "frustum-volume",
@@ -1525,6 +1602,15 @@ window.MATH_SECTIONS.push({
           keywords: ["distance to plane", "normal vector", "3d distance", "plane equation", "solid geometry"],
           importance: "medium",
           level: ["AIME"]
+        },
+        {
+          id: "vector-projection",
+          name: "Projecting One Vector onto Another",
+          latex: String.raw`\operatorname{proj}_{\vec v} \vec u = \frac{\vec u \cdot \vec v}{\vec v \cdot \vec v}\, \vec v, \qquad \lvert \operatorname{proj}_{\vec v} \vec u \rvert = \frac{\lvert \vec u \cdot \vec v \rvert}{\lvert \vec v \rvert} = \lvert \vec u \rvert \lvert \cos\theta \rvert`,
+          description: String.raw`Splits $\vec u$ into the part along $\vec v$ and the part perpendicular to it, and the perpendicular leftover $\vec u - \operatorname{proj}_{\vec v} \vec u$ is the shortest vector from the line to the tip of $\vec u$. That second reading is what makes it a distance tool: the distance from a point to a line or a plane is the length of exactly this leftover. The scalar $\vec u \cdot \vec v / \lvert \vec v \rvert$ is the signed shadow length, negative when the angle is obtuse.`,
+          keywords: ["vector projection", "component along a vector", "perpendicular component", "shadow of a vector", "scalar projection", "distance from a point to a line", "orthogonal decomposition", "u dot v over v"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
         },
         {
           id: "skew-lines-distance",

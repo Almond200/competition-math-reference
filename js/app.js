@@ -553,6 +553,18 @@
   // keywords render as chips on the card face and the face is already at its six-chip cap.
   // These live in entry.groupTags and reach only search, the advanced picker, and filtering.
   const TAG_GROUPS = {
+    "conics": [
+      "conic-sections", "ellipse-properties", "hyperbola-properties", "parabola-focus-directrix",
+      "eccentricity", "conic-classification", "conic-reflective-property", "ellipse-tangent-line",
+      "circle-equation", "vertex-form", "completing-the-square"
+    ],
+    "matrices & determinants": [
+      "determinant-basics", "determinant-geometric", "cofactor-expansion", "matrix-multiplication",
+      "cramers-rule", "eigenvalues-characteristic", "symmetric-linear-system",
+      "rotation-reflection-matrices", "cayley-menger", "matrix-tree-theorem", "lgv-lemma",
+      "transfer-matrix-method", "shoelace-formula", "cross-product-area", "vector-dot-product",
+      "vector-projection"
+    ],
     "triangle centers": [
       "euler-line-ratio", "euler-distance-theorem", "nine-point-circle", "simson-line",
       "symmedian-lemoine", "lemoine-point", "spieker-point", "gergonne-nagel-points",
@@ -2062,9 +2074,24 @@
   // to its Art of Problem Solving wiki page, where the full solution lives.
   // "1997 AIME, Problem 1"      -> .../1997_AIME_Problems/Problem_1
   // "2021 Fall AMC 12B, Prob 23"-> .../2021_Fall_AMC_12B_Problems/Problem_23
-  function aopsUrl(ref) {
+  // Where a problem links out to. The AoPS wiki has a page per problem for the MAA contests
+  // and only those; other tournaments publish their own archives, by round rather than by
+  // problem. So the family decides, and an entry may override with its own `url`.
+  const ARCHIVE_URL = {
+    "HMMT February": "https://www.hmmt.org/www/archive/problems",
+    "HMMT November": "https://www.hmmt.org/www/archive/problems",
+    "HMMT": "https://www.hmmt.org/www/archive/problems"
+  };
+  // The button has to say where it goes: an HMMT link lands on a round's archive, not on a
+  // per-problem page, and calling that "AoPS" would be simply false.
+  function linkLabel(fam) { return ARCHIVE_URL[fam] ? "archive" : "AoPS"; }
+  function aopsUrl(ref, fam) {
+    if (fam && ARCHIVE_URL[fam]) return ARCHIVE_URL[fam];
     const m = ref.match(/^(.*),\s*Problem\s+(\d+)\s*$/);
     if (!m) return null;
+    // Only the MAA families have per-problem wiki pages; building one for anything else
+    // produces a URL that looks right and 404s.
+    if (!/\b(AMC|AIME|AJHSME)\b/i.test(m[1])) return null;
     const slug = m[1].trim().replace(/\s+/g, "_") + "_Problems/Problem_" + m[2];
     return "https://artofproblemsolving.com/wiki/index.php/" + slug;
   }
@@ -2085,7 +2112,13 @@
     if (/AIME/i.test(core)) fam = "AIME";
     else if ((fm = core.match(/AMC\s*(8|10|12)/i))) fam = "AMC " + fm[1];
     else if (/Putnam/i.test(core)) fam = "Putnam";
-    else if (/HMMT/i.test(core)) fam = "HMMT";
+    // HMMT runs two tournaments a year of quite different difficulty, so they are separate
+    // families rather than one pile. The round (Algebra, Combinatorics, Guts, Team) stays in
+    // `cname`, which dbMainHtml already uses as the heading within a year.
+    else if (/HMMT/i.test(core)) {
+      const season = core.match(/\b(February|November)\b/i);
+      fam = season ? "HMMT " + season[1][0].toUpperCase() + season[1].slice(1).toLowerCase() : "HMMT";
+    }
     else fam = core.replace(/\s*[AB]$|\s*I{1,3}$/, "").trim() || core;
     return { year, cname, fam, num };
   }
@@ -2104,7 +2137,8 @@
     const trickFormulas = (e.trickFormulas || []).filter(fid => BY_ID[fid]);
     const pr = parseRef(e.ref);
     return {
-      ref: e.ref, slug: problemSlug(e.ref), url: aopsUrl(e.ref),
+      ref: e.ref, slug: problemSlug(e.ref),
+      url: e.url || aopsUrl(e.ref, pr.fam), urlLabel: linkLabel(pr.fam),
       formulas, trickFormulas, types: problemTypes(e), strategy: e.strategy || "",
       trick: e.trick || "",
       year: pr.year, cname: pr.cname, fam: pr.fam, num: pr.num
@@ -2140,7 +2174,7 @@
   // Competition → year → problems tree for the Database sidebar navigator.
   const DB_TREE = {};
   PROBLEM_DB.forEach(p => { (DB_TREE[p.fam] = DB_TREE[p.fam] || {}); (DB_TREE[p.fam][p.year] = DB_TREE[p.fam][p.year] || []).push(p); });
-  const FAM_ORDER = ["AMC 8", "AMC 10", "AMC 12", "AIME", "Putnam", "HMMT"];
+  const FAM_ORDER = ["AMC 8", "AMC 10", "AMC 12", "AIME", "HMMT November", "HMMT February", "Putnam", "HMMT"];
   const FAMILIES = Object.keys(DB_TREE).sort((a, b) => {
     const ia = FAM_ORDER.indexOf(a), ib = FAM_ORDER.indexOf(b);
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
@@ -2162,7 +2196,7 @@
     const items = probs.map((p, i) =>
       `<li class="prob-row${i >= PROB_PREVIEW ? " prob-extra" : ""}">
          <a class="prob-open" href="#/problem/${p.slug}">${refShort(p.ref)}</a>
-         ${p.url ? `<a class="ref-ext-link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer" title="Open on AoPS">AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
+         ${p.url ? `<a class="ref-ext-link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer" title="Open the source">${p.urlLabel} <span aria-hidden="true">&#8599;</span></a>` : ""}
        </li>`).join("");
     const hidden = probs.length - PROB_PREVIEW;
     return `
@@ -3629,8 +3663,8 @@
           <ul class="strat-list">${formulas || "<li class=\"strat-empty\">Not yet tagged.</li>"}</ul>
         </div>
         ${trickHtml}
-        <p class="prob-note">The full statement and solution live on the Art of Problem Solving wiki.</p>
-        ${p.url ? `<a class="aops-btn" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">Open on AoPS <span aria-hidden="true">&#8599;</span></a>` : ""}
+        <p class="prob-note">${p.urlLabel === "archive" ? "The full statement and the official solutions live on the contest's own archive, as a PDF for the whole round." : "The full statement and solution live on the Art of Problem Solving wiki."}</p>
+        ${p.url ? `<a class="aops-btn" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">Open on ${p.urlLabel === "archive" ? "the official archive" : "AoPS"} <span aria-hidden="true">&#8599;</span></a>` : ""}
         ${contestNavHtml(p)}
       </div>`;
     renderMath($content);

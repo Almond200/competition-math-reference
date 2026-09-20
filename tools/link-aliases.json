@@ -344,6 +344,9 @@
   "coefficient-extraction": [
    "Coefficient Sums"
   ],
+  "cofactor-expansion": [
+   "Expanding a Determinant"
+  ],
   "committee-chair": [
    "Committee–Chair Identity"
   ],
@@ -380,6 +383,12 @@
   ],
   "cone-formulas": [
    "Cone Surface Area"
+  ],
+  "conic-classification": [
+   "Classifying a General Second-Degree Equation"
+  ],
+  "conic-reflective-property": [
+   "The Reflective Property of the Conics"
   ],
   "conic-sections": [
    "Conic Sections"
@@ -432,6 +441,13 @@
   "counting-functions": [
    "Counting Functions",
    "Counting Functions & Injections"
+  ],
+  "cramers-rule": [
+   "Cramer",
+   "Cramer's",
+   "Cramer's Rule",
+   "Cramers",
+   "Cramer’s"
   ],
   "cross-product-area": [
    "Vector Cross Product"
@@ -490,6 +506,12 @@
    "3D Descartes",
    "Soddy–Gosset Theorem"
   ],
+  "determinant-basics": [
+   "Determinant of a Small Matrix"
+  ],
+  "determinant-geometric": [
+   "The Determinant as Signed Area"
+  ],
   "difference-of-squares": [
    "Difference of Squares",
    "Difference of Squares & Cubes"
@@ -544,12 +566,22 @@
    "Double Sums",
    "Swapping & Splitting"
   ],
+  "eccentricity": [
+   "Eccentricity & the Focus-Directrix Definition"
+  ],
+  "eigenvalues-characteristic": [
+   "Eigenvalues & the Characteristic Polynomial"
+  ],
   "eisenstein-criterion": [
    "Eisenstein",
    "Eisenstein's",
    "Eisenstein's Irreducibility Criterion",
    "Eisensteins",
    "Eisenstein’s"
+  ],
+  "ellipse-properties": [
+   "Ellipse: Foci, Axes",
+   "Ellipse: Foci, Axes & Area"
   ],
   "ellipse-tangent-line": [
    "Ellipse Tangent to a Line",
@@ -877,6 +909,10 @@
    "Homothety & Monge's Theorem",
    "Monge's Theorem"
   ],
+  "hyperbola-properties": [
+   "Hyperbola: Foci, Asymptotes",
+   "Hyperbola: Foci, Asymptotes & the Rectangular Case"
+  ],
   "hypergeometric": [
    "Hypergeometric Distribution"
   ],
@@ -1084,6 +1120,10 @@
   "mass-points": [
    "Mass Points"
   ],
+  "matrix-multiplication": [
+   "Matrix Multiplication",
+   "Matrix Multiplication & Powers"
+  ],
   "matrix-tree-theorem": [
    "Kirchhoff",
    "Matrix–Tree Theorem"
@@ -1261,6 +1301,11 @@
    "Pappuss",
    "Pappus’s"
   ],
+  "parabola-focus-directrix": [
+   "Latus Rectum",
+   "Parabola: Focus, Directrix",
+   "Parabola: Focus, Directrix & Latus Rectum"
+  ],
   "partitions": [
    "Partitions and Compositions"
   ],
@@ -1399,6 +1444,9 @@
   "product-sum": [
    "Product-to-Sum & Sum-to-Product"
   ],
+  "projected-area-cosine": [
+   "Area Under Orthogonal Projection"
+  ],
   "projection-formula": [
    "Projection Formula"
   ],
@@ -1531,6 +1579,10 @@
   ],
   "rotation-90": [
    "Rotating a Point"
+  ],
+  "rotation-reflection-matrices": [
+   "Reflection Matrices",
+   "Rotation & Reflection Matrices"
   ],
   "rotation-trick": [
    "The Rotation Trick"
@@ -1704,6 +1756,10 @@
   "symmedian-lemoine": [
    "Symmedians"
   ],
+  "symmetric-linear-system": [
+   "Cyclic Linear Systems",
+   "Symmetric & Cyclic Linear Systems"
+  ],
   "symmetric-polynomial-strategies": [
    "Fundamental Theorem of Symmetric Polynomials"
   ],
@@ -1768,6 +1824,9 @@
   ],
   "trapezoid-special-segments": [
    "The Four Mean Segments of a Trapezoid"
+  ],
+  "triangle-13-14-15": [
+   "The 13-14-15 Triangle"
   ],
   "triangle-angle-identities": [
    "Identities for Angles Summing to 180°"
@@ -1862,6 +1921,9 @@
   ],
   "vector-dot-product": [
    "Dot Product"
+  ],
+  "vector-projection": [
+   "Projecting One Vector onto Another"
   ],
   "vertex-form": [
    "Vertex of a Parabola"

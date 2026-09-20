@@ -9,8 +9,12 @@ Object.assign(window.MATH_DETAILS, {
 ## How to use it
 Before grinding the formula, check for factoring and for [[vietas-quadratic|Vieta shortcuts]] (sum/product may be all the problem needs). $\Delta$ answers qualitative questions alone: real/distinct/rational roots, [[tangency-condition|tangency of a line to a parabola]] ($\Delta = 0$), and integer-solution feasibility ($\Delta$ must be a perfect square for rational roots of integer quadratics).
 
+What makes the discriminant worth more than the formula is that it answers questions without solving anything. Whether the roots are real, equal, rational or integral is decided by $\Delta$ alone, so a question about the nature of the roots never needs the roots — and an integrality question becomes "when is $\Delta$ a perfect square", which is a Diophantine problem rather than an algebraic one.
+
 ## On contests
-"For how many integer $k$ does this quadratic have rational/integer roots" = perfect-square discriminant analysis, a recurring AMC/AIME pattern. Tangency-via-discriminant handles many circle/parabola contact problems without calculus.`,
+Almost never alone — 3 of its 32 problems — because it is the step that finishes a setup rather than the setup itself. Its partners say what those setups are: [[pythagorean-theorem|Pythagoras]] (4 problems), [[similar-figures-ratios|similar triangles]] (3) and [[coordinate-bash|coordinates]] (3), all geometry that reduces to one quadratic in one unknown.
+
+Two shapes recur. "For how many integer $k$ does this quadratic have rational roots" is perfect-square discriminant analysis. And tangency is $\Delta=0$: substituting a line into a circle or parabola and setting the discriminant to zero settles contact problems with no calculus, which is why [[tangency-condition|unique solution implies tangency]] is the same idea under another name.`,
 
 "vietas-quadratic": String.raw`## Why it works
 Factor $ax^2 + bx + c = a(x - r)(x - s)$ and expand ([[vietas-general|the same argument at any degree]]): matching coefficients gives $r + s = -\frac{b}{a}$, $rs = \frac{c}{a}$.
@@ -27,8 +31,14 @@ Expand $a_n(x - r_1)\cdots(x - r_n)$: the coefficient of $x^{n-k}$ collects all 
 ## How to use it
 Any symmetric function of the roots is expressible in the $e_k$ — power sums via [[newtons-sums|Newton's]] identities, $\sum r_i^2 = e_1^2 - 2e_2$ directly. Cubic workhorse: for $x^3 + px^2 + qx + r$, roots sum to $-p$, pair-sum to $q$, multiply to $-r$. Also design polynomials: to shift roots by $c$, substitute $x \to x - c$; to scale by $k$, substitute $x \to \frac{x}{k}$; to invert, reverse coefficients.
 
+The point of the relations is that they give you the roots' symmetric functions without the roots, and for most questions that is all you need. A question about $\sum r_i$, $\sum r_i r_j$ or $\prod r_i$ is answered by reading coefficients; a question about $\sum r_i^2$ or $\sum \frac1{r_i}$ becomes one of those after one identity. Solving the polynomial is not just unnecessary, it is usually impossible — which is the real reason the tool exists.
+
+When the expression is not symmetric, transform the polynomial instead. Building the polynomial whose roots are $r_i^2$, $\frac1{r_i}$ or $r_i+1$ turns a hard question about the old roots into coefficient bookkeeping on the new one.
+
 ## On contests
-AIME's favorite polynomial tool. The root-transformation trick (build the polynomial whose roots are $r_i^2$ or $\frac{1}{r_i}$ or $r_i + 1$) converts scary questions into coefficient bookkeeping.`,
+AIME's favourite polynomial tool, and rarely alone — 3 of 31. Its most frequent companion is [[conjugate-root-theorems|the conjugate root theorems]] (5 problems), which is the standard pairing: the conjugate rule pins down which roots must occur together, and Vieta then converts that structure into coefficients.
+
+The trigger is a question about the roots that never asks for a root. Whenever that happens, stop trying to factor and start writing symmetric functions; [[newtons-sums|Newton's sums]] take over once the powers climb past the second.`,
 
 "fundamental-theorem-algebra": String.raw`## Why it works
 The analytic core is that every non-constant complex polynomial has at least one root (provable via Liouville's theorem, a winding-number argument, or a minimum-modulus argument). Once you have one root $r$, divide out $(x - r)$ to drop the degree by one and repeat; after $n$ steps you have peeled off $n$ linear factors, $P(x) = a_n\prod (x - r_k)$, with exactly $n$ roots counted by multiplicity.
@@ -137,10 +147,20 @@ AIME: "$P$ has degree 3 with $P(k) = \frac{1}{k}$ for $k = 1..4$; find $P(5)$" �
 Multiply out $(a-b)(a+b)$ — the cross terms cancel. Sum/difference of cubes: $(a \pm b)(a^2 \mp ab + b^2)$ expands the same way.
 
 ## How to use it
-Beyond literal factoring: rationalizing ($\frac{1}{\sqrt a - \sqrt b}$), fast arithmetic ($51 \cdot 49 = 2500 - 1$), telescoping products ($\prod (1 + x^{2^k})$ collapses against $1 - x$), and Diophantine equations ($n = a^2 - b^2$ factorizations). Sum of cubes also gives the divisibility $a + b \mid a^3 + b^3$.
+The identity does one thing everywhere it appears: it converts a subtraction into a product, and a product is something you can count, cancel or bound. Everything below is that conversion wearing different clothes.
+
+Against a Diophantine equation it turns solving into counting. Writing $n = a^2 - b^2 = (a-b)(a+b)$ means every representation is a factorisation of $n$, so the question stops being "which squares differ by $n$" and becomes "how many factor pairs does $n$ have" — which is why this card and [[factor-pair-counting|factor-pair counting]] appear together more than either does with anything else. The one filter that matters: $a-b$ and $a+b$ always share parity, so $n \equiv 2 \pmod 4$ has no representations at all.
+
+Against a radical it clears the denominator, since $(\sqrt a-\sqrt b)(\sqrt a+\sqrt b)=a-b$ leaves no radical behind — that is all [[rationalizing|rationalising]] is.
+
+Against a product it telescopes. Multiplying $(1+x)(1+x^2)(1+x^4)\cdots$ by $1-x$ collapses the whole chain to $1-x^{2^k}$, because each factor is the conjugate the previous step was waiting for. Recognising a chain of that shape is worth more than the formula, since the collapse is total rather than partial.
+
+And against arithmetic it is a shortcut: $51\cdot 49=2500-1$, and more usefully $a^2-b^2$ with $a,b$ close is small, which is often the bound a problem needs.
 
 ## On contests
-$2^{32} - 1$ factored repeatedly, $\frac{10^4 + 324}{\dots}$-style Sophie Germain chains, and difference-of-squares Diophantine counts are all AMC/AIME staples. When a number is "one less than a power," factor first, think second.`,
+Rarely the whole problem — three of the 42 tagged here stand alone — because it is a move rather than a result. Its standing partner is [[factor-pair-counting|factor-pair counting]] (6 problems): factor first, then count the pairs and filter by parity and sign. The next most common partner is [[arithmetic-series|an arithmetic series]] (4), where pairing consecutive terms produces differences of squares that cancel down the list.
+
+The trigger to train is "one less than a power". Anything of the form $2^{32}-1$, $10^4-1$ or $n^2-1$ should be factored before it is thought about, and the [[sophie-germain|Sophie Germain]] identity is the same instinct applied to $a^4+4b^4$, which is a difference of squares once you add and subtract $4a^2b^2$.`,
 
 "an-minus-bn": String.raw`## Why it works
 The geometric-series identity: multiply $(a - b)$ by the sum $a^{n-1} + a^{n-2}b + \cdots + b^{n-1}$ and everything telescopes. For odd $n$, substitute $-b$ to get the $a^n + b^n$ version.
@@ -232,19 +252,31 @@ AIME problems asking for numbers expressible as $a^2 + b^2$ in multiple ways lea
 Pair first with last, second with second-to-last — every pair sums to $a_1 + a_n$, and there are $\frac{n}{2}$ pairs (Gauss's trick). Equivalently, sum = (number of terms) × (average term).
 
 ## How to use it
-The "count × average" view generalizes beyond arithmetic sequences to any symmetric list. Careful points: counting terms ($\frac{b-a}{d} + 1$, the fencepost formula) and handling partial sums ($S_n = \frac{n}{2}(2a_1 + (n-1)d)$ when the last term is unknown).
+Think of it as count times average, not as a formula. That reading survives where the formula does not: any list symmetric about its middle has sum equal to its length times its middle value, so the same one-line computation handles a set of residues, a run of consecutive integers, or the terms of a symmetric sum that is not arithmetic at all.
+
+It converts a sum into a product, which is what makes it useful inside other problems rather than as an answer. A sum over an unknown-length run becomes $n$ times an average, so an equation about a total becomes an equation about $n$ — and since $n$ must be a positive integer, a single divisibility or bounding step often finishes what looked like a two-unknown problem.
+
+Two places to be careful, and they cause most of the errors. Counting the terms is the fencepost problem: a run from $a$ to $b$ by $d$ has $\frac{b-a}{d}+1$ terms, and the $+1$ is missed constantly. And when the last term is unknown, use $S_n=\frac n2\left(2a_1+(n-1)d\right)$ rather than solving for it first, which keeps one unknown instead of introducing a second.
 
 ## On contests
-Everywhere at every level. AMC twists: sums of specific residue classes, "sum of interior angles"-style disguises, and sequences of sums (the sums of consecutive blocks form another arithmetic sequence).`,
+Everywhere and often alone — 13 of the 55 problems tagged here need nothing else, among the highest of any card in the library. Its usual partner is [[geometric-series|a geometric series]] (6 problems), in problems built to contrast the two.
+
+The disguises are what to train. A sum of a residue class ("all multiples of 7 under 500") is an arithmetic series with $d=7$; interior-angle sums are one with $d=180^\circ$; and the sums of consecutive blocks of an arithmetic sequence form another arithmetic sequence, which is how a problem hides one inside itself. In each case naming it converts the whole computation to a single multiplication.`,
 
 "geometric-series": String.raw`## Why it works
 Multiply $S$ by $r$ and subtract: all middle terms cancel, leaving $S(1 - r) = a(1 - r^n)$. As $n \to \infty$ with $|r| \lt  1$, the $r^n$ term dies, giving $\frac{a}{1-r}$.
 
 ## How to use it
-The shift-and-subtract derivation matters more than the formula — it also cracks arithmetico-geometric sums and repeating decimals. Infinite case: always confirm $|r| \lt  1$ before summing. Partial fractions of self-similar structures (fractals, infinitely nested figures) are geometric series in disguise.
+Learn the derivation rather than the formula. Multiplying the sum by $r$ and subtracting shifts every term onto its neighbour so that all but two cancel, and that single move is reusable: it is also what closes an [[arithmetico-geometric|arithmetico-geometric]] sum, what turns a repeating decimal into a fraction, and what solves a first-order recurrence. The formula is just the move applied once.
+
+The reason it matters so often is that it converts an infinite process into a number. A ball bouncing forever, a fractal dissected forever, a game that might go on forever — each is unbounded in time and finite in total, and the series is what makes that finite total computable. Self-similarity is the tell: whenever a figure or a process contains a scaled copy of itself, the ratio of the copy is $r$ and the problem is already solved.
+
+Two habits prevent the usual errors. Confirm $|r| \lt 1$ before summing an infinite series, because a problem that fails this is usually testing exactly that. And when only some terms are wanted, re-index rather than filter: every other term of a series with ratio $r$ is itself geometric with ratio $r^2$, so splitting by parity gives two clean series instead of one awkward one.
 
 ## On contests
-Infinite geometric setups (bouncing balls' total distance, shaded fractal areas, probabilities of "first success on turn $k$") pervade AMC and AIME. Two-series tricks: sum of even-index terms is $\frac{ar^{\,\cdot}}{1-r^2}$-flavored — split by parity when asked.`,
+Unusually self-sufficient for a tool this common — it is the whole solution in 10 of the 42 problems tagged here. When it has a partner it is [[arithmetic-series|an arithmetic series]] (6 problems), typically a problem that hands you one of each and asks them to be combined or compared.
+
+The recurring shapes are worth recognising before any algebra: total distance of an infinite bounce, shaded area of a fractal dissection, the probability that a repeated trial first succeeds on turn $k$, and a repeating decimal. All four are the same sum with different nouns.`,
 
 "power-sums": String.raw`## Why it works
 $\sum_{k=1}^{n} k$ is Gauss pairing. $\sum_{k=1}^{n} k^2$ and $\sum_{k=1}^{n} k^3$ follow by telescoping $(k+1)^3 - k^3$ and $(k+1)^4 - k^4$, or induction. The cube-sum-equals-square-of-sum identity also has a beautiful counting proof (count ordered pairs of divisors... or the L-shaped gnomon picture).
@@ -404,8 +436,12 @@ Contest logs are mostly about converting to a common base and hunting structure:
 
 Domain discipline is where most marks are lost. Arguments must be positive and the base must avoid $1$, so every solution has to be checked against the original equation; extraneous roots are the single most common error in log problems. When an inequality is involved, check whether the base exceeds $1$ before deciding which way the sign goes.
 
+The reason all of this pays is that logs turn multiplication into addition, so a problem that is nonlinear in $x$ is linear in $\log x$. That is the conversion to look for: substituting $u=\log x$ does not simplify the algebra so much as change its type, and a system that looked intractable becomes a linear system you can solve by adding and halving.
+
 ## On contests
-AMC 12 log problems reward converting everything to one base and substituting $u = \log x$. AIME systems (logs of $xy$, $yz$, $zx$) become linear algebra in the log variables — add and halve.`,
+Almost never alone — 3 of the 45 problems tagged here — and its inseparable partner is [[change-of-base|change of base]] (11 problems), because the first move in nearly every log problem is putting everything over one base so the rules can apply at all.
+
+Two shapes recur. On AMC 12, convert to a common base and substitute $u=\log x$. On AIME, a system in $\log(xy)$, $\log(yz)$, $\log(zx)$ is linear algebra in three log variables: adding all three and halving gives $\log(xyz)$, and each individual variable follows by subtraction. Recognising that shape is the entire problem.`,
 
 "change-of-base": String.raw`## Key forms
 - $\log_a b \cdot \log_b c = \log_a c$ — the two-term chain, the case that actually turns up; the three-term version in the box is the same idea extended
@@ -447,8 +483,14 @@ $i^2 = -1$ by definition; the conjugate flips the imaginary part, and $z\bar z =
 ## How to use it
 Division = multiply by conjugate over $|z|^2$. Powers of $i$ cycle with period 4 — reduce exponents mod 4. Key reflexes: $|z|^2 = z\bar z$ (turn modulus conditions into algebra), $z + \bar z = 2\operatorname{Re}(z)$, $z - \bar z = 2i\operatorname{Im}(z)$; real ⟺ $z = \bar z$.
 
+The reason to move a problem into the complex plane is that it collapses two coordinates into one number, so a pair of real equations becomes a single complex one and geometric operations become arithmetic: translation is addition, rotation is multiplication by a unit modulus, and reflection is conjugation. A configuration that needed coordinates and trigonometry becomes algebra in one variable.
+
+The single most useful consequence is that on the unit circle $\bar z = \frac1z$. Conjugates are usually the obstruction in a complex computation, and that substitution removes them entirely, turning an expression mixing $z$ and $\bar z$ into a rational function of $z$ alone.
+
 ## On contests
-"$|z| = 1$" problems: substitute $\bar z = \frac{1}{z}$ — the single most useful complex-number move on AIME. Sums of $i$-powers and conjugate-symmetric expressions are AMC 12 regulars.`,
+Alone in 3 of its 26 problems; its usual partner is [[roots-of-unity|roots of unity]] (3), where the unit-circle substitution is exactly what the problem is built around.
+
+The recurring shapes are $|z|=1$ problems solved by $\bar z = 1/z$, sums of powers of $i$ that cycle with period four, and any rotation by $90^\circ$ — which is multiplication by $i$ and nothing more, making [[rotation-90|the coordinate rotation]] a special case of this card.`,
 
 "eulers-formula": String.raw`## Why it works
 Compare Taylor series of $e^{i\theta}$, $\cos\theta$, $\sin\theta$ — or accept it as the definition of complex exponentials and verify the multiplication law via [[angle-addition|angle addition]] formulas (which it then re-derives, circularly but consistently).
@@ -623,8 +665,12 @@ Definitions: $\lfloor x\rfloor$ is the greatest integer $\le x$; the fractional 
 ## How to use it
 Standard manipulations: pull integers out of floors; split $x = n + f$ and case on $f$; count integers in $[a, b]$ as $\lfloor b\rfloor - \lceil a\rceil + 1$. Equations with floors: substitute $n = \lfloor x\rfloor$, solve the resulting inequality band $n \le x \lt  n+1$ for consistency.
 
+The move that makes floors tractable is writing $x = n + f$ with $n$ an integer and $0 \le f \lt 1$. That converts one equation in a real unknown into an integer equation plus an inequality, and the inequality is what makes the search finite — which is the payoff, since a floor equation over the reals has no method until it is turned into a small number of integer cases.
+
 ## On contests
-Floor equations ("solve $\lfloor x\rfloor \cdot x = 70$") and counting problems permeate AMC/AIME. The band-substitution method turns them into finite [[casework-method|casework]]; also recall $\lfloor \frac{n}{ab}\rfloor = \lfloor\frac{\lfloor n/a\rfloor}{b}\rfloor$ for nested divisions.`,
+Floor equations and floor-counting problems permeate AMC and AIME, and the card stands alone in 6 of its 31 problems. When it does not, the partner is [[casework-method|casework]] (4 problems) — which is the method, not a coincidence: the band substitution produces the cases and casework closes them.
+
+Two facts pay for themselves. Counting multiples of $d$ up to $n$ is $\lfloor n/d \rfloor$, which turns most floor-counting into divisor arithmetic. And nested division collapses: $\lfloor \frac{n}{ab}\rfloor = \lfloor\frac{\lfloor n/a\rfloor}{b}\rfloor$, so repeated halving or repeated division never needs to be unwound.`,
 
 "hermite-identity": String.raw`## Why it works
 As $x$ increases by $\frac{1}{n}$ steps, exactly one of the shifted floors $\lfloor x + \frac{k}{n}\rfloor$ ticks up at each step — the left side $\lfloor nx\rfloor$ ticks at the same moments. Both sides are step functions with identical jumps and equal value at $x = 0$.
@@ -1598,5 +1644,80 @@ Watch for a leg whose distance is stated as a fraction of the whole, since that 
 A staple of early AIME and mid-AMC: walked then jogged, rowed upstream and back, or two cyclists starting at opposite ends. Three neighbours are close enough to confuse: [[average-speed|average speed]] is only total distance over total time, [[work-rates|combined work rates]] is simultaneous effort where rates genuinely do add, and [[relative-motion|relative motion]] is about closing speeds.`,
 
 
+
+
+"determinant-basics": String.raw`## Why it works
+The determinant is the one function of the rows that is linear in each row, flips sign when two rows swap, and gives $1$ on the identity. Those three demands pin it down completely, and every formula for it follows: $ad - bc$ for a $2 \times 2$, Sarrus for a $3 \times 3$, [[cofactor-expansion|cofactor expansion]] in general. Sign-flipping on a swap forces the value to vanish when two rows are equal, and linearity then extends that to any dependent set, which is why $\det = 0$ means exactly that one row is a combination of the others.
+
+## How to use it
+Reach for the properties before the formula. Row operations of the add-a-multiple kind cost nothing, so use them to manufacture zeros and then expand along the sparsest row. Remember $\det(AB) = \det A \cdot \det B$, which turns a product you cannot compute into two you can, and $\det(A^{\top}) = \det A$, which lets any row argument be run on columns instead. Sarrus's rule is a $3 \times 3$ accident and does not generalize; trying to extend the diagonal pattern to $4 \times 4$ is a standard and silent error.
+
+## On contests
+Determinants are not on the AMC or AIME syllabus, yet this library invokes one on eight cards, and 2011 AIME II #11 hands you a tridiagonal matrix and asks for $D_n$ outright. That problem is the model: the determinant is never the difficulty, it is the notation the difficulty arrives in, and the actual work is turning it into a recurrence. The other common sighting is quieter, since [[shoelace-formula|the shoelace formula]] and [[cross-product-area|the cross product]] are both determinants wearing other names.`,
+
+"determinant-geometric": String.raw`## Why it works
+Area is linear in each edge of a parallelogram and reverses sign when the two edges swap roles, which is the same short list of demands that defines the determinant, so the two must agree. Reading it that way makes the collinearity test obvious rather than memorized: three points span a triangle of zero area exactly when they lie on one line, and the determinant of the two edge vectors is twice that area. One dimension up, the $3 \times 3$ determinant is the signed volume of the parallelepiped, so it vanishes exactly when four points are coplanar.
+
+## How to use it
+Use the sign, not just the size. A positive value means $A$, $B$, $C$ run counterclockwise, which is how a convex-hull or orientation argument is actually carried out, and taking absolute values too early throws that away. For the collinearity of three points, expanding $\det = 0$ gives a linear relation in the coordinates and is usually cleaner than equating two slopes, since it never needs a vertical-line case. The area-scaling reading is the missing sentence on [[affine-transformations|affine transformations]], which says a linear map multiplies every area by one constant: that constant is $\lvert \det \rvert$.
+
+## On contests
+This is the card behind two things AIME asks constantly. [[shoelace-formula|Shoelace]] is this determinant summed around a polygon, which is why 2005 AIME I #10 and 2009 AIME I #11 both call it a determinant in passing, and the second of those turns on the parity of $x_1y_2 - x_2y_1$ rather than on any area at all. The collinearity test is the quieter use, and it is worth reaching for whenever a problem says three points are collinear and you would otherwise write two slope equations.`,
+
+"matrix-multiplication": String.raw`## Why it works
+A matrix is a linear map written in coordinates, and the product is what you get by doing one map after the other: entry $(i,j)$ of $AB$ asks where basis vector $j$ goes under $B$ and then reads off coordinate $i$ after $A$. Composition of maps is associative, so matrix multiplication is, and it is not commutative for the same reason rotating then reflecting differs from reflecting then rotating. The sum over the intermediate index $k$ is the whole content of the definition.
+
+## How to use it
+The counting reading is the one worth having on sight. If $A$ is an adjacency matrix, $(A^n)_{ij}$ counts walks of length $n$ from $i$ to $j$, because the sum over $k$ is precisely "choose where the walk stood one step earlier". That is the engine inside [[transfer-matrix-method|the transfer matrix method]], and it converts a tiling or no-two-adjacent count into a matrix power. To evaluate that power, do not multiply $n$ times: either square repeatedly, or use [[eigenvalues-characteristic|the eigenvalues]] to get a closed form.
+
+## On contests
+Matrices themselves are essentially never asked for on the AMC or AIME. They appear as the machinery under a counting card, which is why the useful fact is not how to multiply two matrices but what a matrix power means. If a problem gives a small state machine and asks for long-run counts, the matrix is available, but so is the linear recurrence it produces, and [[linear-recurrence|solving the recurrence]] is usually the shorter road.`,
+
+"cramers-rule": String.raw`## Why it works
+Replace column $i$ of $A$ by $\mathbf{b} = \sum_j x_j (\text{column } j)$ and expand using linearity in that column. Every term except the $j = i$ one has a repeated column and so contributes zero, leaving $\det A_i = x_i \det A$. The rule is therefore not a separate theorem, just [[determinant-basics|column linearity]] applied once.
+
+## How to use it
+It earns its keep when a problem asks for one unknown out of three and you would otherwise eliminate the other two. Writing the single quotient is faster and far less error-prone than two rounds of substitution. It is also the cleanest statement of solvability: $\det A \ne 0$ gives exactly one solution, and $\det A = 0$ gives none or infinitely many, with the two cases separated by whether $\mathbf{b}$ respects the same dependence the rows do. For a system that is symmetric rather than generic, do not use this at all, since [[symmetric-linear-system|adding all the equations]] is a line of work instead of a page.
+
+## On contests
+Roughly eighteen problems in this library's database solve a system somewhere in the middle of a solution, and almost none of them need a general method, because contest systems are small and usually structured. Treat Cramer as the fallback when the structure genuinely is not there, and check for the symmetric shape first.`,
+
+"eigenvalues-characteristic": String.raw`## Why it works
+$A\mathbf{v} = \lambda\mathbf{v}$ with $\mathbf{v} \ne \mathbf{0}$ says $(A - \lambda I)$ kills a nonzero vector, so its rows are dependent and its determinant vanishes. Expanding $\det(A - \lambda I)$ gives a degree-$n$ polynomial in $\lambda$ whose roots are exactly the eigenvalues. [[vietas-general|Vieta's formulas]] on that polynomial then hand you the two identities worth memorizing, since the coefficient of $\lambda^{n-1}$ is the trace and the constant term is the determinant.
+
+## How to use it
+Use eigenvalues when you need $A^n$, not when you need $A$. If $A = PDP^{-1}$ with $D$ diagonal then $A^n = PD^nP^{-1}$, so each eigenvalue is simply raised to the $n$, and the entries of $A^n$ become a fixed combination of $\lambda_1^n, \ldots, \lambda_k^n$. That is the same shape as the closed form of [[linear-recurrence|a linear recurrence]], and it is not a coincidence: the characteristic polynomial of the transfer matrix is the characteristic equation of the recurrence.
+
+## On contests
+Olympiad-adjacent only, and it appears in this library as the machinery two cards already lean on. [[matrix-tree-theorem|The matrix-tree theorem]] states the spanning-tree count as a product of Laplacian eigenvalues, and [[transfer-matrix-method|the transfer matrix]] gets its recurrence from $\det(xI - M) = 0$. If you are reading either of those, this is the card that makes the sentence mean something.`,
+
+"symmetric-linear-system": String.raw`## Why it works
+When the system treats the variables alike, the sum $S = \sum x_i$ is itself a solvable unknown. Adding all $n$ equations sends every coefficient pattern to the same symmetric total, so a system where each equation reads "the grand total plus one extra copy of $x_i$" adds up to $(n+1)S$ on the left and a single number on the right. Once $S$ is known, each original equation is a one-step statement about its own variable. Nothing has been eliminated; the symmetry did the elimination for free.
+
+## How to use it
+The trigger is a system you are reluctant to start, because every equation looks like every other with the indices rotated. Add them all before doing anything else and see what the left side collapses to. Then subtract the total back out of whichever single equation you need. For a cyclic system, where each equation ties $x_i$ to $x_{i+1}$ rather than to the total, substitute forward around the loop instead: after $n$ steps you return to $x_1$ and the loop closes into one equation. Both moves fail loudly rather than quietly, so trying the addition costs one line.
+
+## Key forms
+- $x_i + S = c_i$ for each $i$ — add all $n$ to get $(n+1)S = \sum c_i$, then $x_i = c_i - S$
+- $x_{i+1} = f(x_i)$ cyclically — compose $f$ around the loop and solve $f^{(n)}(x_1) = x_1$
+- the total is all that is asked — stop at $S$ and never find the individual variables
+
+## On contests
+1986 AIME #4 is the clean model: five equations, each the grand total plus one variable, right sides forming [[geometric-series|a geometric series]], and the whole problem is one addition. 2024 AIME II #4 is the same move hidden behind logarithms, becoming symmetric only after substituting $a = \log_2 x$ and so on. 2024 AMC 10B #25 and 1986 AIME #14 reach it through a different disguise. In every case the giveaway is the same: the equations are interchangeable under permuting the indices.`,
+
+"cofactor-expansion": String.raw`## Why it works
+[[determinant-basics|Linearity in a row]] lets you split that row into its individual entries, and each piece leaves a determinant with a single nonzero entry in that row. Moving that entry to the corner by $i + j - 2$ adjacent swaps produces the sign $(-1)^{i+j}$, and what remains is the minor $M_{ij}$ with row $i$ and column $j$ deleted. Every row and every column gives the same answer, which is what makes the choice of expansion line free.
+
+## How to use it
+Choose the row or column with the most zeros, since each zero deletes an entire minor unevaluated. If none has enough, manufacture them first: adding a multiple of one row to another leaves the determinant unchanged, so you can clear a row down to a single entry at no cost. For an indexed family of matrices the expansion is a derivation rather than an arithmetic step, since expanding $D_n$ along its first row leaves $D_{n-1}$ and, from the one off-diagonal term, $D_{n-2}$, converting the determinant into [[linear-recurrence|a linear recurrence]].
+
+## Key forms
+- one sparse row — expand there directly, ignoring every zero entry
+- a dense matrix — clear a row with row operations first, then expand
+- a banded family $D_n$ — expand along the first row to get $D_n = aD_{n-1} - bD_{n-2}$
+- a block-triangular matrix — the determinant is the product of the diagonal blocks
+
+## On contests
+2011 AIME II #11 is the whole use case. It defines $M_n$ with $10$ down the diagonal and $3$ on both off-diagonals, asks for $\sum 1/(8D_n + 1)$, and the first move is expanding along the first row to reach $D_n = 10D_{n-1} - 9D_{n-2}$. From there it is a recurrence problem and [[geometric-series|a geometric series]], and the determinant never appears again. That is the pattern to expect: the expansion is the doorway out of matrix notation, not the substance of the problem.`,
 
 });

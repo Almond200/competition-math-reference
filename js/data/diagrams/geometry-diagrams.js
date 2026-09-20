@@ -107,6 +107,11 @@
     `<circle cx="${r1(p[0])}" cy="${r1(p[1])}" r="${r}" fill="${c}"/>`;
   const circ = (cen, r, c = FNT, w = 1.5, fill = "none", dash = "") =>
     `<circle cx="${r1(cen[0])}" cy="${r1(cen[1])}" r="${r1(r)}" fill="${fill}" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+  // Open curve: same arguments as poly() but the path is not closed, which is what
+  // every conic section needs (an ellipse is the one that closes, and SVG <ellipse>
+  // already covers the axis-aligned case).
+  const pline = (pts, c = DIM, w = 2, dash = "") =>
+    `<polyline points="${pts.map(pf).join(" ")}" fill="none" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
   const poly = (pts, c = DIM, w = 2, fill = "none", dash = "") =>
     `<polygon points="${pts.map(pf).join(" ")}" fill="${fill}" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
   const txt = (p, s, c = DIM, size = 13, anchor = "middle") =>
@@ -4056,6 +4061,281 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(c2, [4, -42]), "circle missing O", GLD, 10.5),
       txt(add(c2i, [-4, 34]), "stays a circle", GLD, 11),
       cap(430, 340, "lines and circles are one family here: a circle through the centre flattens to a line, one missing it stays a circle")
+    ]);
+  })()];
+
+
+  DIAGRAMS["vector-projection"] = [(() => {
+    // u = (4,3), v = (2,1) in math coords, exactly the worked example.
+    const O = [78, 286], k = 58;
+    const P = (x, y) => [O[0] + k * x, O[1] - k * y];
+    const u = [4, 3], v = [2, 1];
+    const t = (u[0] * v[0] + u[1] * v[1]) / (v[0] * v[0] + v[1] * v[1]);  // 2.2
+    const U = P(u[0], u[1]), V = P(v[0], v[1]);
+    const F = P(v[0] * t, v[1] * t);
+    const far = P(v[0] * 2.85, v[1] * 2.85);
+    return wrap(430, 330, [
+      seg(O, far, FNT, 1.4, "5 4"),
+      seg(O, F, ORG, 3.4),
+      seg(O, V, GLD, 2.6), seg(O, U, ACC, 2.6),
+      seg(U, F, PNK, 1.9, "4 4"),
+      rightAngle(F, U, O, 11),
+      dot(O, DIM, 4), dot(U, ACC, 4), dot(V, GLD, 4), dot(F, ORG, 4),
+      txt(add(O, [-12, 16]), "O", DIM, 12.5),
+      txt(add(U, [1, -12]), "u", ACC, 14),
+      txt(add(V, [-4, 21]), "v", GLD, 14),
+      txt(add(F, [14, 20]), "F", ORG, 13),
+      txt(add(mid(U, F), [15, -2]), "leftover", PNK, 11, "start"),
+      cap(430, 330, "OF is the projection of u on v; FU is the perpendicular leftover, whose length is the distance from the tip of u to the line")
+    ]);
+  })()];
+
+  DIAGRAMS["rotation-reflection-matrices"] = [(() => {
+    // Rotation by 60 degrees about the origin. Screen angles are negated so
+    // that a counterclockwise turn reads counterclockwise with y pointing down.
+    const O = [118, 236], R = 96, a0 = -18, th = 60;
+    const A = onC(O, R, a0), A2 = onC(O, R, a0 - th);
+    return wrap(430, 312, [
+      seg([O[0] - 88, O[1]], [O[0] + 128, O[1]], FNT, 1.3),
+      seg([O[0], O[1] + 52], [O[0], O[1] - 132], FNT, 1.3),
+      seg(O, A, GLD, 2.5), seg(O, A2, ACC, 2.5),
+      angleArc(O, A, A2, 42, ORG),
+      dot(O, DIM, 4), dot(A, GLD, 4.5), dot(A2, ACC, 4.5),
+      txt(add(A, [16, 6]), "A", GLD, 13),
+      txt(add(A2, [6, -12]), "A′", ACC, 13),
+      txt(add(onC(O, 60, a0 - th / 2), [8, -4]), "θ", ORG, 13),
+      cap(430, 312, "R_θ turns A to A′ about the origin — det = +1, so orientation is kept")
+    ]);
+  })(), (() => {
+    // Reflection in the line through the origin at angle alpha: the image sits
+    // at screen angle 2*alpha - theta, derived rather than placed by eye.
+    const O = [300, 236], R = 92, al = -32, b0 = -86;
+    const B = onC(O, R, b0), B2 = onC(O, R, 2 * al - b0);
+    const M1 = onC(O, 128, al), M2 = onC(O, 128, al + 180);
+    return wrap(430, 312, [
+      seg(M2, M1, FNT, 1.6, "6 4"),
+      seg(O, B, GLD, 2.5), seg(O, B2, ACC, 2.5),
+      seg(B, B2, PNK, 1.6, "4 4"),
+      rightAngle(mid(B, B2), B, O, 10),
+      dot(O, DIM, 4), dot(B, GLD, 4.5), dot(B2, ACC, 4.5),
+      txt(add(B, [-3, -12]), "B", GLD, 13),
+      txt(add(B2, [14, 10]), "B′", ACC, 13),
+      txt(add(M1, [4, -8]), "α", ORG, 13, "start"),
+      cap(430, 312, "F_α reflects B in the mirror at angle α — det = −1, so orientation is reversed")
+    ]);
+  })()];
+
+
+  // ---------- Conics ----------
+  // Every conic below is plotted from its own equation at a stated scale, so the
+  // foci, vertices and asymptotes land where the algebra puts them rather than
+  // where they look right. The 3-4-5 and 5-12-13 triples keep a, b, c integral.
+
+  DIAGRAMS["ellipse-properties"] = [(() => {
+    const O = [215, 172], a = 150, b = 120, c = Math.sqrt(a * a - b * b);   // 90, from 3-4-5
+    const F1 = [O[0] - c, O[1]], F2 = [O[0] + c, O[1]], B = [O[0], O[1] - b];
+    return wrap(430, 340, [
+      `<ellipse cx="${O[0]}" cy="${O[1]}" rx="${a}" ry="${b}" fill="none" stroke="${DIM}" stroke-width="2"/>`,
+      seg([O[0] - a, O[1]], [O[0] + a, O[1]], FNT, 1.2, "5 4"),
+      seg(B, F2, ACC, 2.4), seg(O, B, GLD, 2.4), seg(O, F2, ORG, 2.4),
+      rightAngle(O, B, F2, 11),
+      dot(O, DIM, 3.5), dot(F1, ORG, 4.5), dot(F2, ORG, 4.5), dot(B, GLD, 4),
+      txt(add(mid(O, B), [-11, 2]), "b", GLD, 13),
+      txt(add(mid(O, F2), [0, 16]), "c", ORG, 13),
+      txt(add(mid(B, F2), [14, -2]), "a", ACC, 13),
+      txt(add(F1, [-2, 19]), "F₁", ORG, 12), txt(add(F2, [4, 19]), "F₂", ORG, 12),
+      cap(430, 340, "at the end of the minor axis both focal radii equal a, so a² = b² + c² is a right triangle, not a formula to memorize")
+    ]);
+  })()];
+
+  DIAGRAMS["hyperbola-properties"] = [(() => {
+    const O = [215, 170], a = 48, b = 64, c = Math.sqrt(a * a + b * b);     // 80, from 3-4-5
+    const YM = 148;                                       // clip height
+    const tm = Math.asinh(YM / b);
+    const arm = s => {
+      const pts = [];
+      for (let i = -24; i <= 24; i++) {
+        const t = tm * i / 24;
+        pts.push([O[0] + s * a * Math.cosh(t), O[1] - b * Math.sinh(t)]);
+      }
+      return pts;
+    };
+    const xa = YM * a / b;                                 // asymptote reach at y = YM
+    return wrap(430, 340, [
+      seg([O[0] - xa, O[1] + YM], [O[0] + xa, O[1] - YM], FNT, 1.3, "6 4"),
+      seg([O[0] - xa, O[1] - YM], [O[0] + xa, O[1] + YM], FNT, 1.3, "6 4"),
+      pline(arm(1), DIM, 2.4), pline(arm(-1), DIM, 2.4),
+      dot(O, DIM, 3.5),
+      dot([O[0] - a, O[1]], ACC, 4), dot([O[0] + a, O[1]], ACC, 4),
+      dot([O[0] - c, O[1]], ORG, 4.5), dot([O[0] + c, O[1]], ORG, 4.5),
+      seg(O, [O[0] + a, O[1]], ACC, 2.6),
+      txt([O[0] + a / 2, O[1] + 19], "a", ACC, 12.5),
+      txt([O[0] + c + 4, O[1] + 20], "F₂", ORG, 12),
+      txt([O[0] - c - 4, O[1] + 20], "F₁", ORG, 12),
+      txt([O[0] + xa - 46, O[1] - YM + 30], "y = (b/a)x", FNT, 11, "end"),
+      cap(430, 340, "drop the 1 from x²/a² − y²/b² = 1 and it factors into the two dashed asymptotes, which cap every slope the branches can reach")
+    ]);
+  })()];
+
+  DIAGRAMS["parabola-focus-directrix"] = [(() => {
+    const V = [215, 240], p = 44;
+    const F = [V[0], V[1] - p], dy = V[1] + p;             // directrix y = V + p
+    const Y = x => V[1] - x * x / (4 * p);
+    const pts = [];
+    for (let i = -30; i <= 30; i++) { const x = 150 * i / 30; pts.push([V[0] + x, Y(x)]); }
+    const P = [V[0] + 120, Y(120)], Pd = [V[0] + 120, dy];
+    const L1 = [V[0] - 2 * p, F[1]], L2 = [V[0] + 2 * p, F[1]];
+    return wrap(430, 340, [
+      seg([50, dy], [380, dy], PNK, 2),
+      pline(pts, DIM, 2.4),
+      seg(L1, L2, GLD, 3), dot(L1, GLD, 3.5), dot(L2, GLD, 3.5),
+      seg(P, F, ACC, 2.2), seg(P, Pd, ACC, 2.2),
+      dot(F, ORG, 5), dot(P, ACC, 4.5), dot(V, DIM, 3.5), dot(Pd, ACC, 3.5),
+      txt(add(F, [-14, 6]), "F", ORG, 13),
+      txt(add(V, [-13, 6]), "V", DIM, 12.5),
+      txt(add(P, [11, -4]), "P", ACC, 13, "start"),
+      txt([V[0] - 2 * p + 26, F[1] - 10], "4p", GLD, 12),
+      txt([70, dy + 18], "directrix", PNK, 11.5, "start"),
+      cap(430, 340, "PF equals the vertical drop from P to the directrix — that is the definition, and the chord through F has length 4p")
+    ]);
+  })()];
+
+  DIAGRAMS["eccentricity"] = [(() => {
+    // One focus, one directrix, r = ed / (1 + e cos theta). The ellipse and the
+    // parabola share a scale; the hyperbola needs its own, which is the honest
+    // reason it gets a second panel rather than being squeezed into this one.
+    const O = [292, 150], d = 118;
+    const arc = (e, box) => {
+      const pts = [];
+      for (let i = -300; i <= 300; i++) {
+        const th = Math.PI * i / 301, den = 1 + e * Math.cos(th);
+        if (den <= 0.02) continue;
+        const r = e * d / den;
+        const q = [O[0] + r * Math.cos(th), O[1] - r * Math.sin(th)];
+        if (q[0] < box[0] || q[0] > box[1] || q[1] < box[2] || q[1] > box[3]) continue;
+        pts.push(q);
+      }
+      return pts;
+    };
+    const BOX = [14, 418, 14, 286];
+    return wrap(430, 300, [
+      seg([O[0] + d, 20], [O[0] + d, 280], PNK, 2, "6 4"),
+      pline(arc(1, BOX), GLD, 2.4), pline(arc(0.5, BOX), ACC, 2.4),
+      dot(O, DIM, 5), txt(add(O, [-3, 19]), "F", DIM, 13),
+      txt([O[0] + d - 7, 34], "directrix", PNK, 11, "end"),
+      txt([O[0] - 128, O[1] - 30], "e = ½", ACC, 12, "end"),
+      txt([O[0] - 44, O[1] - 116], "e = 1", GLD, 12, "end"),
+      cap(430, 300, "same focus, same directrix: at e = ½ the curve closes into an ellipse, and at e = 1 it fails to close and runs off as a parabola")
+    ]);
+  })(), (() => {
+    const O = [300, 150], d = 60, e = 1.6;
+    const pts = [];
+    for (let i = -300; i <= 300; i++) {
+      const th = Math.PI * i / 301, den = 1 + e * Math.cos(th);
+      if (den <= 0.02) continue;
+      const r = e * d / den;
+      const q = [O[0] + r * Math.cos(th), O[1] - r * Math.sin(th)];
+      if (q[0] < 14 || q[0] > 418 || q[1] < 14 || q[1] > 286) continue;
+      pts.push(q);
+    }
+    return wrap(430, 300, [
+      seg([O[0] + d, 20], [O[0] + d, 280], PNK, 2, "6 4"),
+      pline(pts, ORG, 2.4),
+      dot(O, DIM, 5), txt(add(O, [-3, 19]), "F", DIM, 13),
+      txt([O[0] + d + 7, 34], "directrix", PNK, 11, "start"),
+      txt([O[0] - 44, O[1] - 112], "e = 1.6", ORG, 12, "end"),
+      cap(430, 300, "past e = 1 the curve opens wider still and becomes one branch of a hyperbola; the scale here is smaller, since a fixed directrix sends it off the page fast")
+    ]);
+  })()];
+
+  DIAGRAMS["conic-classification"] = [(() => {
+    // 5x² − 6xy + 5y² = 8 is 2u² + 8v² = 8 after a 45° turn: semi-axes 2 and 1.
+    const O = [215, 158], s = 62;
+    const u = [Math.SQRT1_2, -Math.SQRT1_2], v = [Math.SQRT1_2, Math.SQRT1_2];
+    const A1 = add(O, mul(u, 2 * s)), A2 = sub(O, mul(u, 2 * s));
+    const B1 = add(O, mul(v, s)), B2 = sub(O, mul(v, s));
+    return wrap(430, 300, [
+      `<ellipse cx="${O[0]}" cy="${O[1]}" rx="${2 * s}" ry="${s}" transform="rotate(-45 ${O[0]} ${O[1]})" fill="none" stroke="${DIM}" stroke-width="2.4"/>`,
+      seg(A2, A1, ACC, 1.6, "5 4"), seg(B2, B1, GLD, 1.6, "5 4"),
+      dot(O, DIM, 3.5),
+      txt(add(A1, [12, 2]), "u", ACC, 12.5), txt(add(B1, [12, 6]), "v", GLD, 12.5),
+      cap(430, 300, "5x² − 6xy + 5y² = 8 has B² − 4AC = −64 < 0, so it is an ellipse; the xy term only means its axes are turned 45°")
+    ]);
+  })(), (() => {
+    // x² − 4xy + 4y² + 3x − 6y − 4 = 0 factors as (x−2y−1)(x−2y+4) = 0.
+    const O = [215, 168], s = 20;
+    const P = (x, y) => [O[0] + s * x, O[1] - s * y];
+    const line = k => [P(-7, (-7 - k) / 2), P(7, (7 - k) / 2)];
+    const [a1, a2] = line(1), [b1, b2] = line(-4);
+    return wrap(430, 300, [
+      seg(a1, a2, ORG, 2.4), seg(b1, b2, ORG, 2.4),
+      txt(add(a2, [10, 6]), "x − 2y = 1", ORG, 11, "start"),
+      txt(add(b2, [10, 6]), "x − 2y = −4", ORG, 11, "start"),
+      cap(430, 300, "same test, degenerate answer: B² − 4AC = 0 here too, but the curve is a pair of parallel lines, not a parabola")
+    ]);
+  })()];
+
+  DIAGRAMS["conic-reflective-property"] = [(() => {
+    const O = [212, 152], a = 125, b = 100, c = Math.sqrt(a * a - b * b);   // 75, from 3-4-5
+    const F1 = [O[0] - c, O[1]], F2 = [O[0] + c, O[1]];
+    const t = rad(68);
+    const T = [O[0] + a * Math.cos(t), O[1] - b * Math.sin(t)];
+    const tg = norm([-a * Math.sin(t), -b * Math.cos(t)]);
+    return wrap(430, 300, [
+      `<ellipse cx="${O[0]}" cy="${O[1]}" rx="${a}" ry="${b}" fill="none" stroke="${DIM}" stroke-width="2"/>`,
+      seg(sub(T, mul(tg, 86)), add(T, mul(tg, 86)), FNT, 1.8, "6 4"),
+      seg(F1, T, ACC, 2.4), seg(T, F2, ORG, 2.4),
+      angleArc(T, F1, add(T, mul(tg, 40)), 26, ACC),
+      angleArc(T, F2, sub(T, mul(tg, 40)), 26, ORG),
+      dot(F1, DIM, 4.5), dot(F2, DIM, 4.5), dot(T, GLD, 4.5),
+      txt(add(F1, [-2, 19]), "F₁", DIM, 12), txt(add(F2, [2, 19]), "F₂", DIM, 12),
+      txt(add(T, [2, -13]), "T", GLD, 13),
+      cap(430, 300, "the tangent at T makes equal angles with TF₁ and TF₂, so a ray leaving one focus arrives at the other")
+    ]);
+  })(), (() => {
+    const V = [215, 246], p = 40, F = [V[0], V[1] - p];
+    const Y = x => V[1] - x * x / (4 * p);
+    const pts = [];
+    for (let i = -26; i <= 26; i++) { const x = 130 * i / 26; pts.push([V[0] + x, Y(x)]); }
+    const hits = [-104, -40, 62].map(x => [V[0] + x, Y(x)]);
+    return wrap(430, 300, [
+      pline(pts, DIM, 2.4),
+      ...hits.map(H => seg(F, H, ACC, 1.9)),
+      ...hits.map(H => seg(H, [H[0], 44], ORG, 1.9)),
+      ...hits.map(H => dot(H, GLD, 3.8)),
+      dot(F, DIM, 5), txt(add(F, [-13, 5]), "F", DIM, 13),
+      cap(430, 300, "on a parabola the second focus is at infinity, so every ray out of F leaves parallel to the axis")
+    ]);
+  })()];
+
+
+  DIAGRAMS["projected-area-cosine"] = [(() => {
+    // A rectangle in a plane hinged along the y-axis and tilted by theta, plus the
+    // same rectangle's shadow on z = 0. Both come from true (x, y, z) points, so the
+    // shadow really is the original shortened by cos(theta) in one direction.
+    // The origin is placed from the projected bounding box, not by eye.
+    const th = rad(38), L = 46, w = 40, s = 4.5;
+    const cx = w * Math.cos(th), cz = w * Math.sin(th);
+    const top3 = [[0, 0, 0], [0, L, 0], [cx, L, cz], [cx, 0, cz]];
+    const bot3 = [[0, 0, 0], [0, L, 0], [cx, L, 0], [cx, 0, 0]];
+    const raw = v => [s * (AX3.ex[0] * v[0] + AX3.ey[0] * v[1]),
+                      s * (AX3.ex[1] * v[0] + AX3.ey[1] * v[1] + AX3.ez[1] * v[2])];
+    const all = top3.concat(bot3).map(raw);
+    const xs = all.map(q => q[0]), ys = all.map(q => q[1]);
+    const O = [215 - (Math.min(...xs) + Math.max(...xs)) / 2,
+               168 - (Math.min(...ys) + Math.max(...ys)) / 2];
+    const P = proj3(O, s, AX3);
+    const top = top3.map(v => P(v[0], v[1], v[2])), bot = bot3.map(v => P(v[0], v[1], v[2]));
+    return wrap(430, 330, [
+      poly(bot, FNT, 1.8, "rgba(91,140,255,0.10)", "5 4"),
+      poly(top, ACC, 2.4, ACCS),
+      seg(top[2], bot[2], PNK, 1.7, "4 4"), seg(top[3], bot[3], PNK, 1.7, "4 4"),
+      seg(P(0, 0, 0), P(0, L, 0), DIM, 3),
+      angleArc(P(0, 0, 0), P(cx, 0, 0), P(cx, 0, cz), 34, ORG),
+      txt(add(P(0, 0, 0), [-34, -10]), "θ", ORG, 13),
+      txt(add(mid(top[2], top[3]), [8, -12]), "area A", ACC, 12, "start"),
+      txt(add(mid(bot[2], bot[3]), [10, 24]), "A · cos θ", FNT, 12, "start"),
+      cap(430, 330, "the hinge keeps its length and the perpendicular direction shrinks by cos θ, so every region on the tilted plane casts a shadow of cos θ times its area")
     ]);
   })()];
 
