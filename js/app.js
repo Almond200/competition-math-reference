@@ -216,6 +216,24 @@
   const NOTATIONS = ["sigma", "expanded"];
   const TEXT_SIZES = ["normal", "large"];
   const SECTION_IDS = SECTIONS.map(s => s.id);
+
+  // Every write to localStorage can fail -- Safari private browsing refuses outright, and
+  // any browser refuses at quota. Both writers used to swallow that, so a reader could
+  // build a thirty-card list, close the tab and find it gone, having been told nothing at
+  // any point. Say it once per session: repeating it on every click would be worse than
+  // silence. Declared as a function so the hoisting lets the savers above call it, and the
+  // toast is looked up lazily because it is defined further down.
+  let storageWarned = false;
+  function storageFailed() {
+    if (!storageWarned) {
+      storageWarned = true;
+      try {
+        toast("This browser is blocking storage &mdash; lists and settings will not be saved.");
+      } catch (e) { /* toast not ready yet; the return value still tells the caller */ }
+    }
+    return false;
+  }
+
   // Each section carries its own rarity + level filter (persisted).
   function loadSettings() {
     let s = null;
@@ -246,18 +264,28 @@
       autoGroup: P.autoGroup === false ? false : true
     };
   }
+  // Merge into what is already stored rather than rebuilding it. SECTION_IDS comes from the
+  // loaded data, so on a page where a data file failed it is short or empty -- rebuilding
+  // from it would write `sections: {}` and erase every saved filter on the reader's first
+  // click. Writing only the sections this page actually knows about leaves the rest intact.
   function saveSettings() {
     try {
-      const out = { sections: {}, prefs: {
-        layout: state.layout, diagrams: state.diagrams,
-        density: state.density, notation: state.notation,
-        text: state.text, tags: state.tags, autoGroup: state.autoGroup
-      } };
+      let prev = null;
+      try { prev = JSON.parse(localStorage.getItem("mq-settings") || "null"); } catch (e) {}
+      const out = {
+        sections: Object.assign({}, (prev && prev.sections) || {}),
+        prefs: {
+          layout: state.layout, diagrams: state.diagrams,
+          density: state.density, notation: state.notation,
+          text: state.text, tags: state.tags, autoGroup: state.autoGroup
+        }
+      };
       SECTION_IDS.forEach(id => {
         out.sections[id] = { rarities: [...state.sectionFilters[id].rarities], levels: [...state.sectionFilters[id].levels] };
       });
       localStorage.setItem("mq-settings", JSON.stringify(out));
-    } catch (e) {}
+      return true;
+    } catch (e) { return storageFailed(); }
   }
   const _loaded = loadSettings();
 
@@ -471,15 +499,15 @@
   // study-list builder, so "add everything about circles" is one action.
   const TOPIC_RULES = [
     // Geometry
-    { id: "triangles", label: "triangles", sec: ["geometry"], re: /triangl|cevian|incircle|incenter|circumcenter|centroid|orthocenter|median|altitude|angle bisector|law of (sines|cosines)|heron|stewart|ceva|menelaus|euler line|inradius|circumradius|exradi|similar|proportional|intercept|thales|midsegment/ },
+    { id: "triangles", label: "triangles", sec: ["geometry"], re: /triangl|cevian|incircle|incenter|circumcenter|centroid|orthocenter|median|altitude|angle bisector|law of (sines|cosines)|heron|stewart|ceva|menelaus|euler line|inradius|circumradius|exradi|similar triangl|similar figure|similarity|proportional|intercept|thales|midsegment/ },
     { id: "circles", label: "circles", sec: ["geometry"], re: /circle|circular|circum|chord|arc|tangent|inscribed|cyclic|incircle|circumcircle|radical|power of a point|secant|ptolemy|inversion/ },
     { id: "quadrilaterals", label: "quadrilaterals", sec: ["geometry"], re: /quadrilateral|trapezoid|parallelogram|rectangle|rhombus|brahmagupta|pitot|bretschneider|varignon|\bkite\b/ },
     { id: "polygons", label: "polygons", sec: ["geometry"], re: /polygon|pentagon|hexagon|octagon|decagon|n-gon|apothem/ },
     { id: "solid-geometry", label: "3D geometry", sec: ["geometry"], re: /sphere|\bcone\b|cylinder|tetrahedron|prism|pyramid|volume|surface area|dihedral|\bsolid\b|octahedron|\bcube\b|frustum|skew/ },
     { id: "coordinate-geometry", label: "coordinates", sec: ["geometry"], re: /coordinate|shoelace|distance formula|\bslope\b|lattice|pick|section formula|vector|dot product|cross product|barycentric/ },
-    { id: "angles", label: "angles", sec: ["geometry"], re: /\bangle|inscribed|degree|bisector|directed/ },
+    { id: "angles", label: "angles", sec: ["geometry"], re: /\bangle|inscribed|degree measure|\d+\s*degree|bisector|directed/ },
     // Algebra
-    { id: "polynomials", label: "polynomials", sec: ["algebra"], re: /polynomial|vieta|factor|quadratic|discriminant|remainder theorem|rational root|symmetric function|newton|conjugate root|descartes|palindrom/ },
+    { id: "polynomials", label: "polynomials", sec: ["algebra"], re: /polynomial|vieta|factoriz|factor theorem|factoring|factored|factor pair|quadratic|discriminant|remainder theorem|rational root|symmetric function|newton|conjugate root|descartes|palindrom/ },
     { id: "sequences-series", label: "sequences & series", sec: ["algebra"], re: /sequence|series|arithmetic|geometric|telescop|recurrence|fibonacci|progression|summation|partial sum/ },
     { id: "inequalities", label: "inequalities", sec: ["algebra"], re: /inequalit|am.?gm|cauchy|schwarz|jensen|rearrangement|bernoulli|muirhead|maclaurin|smoothing|tangent line trick|trivial inequality|power mean|normalization/ },
     { id: "exponents-logs", label: "exponents & logs", sec: ["algebra"], re: /logarithm|\blog\b|exponent|power law/ },
@@ -496,20 +524,69 @@
     { id: "diophantine", label: "diophantine", sec: ["number-theory"], re: /diophantine|\bpell\b|pythagorean triple|frobenius|chicken mcnugget|sum of two squares|vieta jumping|\bcoin\b/ },
     { id: "digits", label: "digits & bases", sec: ["number-theory"], re: /digit|\bbase\b|decimal|repunit|repeating/ },
     // Counting
-    { id: "combinatorics", label: "combinatorics", sec: ["counting"], re: /combination|permutation|binomial|choose|factorial|arrangement|counting|hockey stick|vandermonde|multinomial|catalan/ },
+    { id: "combinatorics", label: "combinatorics", sec: ["counting"], re: /combination|combinatori|permutation|binomial|choose|factorial|arrangement|counting|hockey stick|vandermonde|multinomial|catalan/ },
     { id: "probability", label: "probability", sec: ["counting"], re: /probab|expected|random|\bodds\b|variance|distribution|\bbayes\b/ },
     { id: "expected-value", label: "expected value", sec: ["counting"], re: /expected value|expectation|linearity of expectation/ },
     { id: "recursion", label: "recursion", re: /recursi|recurrence|fibonacci|catalan/ },
     { id: "generating-functions", label: "generating functions", re: /generating function/ },
     { id: "stars-bars", label: "stars & bars", sec: ["counting"], re: /stars and bars|distribut|partition|balls|boxes|composition/ },
     { id: "pigeonhole", label: "pigeonhole", re: /pigeonhole|double counting|handshake/ },
-    { id: "graph-theory", label: "graphs", sec: ["counting"], re: /\bgraph|vertex|vertices|\bedge|euler.{0,3}formula|planar|region|\btree\b|degree sum/ }
+    { id: "graph-theory", label: "graphs", sec: ["counting"], re: /\bgraph|vertex|vertices|\bedge|euler.{0,3}formula|planar|region|\btree\b|degree sum/ },
+    // Cross-section topics. These carry no `sec` on purpose: each names a cluster
+    // the taxonomy splits across several files, which is the case for topics over
+    // subsections -- `conics` has to reach vertex-form in algebra and
+    // ellipse-tangent-line in patterns, and `linear-algebra` has to reach the six
+    // older cards that were quietly assuming determinants and matrix powers.
+    { id: "conics", label: "conics", re: /conic|ellipse|hyperbol|parabola|eccentricit|directrix|latus rectum|asymptote|focal/ },
+    { id: "linear-algebra", label: "matrices & determinants", re: /matri|determinant|eigen|cofactor|cramer|linear system|row operation|sarrus/ },
+    { id: "floors-abs", label: "floors & absolute value", re: /floor function|\bfloor\b|fractional part|ceiling|absolute value|\bhermite\b|beatty|continued fraction|farey|mediant/ },
+    { id: "games", label: "games", re: /\bnim\b|sprague|grundy|losing position|winning position|take-away|turn-based|first player|combinatorial game/ },
+    { id: "convexity", label: "convexity", re: /convex hull|convex position|\bconvex\b|helly|sylvester.gallai|general position/ },
+    { id: "transformations", label: "transformations", re: /reflect|rotation|rotate|homothet|dilation|spiral similarity|affine|isometr|\binversion\b|translat/ }
   ];
   const TOPICS_BY_ID = {};
   TOPIC_RULES.forEach(t => { TOPICS_BY_ID[t.id] = t; });
   // "methods" is a virtual topic keyed off the card type, not a pattern.
   const METHODS_TOPIC = { id: "methods", label: "methods" };
   TOPICS_BY_ID.methods = METHODS_TOPIC;
+
+  // A subsection's TITLE is part of the haystack, which is mostly what you want:
+  // "Graph Theory" earns its cards the graphs chip without every card spelling it
+  // out. But a title is a weaker signal than a card's own words, and two classes of
+  // title were awarding topics that are simply wrong for the cards underneath them.
+  //
+  //   1. The Methods and Patterns subsections are named by SUBJECT -- "Geometry",
+  //      "Counting & Probability" -- so seventeen pure counting methods were coming
+  //      out tagged `probability`. Subject names are not topics, which is the same
+  //      rule autoSections already follows further down this file.
+  //   2. A compound title applies only to part of its own contents. "Divisor
+  //      Functions & Totient" matched the modular-arithmetic rule on "totient" and
+  //      put a modular chip on nine divisor cards.
+  //
+  // So: never feed a tools title, and let TITLE_STOP veto a specific topic on a
+  // specific subsection -- but only when the card's OWN words do not also earn it,
+  // so a card that genuinely belongs keeps its chip. `tools/check-topics.py` lifts
+  // TOPIC_RULES, TITLE_STOP and topicsForCard straight out of this file and fails on
+  // any of these pairs reappearing, so the rules and the gate cannot drift apart.
+  const TITLE_STOP = {
+    "Divisor Functions & Totient": ["modular-arithmetic"],
+    "Floors, Radicals & Absolute Value": ["radicals"],
+    "Symmetry, Partitions & Posets": ["stars-bars"],
+    "Stars & Bars / Distributions": ["probability"]
+  };
+
+  function topicsForCard(f, sub, section, subjectId) {
+    const own = (f.name + " " + f.keywords.join(" ")).toLowerCase();
+    const hay = section.group === "tools" ? own : own + " " + sub.title.toLowerCase();
+    const stop = TITLE_STOP[sub.title] || [];
+    const out = TOPIC_RULES.filter(t => {
+      if (t.sec && t.sec.indexOf(subjectId) === -1) return false;
+      if (!t.re || !t.re.test(hay)) return false;
+      if (stop.indexOf(t.id) !== -1 && !t.re.test(own)) return false;
+      return true;
+    });
+    return f.type === "method" ? out.concat(METHODS_TOPIC) : out;
+  }
 
   // General concept tags added to cards that clearly involve them but didn't spell
   // them out in keywords — so browsing a tag like "incenter" surfaces every card
@@ -572,6 +649,7 @@
       "center-distance-formulas", "triangle-center-angles", "orthocentric-system",
       "brocard-angle", "carnots-theorem", "leibniz-formula", "incenter-coordinates",
       "medial-triangle", "orthic-triangle", "excentral-triangle", "contact-triangle",
+      "euler-line-parallel-side",
       "isogonal-conjugate", "isotomic-conjugate", "pedal-triangle", "centroid-division"
     ],
     "circle theorems": [
@@ -928,10 +1006,7 @@
         ));
         entry.mathFrags = mathFragments(f.latex);
         entry.nameLower = f.name.toLowerCase();
-        const hay = (f.name + " " + f.keywords.join(" ") + " " + sub.title).toLowerCase();
-        entry.topics = TOPIC_RULES.filter(t =>
-          (!t.sec || t.sec.indexOf(subjectId) !== -1) && t.re && t.re.test(hay));
-        if (f.type === "method") entry.topics = entry.topics.concat(METHODS_TOPIC);
+        entry.topics = topicsForCard(f, sub, section, subjectId);
         ALL.push(entry);
         BY_ID[f.id] = entry;
       });
@@ -1141,10 +1216,23 @@
     if (!lists.items.some(l => l.id === "starred")) {
       lists.items.unshift({ id: "starred", name: "Starred", ids: [], builtin: true });
     }
-    // Drop ids that no longer exist in the library (e.g. a renamed formula).
-    lists.items.forEach(l => { l.ids = l.ids.filter(id => BY_ID[id]); });
+    // DO NOT prune ids against BY_ID here, however tempting it looks. This used to read
+    //     lists.items.forEach(l => { l.ids = l.ids.filter(id => BY_ID[id]); });
+    // to drop ids left behind by a renamed card. But BY_ID is built from the data files,
+    // and `SECTIONS` is `[]` if any of them failed to load, so a single mistyped `?v=` or a
+    // half-populated cache emptied every saved list in memory -- and the next saveLists(),
+    // one star-click away, wrote that emptiness to storage permanently. Reproduced: with
+    // number-theory.js missing, a five-card list dropped to two, and restoring the file did
+    // not bring them back.
+    //
+    // Nothing needs the prune. Every render path already skips ids that do not resolve
+    // (`.map(id => BY_ID[id]).filter(Boolean)`), so an id the library cannot currently see
+    // is invisible rather than broken, and it reappears intact when the data does.
   }
-  function saveLists() { try { localStorage.setItem("mq-lists", JSON.stringify(lists)); } catch (e) {} }
+  function saveLists() {
+    try { localStorage.setItem("mq-lists", JSON.stringify(lists)); return true; }
+    catch (e) { return storageFailed(); }
+  }
   function getList(id) { return lists.items.find(l => l.id === id); }
   function inList(listId, fid) { const l = getList(listId); return !!l && l.ids.indexOf(fid) !== -1; }
   function listCountFor(fid) { return lists.items.reduce((n, l) => n + (l.ids.indexOf(fid) !== -1 ? 1 : 0), 0); }
@@ -1188,11 +1276,16 @@
                blurb: l.blurb || "", sections: secs,
                ids: secs.reduce((a, sec) => a.concat(sec.ids), []), builtinSet: true, _i: i };
     })
-    .filter(l => l.ids.length)
+    .filter(l => liveCount(l))
     .sort((a, b) => a._i - b._i);
   const BUILTIN_BY_ID = {};
   BUILTIN_LISTS.forEach(l => { BUILTIN_BY_ID[l.id] = l; });
   function anyList(id) { return getList(id) || BUILTIN_BY_ID[id]; }
+  // Displayed counts use the ids the library can currently resolve, while storage keeps
+  // every id the reader put there. The two differ only while a data file is missing, and
+  // that is exactly when the stored ids must not be touched -- see loadLists().
+  function liveIds(l) { return (l && l.ids ? l.ids : []).filter(id => BY_ID[id]); }
+  function liveCount(l) { return liveIds(l).length; }
 
   function starBtnHtml(id) {
     const on = inList("starred", id);
@@ -3236,8 +3329,8 @@
           <span class="list-emoji">${listGlyph(l)}</span>
           <span class="list-name">${escapeAttr(l.name)}</span>
         </div>
-        <div class="list-card-count">${l.ids.length} formula${l.ids.length === 1 ? "" : "s"}</div>
-        ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${l.ids.length > 3 ? "&hellip;" : ""}</div>` : `<div class="list-card-preview empty">Empty &mdash; add formulas with the &ldquo;+ list&rdquo; button.</div>`}
+        <div class="list-card-count">${liveCount(l)} formula${liveCount(l) === 1 ? "" : "s"}</div>
+        ${preview ? `<div class="list-card-preview">${escapeAttr(preview)}${liveCount(l) > 3 ? "&hellip;" : ""}</div>` : `<div class="list-card-preview empty">Empty &mdash; add formulas with the &ldquo;+ list&rdquo; button.</div>`}
       </a>`;
   }
   // No pill. Every version of it was redundant: the group heading above the grid already
@@ -3254,7 +3347,7 @@
         <div class="list-card-top">
           <span class="list-name">${escapeAttr(l.name)}</span>
         </div>
-        <div class="list-card-count">${l.ids.length} formula${l.ids.length === 1 ? "" : "s"}${secs ? ` &middot; ${secs} section${secs === 1 ? "" : "s"}` : ""}</div>
+        <div class="list-card-count">${liveCount(l)} formula${liveCount(l) === 1 ? "" : "s"}${secs ? ` &middot; ${secs} section${secs === 1 ? "" : "s"}` : ""}</div>
       </a>`;
   }
   function listsIndexHtml() {
@@ -3800,12 +3893,12 @@
     // sections" next to a page full of them. Same call, same input, same result.
     const live = (l.sections && l.sections.length)
       ? l.sections
-      : (!getList(route.listId) || !state.autoGroup || l.ids.length < 8 ? [] : autoSections(l.ids.filter(id => BY_ID[id])));
+      : (!getList(route.listId) || !state.autoGroup || liveCount(l) < 8 ? [] : autoSections(liveIds(l)));
     const secs = live.filter(sec => sec.title && sec.ids.length);
     const items = secs.length
       ? secs.map((sec, j) => lnItem(sec.title, `data-scroll="ls-${l.id}-${j}"`)).join("")
       : `<p class="ln-empty">This list has no sections.</p>`;
-    return lnSection(`ls-${l.id}`, escapeAttr(l.name), (l.ids || []).length, items, true, true) +
+    return lnSection(`ls-${l.id}`, escapeAttr(l.name), liveCount(l), items, true, true) +
            `<a class="list-nav-back" href="#/lists">&larr; All Study Lists</a>`;
   }
 
@@ -4431,6 +4524,46 @@
   $content.addEventListener("click", e => { if (e.target.closest(".card-link")) hideCardPreview(); });
   window.addEventListener("hashchange", hideCardPreview);
 
+  // navigator.clipboard is a secure-context API: it is undefined on a plain-http origin,
+  // which is exactly what a classroom or LAN server is. Both copy buttons used to call it
+  // with a bare .then(), so on such a deployment the click threw a TypeError and the reader
+  // saw nothing at all. Try the modern API, fall back to the old textarea trick, and only
+  // then admit defeat -- and say so out loud rather than failing silently.
+  function copyText(str) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(str).catch(() => legacyCopy(str));
+    }
+    return legacyCopy(str);
+  }
+  function legacyCopy(str) {
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = str;
+      // Off-screen rather than hidden: display:none cannot be selected.
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:-1000px;left:-1000px;opacity:0";
+      document.body.appendChild(ta);
+      try {
+        ta.select();
+        document.execCommand("copy") ? resolve() : reject(new Error("execCommand refused"));
+      } catch (err) {
+        reject(err);
+      } finally {
+        document.body.removeChild(ta);
+      }
+    });
+  }
+  // Shared success/failure handling so both buttons behave the same way.
+  function copyInto(btn, str, label) {
+    copyText(str).then(() => {
+      btn.textContent = "copied!";
+      btn.classList.add("copied");
+      setTimeout(() => { btn.textContent = label; btn.classList.remove("copied"); }, 1200);
+    }).catch(() => {
+      toast("Couldn't copy &mdash; this browser blocks clipboard access here.");
+    });
+  }
+
   $content.addEventListener("click", e => {
     const asyBtn = e.target.closest(".copy-asy-btn");
     if (asyBtn) {
@@ -4441,27 +4574,13 @@
         const asy = svgs.length === 1 ? svgToAsy(svgs[0]) : svgs.map((g, i) =>
           `// ---------- figure ${i + 1} of ${svgs.length} ----------\n${svgToAsy(g)}`
         ).join("\n\n");
-        navigator.clipboard.writeText(asy).then(() => {
-          asyBtn.textContent = "copied!";
-          asyBtn.classList.add("copied");
-          setTimeout(() => {
-            asyBtn.textContent = "copy asy";
-            asyBtn.classList.remove("copied");
-          }, 1200);
-        });
+        copyInto(asyBtn, asy, "copy asy");
       }
       return;
     }
     const btn = e.target.closest(".copy-btn");
     if (btn) {
-      navigator.clipboard.writeText(toCopyLatex(btn.dataset.latex)).then(() => {
-        btn.textContent = "copied!";
-        btn.classList.add("copied");
-        setTimeout(() => {
-          btn.textContent = "copy tex";
-          btn.classList.remove("copied");
-        }, 1200);
-      });
+      copyInto(btn, toCopyLatex(btn.dataset.latex), "copy tex");
       return;
     }
     const starBtn = e.target.closest(".star-btn");
@@ -4540,7 +4659,7 @@
     const clr = e.target.closest("[data-list-clear]");
     if (clr) {
       const l = getList(clr.dataset.listClear);
-      if (l && confirm(`Remove all ${l.ids.length} formulas from “${l.name}”?`)) { l.ids = []; saveLists(); render(); }
+      if (l && confirm(`Remove all ${liveCount(l)} formulas from “${l.name}”?`)) { l.ids = []; saveLists(); render(); }
       return;
     }
     if (e.target.closest("a")) return; // let real links (related items, back link) navigate
@@ -4597,6 +4716,29 @@
   // point (the UI path is debounced, and a background tab throttles its timers),
   // so expose one — gated on ?debug=1 so nothing is added to the normal page.
   if (/[?&]debug=1\b/.test(location.search)) {
+    // A search index built before the last few cards were added still loads, still answers,
+    // and is quietly wrong -- CONVENTIONS makes checking it a manual step, which is exactly
+    // the kind of step that gets skipped. Poll until the lazy index reports in, then say so.
+    (function watchIndexFreshness(tries) {
+      const SEMI = window.MathSemantic;
+      const info = SEMI && SEMI.info ? SEMI.info() : null;
+      // info() reports {state} while the index is idle, loading or failed, and the full
+      // description -- with no `state` key -- once it is ready. Keep polling through both
+      // "idle" (nothing has triggered the lazy fetch yet) and "loading"; checking only for
+      // "loading" compared an undefined card count and warned about a healthy index.
+      if (!info || info.state === "idle" || info.state === "loading") {
+        if (tries > 0) setTimeout(() => watchIndexFreshness(tries - 1), 500);
+        return;
+      }
+      if (info.state === "failed") {
+        console.warn("[search] semantic index failed to load - results are lexical-only.");
+      } else if (info.cards !== ALL.length) {
+        console.warn("[search] STALE INDEX: vectors cover " + info.cards +
+                     " cards but the library has " + ALL.length +
+                     ". Rebuild with tools/build-search-index.py before trusting any score.");
+      }
+    })(20);
+
     window.__mathSearch = {
       searchFormulas,
       entries: ALL,

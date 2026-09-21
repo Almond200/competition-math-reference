@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 534 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 535 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -26,19 +26,19 @@ Exactly two field orders exist, and nothing else. Copy one of these.
         },
 ```
 
-**`patterns.js`** — 102 of 102 cards. Same, plus `type` and `subject` immediately after `name`:
+**`patterns.js`** — 103 of 103 cards. Same, plus `type` and `subject` immediately after `name`:
 
 ```js
           type: "method",       // or "pattern"
           subject: "counting",  // geometry | algebra | number-theory | counting
 ```
 
-- `type` and `subject` appear on **102/102** `patterns.js` cards and on **0/432** subject-file cards.
+- `type` and `subject` appear on **103/103** `patterns.js` cards and on **0/432** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **533/534** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **534/535** cards. Use it even when there is no backslash.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
   `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
-  all 534 cards use one of the four canonical orders, the extra two being the same pair with an
+  all 535 cards use one of the four canonical orders, the extra two being the same pair with an
   optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
   something to show).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
@@ -48,8 +48,8 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 | field | measured |
 |---|---|
-| `importance` | five values, not three: `high` 135, `medium` 222, `low` 87, `lower` 42, `lowest` 48 |
-| `level` | drawn from `MATHCOUNTS` (105), `AMC10` (202), `AMC12` (287), `AIME` (380), `Olympiad` (196). No other string appears |
+| `importance` | five values, not three: `high` 135, `medium` 222, `low` 88, `lower` 42, `lowest` 48 |
+| `level` | drawn from `MATHCOUNTS` (105), `AMC10` (202), `AMC12` (287), `AIME` (381), `Olympiad` (197). No other string appears |
 | `keywords` | min 4, median 6, 90th percentile 9, max 20. Four is the floor — never ship fewer |
 | `name` | median 24 chars, max 55. 63 names use ` & `, 42 carry a parenthetical like `(PIE)` |
 | `description` | median 273 chars, 90th percentile 501, max 1001. Two to four sentences |
@@ -63,20 +63,20 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**534 write-ups for 534 cards. One each, no orphans, no card without one.**
+**535 write-ups for 535 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      534/534
-## How to use it     534/534
-## On contests       534/534
+## Why it works      535/535
+## How to use it     535/535
+## On contests       535/535
 ```
 
-An optional fourth, `## Key forms`, appears on 106. There is exactly one other heading in the whole
+An optional fourth, `## Key forms`, appears on 107. There is exactly one other heading in the whole
 corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do not invent a fifth.
 
-- **Key forms is a `patterns.js` habit**: 95 of 102 `patterns.js` cards have one, against 11 of 432
+- **Key forms is a `patterns.js` habit**: 96 of 103 `patterns.js` cards have one, against 11 of 432
   subject-file cards. If you are writing a formula card and reaching for Key forms, put the material
   in the prose instead.
 - Key forms lists the shapes a technique takes, not worked examples.
@@ -88,7 +88,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 534** write-ups contain `**`. This rule is unbroken — do not be the first.
+  asterisks. **0 of 535** write-ups contain `**`. This rule is unbroken — do not be the first.
 - **Em dashes: median 2 per write-up, 90th percentile 5, and 87 write-ups use none.** Prefer commas.
   (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
@@ -99,7 +99,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 
 ### Cross-links
 
-Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **677 piped
+Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **680 piped
 links, 0 bare** across the corpus. A bare link renders the card's Title Case
 name, which lands capitalised in the middle of a sentence.
 
@@ -144,7 +144,7 @@ positives and should be rejected every time they reappear:
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**534 example keys for 534 cards. Zero cards lack one.**
+**535 example keys for 535 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -167,7 +167,7 @@ geometry card without a figure is incomplete. The count reached 185/185 only aft
 without one and had to be fixed, which is why `tools/scan-conventions.py` exits non-zero on any
 geometry card missing a diagram.
 
-Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 35/102,
+Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 36/103,
 `algebra.js` 11/102, `counting.js` 3/67, `number-theory.js` 1/78.
 
 - Figures go through the diagram DSL in `js/data/diagrams/`, registered as
@@ -272,6 +272,7 @@ jsc tools/validate-problem-db.js         # 0 violations, and check the card coun
 python3 tools/check-diagrams.py          # every panel fits its canvas, no labels collide
 python3 tools/scan-conventions.py        # the census above; fails on any rule marked "must stay 0"
 python3 tools/check-lists.py             # list ids resolve, and every route is complete
+python3 tools/check-topics.py            # every card carries a topic chip, and no title awards a wrong one
 ./tools/check-lab.sh                     # the inline script of each lab/ page still parses
 python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py --report
 ~/Downloads/competition-math-buildenv/bin/python tools/build-search-index.py
@@ -285,18 +286,47 @@ python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py 
   `index.html` itself, and a `?nocache=` parameter is the reliable way.
 - Measure search with `tools/search-eval.html`, never by eye, and **always compare warm to warm**.
   A cold first run and a warm re-run differ by a point or two because the semantic index loads
-  lazily; warm runs are reproducible to the query. Measured 2026-09-20 over 534 cards, the
-  original 171 queries give **153 cold, 154 warm** (warm stable across three runs), against a
-  previously recorded warm **155**. That is a real net loss of one query, not a measurement
-  artifact. The query set is now **183**: twelve were added for the matrices, conics and
-  projection cards, and eleven of those twelve rank first, giving **165/183 warm, MRR 0.9332**.
+  lazily; warm runs are reproducible to the query. Measured 2026-09-20 over 535 cards, the
+  original 171 queries give **153 warm**, against a previously recorded warm **155**. The query
+  set is now **183**, twelve added for the matrices, conics and projection cards, of which eleven
+  rank first: **164/183 warm, MRR 0.9295**. Every point lost across this work was traced before
+  being accepted, and one was not accepted -- see CONTRIBUTING for the card that had to have its
+  keywords narrowed because it out-ranked the general card it specialises.
   Adding a card jostles neighbouring queries by a rank or two; what must not move is the top-1 count.
 - On the rendered page: correct breadcrumb, all three write-up headings, the example block, 0
   `.katex-error`, 0 `.card-link-broken`, and no literal `**`.
 
 ---
 
-## 8. Built-in lists
+## 8. Topic chips
+
+Every card carries at least one topic chip, and each chip opens a browsable topic page. The chips
+are derived, not authored: `topicsForCard` (`js/app.js`) runs `TOPIC_RULES` against the card's name,
+its keywords, and **its subsection title**. That last ingredient is the one to understand before
+adding a subsection or a rule.
+
+- **A title is a weaker signal than a card's own words, and a compound title is weaker still.**
+  "Divisor Functions & Totient" matched the modular-arithmetic rule on the word `totient` and put a
+  modular chip on nine divisor cards; the Methods subsections are named by SUBJECT, so seventeen
+  pure counting methods came out tagged `probability`. Thirty-eight cards carried a wrong chip.
+  Two mechanisms fix that and both live next to the rules: tools titles are never fed in at all,
+  and `TITLE_STOP` vetoes one topic on one subsection, but only when the card's own words do not
+  independently earn it, so nothing correct is lost.
+- **Prefer a topic to a subsection for anything that spans files.** `conics` has to reach
+  `vertex-form` in algebra and `ellipse-tangent-line` in patterns; `linear-algebra` has to reach the
+  six older cards that were already assuming determinants. A cross-file move would change those
+  cards' `type` and force a search rebuild, so the cross-section topic is the right tool. Six exist
+  for exactly this reason: `conics`, `linear-algebra`, `floors-abs`, `games`, `convexity`,
+  `transformations`, alongside the older `trigonometry`, `recursion` and `generating-functions`.
+- **Watch for a loose term matching inside a longer word.** `/factor/` matched `cofactor`,
+  `factorial` and "scale factor"; `/similar/` put a `triangles` chip on "similar conics";
+  a bare `/degree/` matched "second degree equation". Each is now spelled out.
+- `tools/check-topics.py` fails on a card with no chip and on any known-bad (subsection, topic)
+  pair. It **lifts `TOPIC_RULES`, `TITLE_STOP` and `topicsForCard` straight out of `js/app.js`**
+  rather than restating them, so the gate cannot drift from the app. Run it after touching a rule,
+  adding a subsection, or renaming one.
+
+## 9. Built-in lists
 
 `js/data/built-in-lists.js` opens by promising that a route is "every card carrying that level and
 subject, so a route is complete by construction rather than a hand-picked sample". Nothing enforced
@@ -321,7 +351,27 @@ The failure is invisible in the UI -- the route just quietly omits a card the re
 
 ---
 
-## 9. Tagging a problem
+## 10. Touching persisted state
+
+Three keys live in `localStorage`: `mq-lists`, `mq-settings` and `theme`. One rule governs all of
+them, and it exists because breaking it destroyed user data twice.
+
+- **Merge into stored state; never rebuild it from anything derived from the data files.** `BY_ID`
+  and `SECTION_IDS` are both empty when a data script fails to load, so code that rebuilds storage
+  from them turns a transient outage into permanent loss on the reader's next click. The full
+  account, including the reproduction, is in CONTRIBUTING under "Persisted state must never be
+  rebuilt from loaded data".
+- **Filter for display, not for storage.** `liveCount()` / `liveIds()` exist so a count can ignore
+  ids the library cannot currently resolve while the stored list keeps them.
+- **A failed write must say so.** Both savers return a boolean and route failure through
+  `storageFailed()`, which toasts once per session. `catch (e) {}` on a write path is how a reader
+  loses a list without ever being told.
+
+None of this is covered by a gate -- there is no way to assert it from a script. Test it by hand:
+point one data file's `?v=` at a nonexistent path, click something, and confirm the stored lists
+are untouched.
+
+## 11. Tagging a problem
 
 `{ ref, formulas, strategy }`, optionally `trick` and `trickFormulas`.
 

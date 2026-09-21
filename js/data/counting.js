@@ -359,7 +359,7 @@ window.MATH_SECTIONS.push({
           name: "Dilworth's Theorem",
           latex: String.raw`\text{min chains covering a poset} = \text{size of the largest antichain}`,
           description: String.raw`In any finite partially ordered set, the fewest chains (totally ordered subsets) needed to cover everything equals the largest antichain (pairwise-incomparable subset). Its dual (Mirsky's theorem) swaps the roles. Erdős–Szekeres is the classic corollary: order points by first coordinate and compare by second — a long chain is an increasing subsequence, a long antichain a decreasing one.`,
-          keywords: ["dilworth theorem", "chains antichains", "poset cover", "mirsky dual", "partial order", "erdos szekeres corollary"],
+          keywords: ["dilworth theorem", "chains antichains", "poset cover", "mirsky dual", "partial order", "erdos szekeres corollary", "extremal combinatorics"],
           importance: "low",
           level: ["Olympiad"]
         },
@@ -543,7 +543,7 @@ window.MATH_SECTIONS.push({
       ]
     },
     {
-      title: "Pigeonhole & Double Counting",
+      title: "Pigeonhole & Ramsey Theory",
       formulas: [
         {
           id: "pigeonhole",
@@ -553,15 +553,6 @@ window.MATH_SECTIONS.push({
           keywords: ["pigeonhole", "boxes", "guarantee", "at least two", "ceiling", "at least one shared", "residues", "averaging argument", "dirichlet"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME", "Olympiad"]
-        },
-        {
-          id: "handshake-lemma",
-          name: "Handshake Lemma",
-          latex: String.raw`\sum_{v} \deg(v) = 2E`,
-          description: String.raw`Every edge contributes two degree-endpoints, so the total degree is even — hence the number of odd-degree vertices is even. The prototype double-count.`,
-          keywords: ["graph", "degrees", "edges", "double counting", "handshakes"],
-          importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "ramsey-33",
@@ -594,6 +585,15 @@ window.MATH_SECTIONS.push({
           keywords: ["labeled trees", "cayley", "prufer", "spanning trees", "networks"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "handshake-lemma",
+          name: "Handshake Lemma",
+          latex: String.raw`\sum_{v} \deg(v) = 2E`,
+          description: String.raw`Every edge contributes two degree-endpoints, so the total degree is even — hence the number of odd-degree vertices is even. The prototype double-count.`,
+          keywords: ["graph", "degrees", "edges", "double counting", "handshakes"],
+          importance: "high",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "eulerian-paths",

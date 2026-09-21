@@ -963,6 +963,17 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "euler-line-parallel-side",
+          name: "Euler Line Parallel to a Side",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`OH \parallel BC \iff \tan B \tan C = 3 \iff AH = 2\,HD \iff \cos A = 2\cos B\cos C`,
+          description: String.raw`The line through the circumcenter and the orthocenter runs parallel to $BC$ exactly when those two points stand at the same height above it. One of those heights is free: the circumcenter's distance to $BC$ is always half of $AH$, so the condition forces $HD = \frac{1}{2}AH$ and the orthocenter cuts the $A$-altitude in the ratio $2 : 1$ from the vertex. In angles that is $\tan B \tan C = 3$. More generally $AH : HD = (\tan B \tan C - 1) : 1$, so the parallel case is simply the one where that ratio equals $2$.`,
+          keywords: ["euler line parallel to a side", "OH parallel to BC", "euler line parallel to the base", "tan B tan C = 3", "orthocenter two thirds down the altitude", "cos A = 2 cos B cos C", "AH = 2 HD", "method", "pattern"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "rotation-trick",
           name: "The Rotation Trick",
           type: "pattern",
@@ -1022,7 +1033,7 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\text{pair } f(x) \text{ with } f(1-x) \;\text{(or } k \text{ with } n-k\text{)}, \quad \sum_{k=1}^{n-1} f\!\left(\tfrac{k}{n}\right) = \tfrac{n-1}{2}\Big(f(x)+f(1-x)\Big) \text{ when that pair is constant}`,
           description: String.raw`When a sum's arguments are symmetric about a centre, pair the first term with the last, the second with the second-last, and look at what one pair gives. The pair is often constant, and then the whole sum is just (number of pairs) times that constant, but not always: it frequently reduces to a trigonometric expression, or to something that only simplifies once every pair is added. The method is the pairing itself, and the pair's value is what you go and find out. Gauss's $1+2+\cdots+n$ is the arithmetic case.`,
-          keywords: ["pairing", "f(x) + f(1-x)", "pair first with last", "symmetric sum", "gauss trick", "sum symmetric about a centre", "k with n-k", "method", "pattern"],
+          keywords: ["pairing", "f(x) + f(1-x)", "pair first with last", "symmetric sum", "gauss trick", "sum symmetric about a centre", "k with n-k", "symmetry of a function about a centre", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -1191,7 +1202,7 @@ window.MATH_SECTIONS.push({
           subject: "counting",
           latex: String.raw`\#\text{orbits} = \frac{1}{|G|} \sum_{g \in G} |\mathrm{Fix}(g)|`,
           description: String.raw`Distinct colorings under symmetry = average number of colorings fixed by each symmetry. E.g. colorings of a cube's faces with $k$ colors: $\frac{k^6 + 3k^4 + 12k^3 + 8k^2}{24}$.`,
-          keywords: ["burnside", "symmetry", "orbits", "colorings", "rotations", "necklace", "pattern"],
+          keywords: ["burnside", "symmetry", "orbits", "colorings", "rotations", "necklace", "counting colorings up to symmetry", "pattern"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
         },

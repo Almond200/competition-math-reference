@@ -1239,9 +1239,9 @@ window.MATH_SECTIONS.push({
         {
           id: "british-flag-theorem",
           name: "British Flag Theorem",
-          latex: String.raw`PA^2 + PC^2 = PB^2 + PD^2`,
-          description: String.raw`For any point $P$ and rectangle $ABCD$: the sums of squared distances to opposite corners are equal. Holds even if $P$ is outside the rectangle or off its plane.`,
-          keywords: ["rectangle", "distances to corners", "squares", "any point"],
+          latex: String.raw`PA^2 + PC^2 = PB^2 + PD^2, \qquad \text{box } ABCDEFGH:\;\; PA^2 + PG^2 = PB^2 + PH^2 = PC^2 + PE^2 = PD^2 + PF^2`,
+          description: String.raw`For any point $P$ and rectangle $ABCD$: the sums of squared distances to opposite corners are equal, and it holds even if $P$ is outside the rectangle or off its plane. A rectangular box carries the stronger statement, since the sums to all four pairs of diagonally opposite vertices agree; applying it twice gives $2PA^2 + PG^2 = PB^2 + PC^2 + PD^2$, which is the form contest problems actually use.`,
+          keywords: ["rectangle", "distances to corners", "squares", "any point", "british flag in 3d", "rectangular box", "diagonally opposite vertices", "sum of squared distances"],
           importance: "medium",
           level: ["AMC12", "AIME"]
         },
@@ -1279,7 +1279,7 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "ellipse-properties",
-          name: "Ellipse: Foci, Axes & Area",
+          name: "Ellipse Properties",
           latex: String.raw`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1, \quad a > b: \qquad PF_1 + PF_2 = 2a, \qquad c^2 = a^2 - b^2, \qquad [\text{ellipse}] = \pi ab`,
           description: String.raw`The locus of points whose distances to $(\pm c, 0)$ sum to $2a$. The semi-major axis $a$ is half that constant sum, $b$ is the semi-minor axis, and $c$ is the focal distance from the center; evaluating the locus at the end of the minor axis gives $a^2 = b^2 + c^2$ directly. The area $\pi ab$ is the circle's $\pi r^2$ with the two radii separated, which is what an affine stretch of a circle does to it.`,
           keywords: ["ellipse", "sum of distances to two foci", "semi-major axis", "semi-minor axis", "a squared equals b squared plus c squared", "area pi a b", "foci of an ellipse", "constant focal sum"],
@@ -1288,7 +1288,7 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "hyperbola-properties",
-          name: "Hyperbola: Foci, Asymptotes & the Rectangular Case",
+          name: "Hyperbola Properties",
           latex: String.raw`\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1: \qquad \lvert PF_1 - PF_2 \rvert = 2a, \qquad c^2 = a^2 + b^2, \qquad y = \pm\frac{b}{a}x, \qquad xy = k \text{ (rectangular)}`,
           description: String.raw`Same construction with a difference of focal distances instead of a sum, which is why $c$ now exceeds $a$ and the sign in the $c$-relation flips. The asymptotes are the lines the branches approach: drop the $1$ from the equation and it factors into exactly those two lines, so their slopes $\pm b/a$ control every direction the curve can eventually take. Rotating the rectangular case $a = b$ by $45^\circ$ turns it into $xy = k$, the reciprocal graph.`,
           keywords: ["hyperbola", "difference of distances", "asymptotes of a hyperbola", "slope b over a", "c squared equals a squared plus b squared", "rectangular hyperbola", "xy = k", "branches", "conjugate axis"],
@@ -1297,7 +1297,7 @@ window.MATH_SECTIONS.push({
         },
         {
           id: "parabola-focus-directrix",
-          name: "Parabola: Focus, Directrix & Latus Rectum",
+          name: "Parabola Focus & Directrix",
           latex: String.raw`x^2 = 4py: \quad \text{focus } (0, p), \quad \text{directrix } y = -p, \quad \text{latus rectum} = \lvert 4p \rvert, \qquad y = ax^2 \implies p = \frac{1}{4a}`,
           description: String.raw`Every point is equidistant from the focus and the directrix, which is the definition the coordinate form encodes. The latus rectum, the focal chord perpendicular to the axis, has length $\lvert 4p \rvert$, so the coefficient in $x^2 = 4py$ is that chord read off directly. Going the other way, a parabola handed to you as $y = ax^2 + bx + c$ has $p = \frac{1}{4a}$, measured from its vertex along the axis of symmetry.`,
           keywords: ["parabola", "focus and directrix", "equidistant from a point and a line", "latus rectum", "focal chord", "x squared equals 4py", "p equals 1 over 4a", "axis of symmetry"],
@@ -1683,7 +1683,7 @@ window.MATH_SECTIONS.push({
       ]
     },
     {
-      title: "Projective Geometry & Inversion",
+      title: "Projective Geometry & Cross-Ratio",
       formulas: [
         {
           id: "brianchon-theorem",

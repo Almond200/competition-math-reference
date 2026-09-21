@@ -2342,4 +2342,25 @@ Use it in the backwards direction almost always. A tilted plane cuts a solid and
 ## On contests
 This is the card that makes a class of AIME solids tractable without any integration. 2015 AIME I #15 is the clearest: the slanted section of a cylinder is its own shadow on the base stretched by a constant factor, so the area follows from a [[circular-segment|circular segment]] and one cosine. 2019 HMMT February Geometry #9 is the same move, finding the pentagonal section of a box by projecting onto the bottom face and dividing by the cosine of the angle between the two normals. Two things it is not: a shadow cast by a nearby lamp, which is a central projection and scales by similar triangles instead, and the projection of a single length, which is [[vector-projection|the vector projection]] and carries no area at all.`,
 
+
+"euler-line-parallel-side": String.raw`## Why it works
+Both centers sit above $BC$, so the line joining them is parallel to $BC$ exactly when their heights above it are equal. One of those heights costs nothing, because [[orthocenter-properties|the circumcenter's distance to a side]] is half the distance from the opposite vertex to the orthocenter, so the height of $O$ is $\frac{1}{2}AH$ whatever the triangle. Imposing that $H$ sits at the same height gives $HD = \frac{1}{2}AH$ directly, so the altitude from $A$ is cut in the ratio $2 : 1$ at the orthocenter.
+
+Converting to angles needs only the two standard distances, $AH = 2R\cos A$ and $HD = 2R\cos B\cos C$. Equating $\cos A$ with $2\cos B\cos C$, then writing $\cos A = -\cos(B+C) = \sin B\sin C - \cos B\cos C$ and dividing through by $\cos B\cos C$, leaves $\tan B\tan C = 3$. The same two distances give the general ratio $AH : HD = (\tan B\tan C - 1) : 1$, which is worth carrying on its own: the parallel configuration is just its $2 : 1$ case.
+
+## How to use it
+Recognition runs in both directions, and which one you need is usually obvious from the problem. Told that the Euler line is parallel to a side, immediately write $\tan B\tan C = 3$ and treat it as one more equation in the angles; told two angles whose tangents multiply to $3$, you know the configuration without computing either center. The altitude reading is the one to reach for when the problem gives you a length rather than an angle, since it turns the whole configuration into a $2 : 1$ division of a segment you can already measure.
+
+Two cautions. The condition is symmetric in $B$ and $C$ but says nothing about $A$, so it pins down a one-parameter family, not a specific triangle. And $B = C$ collapses it: $\tan^2 B = 3$ forces $B = 60^\circ$ and an equilateral triangle, where $O$ and $H$ coincide and there is no line to be parallel to anything. An isosceles configuration is therefore never the intended reading.
+
+## Key forms
+- $\tan B\tan C = 3$ — the angle test, and the quickest way in
+- $AH : HD = (\tan B\tan C - 1) : 1$ — the general ratio along the $A$-altitude
+- $AH = 2\,HD$ — the parallel case, the orthocenter two thirds of the way down from $A$
+- $\cos A = 2\cos B\cos C$ — the same statement before dividing through
+- $B = C$ — degenerate: forces equilateral, where the Euler line does not exist
+
+## On contests
+This is a configuration to recognize rather than a theorem to quote, and it earns its place because the parallel hypothesis looks like it says nothing computable until you convert it. Once $\tan B\tan C = 3$ is on the page it combines with the [[law-of-sines|law of sines]] or with $A + B + C = 180^\circ$ like any other angle relation. The altitude form pairs with [[euler-line-ratio|the Euler line]] itself when a problem also involves the centroid, since $G$ is fixed at one third of the way from $O$ to $H$ along the line you have just placed.`,
+
 });

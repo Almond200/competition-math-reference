@@ -1,10 +1,13 @@
 # Competition Math Reference
 
-A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 534 cards
+A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 535 cards
 covering formulas, general techniques, and recurring problem formats, plus a database of
 1367 past contest problems cross-linked to the cards their solutions run through.
 
-Fully static: no build step, no server, no dependencies to install.
+Fully static and fully offline: no build step, no server, and nothing fetched at runtime. KaTeX
+0.16.11 is vendored under `vendor/katex/` (its CSS, its JS, and the twenty woff2 faces the CSS
+asks for), so the app renders the same on a plane or behind a network that blocks CDNs. It used to
+load KaTeX from jsdelivr, where a block meant every formula in the library showed as raw LaTeX.
 
 ## The two books
 
@@ -47,7 +50,7 @@ Hybrid retrieval, rebuilt from scratch and measured rather than tuned by eye.
 Press `/` to focus the box, `Esc` to clear.
 
 `tools/search-eval.html` runs 183 labelled queries against the live app and diffs every one
-against `tools/eval-baseline.json`. Current: 165/183 top-1, 96.2% top-3, MRR 0.933.
+against `tools/eval-baseline.json`. Current: 164/183 top-1, MRR 0.930 (warm run).
 **Wait for the semantic vectors to load before reading results**, or the run under-reports
 by a point or two; compare warm runs to warm runs.
 
@@ -57,7 +60,7 @@ by a point or two; compare warm runs to warm runs.
   to the tiers from `high` down to `lowest`.
 - **Problem database** (`Database`) lists past contest problems by year and family, each
   linked to the cards its solution uses, with a one-line strategy note.
-- **Study lists** (`Lists`) hold 27 curated sets alongside your own. Twelve contest routes
+- **Study lists** (`Lists`) hold 31 curated sets alongside your own. Twelve contest routes
   (tier x subject) plus four olympiad ones are *complete by construction* — every card
   carrying that level and subject is in them, which `tools/check-lists.py` enforces. A list
   you build yourself is grouped into sections automatically, by matching its cards against
@@ -111,6 +114,7 @@ tools/validate-problem-db.js   checks every problem's card and topic ids resolve
 tools/scan-conventions.py      the census behind CONVENTIONS.md; fails on a broken rule
 tools/check-diagrams.py        every figure fits its canvas and no two labels collide
 tools/check-lists.py           list ids resolve, and every route is complete
+tools/check-topics.py          every card carries a topic chip, and no subsection title awards a wrong one
 tools/check-lab.sh             parse-checks the inline script of each lab page
 ```
 

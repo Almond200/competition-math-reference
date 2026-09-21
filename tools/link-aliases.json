@@ -580,8 +580,7 @@
    "Eisenstein’s"
   ],
   "ellipse-properties": [
-   "Ellipse: Foci, Axes",
-   "Ellipse: Foci, Axes & Area"
+   "Ellipse Properties"
   ],
   "ellipse-tangent-line": [
    "Ellipse Tangent to a Line",
@@ -616,6 +615,9 @@
    "Euler's Distance Formula",
    "Eulers",
    "Euler’s"
+  ],
+  "euler-line-parallel-side": [
+   "Euler Line Parallel to a Side"
   ],
   "euler-line-ratio": [
    "The Euler Line"
@@ -910,8 +912,7 @@
    "Monge's Theorem"
   ],
   "hyperbola-properties": [
-   "Hyperbola: Foci, Asymptotes",
-   "Hyperbola: Foci, Asymptotes & the Rectangular Case"
+   "Hyperbola Properties"
   ],
   "hypergeometric": [
    "Hypergeometric Distribution"
@@ -1302,9 +1303,8 @@
    "Pappus’s"
   ],
   "parabola-focus-directrix": [
-   "Latus Rectum",
-   "Parabola: Focus, Directrix",
-   "Parabola: Focus, Directrix & Latus Rectum"
+   "Parabola Focus",
+   "Parabola Focus & Directrix"
   ],
   "partitions": [
    "Partitions and Compositions"

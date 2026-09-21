@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 534
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 535
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -15,8 +15,8 @@ reference rather than people editing it.
 **Four headings, and no fifth.** A write-up uses `## Why it works`, `## How to use it`,
 `## On contests`, and optionally `## Key forms`. Do not invent another one. A card may gain or
 lose its Key forms block as its content changes — that is not "adding a subsection", which is
-what this rule is about. Census across 534 write-ups: Why it works 534, On contests 534, How to
-use it 534, Key forms 106, and one sanctioned exception (`mean-chain` carries a `## Full proof`
+what this rule is about. Census across 535 write-ups: Why it works 535, On contests 535, How to
+use it 535, Key forms 107, and one sanctioned exception (`mean-chain` carries a `## Full proof`
 holding complete proofs of the four mean inequalities, which genuinely is not a "why it works").
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
@@ -339,17 +339,22 @@ that is the signal to split instead.
 
 Recorded, not built. Each has its research already done so it can be picked up cold.
 
-### The 3D British Flag theorem belongs on `british-flag-theorem`
+### The 3D British Flag theorem belongs on `british-flag-theorem` — DONE 2026-09-20
 
-The card says the planar statement "holds even if $P$ is outside the rectangle or off its plane".
-That is a weaker claim than the **box** version, which is what 2021 AIME I #6 actually wants: for a
-rectangular box, the sums of squared distances to *diagonally opposite* vertices all agree,
+The card said only that the planar statement "holds even if $P$ is outside the rectangle or off its
+plane", which is weaker than the box version 2021 AIME I #6 actually uses. The latex now carries
 
-$$PA^2 + PG^2 = PB^2 + PH^2 = PC^2 + PE^2 = PD^2 + PF^2.$$
+$$PA^2 + PG^2 = PB^2 + PH^2 = PC^2 + PE^2 = PD^2 + PF^2,$$
 
-Applying it twice gives the form that problem uses, $2PA^2 + PG^2 = PB^2 + PC^2 + PD^2$. Put the box
-form in the latex. Once it is there, 2021 I #6 could reasonably be tagged to this card instead of
-to `coordinate-bash` — right now it is not, because the card does not state what the problem needs.
+and the description gives the doubled form $2PA^2 + PG^2 = PB^2 + PC^2 + PD^2$.
+
+**No retag followed, and the original note was wrong about why.** It claimed 2021 I #6 "could
+reasonably be tagged to this card instead of to `coordinate-bash`". Reading the entry, the problem
+already carries `british-flag-theorem` in `trickFormulas`, with trick prose that derives exactly
+this box form. That is the correct classification under the rule in CONVENTIONS &sect;11 — the
+dividing line is feasibility, and coordinate-bashing it is entirely feasible, so British Flag is a
+shortcut over a standard route rather than a required tool. The real gap was that the card did not
+state what its own trick used.
 
 ### A way to draw real 3D figures — BUILT
 
@@ -405,6 +410,47 @@ variables. On top of that, all three lose the same four working features:
 One gotcha for whoever builds it: `tidyDiagram` re-appends every filled circle of radius $\le 7$ to
 the end of the SVG (`js/app.js:1702`), so a vertex dot drawn *behind* a face gets hoisted in front
 of it. Use a larger radius or an unfilled marker on projected solids.
+
+## Persisted state must never be rebuilt from loaded data
+
+Two bugs of the same shape destroyed user data, and both were invisible to every gate. The rule
+that prevents a third: **anything read from `localStorage` may only be written back by merging into
+it. Never rebuild it from something derived from the data files**, because those files can fail to
+load and the derived thing is then empty.
+
+- **`loadLists()` pruned saved list ids against `BY_ID`.** `BY_ID` comes from
+  `window.MATH_SECTIONS`, which is `[]` when a data script does not run, so one mistyped `?v=` or a
+  half-populated cache emptied every list in memory -- and the next `saveLists()`, one star-click
+  away, made it permanent. **Reproduced before fixing**: with `number-theory.js` missing, a
+  five-card list fell to two after a single click, and restoring the file did not bring the three
+  cards back. The prune was also redundant: every render path already does
+  `.map(id => BY_ID[id]).filter(Boolean)`, so an unresolvable id is invisible rather than broken
+  and returns intact when the data does. Displayed counts now use `liveCount()`, which filters for
+  display only and leaves storage alone.
+- **`saveSettings()` rebuilt `out.sections` from `SECTION_IDS`.** Same derivation, same failure:
+  on a page where the data did not load it wrote `sections: {}` and erased all six per-section
+  filters, on the reader's first click. It now reads the stored object and merges into it, so keys
+  the current page cannot see survive.
+
+Two smaller failure paths were closed at the same time, both of which failed **silently**, which is
+what made them worth finding:
+
+- `saveLists()` and `saveSettings()` swallowed every exception. Safari private browsing and a full
+  quota both throw, so a reader could build a thirty-card list, close the tab and lose it having
+  been told nothing. Both now return a boolean and route failure through `storageFailed()`, which
+  toasts **once per session** -- repeating it on every click would be worse than silence.
+- Both copy buttons called `navigator.clipboard.writeText(...).then(...)` with no `.catch()`.
+  That API is secure-context-only, so on a plain-http origin -- a classroom or LAN server --
+  `navigator.clipboard` is `undefined` and the click threw a TypeError the reader never saw.
+  `copyText()` now tries the modern API, falls back to a hidden-textarea `execCommand`, and toasts
+  if both fail. Deliberately no global `unhandledrejection` handler: a catch-all would hide the
+  next bug of this kind instead of surfacing it.
+
+Finally, `?debug=1` now warns when `MathSemantic.info().cards` disagrees with the library's card
+count. A stale index loads, answers, and is quietly wrong; CONVENTIONS made checking it a manual
+step, which is exactly the kind of step that gets skipped. Watch the state machine when touching
+it -- the loader starts at `idle`, not `loading`, and a first version of this check compared an
+undefined count and warned about a healthy index.
 
 ## Filing: what goes where, and the moves already made
 
@@ -466,7 +512,7 @@ rather than only moving old ones:
 - A **Systems & Determinants** cluster inside Methods &rsaquo; Algebra, for the two method cards.
 
 When a card moves into a new subsection, check the curated lists as well as the routes: see the
-duplicate-placement gate in CONVENTIONS &sect;8, which exists because this batch broke it.
+duplicate-placement gate in CONVENTIONS &sect;9, which exists because this batch broke it.
 
 ## Writing a cross-link
 
@@ -551,7 +597,7 @@ Two related findings from the same audit:
 ## Auto-sectioning a saved list: what the scoring has to defend against
 
 A saved list is a flat array, so `autoSections()` in `js/app.js` matches it against headings already
-written by hand — the built-in lists' 160 sections, the 23 `TAG_GROUPS` families, then the library's
+written by hand — the built-in lists' 228 sections, the 25 `TAG_GROUPS` families, then the library's
 own subsections. Two things about it were learned the hard way and should not be undone:
 
 - **Do not merge same-titled sections across tiers.** The first version did, to improve coverage.
@@ -591,11 +637,24 @@ is why `tools/search-eval.html` carries its own cache-buster.
 
 **Compare warm to warm, and say which you ran.** The semantic index loads lazily, so a cold first
 run and a warm re-run disagree on a handful of near-tied queries in both directions; warm runs are
-reproducible to the individual query (three consecutive runs gave identical output). Over 534 cards
-the original 171 queries give **153 cold, 154 warm**, against the **155 warm** recorded before this
-work and the **153** stored in `eval-baseline.json`, which was itself a cold capture. Warm to warm
-that is a **net loss of one query out of 171** while the corpus grew 3%. It is small and it is
-real; do not report it as a measurement artifact.
+reproducible to the individual query (three consecutive runs gave identical output). Over 535 cards
+the original 171 queries give **153 warm**, against the **155 warm** recorded before this work and
+the **153** stored in `eval-baseline.json`, which was itself a cold capture. Warm to warm that is a
+**net loss of two queries out of 171** while the corpus grew 3%. Small, real, and not a
+measurement artifact -- do not report it as one. The full set is **164/183, MRR 0.9295**.
+
+**Every point lost was traced, and one of them was a genuine defect worth recording.** Adding
+`euler-line-parallel-side` dropped the score by two, and the reason was not jostling: the new card
+took first place on `line through the circumcenter centroid and orthocenter`, a query whose answer
+is the Euler line card itself. Its keywords had included `circumcenter and orthocenter same height`
+and `orthocenter divides the altitude 2:1`, phrases that name the general objects rather than the
+special configuration, so a card about one case out-ranked the card about the rule. Narrowing them
+to what is distinctive -- the parallel condition, $\tan B\tan C = 3$, the $2:1$ division --
+recovered the point. **A special case must never out-rank the general card it specialises; check
+for it by name whenever you add one.** The other point went to
+`complex numbers on the unit circle`, where `complex-bash` edged out `roots-of-unity`; that one is
+a semantic near-tie with no honest fix, since `roots-of-unity` already carries `unit circle` as a
+keyword and adding more would be gaming the metric.
 
 The query set is now **183**. Twelve were added for the matrices, conics and projection cards, and
 **eleven of the twelve rank first**; the miss is `is this equation an ellipse or a hyperbola`,
@@ -684,31 +743,45 @@ addresses them. Card ids are safe everywhere — details, examples, diagrams, pr
 `section` off the **file name**, not the section object, so moving a card between subsections needs no
 index rebuild; moving it between files does.
 
-### A bug that is worth fixing on its own
+### A bug that was worth fixing on its own — FIXED 2026-09-20
 
-Because `TOPIC_RULES` matches against titles, several subsections currently mis-tag their contents:
+`TOPIC_RULES` matched against subsection titles, so several subsections mis-tagged their contents.
+Measured before the fix: **38 cards carried a chip their subsection title awarded and the card did
+not deserve**, and **20 cards carried no chip at all**, which made them unreachable by topic
+browsing. Both are now zero, gated by `tools/check-topics.py`.
 
-- `"Divisor Functions & Totient"` matches `/totient/` in the *modular-arithmetic* rule, so nine
-  divisor cards (`number-of-divisors`, `sum-of-divisors`, `mobius-inversion`, …) wrongly carry a
-  **modular arithmetic** chip.
-- `"Stars & Bars / Distributions"` matches `/distribution/` in the *probability* rule, so
-  `stars-and-bars` and `stars-bars-upper-bound` carry a **probability** chip.
-- `"Symmetry, Partitions & Posets"` matches `/partition/` in the *stars-bars* rule, so
-  `dilworths-theorem`, `sperners-theorem` and friends carry a **stars & bars** chip.
-- `"Polygons & Quadrilaterals"` cross-tags both ways, and the tools subsection
-  `"Counting & Probability"` gives pure counting methods a **probability** chip.
+The fix is described in CONVENTIONS &sect;8. In short: the assignment moved into a named
+`topicsForCard` function so the gate can lift it verbatim instead of restating it; Methods and
+Patterns subsection titles are never fed in, because they are subject names; and a four-entry
+`TITLE_STOP` vetoes a specific topic on a specific subsection, but only when the card's own words
+do not independently earn it, so **zero correct chips were lost**.
 
-This is independent of any reorganisation: the fix is to stop feeding `sub.title` into the topic
-haystack, or to anchor the regexes. Doing that first would also de-risk every rename below.
+One design was tried and rejected, recorded so it is not retried: *use the title only when the
+card's own words yield nothing.* It loses 56 correct chips and still leaves 10 wrong ones.
+
+Three loose regexes were tightened at the same time, each measured first: `/factor/` was matching
+`cofactor`, `factorial` and "scale factor"; `/similar/` put a `triangles` chip on "similar conics";
+a bare `/degree/` matched "second degree equation". Exactly seven chips were dropped and all seven
+were false positives.
+
+Six cross-section topics were added, since the taxonomy splits these clusters across files and a
+cross-file move is forbidden: `conics` (11 cards), `linear-algebra` (14), `transformations` (39),
+`floors-abs` (21), `convexity` (8), `games` (3). The last of these also gives the one-card
+"Combinatorial Game Theory" subsection somewhere to belong without moving anything.
 
 ### Titles that no longer describe their contents
 
-- **Geometry › "Projective Geometry & Inversion" (8) contains no inversion card.** The inversion
-  cards are `inversion-properties` and `pole-polar`, both in `patterns.js` under Methods. Either drop
-  "& Inversion" or move one in.
-- **Counting › "Pigeonhole & Double Counting" (4) contains no double-counting card** — `double-counting`
-  is in Methods. It also holds `handshake-lemma`, which is graph theory and belongs beside
-  `eulerian-paths`, which already depends on it.
+- ~~**Geometry › "Projective Geometry & Inversion" (8) contains no inversion card.**~~ **Done
+  2026-09-20**: renamed to **"Projective Geometry & Cross-Ratio"**, which describes the actual
+  contents (cross-ratio, harmonic bundle, harmonic quadrilateral, Möbius) and removed the word that
+  was awarding a false `circles` chip to `desargues-theorem` and `harmonic-bundle`. Moving an
+  inversion card in was the alternative and was rejected: both live in `patterns.js`, so it would
+  have been a cross-file move.
+- ~~**Counting › "Pigeonhole & Double Counting" (4) contains no double-counting card**~~ **Done
+  2026-09-20**: `handshake-lemma` moved to Graph Theory beside `eulerian-paths`, which already
+  depends on it, and the remainder renamed to **"Pigeonhole & Ramsey Theory"** for its actual
+  contents (`pigeonhole`, `ramsey-33`, `erdos-szekeres`). Neither rename moved search: warm-to-warm
+  the eval is unchanged at 165/183, 154/171, MRR 0.9332.
 - **Geometry › "Advanced Triangle Theorems" (29)** is three groups wearing one title: fundamentals
   that are not advanced (`law-of-sines`, `law-of-cosines`, `angle-bisector-theorem`,
   `projection-formula`), five derived triangles (`pedal-`, `orthic-`, `medial-`, `contact-`,

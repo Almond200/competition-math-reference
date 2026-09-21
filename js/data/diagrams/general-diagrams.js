@@ -55,7 +55,9 @@
       if (typeof p === "string" && p.charCodeAt(0) === 1) { caption = p.slice(1); return false; }
       return true;
     });
-    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${body.join("")}</svg>` +
+    // aria-hidden: see the note on the same line in geometry-diagrams.js -- the
+    // caption after the figure is what a screen reader should read.
+    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${body.join("")}</svg>` +
            (caption ? `<div class="diagram-cap">${caption}</div>` : "");
   };
 

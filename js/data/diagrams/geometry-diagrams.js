@@ -146,7 +146,11 @@
       if (typeof p === "string" && p.charCodeAt(0) === 1) { caption = p.slice(1); return false; }
       return true;
     });
-    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${body.join("")}</svg>` +
+    // aria-hidden because the figure carries no text a screen reader can use: every
+    // label inside is a bare letter or a symbol, and the meaning lives in the cap()
+    // caption sitting right after it in the DOM. Left exposed, each diagram was
+    // announced as an unlabeled graphic -- 221 of them.
+    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${body.join("")}</svg>` +
            (caption ? `<div class="diagram-cap">${caption}</div>` : "");
   };
 
@@ -4336,6 +4340,46 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(mid(top[2], top[3]), [8, -12]), "area A", ACC, 12, "start"),
       txt(add(mid(bot[2], bot[3]), [10, 24]), "A · cos θ", FNT, 12, "start"),
       cap(430, 330, "the hinge keeps its length and the perpendicular direction shrinks by cos θ, so every region on the tilted plane casts a shadow of cos θ times its area")
+    ]);
+  })()];
+
+
+  DIAGRAMS["euler-line-parallel-side"] = [(() => {
+    // tan B tan C = 3, taken as C = 45 degrees and tan B = 3. The triangle is built
+    // from those angles and O, H, D come from the existing constructors, so the line
+    // OH comes out horizontal because the configuration makes it so, not because it
+    // was drawn that way.
+    const Bang = Math.atan(3), Cang = rad(45), Aang = Math.PI - Bang - Cang;
+    const k = 148, a = 2 * Math.sin(Aang), b = 2 * Math.sin(Bang), c = 2 * Math.sin(Cang);
+    const Bp = [96, 286], Cp = [96 + k * a, 286];
+    const ax = (c * c - b * b + a * a) / (2 * a);
+    const Ap = [96 + k * ax, 286 - k * Math.sqrt(c * c - ax * ax)];
+    const O = circumcenterOf(Ap, Bp, Cp), H = orthocenterOf(Ap, Bp, Cp), D = foot(Ap, Bp, Cp);
+    // O's own foot on BC. It lands on the midpoint, because the perpendicular from the
+    // circumcenter to a chord bisects it -- the single tick on each half says so.
+    const M = foot(O, Bp, Cp);
+    const eL = [40, O[1]], eR = [396, O[1]];
+    return wrap(430, 340, [
+      poly([Ap, Bp, Cp], DIM, 2),
+      seg(Ap, D, FNT, 1.5, "5 4"), rightAngle(D, Ap, Cp, 10),
+      seg(eL, eR, GLD, 2, "7 5"),
+      seg(Ap, H, ACC, 3.4), seg(H, D, ORG, 3.4),
+      seg(O, M, GLD, 1.4, "3 4"), rightAngle(M, O, Cp, 9, GLD),
+      // The equal-halves ticks sit BELOW BC: in this triangle the midpoint of BM
+      // coincides with the altitude foot D, so a tick drawn on the line would vanish
+      // under it.
+      ...[mid(Bp, M), mid(M, Cp)].map(q => seg(add(q, [0, 7]), add(q, [0, 17]), GLD, 2.2)),
+      dot(O, GLD, 5), dot(H, ACC, 5), dot(D, ORG, 4), dot(Ap, DIM, 4), dot(Bp, DIM, 4), dot(Cp, DIM, 4),
+      txt(add(Ap, [0, -12]), "A", DIM, 13),
+      txt(add(Bp, [-13, 6]), "B", DIM, 13), txt(add(Cp, [13, 6]), "C", DIM, 13),
+      txt(add(O, [10, -9]), "O", GLD, 13, "start"),
+      txt(add(H, [-13, -6]), "H", ACC, 13, "end"),
+      txt(add(D, [-13, 17]), "D", ORG, 12.5),
+      dot(M, GLD, 4), txt(add(M, [14, 15]), "M", GLD, 12.5),
+      txt(add(mid(Ap, H), [-11, 4]), "2t", ACC, 12.5, "end"),
+      txt(add(mid(H, D), [-11, 4]), "t", ORG, 12.5, "end"),
+      txt([eR[0] - 6, O[1] - 10], "Euler line", GLD, 11, "end"),
+      cap(430, 340, "O and H stand at the same height above BC, and that height is always half of AH — so AH = 2·HD, and in angles tan B · tan C = 3. O drops onto the midpoint M, since the perpendicular from a circumcenter bisects its chord")
     ]);
   })()];
 
