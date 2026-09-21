@@ -67,6 +67,15 @@ window.MATH_SECTIONS.push({
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
+          id: "perpendicular-bisector-locus",
+          name: "Perpendicular Bisector as a Locus",
+          latex: String.raw`PA = PB \iff P \text{ lies on the perpendicular bisector of } AB`,
+          description: String.raw`The set of points equidistant from $A$ and $B$ is exactly the perpendicular bisector of $AB$ — not merely contained in it, which is what makes the converse usable. Three consequences carry almost every appearance: the center of any circle through $A$ and $B$ lies on it, so three of them meet at the circumcenter and that is why a circumcenter exists at all; reflecting across it swaps $A$ and $B$, which is the fold-and-crease reading; and a point constrained to be equidistant from two others has one fewer degree of freedom, turning a condition into a line.`,
+          keywords: ["perpendicular bisector", "equidistant from two points", "locus of equal distances", "center of a circle through two points", "circumcenter construction", "crease of a fold", "PA = PB", "reflection axis swapping two points"],
+          importance: "high",
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
+        },
+        {
           id: "similar-figures-ratios",
           name: "Similar Figure Ratios",
           latex: String.raw`\frac{\ell_1}{\ell_2} = k, \qquad \frac{A_1}{A_2} = k^2, \qquad \frac{V_1}{V_2} = k^3`,
@@ -338,6 +347,15 @@ window.MATH_SECTIONS.push({
           level: ["AMC10", "AMC12", "AIME"]
         },
         {
+          id: "conway-circle",
+          name: "The Conway Circle",
+          latex: String.raw`\text{extend each side past each endpoint by the opposite side} \implies \text{six concyclic points}, \quad \rho = \sqrt{r^2 + s^2}`,
+          description: String.raw`At each vertex, extend both sides through it by the length of the side opposite that vertex. The six endpoints produced are concyclic, the center is the incenter, and the radius is $\sqrt{r^2+s^2}$ with $s$ the semiperimeter. The construction looks arbitrary and the conclusion does not: each extension is arranged so that the tangent lengths from a vertex come out equal, which is what puts all six points the same distance from $I$.`,
+          keywords: ["conway circle", "extend the sides by the opposite side", "six concyclic points", "centered at the incenter", "radius sqrt(r^2 + s^2)", "semiperimeter and inradius"],
+          importance: "low",
+          level: ["AMC12", "AIME"]
+        },
+        {
           id: "incircle-excircle-touch",
           name: "Incircle & Excircle Touch Points",
           latex: String.raw`\text{on } BC:\ X_{\text{in}} = s - b \text{ from } B,\ \ X_{A} = s - c \text{ from } B,\ \ X_{\text{in}}X_{A} = |b - c|`,
@@ -577,6 +595,15 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "cotangent-rule",
+          name: "The Cotangent Rule",
+          latex: String.raw`\cot A = \frac{b^2 + c^2 - a^2}{4K}, \qquad \cot A + \cot B = \frac{c^2}{2K}`,
+          description: String.raw`One line from the law of cosines and the sine area formula together: $\cos A = \frac{b^2+c^2-a^2}{2bc}$ divided by $\sin A = \frac{2K}{bc}$ leaves the $bc$ cancelled and $4K$ underneath. It is the standard way any cotangent of a triangle angle collapses to side lengths, and the corollary is the one that usually finishes the problem, since adding two of them cancels everything but the third side.`,
+          keywords: ["cotangent rule", "cot A in terms of sides", "cot A = (b^2+c^2-a^2)/4K", "sum of two cotangents", "cotangent to side lengths", "trig to algebra in a triangle"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "projection-formula",
           name: "Projection Formula",
           latex: String.raw`a = b\cos C + c\cos B, \qquad b = c\cos A + a\cos C, \qquad c = a\cos B + b\cos A`,
@@ -615,6 +642,15 @@ window.MATH_SECTIONS.push({
           description: String.raw`Drop perpendiculars from a point $P$ to the three sides; their feet form the pedal triangle of $P$. Its area is $\frac{|R^2 - OP^2|}{4R^2}[ABC]$, so it collapses to a line exactly when $OP = R$ — $P$ on the circumcircle — which is precisely the Simson line (the degenerate pedal triangle). The pedal triangle of the incenter is the contact triangle, and the general area formula is the unifying statement behind Simson, the medial triangle ($P=O$), and orthocentric pedal facts.`,
           keywords: ["pedal triangle", "feet of perpendiculars", "pedal area formula", "simson line degenerate", "R^2 minus OP^2", "contact triangle", "orthic triangle"],
           importance: "lower",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "anticomplementary-triangle",
+          name: "Anticomplementary Triangle",
+          latex: String.raw`\triangle A'B'C' \text{ with } ABC \text{ as its medial triangle}: \quad R' = 2R, \quad [A'B'C'] = 4[ABC], \quad O' = H`,
+          description: String.raw`Run the medial triangle backwards: $A'B'C'$ is the triangle whose side midpoints are $A$, $B$ and $C$, obtained by the homothety at the centroid with ratio $-2$. Sides are parallel to the original and twice as long, so the circumradius doubles and the area quadruples. The centers shuffle in a way worth knowing: the circumcenter of $A'B'C'$ is the orthocenter of $ABC$, its nine-point center is the circumcenter of $ABC$, and its orthocenter is the reflection of $H$ over $O$, the de Longchamps point.`,
+          keywords: ["anticomplementary triangle", "antimedial triangle", "medial triangle backwards", "homothety at the centroid ratio -2", "circumcenter is the orthocenter", "de longchamps point", "circumradius doubles"],
+          importance: "low",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -720,6 +756,15 @@ window.MATH_SECTIONS.push({
           keywords: ["circumcircle point", "perpendicular feet", "collinear", "simson"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "steiner-line",
+          name: "The Steiner Line",
+          latex: String.raw`P \in \odot(ABC): \quad \text{reflections of } P \text{ in } BC, CA, AB \text{ are collinear, on a line through } H`,
+          description: String.raw`Reflect a point $P$ of the circumcircle in each of the three sidelines and the three images land on one line — the Steiner line of $P$ — and that line passes through the orthocenter. It is the Simson line of the same point blown up by a factor of $2$ from $P$, since a reflection is twice the foot of the perpendicular, so the two results are one result at two scales. Both degenerate together: as $P$ approaches a vertex the line approaches the altitude from it.`,
+          keywords: ["steiner line", "reflections of a point on the circumcircle", "collinear reflections", "passes through the orthocenter", "twice the simson line", "point on the circumcircle"],
+          importance: "lower",
+          level: ["Olympiad"]
         },
         {
           id: "brocard-angle",
@@ -1029,6 +1074,15 @@ window.MATH_SECTIONS.push({
           level: ["AIME", "Olympiad"]
         },
         {
+          id: "sawayama-thebault",
+          name: "The Sawayama–Thébault Lemma",
+          latex: String.raw`\omega \text{ tangent to } AD,\ BC \text{ and internally to } \odot(ABC) \implies I \in \text{chord of contact of } \omega`,
+          description: String.raw`Take any cevian $AD$ of a triangle and a circle tangent to that cevian, tangent to $BC$, and internally tangent to the circumcircle. The line joining its two tangency points passes through the incenter — whatever the cevian was. It is the reason a configuration with a circle wedged into a cevian is usually an incenter problem in disguise, and it specializes to the mixtilinear case when the cevian is a side.`,
+          keywords: ["sawayama lemma", "thebault theorem", "curvilinear incircle", "circle tangent to a cevian", "chord of contact through the incenter", "internally tangent to the circumcircle"],
+          importance: "lowest",
+          level: ["Olympiad"]
+        },
+        {
           id: "caseys-theorem",
           name: "Casey's Theorem",
           latex: String.raw`t_{12}t_{34} + t_{14}t_{23} = t_{13}t_{24}`,
@@ -1097,12 +1151,30 @@ window.MATH_SECTIONS.push({
           level: ["AMC12", "AIME"]
         },
         {
+          id: "ptolemy-second-theorem",
+          name: "Ptolemy's Second Theorem",
+          latex: String.raw`ABCD \text{ cyclic}: \qquad \frac{AC}{BD} = \frac{AB\cdot AD + CB\cdot CD}{BA\cdot BC + DA\cdot DC}`,
+          description: String.raw`The companion to the product formula: where Ptolemy's theorem gives $AC \cdot BD$, this gives the ratio $AC / BD$, so the two together determine each diagonal separately from the four sides alone. Each side of the fraction collects the two products of sides meeting at the endpoints of the diagonal you are not asking about, which is the pattern to remember rather than the letters.`,
+          keywords: ["ptolemy second theorem", "ratio of the diagonals", "diagonal ratio cyclic quadrilateral", "both diagonals from the sides", "cyclic quadrilateral diagonals"],
+          importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
           id: "cyclic-quad-diagonals",
           name: "Cyclic Quadrilateral Diagonals",
           latex: String.raw`\frac{p}{q} = \frac{ad + bc}{ab + cd}, \qquad p^2 = \frac{(ac+bd)(ad+bc)}{ab+cd}`,
           description: String.raw`With sides $a, b, c, d$ in order and diagonals $p = AC$, $q = BD$: the diagonal ratio is a ratio of paired side-products, and combining with Ptolemy ($pq = ac + bd$) gives each diagonal explicitly from the four sides — no angles needed.`,
           keywords: ["second ptolemy", "diagonal ratio", "diagonal from sides", "cyclic quadrilateral diagonals"],
           importance: "low",
+          level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "japanese-theorem",
+          name: "The Japanese Theorem",
+          latex: String.raw`ABCD \text{ cyclic} \implies \text{the incenters of } \triangle ABC, BCD, CDA, DAB \text{ form a rectangle}`,
+          description: String.raw`Cut a cyclic quadrilateral by a diagonal, take the incenters of the two triangles, then do it again with the other diagonal: the four incenters are the vertices of a rectangle. Nothing about the quadrilateral beyond being cyclic is needed — the sides may be wildly unequal and the rectangle still appears, which is what makes it memorable. The sides of that rectangle are parallel to the angle bisectors of the two diagonals.`,
+          keywords: ["japanese theorem", "incenters form a rectangle", "cyclic quadrilateral incenters", "four triangles from the diagonals", "rectangle of incenters"],
+          importance: "lowest",
           level: ["AIME", "Olympiad"]
         },
         {
@@ -1113,6 +1185,15 @@ window.MATH_SECTIONS.push({
           keywords: ["cyclic quadrilateral area", "semiperimeter", "brahmagupta", "brahmagupta formula", "cyclic quadrilateral area", "area from four sides"],
           importance: "medium",
           level: ["AMC12", "AIME"]
+        },
+        {
+          id: "poncelet-closure",
+          name: "Bicentric Polygons & Poncelet Closure",
+          latex: String.raw`\text{triangle: } d^2 = R^2 - 2Rr, \qquad \text{quadrilateral: } \frac{1}{(R-d)^2} + \frac{1}{(R+d)^2} = \frac{1}{r^2}`,
+          description: String.raw`A polygon inscribed in one circle and circumscribed about another is bicentric, and that is a strong condition on the two circles alone: for a triangle it forces Euler's relation $d^2 = R^2 - 2Rr$, for a quadrilateral it forces Fuss's. Poncelet's closure theorem is the striking part — if even one such $n$-gon exists for a given pair of circles, then every point of the outer circle is a vertex of one, so the polygon can be rotated continuously and will still close up.`,
+          keywords: ["bicentric polygon", "poncelet closure", "poncelet porism", "chapple theorem", "fuss theorem", "inscribed and circumscribed circles", "closes for every starting point", "d squared equals R squared minus 2Rr"],
+          importance: "lowest",
+          level: ["Olympiad"]
         },
         {
           id: "pitots-theorem",
@@ -1701,6 +1782,15 @@ window.MATH_SECTIONS.push({
           description: String.raw`Inscribe any hexagon $ABCDEF$ in a circle (self-intersecting allowed): the three intersection points of opposite sides lie on one line — the Pascal line. The dual, Brianchon's theorem: a hexagon circumscribed about a circle has its three main diagonals concurrent. Degenerate versions (letting adjacent vertices merge so a side becomes a tangent line) are the contest-useful forms.`,
           keywords: ["pascal line", "hexagon in circle", "brianchon", "collinear intersections", "projective"],
           importance: "low",
+          level: ["Olympiad"]
+        },
+        {
+          id: "pappus-hexagon",
+          name: "Pappus's Hexagon Theorem",
+          latex: String.raw`A, B, C \in \ell;\ D, E, F \in m \implies AE \cap BD,\ AF \cap CD,\ BF \cap CE \text{ are collinear}`,
+          description: String.raw`Put three points on one line and three on another, join them crosswise, and the three crossing points line up. It is Pascal's theorem with the conic degenerated into a pair of lines, which is the cleanest way to remember both: six points on a conic give a Pascal line, and a pair of lines is a conic. Purely projective, so it survives any projection and needs no measurement at all — distinct from Pappus's centroid theorems, which are about solids of revolution.`,
+          keywords: ["pappus hexagon theorem", "pappus line", "three points on each of two lines", "crosswise intersections collinear", "degenerate pascal", "projective collinearity"],
+          importance: "lower",
           level: ["Olympiad"]
         },
         {

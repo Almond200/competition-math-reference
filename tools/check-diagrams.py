@@ -41,9 +41,17 @@ def dump(rel):
         fh.write(src)
         tmp = fh.name
     try:
-        return subprocess.run([JSC, tmp], cwd=ROOT, capture_output=True, text=True).stdout
+        res = subprocess.run([JSC, tmp], cwd=ROOT, capture_output=True, text=True)
     finally:
         os.unlink(tmp)
+    # A diagram file that throws used to look exactly like a file with no diagrams in it:
+    # stdout came back empty, this returned it, and the run reported OK on a smaller panel
+    # count. One undefined colour constant silently removed all 27 figures in
+    # general-diagrams.js from the app and every gate still passed. Never swallow it again.
+    if res.returncode != 0 or res.stderr.strip():
+        sys.exit("check-diagrams: %s failed to evaluate -- every figure in it is missing "
+                 "from the app.\n%s" % (rel, res.stderr.strip()))
+    return res.stdout
 
 
 def boxes(svg, cw):
@@ -101,7 +109,13 @@ def main():
             # is rendered, and clipping it there is the intent.
             for m in re.finditer(r'<circle cx="(-?[\d.]+)" cy="(-?[\d.]+)" r="([\d.]+)"', svg):
                 cx, cy, r = map(float, m.groups())
-                if r <= 8 and (cx < -r or cx > W + r or cy < -r or cy > H + r):
+                # Test the CENTRE, not the centre plus a radius of slack. The old bound
+                # `cy > H + r` let a dot sit a full radius past the edge, so a marker centred
+                # at y = 342 on a 340-tall canvas -- entirely invisible -- passed the gate.
+                # If the derived point is outside the viewBox the point is off-canvas, full
+                # stop; a dot merely touching the edge is still legible and is not the defect
+                # this is looking for.
+                if r <= 8 and (cx < 0 or cx > W or cy < 0 or cy > H):
                     findings.append("%s: marker dot at (%.0f, %.0f) is off the %gx%g canvas"
                                     % (name, cx, cy, W, H))
                 # A DRAWN circle (circumcircle, incircle) that misses fitting by a little is a

@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 535
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 539
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -15,8 +15,8 @@ reference rather than people editing it.
 **Four headings, and no fifth.** A write-up uses `## Why it works`, `## How to use it`,
 `## On contests`, and optionally `## Key forms`. Do not invent another one. A card may gain or
 lose its Key forms block as its content changes — that is not "adding a subsection", which is
-what this rule is about. Census across 535 write-ups: Why it works 535, On contests 535, How to
-use it 535, Key forms 107, and one sanctioned exception (`mean-chain` carries a `## Full proof`
+what this rule is about. Census across 539 write-ups: Why it works 539, On contests 539, How to
+use it 539, Key forms 109, and one sanctioned exception (`mean-chain` carries a `## Full proof`
 holding complete proofs of the four mean inequalities, which genuinely is not a "why it works").
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
@@ -210,6 +210,10 @@ Then classify it, because that decides where a card would go:
 | multi-leg distance-rate-time: the leg times $\frac{d_i}{v_i}$ add to the total while the distances add to $D$ | **method** | 2013 I #1, 2012 I #4, 2012 II #4, 2008 II #2 | `multi-leg-rates` (Methods › Algebra). 2007 I #2 was recorded as a fifth sighting and was a mis-sighting: each walker there moves at a single speed, so nothing is multi-leg. It is retagged on `casework-method`, its actual crux |
 | counting with a uniform overcount: build every object exactly $k$ times, divide by $k$, and repair the objects built fewer times | **method** | 1997 #10, 2002 I #5, 1993 #8 | `uniform-overcount` (Methods › Counting & Probability) |
 | adding two numbers drops the digit sum by $9$ per carry, $s(a+b)=s(a)+s(b)-9c$ | formula | 2015 I #8, 1999 #5 | `digit-sum-carries` (Bases, Digits & Decimals) |
+| the set of points equidistant from $A$ and $B$ is exactly the perpendicular bisector of $AB$ | formula | 14 sightings, incl. 1997 #4, 2013 I #9, 2003 II #11, 2023 10A #22 | `perpendicular-bisector-locus` (Fundamentals). The strongest by evidence in the batch: every one of the fourteen was tagged with whatever arithmetic surrounded the step, and the only mention anywhere was one clause inside `distance-midpoint` framed as a coordinate trick. Ten were tagged; **three were read and rejected**, since a scan finding the phrase is not evidence that the step is the card |
+| the centre of a rotation is the intersection of the perpendicular bisectors of the point-image segments | **pattern** | 2020 II #4, 2023 10A #19 | `rotation-center` (Patterns &rsaquo; Geometry), the direct specialisation of the locus card above |
+| the cotangent rule, $\cot A = \frac{b^2+c^2-a^2}{4K}$, with $\cot A + \cot B = \frac{c^2}{2K}$ | formula | 1989 #10 | `cotangent-rule` (Advanced Triangle Theorems). Verified on 400 random scalene triangles before shipping |
+| a region swept by independent parameters is a zonogon, so its perimeter is twice the total generator length | **pattern** | 2023 10B #24 | `zonogon-minkowski` (Patterns &rsaquo; Geometry) |
 | a symmetric or cyclic linear system: add all $n$ equations to collapse the symmetric part into the grand total, or substitute around the loop | **method** | 1986 #4, 1986 #14, 2024 II #4, 2024 10B #25 | `symmetric-linear-system` (Methods &rsaquo; Algebra). All four had been tagged with whatever the surrounding algebra happened to be |
 | expanding a determinant along its sparsest row, which turns a banded family into a linear recurrence | **method** | 2011 II #11 | `cofactor-expansion` (Methods &rsaquo; Algebra). 2011 II #11 hands you a tridiagonal matrix outright and was tagged `linear-recurrence` alone |
 | orthogonal projection onto a plane multiplies every area by $\cos\theta$, so a slanted section is its shadow divided by $\cos\theta$ | formula | 2015 I #15, 2019 HMMT Feb Geo #9 | `projected-area-cosine` (Solid Geometry). **Two of this row's original sightings were wrong and were dropped on reading them**: 1996 #4 is a point-light shadow, which is a central projection scaling by similar triangles, and 2008 II #11 projects a length rather than an area |
@@ -252,10 +256,7 @@ Then classify it, because that decides where a card would go:
 | a sum over all tuples of a product of per-coordinate terms factors into a product of per-coordinate sums, $\sum_{d_1,\ldots,d_k}\prod_i f(d_i) = \prod_i\left(\sum_d f(d)\right)$ | **method** | 1994 #5 | none states it directly. `sum-of-divisors` is the most familiar instance ($\sigma$ as a product of geometric sums) but presents it as a divisor formula, and `generating-function-method` is the coefficient-extraction version, which hides that the same expansion evaluated at $1$ totals every tuple |
 | the number of ways to split $n=ab$ with $\gcd(a,b)=1$ is $2^{\omega(n)}$, since each prime power must go wholly to one side; halve it for unordered or for $a\lt b$ | formula | 1991 #5 | none. `number-of-divisors` gives $d(n)=\prod(e_i+1)$ from the same factorization, but counts every divisor rather than the coprime splits, and no card mentions $\omega(n)$, the count of distinct primes |
 | the combinatorial reading of the Fibonacci numbers: tilings of a $1 \times n$ strip by squares and dominoes, and binary strings with no two adjacent $1$s, both number $F_{n+2}$ | **method** | 1990 #9 | **partly a misrecord, now corrected.** `binets-formula` does carry the sequence and its identities (closed form, Cassini, $\gcd(F_m,F_n)=F_{\gcd(m,n)}$, $\sum F_i = F_{n+2}-1$) and its keywords include Fibonacci, so the earlier claim that nothing covered Fibonacci was wrong. It was found by searching card *names* only. What is genuinely absent is the counting interpretation, which is how the sequence actually enters AMC/AIME problems; `binets-formula` is purely algebraic and `non-adjacent-selection` gives only the fixed-$k$ closed form |
-| the cotangent rule, $\cot A = \frac{b^2+c^2-a^2}{4K}$, whose immediate corollary is $\cot A + \cot B = \frac{c^2}{2K}$ | formula | 1989 #10 | none. It follows in one line from `law-of-cosines` and `trig-area` together, and those two are what 1989 #10 is tagged with, but no card states it. It is the standard way any $\cot$-of-a-triangle expression collapses to side lengths, so the derivation gets redone every time |
 | an extremal set cut out by gap conditions is bounded by its densest periodic block: find the shortest repeating window, work out the most elements it can hold, then tile the range with copies and add the tail | **method** | 2024 10A #20 | none. `gap-method` supplies the minimum-gap bookkeeping and is what that problem is tagged with, but it counts selections of a fixed size rather than maximizing the size, and no card states the tile-the-range bound |
-| the center of a rotation is equidistant from every point and its image, so it is the intersection of the perpendicular bisectors of the point-image segments | **method** | 2023 10A #19 | none. `distance-midpoint` is what the problem is tagged with because squaring the two distance equations is how the center is actually found, and `reflection-composition` shows a rotation arises from two reflections, but no card gives the perpendicular-bisector locus. The register already carries the chord version of the same locus idea as a clause for `equal-chords-arcs` |
-| a region swept by independently varying parameters is the Minkowski sum of the segments they generate, and a sum of segments is a zonogon whose sides come in opposite parallel pairs, one pair per generator, so its perimeter is twice the total generator length | **method** | 2023 10B #24 | none. `affine-transformations` covers what a linear map preserves but never the image of a region, `minkowski-lattice` is the lattice-point theorem and unrelated, and the problem is tagged `distance-midpoint` only because measuring the three generators is the arithmetic that remains |
 
 Detailed per-year findings and the defect tally live in `tools/RETAG-NOTES.md`.
 
@@ -637,11 +638,11 @@ is why `tools/search-eval.html` carries its own cache-buster.
 
 **Compare warm to warm, and say which you ran.** The semantic index loads lazily, so a cold first
 run and a warm re-run disagree on a handful of near-tied queries in both directions; warm runs are
-reproducible to the individual query (three consecutive runs gave identical output). Over 535 cards
-the original 171 queries give **153 warm**, against the **155 warm** recorded before this work and
+reproducible to the individual query (three consecutive runs gave identical output). Over 539 cards
+the original 171 queries give **154 warm**, against the **155 warm** recorded before this work and
 the **153** stored in `eval-baseline.json`, which was itself a cold capture. Warm to warm that is a
-**net loss of two queries out of 171** while the corpus grew 3%. Small, real, and not a
-measurement artifact -- do not report it as one. The full set is **164/183, MRR 0.9295**.
+**net loss of one query out of 171** while the corpus grew 4%, and the four configuration cards
+added afterwards took it back up from 153. The full set is **165/183, MRR 0.9323**.
 
 **Every point lost was traced, and one of them was a genuine defect worth recording.** Adding
 `euler-line-parallel-side` dropped the score by two, and the reason was not jostling: the new card

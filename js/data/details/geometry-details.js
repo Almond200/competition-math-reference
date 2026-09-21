@@ -2363,4 +2363,171 @@ Two cautions. The condition is symmetric in $B$ and $C$ but says nothing about $
 ## On contests
 This is a configuration to recognize rather than a theorem to quote, and it earns its place because the parallel hypothesis looks like it says nothing computable until you convert it. Once $\tan B\tan C = 3$ is on the page it combines with the [[law-of-sines|law of sines]] or with $A + B + C = 180^\circ$ like any other angle relation. The altitude form pairs with [[euler-line-ratio|the Euler line]] itself when a problem also involves the centroid, since $G$ is fixed at one third of the way from $O$ to $H$ along the line you have just placed.`,
 
+
+"perpendicular-bisector-locus": String.raw`## Why it works
+Both directions are short, and it is the second that gets used. If $P$ lies on the perpendicular bisector, the two right triangles it forms with $A$ and $B$ share a leg and have equal legs along $AB$, so $PA = PB$. Conversely, if $PA = PB$ then triangle $PAB$ is isosceles, and in an isosceles triangle the median, the altitude and the bisector from the apex are the same line, so $P$ sits on the perpendicular bisector. The locus is therefore the whole line and nothing else, which is why the converse may be used as freely as the theorem.
+
+In coordinates the same statement is a cancellation: squaring $PA = PB$ turns two quadratics into one linear equation, because the $x^2$ and $y^2$ terms are identical on both sides and vanish. That is [[distance-midpoint|the coordinate recipe]], and it is the reason an equidistance condition costs a point one degree of freedom rather than trapping it on a curve.
+
+## How to use it
+Three readings, and recognizing which one a problem wants is most of the work.
+
+As a centre-finder: any circle through $A$ and $B$ has its centre on the perpendicular bisector of $AB$, so two chords locate a circumcentre and three concurrent bisectors are why every triangle has one. [[equal-chords-arcs|The chord version]] is this same fact inside a circle.
+
+As a constraint: "equidistant from $A$ and $B$" is a line, so it intersects another condition in finitely many points. This is the form that hides — a problem says two circles have equal radii, or a point is the same distance from two centres, and the intended move is to draw the bisector.
+
+As a mirror: reflecting across it exchanges $A$ and $B$. A fold that brings $A$ onto $B$ has the perpendicular bisector as its crease, which is how paper-folding problems become geometry. When the ratio $PA/PB$ is a constant other than $1$ the locus bends into [[apollonius-circle|a circle]] instead, and the perpendicular bisector is exactly that circle's degenerate case.
+
+## On contests
+It is used constantly and almost never named, which is why it is worth having a card at all. Of the problems in this library that turn on it, most reach it sideways: 1997 AIME #4 puts two circle centres on the bisector of a segment joining two others, and 2013 AIME I #9 makes a fold's crease the bisector of the segment from a vertex to its landing point. The tell is a phrase like "the same distance from" or "folded onto" rather than the words perpendicular bisector.`,
+
+"cotangent-rule": String.raw`## Why it works
+Divide the two standard expressions for the same angle. [[law-of-cosines|The law of cosines]] gives $\cos A = \frac{b^2+c^2-a^2}{2bc}$, and [[trig-area|the sine area formula]] $K = \frac12 bc \sin A$ rearranges to $\sin A = \frac{2K}{bc}$. Their quotient is $\frac{b^2+c^2-a^2}{2bc} \cdot \frac{bc}{2K}$, and the $bc$ cancels, leaving $\frac{b^2+c^2-a^2}{4K}$. Nothing deeper is involved, which is precisely the argument for writing it down once instead of rederiving it.
+
+The corollary falls straight out: adding $\cot A$ and $\cot B$ puts $b^2+c^2-a^2$ over $4K$ next to $a^2+c^2-b^2$ over $4K$, and everything cancels except $2c^2$, giving $\frac{c^2}{2K}$. Note which side survives — it is the one opposite neither angle.
+
+## How to use it
+Reach for it the moment a cotangent of a triangle angle appears, because it converts the whole expression into side lengths and area, where ordinary algebra works. Sums are the common shape, and the corollary collapses each pair in one step. Its close relative $\cot A \cot B + \cot B \cot C + \cot C \cot A = 1$, which holds in every triangle, sits on [[brocard-angle|the Brocard angle card]] and is worth knowing alongside this one; the two answer different questions, since that one is a relation among the cotangents while this one evaluates each of them.
+
+## On contests
+1989 AIME #10 is the model and essentially the whole use case: it asks for $\frac{\cot C}{\cot A + \cot B}$ given $a^2 + b^2 = 1989c^2$, which becomes $\frac{a^2+b^2-c^2}{2c^2}$ the moment both cotangents are converted, and the given relation finishes it. The problem is tagged with the law of cosines and the sine area formula because those are what it actually uses — but a reader who knows this card does the conversion in one step instead of three.`,
+
+"rotation-center": String.raw`## Why it works
+A rotation is an isometry that fixes exactly one point, and every other point keeps its distance to that fixed point. So for any $P$ and its image $P'$, the centre $O$ satisfies $OP = OP'$, which by [[perpendicular-bisector-locus|the equidistant locus]] puts $O$ on the perpendicular bisector of $PP'$. Doing that for a second pair gives a second line, and two non-parallel lines meet once — which they must, because a rotation has exactly one fixed point.
+
+A third pair adds nothing except a check. If the three bisectors fail to concur, the map is not a rotation, and the usual culprit is that it is a translation, where the bisectors come out parallel and the "centre" has run off to infinity.
+
+## How to use it
+Take two vertices you can match confidently to their images, draw or compute the two perpendicular bisectors, and intersect them. In coordinates this is two equations of the form $(x-p_1)^2 + (y-p_2)^2 = (x-q_1)^2 + (y-q_2)^2$, each of which goes linear as soon as it is expanded, so the centre comes from a $2 \times 2$ system rather than anything quadratic.
+
+Get the angle separately and more cheaply: it is the turn in the figure's orientation, readable from one matched pair as $\angle POP'$ once $O$ is known, or from a single edge's direction before that. Matching the points is the step that actually goes wrong — a rotated square looks the same four ways, so pair the vertices by following the labelling around the figure rather than by proximity.
+
+## Key forms
+- two matched pairs — intersect the perpendicular bisectors of $PP'$ and $QQ'$
+- in coordinates — $\lvert OP \rvert = \lvert OP' \rvert$ squared is linear, so two pairs give a linear system
+- the bisectors come out parallel — the map is a translation, not a rotation
+- the angle — read it off the orientation change, not by measuring after the fact
+
+## On contests
+2020 AIME II #4 asks directly for the rotation carrying one triangle to another and wants the centre's coordinates plus the angle; 2023 AMC 10A #19 does not use the word rotation in its solution at all, writing $\lvert PA \rvert = \lvert PA' \rvert$ and $\lvert PB \rvert = \lvert PB' \rvert$ and solving the pair. That second form is the one to recognize, because it looks like a coordinate exercise until you notice what the two equations mean together.`,
+
+"zonogon-minkowski": String.raw`## Why it works
+If a point is $\sum_i t_i \vec v_i$ with each $t_i$ ranging over $[0,1]$ independently, the set of all such points is by definition the Minkowski sum of the segments $[\vec 0, \vec v_i]$: adding a segment to a shape means sliding the shape along that segment and keeping everything swept. Sliding a convex set along a segment keeps it convex, so the result is a convex polygon.
+
+Its shape is forced. Walking the boundary means turning the generators on one at a time in order of direction and then turning them off in the same order, so every side is one generator and each generator appears exactly twice, once in each direction. That is what a zonogon is: $2n$ sides in $n$ opposite parallel pairs. The perimeter follows immediately and without any arrangement-dependent work — each $\vec v_i$ is traversed twice, so the total is $2\sum \lvert \vec v_i \rvert$.
+
+## How to use it
+The trigger is a problem where several quantities vary independently and each adds a fixed direction of motion, and the question asks for the perimeter or the shape of everything reachable. Do not attempt to describe the region: identify the generators, and the perimeter is twice their total length however they point. The area does depend on the arrangement, being the sum of $\lvert \vec v_i \times \vec v_j \rvert$ over all pairs, so reach for the perimeter version first and check which one the problem wants.
+
+Degenerate cases are worth a glance. Two parallel generators merge into one longer side, dropping the polygon below $2n$ sides, and a generator of length zero contributes nothing.
+
+## Key forms
+- $n$ generators — a convex $2n$-gon with sides in opposite parallel pairs
+- perimeter — $2\sum \lvert \vec v_i \rvert$, independent of the directions
+- area — $\sum_{i<j} \lvert \vec v_i \times \vec v_j \rvert$, which does depend on them
+- two parallel generators — they merge, and the polygon has fewer than $2n$ sides
+
+## On contests
+2023 AMC 10B #24 is the sighting: three parameters each sweep their own segment, the reachable region is the hexagon they generate, and the answer is twice the sum of the three generator lengths. It is tagged for the distance formula because measuring those three lengths is the only arithmetic left once the shape is understood — which is exactly the situation a pattern card exists for.`,
+
+
+"steiner-line": String.raw`## Why it works
+Take $P$ on the circumcircle and drop the perpendicular to $BC$, landing at foot $F$. The reflection of $P$ in $BC$ is the point $2F - P$, so reflecting is exactly the homothety centered at $P$ with ratio $2$ applied to the foot. Do that for all three sides at once and the whole Simson line is carried to the whole line of reflections, which therefore exists and is parallel to it. So [[simson-line|the Simson line]] and this one are not two theorems; they are one theorem read at two scales.
+
+That the Steiner line passes through $H$ takes one more fact you already have: [[orthocenter-properties|the reflection of the orthocenter in a side lies on the circumcircle]]. Reflecting that statement back says the reflection of a circumcircle point in the side is a point on the line through $H$ — and running it for each side puts $H$ on the common line.
+
+## How to use it
+Use it when a problem reflects a circumcircle point over the sides, which is a configuration that otherwise looks like three unrelated constructions. The collinearity is the payoff, and the extra information over the Simson line is the point $H$: you get a line through the orthocenter for free, which is often the link a synthetic argument needs.
+
+Watch the degenerate case. As $P$ slides to a vertex the three reflections converge and the line tends to the altitude from that vertex, so a configuration where $P$ is nearly a vertex is numerically unstable and a coordinate check there will mislead.
+
+## On contests
+Olympiad material, and rarely the headline result — it appears as the step that turns a reflection condition into a collinearity, or the reverse. The practical value is knowing that the Simson line and the reflection line are the same object, so a problem stated with either can be attacked with facts about the other.`,
+
+"anticomplementary-triangle": String.raw`## Why it works
+Every statement follows from one homothety. The map centered at the centroid $G$ with ratio $-2$ sends $A$, $B$, $C$ to the vertices of $A'B'C'$, and the inverse map with ratio $-\frac12$ is exactly the one that produces [[medial-triangle|the medial triangle]]. A homothety of ratio $-2$ doubles every length and negates direction, so sides are parallel and twice as long, the circumradius doubles, and the area quadruples.
+
+The centers move by the same map, which is what makes them worth memorizing rather than deriving each time. The circumcenter of $A'B'C'$ is the orthocenter of $ABC$; the nine-point center of $A'B'C'$ is the circumcenter of $ABC$; and the orthocenter of $A'B'C'$ is the reflection of $H$ over $O$, the point usually called the de Longchamps point. Each of these is the image under the $-2$ homothety of the corresponding center one level down.
+
+## How to use it
+Reach for it when a problem gives you a triangle whose midpoints are the interesting points, since naming the bigger triangle converts a statement about midpoints into a statement about vertices. The 2019 HMMT February Geometry #7 solution does exactly that: the circle tangent to the circumcircles of $AHB$, $BHC$ and $CHA$ turns out to be the circumcircle of the anticomplementary triangle, so its radius is $2R = \frac{65}{4}$ and the problem is finished in a line.
+
+The other direction is the useful one for centers. A fact about the orthocenter of a triangle is a fact about the circumcenter of its anticomplementary triangle, so an awkward $H$ can sometimes be traded for a comfortable $O$.
+
+## On contests
+Olympiad, and the occasional hard AIME geometry problem where a configuration is built on midpoints. It is a relabelling rather than a theorem, which is its strength: it costs nothing to apply and it makes [[euler-line-ratio|the Euler line]] relationships between the two triangles immediate.`,
+
+"ptolemy-second-theorem": String.raw`## Why it works
+The quickest route is the same one that proves the first theorem: invert at $A$. Inversion sends $B$, $C$, $D$ to collinear points, and distances transform by $B'C' = \frac{BC \cdot k}{AB \cdot AC}$. Writing the collinearity $B'C' + C'D' = B'D'$ gives [[ptolemys-theorem|Ptolemy's product formula]], and comparing the two ratios in which $C'$ divides $B'D'$ gives this one. Both are the same picture, read for a sum or for a ratio.
+
+## How to use it
+Use it with the product formula, not instead of it. Together they give $AC \cdot BD$ and $AC / BD$, so multiplying and dividing recovers $AC^2$ and $BD^2$ — both diagonals of a cyclic quadrilateral from the four sides alone, with no angles anywhere. That is the reason to carry this card: the first theorem alone leaves you one equation short.
+
+For the form, do not memorize the letters. Each side of the fraction gathers the two products of sides that meet at the endpoints of the *other* diagonal, so the numerator belongs to $AC$ because it is built at $A$ and $C$.
+
+## On contests
+Cyclic quadrilateral problems on the AIME that hand you four sides and want a diagonal. The product formula alone answers that only when the other diagonal is already known; this pair answers it outright. On olympiads it shows up inside longer computations, usually as the step that eliminates an unwanted diagonal.`,
+
+"poncelet-closure": String.raw`## Why it works
+For the triangle case the relation is forced by [[euler-distance-theorem|Euler's distance formula]]: $d^2 = R^2 - 2Rr$ holds in every triangle, so a circumcircle and incircle that belong to the same triangle must satisfy it. The content of the converse is that this necessary condition is also sufficient — given two circles obeying it, a triangle inscribed in one and circumscribed about the other exists.
+
+Poncelet's closure theorem is the part with no elementary proof. Start anywhere on the outer circle, draw a tangent to the inner one, continue around, and if the path happens to close after $n$ steps for one starting point, it closes after $n$ steps for every starting point. The polygon slides continuously around the pair of circles without ever failing to shut, which is why these configurations are sometimes described as having a free parameter that does nothing.
+
+## How to use it
+Two directions, both rare but decisive. Told that a bicentric $n$-gon exists, you gain a relation between $R$, $r$ and $d$ for free: $d^2 = R^2 - 2Rr$ for $n = 3$, Fuss's $\frac{1}{(R-d)^2} + \frac{1}{(R+d)^2} = \frac{1}{r^2}$ for $n = 4$. Told two circles satisfy such a relation, you may place the polygon wherever is most convenient, because closure does not depend on where you start.
+
+## On contests
+Olympiad, and uncommon even there. It earns its place because the triangle case is not exotic at all — it is Euler's formula, which is on the AIME — and seeing that $R \ge 2r$ and bicentric closure are the same statement is worth more than the theorem itself.`,
+
+
+"sawayama-thebault": String.raw`## Why it works
+The proof is an inversion at the incenter, or a long chase with the radical axis; neither is short, and the result is worth carrying rather than rederiving. What does make it memorable is where it sits. Let the circle touch the cevian at $E$ and the side at $F$. The claim is that $I$ lies on $EF$, and the reason it is believable is that $EF$ is the chord of contact of a circle squeezed into the same corner the incircle occupies, so the two circles' contact data are tied together by the tangency with the circumcircle.
+
+The mixtilinear case is the specialization worth seeing: push the cevian out until it becomes the side $AB$, and the circle tangent to $AB$, to $BC$ and internally to the circumcircle is [[mixtilinear-incircle|the mixtilinear incircle]], whose own statement — that $I$ is the midpoint of the chord of contact — is the same fact with extra symmetry.
+
+## How to use it
+The trigger is a circle wedged between a cevian, a side and the circumcircle. That is a lot of tangency conditions, and each one is hard to use alone; the lemma converts all of them at once into a single collinearity through the incenter. If a problem then asks about $I$, you already have a line through it.
+
+Read backwards it is a construction: to place the incenter, draw any such circle and take its chord of contact. That is rarely the efficient route, but it is occasionally the only one that avoids trigonometry.
+
+## On contests
+Olympiad only, and among the more specialized results in this library. It is here because the configuration is recognizable on sight and almost impossible to make progress on without the lemma, which is the worst combination to meet unprepared.`,
+
+"conway-circle": String.raw`## Why it works
+Work out one tangent length and the rest follows. At vertex $A$, both extensions run out to distance $a$ beyond $A$, and the tangent length from $A$ to the incircle is $s - a$; adding $a$ gives $s$ for the distance from $A$ along either side to the new points. So all six points sit at tangent-length $s$ from the incircle along the sidelines, and a point at tangent length $s$ from a circle of radius $r$ is at distance $\sqrt{r^2 + s^2}$ from its center. Every one of the six is that far from $I$, so they are concyclic about $I$ with radius $\sqrt{r^2 + s^2}$.
+
+That is also why the construction is not arbitrary. Extending by the *opposite* side is precisely what makes $(s-a) + a$ come out the same at all three vertices, and any other extension rule breaks the equality.
+
+## How to use it
+It is a fact to recognize rather than a tool to apply: if a problem extends the sides of a triangle by the opposite sides, stop and use the circle instead of chasing six points. The radius formula turns the configuration into $r$ and $s$, both of which come straight from [[inradius-area|the inradius formula]] and the perimeter, so the answer is usually two lines away.
+
+## On contests
+Reachable from the AMC upward, because everything it needs — semiperimeter, inradius, tangent lengths — is standard. The construction is distinctive enough that recognizing it is most of the work; the arithmetic afterwards is elementary.`,
+
+"japanese-theorem": String.raw`## Why it works
+Each incenter is located by [[incenter-excenter-lemma|the arc-midpoint lemma]]: the incenter of $\triangle ABC$ lies on the bisector from $B$ at a position governed by the arc midpoint of $AC$. Placing all four incenters that way and comparing the angles they make shows each pair of adjacent ones subtends a right angle, which is the rectangle.
+
+The quickest way to see why a rectangle rather than a general quadrilateral is the parallelism: two opposite sides of the figure come out parallel to the bisector of one diagonal, the other two parallel to the bisector of the other, and the two bisectors are perpendicular. Since only the concyclicity of $ABCD$ was used, the sides may be as uneven as you like.
+
+## How to use it
+Recognition, again — four incenters in a cyclic quadrilateral is a specific enough sight to trigger it. The payoff is that a rectangle gives right angles and equal diagonals for free, so a length or angle question about those incenters collapses.
+
+The theorem extends: triangulating a cyclic polygon from any vertex and summing the inradii of the pieces gives a total independent of which vertex you chose. That is the general Japanese theorem, and it is the version that occasionally shows up as a surprise invariant.
+
+## On contests
+Rare, and almost always as the punchline of a problem built around it rather than as a step inside a longer solution. Worth knowing mainly because the configuration is so specific that meeting it without the theorem is close to hopeless.`,
+
+"pappus-hexagon": String.raw`## Why it works
+It is [[pascals-theorem|Pascal's theorem]] with the conic degenerated. A pair of distinct lines is a conic — the equation factors into two linear factors — so six points, three on each line, are six points of a conic, and Pascal says the three intersections of opposite sides of the hexagon they form are collinear. Reading the hexagon as $A E B F C D$ makes the opposite-side pairs exactly $AE$ with $BD$, $AF$ with $CD$, and $BF$ with $CE$.
+
+The statement uses no lengths, no angles and no circles, only incidence, so it is genuinely projective: apply any projective transformation and it still holds. That is what makes it a standard tool for setting up a convenient picture, since three points on a line may be sent anywhere convenient.
+
+## How to use it
+It answers collinearity questions in configurations made only of lines and their crossings, where metric tools have nothing to grip. If a diagram has two lines carrying three marked points each and asks whether three crossing points line up, this is the theorem, and no computation is required.
+
+Do not confuse it with the other two results carrying the same name. [[pappus-centroid|Pappus's centroid theorems]] are about volumes and surfaces of revolution, and the Pappus chain is the circle chain in [[arbelos|the arbelos]]. Three different theorems, one mathematician.
+
+## On contests
+Olympiad, in projective-flavoured problems, and it pairs with [[desargues-theorem|Desargues]] as the two incidence results that get used without coordinates. Its other role is conceptual: seeing that it is the degenerate Pascal is the cleanest way to remember both.`,
+
 });

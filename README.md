@@ -1,6 +1,6 @@
 # Competition Math Reference
 
-A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 535 cards
+A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 539 cards
 covering formulas, general techniques, and recurring problem formats, plus a database of
 1367 past contest problems cross-linked to the cards their solutions run through.
 
@@ -50,7 +50,7 @@ Hybrid retrieval, rebuilt from scratch and measured rather than tuned by eye.
 Press `/` to focus the box, `Esc` to clear.
 
 `tools/search-eval.html` runs 183 labelled queries against the live app and diffs every one
-against `tools/eval-baseline.json`. Current: 164/183 top-1, MRR 0.930 (warm run).
+against `tools/eval-baseline.json`. Current: 165/183 top-1, MRR 0.932 (warm run).
 **Wait for the semantic vectors to load before reading results**, or the run under-reports
 by a point or two; compare warm runs to warm runs.
 

@@ -468,9 +468,9 @@ window.MATH_SECTIONS.push({
           name: "Graphing Absolute Value Relations",
           type: "method",
           subject: "algebra",
-          latex: String.raw`\text{relation in } |x| \Rightarrow \text{solve on } x \ge 0,\ \text{then mirror} \qquad \bigl||x|-h\bigr| \Rightarrow \text{copies centered at } \pm h`,
-          description: String.raw`Do not split an equation in $|x|$ and $|y|$ into four sign cases. A relation in $|x|$ is unchanged when $x$ becomes $-x$, so solve it on $x \ge 0$, where the bars simply vanish, and mirror the result; with bars on both variables, work the first quadrant and reflect into the other three. Every bar wrapped around a variable mirrors the whole picture across that axis, so a nested expression draws copies of a simpler region rather than a harder one, and an inner shift just moves where the copies sit.`,
-          keywords: ["graphing absolute value", "absolute value relation", "two variable absolute value", "nested absolute value", "symmetry to remove absolute values", "solve for x positive and reflect", "reflect into the other quadrants", "region in the plane", "taxicab", "diamond region", "four copies", "graph an absolute value inequality", "method"],
+          latex: String.raw`\text{relation in } |x| \Rightarrow \text{solve on } x \ge 0,\ \text{then mirror} \qquad \bigl||x|-h\bigr| \Rightarrow \text{copies centered at } \pm h \qquad \text{each bar's zero set is a fold line}`,
+          description: String.raw`Do not split an equation in $|x|$ and $|y|$ into four sign cases. A relation in $|x|$ is unchanged when $x$ becomes $-x$, so solve it on $x \ge 0$, where the bars simply vanish, and mirror the result; with bars on both variables, work the first quadrant and reflect into the other three. Every bar wrapped around a variable mirrors the whole picture across that axis, so a nested expression draws copies of a simpler region rather than a harder one, and an inner shift just moves where the copies sit. The general rule behind all of it: every bar is linear except on its own zero set, so those zero sets are the fold lines that cut the plane into sectors, the relation is linear inside each, and the graph is a polygon with one edge per sector. A mixed term like $|x-y|$ adds the line $y = x$ as a fourth fold, giving six sectors rather than four.`,
+          keywords: ["graphing absolute value", "absolute value relation", "two variable absolute value", "nested absolute value", "symmetry to remove absolute values", "solve for x positive and reflect", "reflect into the other quadrants", "region in the plane", "taxicab", "diamond region", "four copies", "graph an absolute value inequality", "fold lines are the zero sets", "mixed term |x-y|", "|x|+|y|+|x-y|", "six sectors", "centrally symmetric hexagon", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
         },
@@ -972,6 +972,28 @@ window.MATH_SECTIONS.push({
           keywords: ["euler line parallel to a side", "OH parallel to BC", "euler line parallel to the base", "tan B tan C = 3", "orthocenter two thirds down the altitude", "cos A = 2 cos B cos C", "AH = 2 HD", "method", "pattern"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "rotation-center",
+          name: "Finding the Center of a Rotation",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`O = \text{perp bisector}(PP') \cap \text{perp bisector}(QQ'), \qquad \theta = \angle POP'`,
+          description: String.raw`A rotation leaves every point at its original distance from the center, so the center is equidistant from each point and its image and therefore sits on the perpendicular bisector of every segment joining a point to where it went. Two such segments pin it down; a third is a check, not more information. The angle is then read off any one pair, or faster off how the whole figure's orientation turned.`,
+          keywords: ["center of a rotation", "find the rotation center", "point and its image", "perpendicular bisectors of corresponding points", "rotation taking one figure to another", "equidistant from a point and its image", "method", "pattern"],
+          importance: "medium",
+          level: ["AMC12", "AIME"]
+        },
+        {
+          id: "zonogon-minkowski",
+          name: "Regions Swept by Independent Parameters (Zonogons)",
+          type: "pattern",
+          subject: "geometry",
+          latex: String.raw`\left\{\, \textstyle\sum_i t_i \vec v_i : t_i \in [0,1] \right\} = \text{zonogon}, \qquad \text{perimeter} = 2\sum_i \lvert \vec v_i \rvert`,
+          description: String.raw`When several parameters vary independently and each contributes its own displacement, the region swept out is the Minkowski sum of the segments they generate — slide each segment along all the others. A sum of segments is a zonogon: a convex polygon whose sides come in opposite parallel pairs, one pair per generator, so it has $2n$ sides for $n$ generators and its perimeter is twice the total generator length no matter how they are arranged.`,
+          keywords: ["zonogon", "minkowski sum of segments", "region swept by parameters", "convex polygon with opposite parallel sides", "perimeter is twice the generator length", "independent parameters sweep a region", "sum of segments", "method", "pattern"],
+          importance: "low",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "rotation-trick",

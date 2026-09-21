@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 535 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 539 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -12,7 +12,7 @@ Regenerate the numbers with `tools/scan-conventions.py`.
 
 Exactly two field orders exist, and nothing else. Copy one of these.
 
-**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 432 of 432 cards:
+**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 434 of 434 cards:
 
 ```js
         {
@@ -26,19 +26,19 @@ Exactly two field orders exist, and nothing else. Copy one of these.
         },
 ```
 
-**`patterns.js`** — 103 of 103 cards. Same, plus `type` and `subject` immediately after `name`:
+**`patterns.js`** — 105 of 105 cards. Same, plus `type` and `subject` immediately after `name`:
 
 ```js
           type: "method",       // or "pattern"
           subject: "counting",  // geometry | algebra | number-theory | counting
 ```
 
-- `type` and `subject` appear on **103/103** `patterns.js` cards and on **0/432** subject-file cards.
+- `type` and `subject` appear on **105/105** `patterns.js` cards and on **0/434** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **534/535** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **538/539** cards. Use it even when there is no backslash.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
   `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
-  all 535 cards use one of the four canonical orders, the extra two being the same pair with an
+  all 539 cards use one of the four canonical orders, the extra two being the same pair with an
   optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
   something to show).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
@@ -48,8 +48,8 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 | field | measured |
 |---|---|
-| `importance` | five values, not three: `high` 135, `medium` 222, `low` 88, `lower` 42, `lowest` 48 |
-| `level` | drawn from `MATHCOUNTS` (105), `AMC10` (202), `AMC12` (287), `AIME` (381), `Olympiad` (197). No other string appears |
+| `importance` | five values, not three: `high` 136, `medium` 223, `low` 90, `lower` 42, `lowest` 48 |
+| `level` | drawn from `MATHCOUNTS` (106), `AMC10` (204), `AMC12` (290), `AIME` (385), `Olympiad` (198). No other string appears |
 | `keywords` | min 4, median 6, 90th percentile 9, max 20. Four is the floor — never ship fewer |
 | `name` | median 24 chars, max 55. 63 names use ` & `, 42 carry a parenthetical like `(PIE)` |
 | `description` | median 273 chars, 90th percentile 501, max 1001. Two to four sentences |
@@ -63,20 +63,20 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**535 write-ups for 535 cards. One each, no orphans, no card without one.**
+**539 write-ups for 539 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      535/535
-## How to use it     535/535
-## On contests       535/535
+## Why it works      539/539
+## How to use it     539/539
+## On contests       539/539
 ```
 
-An optional fourth, `## Key forms`, appears on 107. There is exactly one other heading in the whole
+An optional fourth, `## Key forms`, appears on 109. There is exactly one other heading in the whole
 corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do not invent a fifth.
 
-- **Key forms is a `patterns.js` habit**: 96 of 103 `patterns.js` cards have one, against 11 of 432
+- **Key forms is a `patterns.js` habit**: 98 of 105 `patterns.js` cards have one, against 11 of 434
   subject-file cards. If you are writing a formula card and reaching for Key forms, put the material
   in the prose instead.
 - Key forms lists the shapes a technique takes, not worked examples.
@@ -88,7 +88,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 535** write-ups contain `**`. This rule is unbroken — do not be the first.
+  asterisks. **0 of 539** write-ups contain `**`. This rule is unbroken — do not be the first.
 - **Em dashes: median 2 per write-up, 90th percentile 5, and 87 write-ups use none.** Prefer commas.
   (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
@@ -99,7 +99,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 
 ### Cross-links
 
-Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **680 piped
+Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **687 piped
 links, 0 bare** across the corpus. A bare link renders the card's Title Case
 name, which lands capitalised in the middle of a sentence.
 
@@ -144,7 +144,7 @@ positives and should be rejected every time they reappear:
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**535 example keys for 535 cards. Zero cards lack one.**
+**539 example keys for 539 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -162,12 +162,12 @@ window.MATH_EXAMPLES["your-card-id"] = { q: String.raw`...`, s: String.raw`...` 
 
 ## 4. The diagram — mandatory for geometry
 
-**185 of 185 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
-geometry card without a figure is incomplete. The count reached 185/185 only after a card shipped
+**187 of 187 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
+geometry card without a figure is incomplete. The count reached 187/187 only after a card shipped
 without one and had to be fixed, which is why `tools/scan-conventions.py` exits non-zero on any
 geometry card missing a diagram.
 
-Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 36/103,
+Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 38/105,
 `algebra.js` 11/102, `counting.js` 3/67, `number-theory.js` 1/78.
 
 - Figures go through the diagram DSL in `js/data/diagrams/`, registered as
@@ -191,6 +191,19 @@ Elsewhere it is the exception, reserved for configuration-heavy figures: `patter
   In each case the figure rendered, the page looked plausible, and every existing gate passed.
 - A line drawn deliberately past the frame is *not* a violation -- that is how an unbounded line is
   rendered, and the clipping is the intent.
+- **A diagram file that throws must fail the run, and used not to.** `check-diagrams.py` captured
+  only `stdout` from `jsc`, so a file that raised at load looked exactly like a file with no
+  diagrams in it: the count came back smaller and the run said OK. One undefined colour constant
+  (`PNK`, which exists in `geometry-diagrams.js` but not in `general-diagrams.js`) silently removed
+  **all 27 figures in that file** from the app while every gate passed. The checker now inspects
+  the return code and stderr. Colour constants are per-file: check the one you are editing defines
+  what you are about to use.
+- **The marker-dot test checks the CENTRE, and used not to.** It read
+  `cy > H + r`, giving a dot a full radius of slack past the edge -- so a marker centred at
+  y = 342 on a 340-tall canvas, entirely invisible, passed the gate. Found when a derived point
+  in `perpendicular-bisector-locus` landed off the bottom and `check-diagrams.py` said OK. The
+  bound is now the viewBox itself; tightening it produced zero false positives across the other
+  269 panels.
 - **A drawn circle that nearly fits is a bug.** `check-diagrams.py`'s circle test was long gated on
   `r <= 8`, so it only ever saw marker dots: a radius-166 circumcircle sliced flat at BOTH ends of
   `median-to-hypotenuse` passed every gate for months. It now flags any circle overflowing by up to
@@ -286,10 +299,10 @@ python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py 
   `index.html` itself, and a `?nocache=` parameter is the reliable way.
 - Measure search with `tools/search-eval.html`, never by eye, and **always compare warm to warm**.
   A cold first run and a warm re-run differ by a point or two because the semantic index loads
-  lazily; warm runs are reproducible to the query. Measured 2026-09-20 over 535 cards, the
-  original 171 queries give **153 warm**, against a previously recorded warm **155**. The query
+  lazily; warm runs are reproducible to the query. Measured 2026-09-20 over 539 cards, the
+  original 171 queries give **154 warm**, against a previously recorded warm **155**. The query
   set is now **183**, twelve added for the matrices, conics and projection cards, of which eleven
-  rank first: **164/183 warm, MRR 0.9295**. Every point lost across this work was traced before
+  rank first: **165/183 warm, MRR 0.9323**. Every point lost across this work was traced before
   being accepted, and one was not accepted -- see CONTRIBUTING for the card that had to have its
   keywords narrowed because it out-ranked the general card it specialises.
   Adding a card jostles neighbouring queries by a rank or two; what must not move is the top-1 count.

@@ -447,6 +447,24 @@
       dot(m.pt(1, 1), GLD, 3), dot(m.pt(-1, 1), GLD, 3), dot(m.pt(1, -1), GLD, 3), dot(m.pt(-1, -1), GLD, 3),
       cap(410, 358, "a bar nested inside a shift places the copies: ||x|\u22121| + ||y|\u22121| \u2264 1")
     ]);
+  })(), (() => {
+    // |x| + |y| + |x-y| = 2. The mixed term folds on y = x, so there are six sectors, not
+    // four, and the level set gains two edges. Vertices are computed from the sector rule
+    // (2max(|x|,|y|) where the signs agree, 2(|x|+|y|) where they do not), then checked
+    // against the relation itself -- the figure is not traced by hand.
+    const m = frame(-2.1, 2.1, -2.1, 2.1, 60, 18, 290, 290), c = 2, h = c / 2;
+    const V = [[h, 0], [h, h], [0, h], [-h, 0], [-h, -h], [0, -h]];
+    const bad = V.filter(v => Math.abs(Math.abs(v[0]) + Math.abs(v[1]) + Math.abs(v[0] - v[1]) - c) > 1e-9);
+    return wrap(410, 358, [
+      axes(m),
+      // the three fold lines: the zero set of each bar
+      seg(m.pt(-2.1, -2.1), m.pt(2.1, 2.1), GRN, 1.3, "4 4"),
+      poly(V.map(v => m.pt(v[0], v[1])), ACC, 2.4, ACCS),
+      ...V.map(v => dot(m.pt(v[0], v[1]), ACC, 3.4)),
+      txt(add(m.pt(1.62, 1.18), [0, 0]), "y = x", GRN, 11),
+      txt(add(m.pt(0.52, 1.5), [0, 0]), bad.length ? "CHECK FAILED" : "|x|+|y|+|x\u2212y| = 2", ACC, 12),
+      cap(410, 358, "the mixed term folds on y = x too, so six sectors give six edges \u2014 a centrally symmetric hexagon, area 3")
+    ]);
   })()];
 
   DIAGRAMS["absolute-value-rules"] = [(() => {

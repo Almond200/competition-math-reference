@@ -4383,4 +4383,318 @@ DIAGRAMS["trig-ceva"] = [(() => {
     ]);
   })()];
 
+
+  DIAGRAMS["perpendicular-bisector-locus"] = [(() => {
+    // AB sits mid-canvas so the bisector has room on BOTH sides -- P above it and Q below
+    // are the two cases the caption talks about, and the earlier version pushed P off the
+    // bottom edge entirely.
+    const A = [112, 196], B = [318, 196], M = mid(A, B);
+    const n = mul(norm(perp(sub(B, A))), 108);              // along the bisector
+    const P = sub(M, mul(n, 1.0)), Q = add(M, mul(n, 0.62));
+    return wrap(430, 340, [
+      seg(sub(M, n), add(M, n), GLD, 2.4, "7 5"),
+      seg(A, B, DIM, 2.2),
+      rightAngle(M, A, P, 11, GLD),
+      seg(A, P, ACC, 2), seg(B, P, ACC, 2),
+      seg(A, Q, PNK, 1.8, "4 4"), seg(B, Q, PNK, 1.8, "4 4"),
+      ...[mid(A, M), mid(M, B)].map(q => seg(add(q, [0, 6]), add(q, [0, 16]), DIM, 2.2)),
+      dot(A, DIM, 4.5), dot(B, DIM, 4.5), dot(M, DIM, 4), dot(P, ACC, 5), dot(Q, PNK, 4.5),
+      txt(add(A, [-14, 6]), "A", DIM, 13), txt(add(B, [14, 6]), "B", DIM, 13),
+      txt(add(M, [-15, 17]), "M", DIM, 12.5),
+      txt(add(P, [0, -13]), "P", ACC, 13), txt(add(Q, [15, 6]), "Q", PNK, 13),
+      cap(430, 340, "every point of the dashed line is the same distance from A and B, and every point that is, lies on it — PA = PB and QA = QB")
+    ]);
+  })()];
+
+  DIAGRAMS["cotangent-rule"] = [(() => {
+    // 13-14-15 at k = 19 -- the triangle the worked example uses, so the figure and the
+    // numbers below it agree.
+    const k = 19, B = [82, 282], C = [82 + 14 * k, 282], A = [82 + 5 * k, 282 - 12 * k];
+    const F = foot(A, B, C);
+    return wrap(430, 340, [
+      poly([A, B, C], DIM, 2.2, ACCS),
+      seg(A, F, FNT, 1.6, "5 4"), rightAngle(F, A, C, 10),
+      angleArc(A, B, C, 30, ORG),
+      dot(A, DIM, 4.5), dot(B, DIM, 4.5), dot(C, DIM, 4.5),
+      txt(add(A, [0, -13]), "A", DIM, 13),
+      txt(add(B, [-14, 7]), "B", DIM, 13), txt(add(C, [14, 7]), "C", DIM, 13),
+      txt([82 + 2 * k, 282 - 6 * k - 6], "c = 15", DIM, 12, "end"),
+      txt([82 + 10 * k + 10, 282 - 6 * k - 6], "b = 14", DIM, 12, "start"),
+      txt([82 + 7 * k, 305], "a = 13", DIM, 12),
+      txt(add(A, [11, 30]), "\u2220A", ORG, 12, "start"),
+      cap(430, 340, "cot A = (b² + c² − a²) / 4K: the law of cosines over the sine area formula, with the bc cancelling")
+    ]);
+  })()];
+
+  DIAGRAMS["rotation-center"] = [(() => {
+    // 90 degrees about O. P, Q and their images are rotated for real, and the centre is
+    // recovered by intersecting the two bisectors -- so the figure proves its own claim.
+    // 120 degrees, not 90: under a quarter turn Q lands almost on top of P for most
+    // choices of the two points, and their labels collide. A wider angle separates all
+    // four points without making the construction any less typical.
+    const O = [214, 190], th = rad(120);
+    const rot = p => {
+      const v = sub(p, O);
+      return [O[0] + v[0] * Math.cos(th) - v[1] * Math.sin(th),
+              O[1] + v[0] * Math.sin(th) + v[1] * Math.cos(th)];
+    };
+    const P = [O[0] + 130, O[1]], Q = [O[0], O[1] - 120];
+    const Pp = rot(P), Qp = rot(Q);
+    const bis = (X, Y) => { const m = mid(X, Y), d = mul(norm(perp(sub(Y, X))), 150); return [sub(m, d), add(m, d)]; };
+    const b1 = bis(P, Pp), b2 = bis(Q, Qp);
+    const hit = lineInt(b1[0], b1[1], b2[0], b2[1]);        // lands on O by construction
+    return wrap(430, 380, [
+      seg(b1[0], b1[1], GLD, 1.8, "6 4"), seg(b2[0], b2[1], GLD, 1.8, "6 4"),
+      seg(P, Pp, PNK, 1.8), seg(Q, Qp, PNK, 1.8),
+      seg(hit, P, ACC, 1.6, "3 4"), seg(hit, Pp, ACC, 1.6, "3 4"),
+      angleArc(hit, P, Pp, 34, ORG),
+      dot(P, ACC, 4.5), dot(Pp, ACC, 4.5), dot(Q, DIM, 4.5), dot(Qp, DIM, 4.5), dot(hit, ORG, 6),
+      // Every label is pushed straight out from O. The two bisectors and all four spokes
+      // pass through O, so radially outward is the one direction guaranteed to be clear of
+      // them -- placing these by hand is what left Q′ sitting on top of P.
+      ...[[P, "P", ACC], [Pp, "P′", ACC], [Q, "Q", DIM], [Qp, "Q′", DIM]].map(([pt, t, c]) =>
+        txt(add(add(pt, mul(norm(sub(pt, hit)), 19)), [0, 4]), t, c, 13)),
+      txt(add(hit, [-15, -10]), "O", ORG, 13, "end"),
+      txt(add(add(hit, mul(norm(add(norm(sub(P, hit)), norm(sub(Pp, hit)))), 52)), [0, 4]), "θ", ORG, 13),
+      cap(430, 380, "O is equidistant from each point and its image, so it sits on both dashed perpendicular bisectors — two pairs are enough to find it")
+    ]);
+  })()];
+
+  DIAGRAMS["zonogon-minkowski"] = [(() => {
+    // The Minkowski sum of three segments, built the way the definition says: sort the
+    // generators by direction, walk them, then walk their negatives. The hexagon closes
+    // because each generator is traversed exactly twice -- so the three edges leaving the
+    // start vertex ARE the three generators, and highlighting those says more than drawing
+    // the vectors loose inside the shape, which was the earlier version's mistake.
+    const O = [150, 286], s = 29;
+    const gens = [[3, 0], [0, 4], [-1, 1]].map(v => [v[0] * s, -v[1] * s]);
+    const byAngle = gens.slice().sort((u, v) => Math.atan2(-u[1], u[0]) - Math.atan2(-v[1], v[0]));
+    const pts = [O];
+    byAngle.forEach(v => pts.push(add(pts[pts.length - 1], v)));
+    byAngle.forEach(v => pts.push(sub(pts[pts.length - 1], v)));
+    pts.pop();                                              // the last step returns to O
+    const cen = mul(pts.reduce(add, [0, 0]), 1 / pts.length);
+    const COL = [ORG, GLD, PNK];
+    const label = v => "(" + Math.round(v[0] / s) + ", " + Math.round(-v[1] / s) + ")";
+    // Each generator edge, drawn where it actually is, with its vector set outside the
+    // polygon along the outward normal so no label can sit on a line.
+    const edges = byAngle.map((v, i) => {
+      const a = pts[i], b = pts[i + 1], m = mid(a, b);
+      const out = mul(norm(sub(m, cen)), 21);
+      return seg(a, b, COL[i], 4) + txt(add(add(m, out), [0, 4]), label(v), COL[i], 11.5);
+    });
+    return wrap(430, 340, [
+      poly(pts, ACC, 2.2, ACCS),
+      ...edges,
+      dot(O, DIM, 5),
+      txt(add(O, [-6, 19]), "O", DIM, 12.5, "end"),
+      cap(430, 340, "the three coloured edges are the generators themselves; each reappears opposite as its negative, so the perimeter is 2(3 + 4 + √2) whatever directions they point")
+    ]);
+  })()];
+
+
+  // ---------- Deeper configurations ----------
+  // Each of these is constructed, never arranged: the reflections are real reflections, the
+  // tangent circle is found by bisection, the incentres are computed. Where a figure asserts
+  // a collinearity or a concyclicity, the points are placed independently and the claim is
+  // something you can measure off the emitted SVG.
+
+  DIAGRAMS["steiner-line"] = [(() => {
+    // Its own triangle rather than the shared one: reflections of a circumcircle point run
+    // far outside a large frame, so R and the vertex angles were picked by fitting every
+    // derived point (feet, reflections, H, the circle) inside the canvas.
+    const O = [215, 178], R = 80;
+    const V = [-90, 30, 160].map(d => onC(O, R, d));
+    const [Aa, Bb, Cc] = V;
+    const H = orthocenterOf(Aa, Bb, Cc);
+    const P = onC(O, R, 90);
+    const refl = (Q, U, W) => { const f = foot(Q, U, W); return sub(mul(f, 2), Q); };
+    const fs = [foot(P, Bb, Cc), foot(P, Aa, Cc), foot(P, Aa, Bb)];
+    const rs = [refl(P, Bb, Cc), refl(P, Aa, Cc), refl(P, Aa, Bb)];
+    const span = (U, W, k) => [add(U, mul(sub(W, U), -k)), add(W, mul(sub(W, U), k))];
+    const [sL, sR] = span(fs[0], fs[2], 0.3), [tL, tR] = span(rs[0], rs[2], 0.2);
+    return wrap(430, 360, [
+      circ(O, R, FNT, 1.4),
+      poly(V, DIM, 2),
+      seg(sL, sR, GLD, 1.8, "5 4"),
+      seg(tL, tR, ACC, 2.2),
+      ...fs.map(q => seg(P, q, FNT, 1.1, "3 3")),
+      ...fs.map(q => dot(q, GLD, 3.2)),
+      ...rs.map(q => dot(q, ACC, 4)),
+      dot(P, PNK, 5), dot(H, ORG, 5),
+      ...V.map((v, k) => txt(add(add(v, mul(norm(sub(v, O)), 15)), [0, 4]), "ABC"[k], DIM, 12.5)),
+      txt(add(add(P, mul(norm(sub(P, O)), 16)), [0, 4]), "P", PNK, 13),
+      txt(add(H, [-12, -8]), "H", ORG, 13, "end"),
+      cap(430, 360, "the three reflections of P (solid) are collinear on a line through H, and that line is the Simson line (dashed) doubled from P")
+    ]);
+  })()];
+
+  DIAGRAMS["anticomplementary-triangle"] = [(() => {
+    // The anticomplementary triangle is twice the size, so the inner triangle has to be
+    // small: these vertices put G at the canvas centre and keep A′B′C′ inside the frame.
+    const Aa = [215, 128], Bb = [150, 238], Cc = [280, 213];
+    const G = centroidOf(Aa, Bb, Cc);
+    const anti = [Aa, Bb, Cc].map(V => sub(G, mul(sub(V, G), 2)));
+    const Oa = circumcenterOf(anti[0], anti[1], anti[2]);   // lands on H of ABC
+    return wrap(430, 360, [
+      poly(anti, ACC, 2.2, ACCS),
+      poly([Aa, Bb, Cc], DIM, 2.2),
+      ...[[anti[1], anti[2]], [anti[0], anti[2]], [anti[0], anti[1]]].map(([u, w]) => dot(mid(u, w), GLD, 4)),
+      dot(G, DIM, 4), dot(Oa, ORG, 5.5),
+      txt(add(G, [12, 5]), "G", DIM, 12.5, "start"),
+      txt(add(Oa, [13, -7]), "H", ORG, 12.5, "start"),
+      txt(add(anti[0], [0, -12]), "A′", ACC, 13),
+      txt(add(anti[1], [-13, 11]), "B′", ACC, 13, "end"),
+      txt(add(anti[2], [14, 11]), "C′", ACC, 13, "start"),
+      cap(430, 360, "A, B, C (gold) are the midpoints of A′B′C′ — the homothety at G of ratio −2, so R doubles and A′B′C′ has its circumcentre at H")
+    ]);
+  })()];
+
+
+  DIAGRAMS["ptolemy-second-theorem"] = [(() => {
+    const O = [215, 180], R = 118;
+    const V = [-128, -28, 46, 150].map(d => onC(O, R, d));
+    const [Pa, Pb, Pc, Pd] = V;
+    return wrap(430, 360, [
+      circ(O, R, FNT, 1.4),
+      poly(V, DIM, 2.2),
+      seg(Pa, Pc, ACC, 2.6), seg(Pb, Pd, ORG, 2.6),
+      ...V.map((v, k) => dot(v, DIM, 4.5)),
+      ...V.map((v, k) => txt(add(add(v, mul(norm(sub(v, O)), 16)), [0, 4]), "ABCD"[k], DIM, 13)),
+      txt(add(mid(Pa, Pc), [8, -8]), "AC", ACC, 12, "start"),
+      txt(add(mid(Pb, Pd), [-8, 14]), "BD", ORG, 12, "end"),
+      cap(430, 360, "Ptolemy gives the product AC·BD; the second theorem gives the ratio AC/BD, and together they pin down each diagonal from the four sides")
+    ]);
+  })()];
+
+  DIAGRAMS["poncelet-closure"] = [(() => {
+    // A genuine bicentric pair: pick R and r, take d from Euler's relation, then build two
+    // triangles from different starting points -- both close, which is the theorem.
+    const R = 120, r = 34, d = Math.sqrt(R * R - 2 * R * r);
+    const O = [215, 176], I = [O[0] + d, O[1]];
+    // a triangle inscribed in (O,R) and tangent to (I,r): start at angle t, the other two
+    // vertices follow from the tangent lines, so just solve for them numerically.
+    const tri = t0 => {
+      const pts = [onC(O, R, t0)];
+      for (let k = 0; k < 2; k++) {
+        const P = pts[pts.length - 1];
+        // the next vertex: the far intersection of the tangent from P to (I,r) with (O,R)
+        const dp = dist(P, I), phi = Math.acos(Math.max(-1, Math.min(1, r / dp)));
+        const base = Math.atan2(I[1] - P[1], I[0] - P[0]);
+        const dir = [Math.cos(base - phi), Math.sin(base - phi)];
+        const hits = circleLineInts(O, R, P, add(P, dir));
+        pts.push(dist(hits[0], P) > 1 ? hits[0] : hits[1]);
+      }
+      return pts;
+    };
+    const t1 = tri(-64), t2 = tri(58);
+    return wrap(430, 360, [
+      circ(O, R, DIM, 1.8), circ(I, r, GLD, 1.8),
+      poly(t1, ACC, 2.2), poly(t2, PNK, 1.8, "none", "6 4"),
+      dot(O, DIM, 4), dot(I, GLD, 4),
+      txt(add(O, [-13, -8]), "O", DIM, 12.5, "end"),
+      txt(add(I, [11, -7]), "I", GLD, 12.5, "start"),
+      cap(430, 360, "d² = R² − 2Rr holds here, so a bicentric triangle exists — and by Poncelet every starting point gives one, as the dashed second triangle shows")
+    ]);
+  })()];
+
+  DIAGRAMS["conway-circle"] = [(() => {
+    // The Conway radius is sqrt(r^2 + s^2), which is a shade more than the semiperimeter --
+    // so the triangle has to be small or the circle leaves the frame. These vertices were
+    // chosen by fitting the six extension points and the whole circle inside the canvas.
+    const Aa = [215, 122], Bb = [161, 217], Cc = [263, 213];
+    const a = dist(Bb, Cc), b = dist(Aa, Cc), c = dist(Aa, Bb);
+    const I = incenterOf(Aa, Bb, Cc);
+    const sp = (a + b + c) / 2, K = Math.abs((Bb[0] - Aa[0]) * (Cc[1] - Aa[1]) - (Cc[0] - Aa[0]) * (Bb[1] - Aa[1])) / 2;
+    const rr = K / sp;
+    const beyond = (V, W, len) => add(V, mul(norm(sub(V, W)), len));
+    const six = [beyond(Aa, Bb, a), beyond(Aa, Cc, a), beyond(Bb, Aa, b),
+                 beyond(Bb, Cc, b), beyond(Cc, Aa, c), beyond(Cc, Bb, c)];
+    return wrap(430, 360, [
+      circ(I, Math.sqrt(rr * rr + sp * sp), ACC, 1.8),
+      circ(I, rr, GLD, 1.5, "none", "4 3"),
+      ...[[six[0], six[2]], [six[3], six[5]], [six[1], six[4]]].map(([u, w]) => seg(u, w, FNT, 1.4)),
+      poly([Aa, Bb, Cc], DIM, 2.2),
+      ...six.map(q => dot(q, ACC, 4)),
+      dot(I, GLD, 4),
+      txt(add(I, [0, 17]), "I", GLD, 12.5),
+      cap(430, 360, "each side runs on past each endpoint by the length of the opposite side; the six ends lie on one circle about I of radius √(r² + s²)")
+    ]);
+  })()];
+
+
+  DIAGRAMS["sawayama-thebault"] = [(() => {
+    // The tangent circle is FOUND, not drawn: its centre runs along the bisector of angle
+    // ADC, and the distance is solved by bisection on |O-centre| = R - rho. The collinearity
+    // of the two touch points with I is then something the figure exhibits rather than claims.
+    // Shrunk from the first attempt: the circumcircle of a wide triangle overshot the frame
+    // and got sliced flat, which check-diagrams rightly rejects.
+    const Aa = [192, 92], Bb = [96, 266], Cc = [338, 266];
+    const O = circumcenterOf(Aa, Bb, Cc), R = dist(O, Aa), I = incenterOf(Aa, Bb, Cc);
+    const D = lerp(Bb, Cc, 0.42);
+    const uA = norm(sub(Aa, D)), uC = norm(sub(Cc, D));
+    const bis = norm(add(uA, uC));
+    const half = Math.acos(Math.max(-1, Math.min(1, uA[0] * uC[0] + uA[1] * uC[1]))) / 2;
+    const f = u => dist(O, add(D, mul(bis, u))) - (R - u * Math.sin(half));
+    let lo = 1e-4, hi = 3 * R;
+    for (let k = 0; k < 160; k++) { const m = (lo + hi) / 2; if (f(lo) * f(m) <= 0) hi = m; else lo = m; }
+    const u = (lo + hi) / 2, P = add(D, mul(bis, u)), rho = u * Math.sin(half);
+    const E = foot(P, D, Aa), F = foot(P, D, Cc);
+    const ext = (U, W, k) => [add(U, mul(sub(W, U), -k)), add(W, mul(sub(W, U), k))];
+    const [eL, eR] = ext(E, F, 0.55);
+    return wrap(430, 360, [
+      circ(O, R, FNT, 1.4),
+      poly([Aa, Bb, Cc], DIM, 2.2),
+      seg(Aa, D, GLD, 2),
+      circ(P, rho, ACC, 2),
+      seg(eL, eR, PNK, 2.2, "6 4"),
+      dot(E, ACC, 4), dot(F, ACC, 4), dot(I, ORG, 5.5), dot(D, GLD, 4),
+      txt(add(Aa, [0, -12]), "A", DIM, 12.5),
+      txt(add(Bb, [-13, 8]), "B", DIM, 12.5, "end"), txt(add(Cc, [13, 8]), "C", DIM, 12.5, "start"),
+      txt(add(D, [2, 19]), "D", GLD, 12.5),
+      txt(add(I, [-12, 6]), "I", ORG, 13, "end"),
+      cap(430, 360, "a circle tangent to the cevian AD, to BC and inside the circumcircle: the chord joining its two touch points runs through the incentre")
+    ]);
+  })()];
+
+  DIAGRAMS["japanese-theorem"] = [(() => {
+    const O = [215, 178], R = 116;
+    const V = [-136, -34, 40, 158].map(d => onC(O, R, d));
+    const [Pa, Pb, Pc, Pd] = V;
+    // the four incentres, computed -- the rectangle is the output, not the input
+    const I1 = incenterOf(Pa, Pb, Pc), I2 = incenterOf(Pb, Pc, Pd),
+          I3 = incenterOf(Pc, Pd, Pa), I4 = incenterOf(Pd, Pa, Pb);
+    return wrap(430, 360, [
+      circ(O, R, FNT, 1.4),
+      poly(V, DIM, 2),
+      seg(Pa, Pc, FNT, 1.2, "4 4"), seg(Pb, Pd, FNT, 1.2, "4 4"),
+      poly([I4, I1, I2, I3], ACC, 2.4, ACCS),
+      ...[I1, I2, I3, I4].map(q => dot(q, ACC, 4.2)),
+      ...V.map((v, k) => dot(v, DIM, 4)),
+      ...V.map((v, k) => txt(add(add(v, mul(norm(sub(v, O)), 16)), [0, 4]), "ABCD"[k], DIM, 13)),
+      cap(430, 360, "the four incentres are computed independently, one per triangle cut off by a diagonal — and they come out as a rectangle")
+    ]);
+  })()];
+
+  DIAGRAMS["pappus-hexagon"] = [(() => {
+    const L = t => [58 + t * 316, 92 + t * 46];           // first line
+    const M = t => [50 + t * 330, 292 - t * 58];          // second line
+    const Aa = L(0.06), Bb = L(0.46), Cc = L(0.92);
+    const Dd = M(0.10), Ee = M(0.54), Ff = M(0.95);
+    const X = lineInt(Aa, Ee, Bb, Dd), Y = lineInt(Aa, Ff, Cc, Dd), Z = lineInt(Bb, Ff, Cc, Ee);
+    const ext = (U, W, k) => [add(U, mul(sub(W, U), -k)), add(W, mul(sub(W, U), k))];
+    const [pL, pR] = ext(X, Z, 0.22);
+    return wrap(430, 360, [
+      seg(L(-0.03), L(1.03), DIM, 2.2), seg(M(-0.03), M(1.03), DIM, 2.2),
+      ...[[Aa, Ee], [Bb, Dd], [Aa, Ff], [Cc, Dd], [Bb, Ff], [Cc, Ee]].map(([u, w]) => seg(u, w, FNT, 1.2)),
+      seg(pL, pR, ACC, 2.6),
+      ...[Aa, Bb, Cc, Dd, Ee, Ff].map(q => dot(q, DIM, 4)),
+      ...[X, Y, Z].map(q => dot(q, ACC, 5)),
+      txt(add(Aa, [-2, -11]), "A", DIM, 12), txt(add(Bb, [-2, -11]), "B", DIM, 12), txt(add(Cc, [-2, -11]), "C", DIM, 12),
+      txt(add(Dd, [-2, 18]), "D", DIM, 12), txt(add(Ee, [-2, 18]), "E", DIM, 12), txt(add(Ff, [-2, 18]), "F", DIM, 12),
+      txt(add(pR, [-6, -10]), "Pappus line", ACC, 11, "end"),
+      cap(430, 360, "three points on each of two lines, joined crosswise: the three crossing points are collinear — Pascal's theorem with the conic split into two lines")
+    ]);
+  })()];
+
 })();

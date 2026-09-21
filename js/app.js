@@ -630,6 +630,12 @@
   // keywords render as chips on the card face and the face is already at its six-chip cap.
   // These live in entry.groupTags and reach only search, the advanced picker, and filtering.
   const TAG_GROUPS = {
+    "transformations & symmetry": [
+      "reflection-coordinates", "reflection-composition", "rotation-90",
+      "rotation-reflection-matrices", "rotation-center", "rotation-trick",
+      "spiral-similarity", "homothety-monge", "affine-transformations",
+      "inversion-properties", "reflection-shortest-path", "perpendicular-bisector-locus"
+    ],
     "conics": [
       "conic-sections", "ellipse-properties", "hyperbola-properties", "parabola-focus-directrix",
       "eccentricity", "conic-classification", "conic-reflective-property", "ellipse-tangent-line",
@@ -649,7 +655,7 @@
       "center-distance-formulas", "triangle-center-angles", "orthocentric-system",
       "brocard-angle", "carnots-theorem", "leibniz-formula", "incenter-coordinates",
       "medial-triangle", "orthic-triangle", "excentral-triangle", "contact-triangle",
-      "euler-line-parallel-side",
+      "euler-line-parallel-side", "rotation-center",
       "isogonal-conjugate", "isotomic-conjugate", "pedal-triangle", "centroid-division"
     ],
     "circle theorems": [

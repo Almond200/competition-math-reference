@@ -19,7 +19,7 @@ window.MATH_BUILTIN_LISTS = [
     sections: [
       { title: "The Fundamentals",
         note: "The facts every other tool here is built on. When a geometry problem stalls, it is usually one of these you have not used yet.",
-        ids: ["pythagorean-theorem", "special-right-triangles", "altitude-hypotenuse", "median-to-hypotenuse", "triangle-inequality", "integer-triangles-perimeter", "similar-figures-ratios", "midsegment-theorem", "intercept-theorem", "clock-angle", "equilateral-triangle-facts", "inscribed-square", "isoperimetric-facts"] },
+        ids: ["pythagorean-theorem", "special-right-triangles", "altitude-hypotenuse", "median-to-hypotenuse", "triangle-inequality", "integer-triangles-perimeter", "similar-figures-ratios", "midsegment-theorem", "intercept-theorem", "clock-angle", "equilateral-triangle-facts", "inscribed-square", "isoperimetric-facts", "perpendicular-bisector-locus"] },
       { title: "Triangles: Sides, Areas & Radii",
         note: "The workhorses. Come here first when the figure hands you side lengths and wants another length or an area.",
         ids: ["triangle-area-standard", "triangle-13-14-15"] },
@@ -125,7 +125,7 @@ window.MATH_BUILTIN_LISTS = [
     sections: [
       { title: "The Fundamentals",
         note: "The facts every other tool here is built on. When a geometry problem stalls, it is usually one of these you have not used yet.",
-        ids: ["pythagorean-theorem", "special-right-triangles", "altitude-hypotenuse", "median-to-hypotenuse", "triangle-inequality", "integer-triangles-perimeter", "similar-figures-ratios", "midsegment-theorem", "intercept-theorem", "centroid-division", "cevian-area-ratio", "equilateral-triangle-facts", "15-75-90-triangle", "golden-ratio-pentagon", "inscribed-square", "isoperimetric-facts"] },
+        ids: ["pythagorean-theorem", "special-right-triangles", "altitude-hypotenuse", "median-to-hypotenuse", "triangle-inequality", "integer-triangles-perimeter", "similar-figures-ratios", "midsegment-theorem", "intercept-theorem", "centroid-division", "cevian-area-ratio", "equilateral-triangle-facts", "15-75-90-triangle", "golden-ratio-pentagon", "inscribed-square", "isoperimetric-facts", "perpendicular-bisector-locus"] },
       { title: "Triangles: Sides, Areas & Radii",
         note: "The workhorses. Come here first when the figure hands you side lengths and wants another length or an area.",
         ids: ["triangle-area-standard", "trig-area", "max-rectangle-in-triangle", "herons-formula", "inradius-area", "incenter-area-split", "circumradius-area", "right-triangle-inradius", "incircle-tangent-lengths", "incircle-excircle-touch", "shared-angle-area-ratio", "same-base-area-ratio", "law-of-sines", "law-of-cosines", "law-cosines-60-120", "angle-bisector-theorem", "angle-bisector-length", "angle-bisector-circumcircle", "altitude-bisector-angle", "stewarts-theorem", "cevas-theorem", "apollonius-theorem", "median-triangle-area", "vivianis-theorem", "projection-formula", "triangle-13-14-15"] },
@@ -143,7 +143,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["conic-sections", "ellipse-properties", "hyperbola-properties", "parabola-focus-directrix", "eccentricity", "conic-classification", "conic-reflective-property"] },
       { title: "Coordinates & Transformations",
         note: "For when the synthetic route stalls and the figure offers a right angle, a midpoint or a natural origin.",
-        ids: ["distance-midpoint", "line-forms", "angle-between-lines", "shoelace-formula", "picks-theorem", "point-line-distance", "circle-equation", "british-flag-theorem", "ellipse-tangent-line", "section-formula", "reflection-coordinates", "reflection-composition", "rotation-90", "rotation-reflection-matrices"] },
+        ids: ["distance-midpoint", "line-forms", "angle-between-lines", "shoelace-formula", "picks-theorem", "point-line-distance", "circle-equation", "british-flag-theorem", "ellipse-tangent-line", "section-formula", "reflection-coordinates", "reflection-composition", "rotation-90", "rotation-reflection-matrices", "rotation-center"] },
       { title: "Three Dimensions",
         note: "Mensuration of the named solids first, then analytic geometry in space for everything that is not one.",
         ids: ["eulers-polyhedron-formula", "prism-pyramid-volumes", "sphere-formulas", "cone-formulas", "frustum-volume", "regular-tetrahedron", "regular-octahedron", "tetrahedron-centroid", "distance-3d", "space-diagonal", "cross-product-area", "plane-intercept-form", "vector-dot-product", "vector-projection"] },
@@ -161,7 +161,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["cavalieris-principle", "solid-tactics"] },
       { title: "Configurations Worth Recognizing on Sight",
         note: "Whole problem shapes with an intended answer, not techniques.",
-        ids: ["reflection-shortest-path", "surface-shortest-path", "rotation-trick", "tangency-condition"] }
+        ids: ["reflection-shortest-path", "surface-shortest-path", "rotation-trick", "tangency-condition", "zonogon-minkowski"] }
     ] },
   { id: "route-amc-algebra", name: "AMC 10/12 Algebra", kind: "route", tier: "AMC", subject: "Algebra",
     blurb: "Everything the AMC 10 and 12 ask of algebra, in the order you would reach for it. 93 cards across 10 sections.",
@@ -273,10 +273,10 @@ window.MATH_BUILTIN_LISTS = [
     sections: [
       { title: "The Fundamentals",
         note: "The facts every other tool here is built on. When a geometry problem stalls, it is usually one of these you have not used yet.",
-        ids: ["integer-triangles-perimeter", "cevian-area-ratio", "15-75-90-triangle", "golden-ratio-pentagon"] },
+        ids: ["integer-triangles-perimeter", "cevian-area-ratio", "15-75-90-triangle", "golden-ratio-pentagon", "perpendicular-bisector-locus"] },
       { title: "Triangles: Sides, Areas & Radii",
         note: "The workhorses. Come here first when the figure hands you side lengths and wants another length or an area.",
-        ids: ["trig-area", "trig-area-circumradius", "max-rectangle-in-triangle", "herons-formula", "inradius-area", "incenter-area-split", "circumradius-area", "right-triangle-inradius", "incircle-tangent-lengths", "incircle-excircle-touch", "shared-angle-area-ratio", "same-base-area-ratio", "incircle-excircle-homothety", "exradii", "triangle-half-angle-identities", "triangle-sin2-sum-ratio", "half-angle-tangent-identity", "law-of-sines", "law-of-cosines", "law-cosines-60-120", "angle-bisector-theorem", "angle-bisector-length", "angle-bisector-circumcircle", "altitude-bisector-angle", "stewarts-theorem", "cevas-theorem", "menelaus-theorem", "apollonius-theorem", "median-triangle-area", "rouths-theorem", "vivianis-theorem", "trig-ceva", "erdos-mordell", "ratio-lemma", "law-of-tangents", "napoleons-theorem", "projection-formula", "triangle-13-14-15"] },
+        ids: ["trig-area", "trig-area-circumradius", "max-rectangle-in-triangle", "herons-formula", "inradius-area", "incenter-area-split", "circumradius-area", "right-triangle-inradius", "incircle-tangent-lengths", "incircle-excircle-touch", "shared-angle-area-ratio", "same-base-area-ratio", "incircle-excircle-homothety", "exradii", "triangle-half-angle-identities", "triangle-sin2-sum-ratio", "half-angle-tangent-identity", "law-of-sines", "law-of-cosines", "law-cosines-60-120", "angle-bisector-theorem", "angle-bisector-length", "angle-bisector-circumcircle", "altitude-bisector-angle", "stewarts-theorem", "cevas-theorem", "menelaus-theorem", "apollonius-theorem", "median-triangle-area", "rouths-theorem", "vivianis-theorem", "trig-ceva", "erdos-mordell", "ratio-lemma", "law-of-tangents", "napoleons-theorem", "projection-formula", "triangle-13-14-15", "cotangent-rule"] },
       { title: "Triangle Centers & Derived Triangles",
         note: "When the problem names a center, or builds a second triangle out of the first.",
         ids: ["euler-line-ratio", "euler-distance-theorem", "nine-point-circle", "carnots-theorem", "simson-line", "brocard-angle", "symmedian-lemoine", "incenter-excenter-lemma", "orthocenter-properties", "fermat-point", "center-distance-formulas", "feuerbach-theorem", "leibniz-formula", "triangle-center-angles", "orthocentric-system", "lemoine-point", "spieker-point", "gergonne-nagel-points", "pedal-triangle", "orthic-triangle", "medial-triangle", "contact-triangle", "euler-line-parallel-side"] },
@@ -306,7 +306,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["mass-points", "ravi-substitution", "area-method"] },
       { title: "Transformations & Inversion",
         note: "Move the figure until it becomes easy, rather than solving it where it stands.",
-        ids: ["spiral-similarity", "homothety-monge", "affine-transformations"] },
+        ids: ["spiral-similarity", "homothety-monge", "affine-transformations", "rotation-center"] },
       { title: "Coordinate & Algebraic Bashes",
         note: "When the figure resists synthetic attack, trade elegance for reliability.",
         ids: ["barycentric-coordinates", "coordinate-bash", "trig-bash", "complex-bash"] },
@@ -315,7 +315,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["cross-section-method", "cavalieris-principle", "solid-tactics"] },
       { title: "Configurations Worth Recognizing on Sight",
         note: "Whole problem shapes with an intended answer, not techniques.",
-        ids: ["reflection-shortest-path", "rotation-trick", "tangency-condition"] }
+        ids: ["reflection-shortest-path", "rotation-trick", "tangency-condition", "zonogon-minkowski"] }
     ] },
   { id: "route-aime-algebra", name: "AIME Algebra", kind: "route", tier: "AIME", subject: "Algebra",
     blurb: "Everything the AIME asks of algebra, in the order you would reach for it. 94 cards across 10 sections.",
@@ -440,7 +440,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["altitude-bisector-angle", "trig-ceva", "erdos-mordell", "ratio-lemma", "law-of-tangents", "napoleons-theorem", "mollweides-formula", "morleys-theorem"] },
       { title: "Areas, Radii & Half-Angles",
         note: "Converting between sides, angles, area and the two radii. The half-angle forms are what make these tractable.",
-        ids: ["trig-area-circumradius", "incircle-excircle-homothety", "triangle-half-angle-identities", "triangle-sin2-sum-ratio", "half-angle-tangent-identity"] },
+        ids: ["trig-area-circumradius", "incircle-excircle-homothety", "triangle-half-angle-identities", "triangle-sin2-sum-ratio", "half-angle-tangent-identity", "cotangent-rule"] },
       { title: "Circles & Tangency",
         note: "One circle with a point or chord, and circles touching circles. Chains and packings live here.",
         ids: ["butterfly-theorem", "radical-axis", "miquels-theorem", "apollonius-circle", "reims-theorem", "arbelos", "corner-circle-chain", "caseys-theorem", "mixtilinear-incircle"] },
@@ -637,7 +637,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["projected-area-cosine", "cone-formulas", "sphere-formulas", "de-guas-theorem", "cavalieris-principle"] }
     ] },
   { id: "config-lengths", name: "Lengths in a Triangle & Circle", kind: "configuration", subject: "Recognize",
-    blurb: "One page per kind of segment. A problem asking for a length has usually already told you which segment it is — a median, an altitude, a bisector, a tangent, a chord — and each of those has its own formula that the general ones only reproduce the long way. 22 cards across 6 groups.",
+    blurb: "One page per kind of segment. A problem asking for a length has usually already told you which segment it is — a median, an altitude, a bisector, a tangent, a chord — and each of those has its own formula that the general ones only reproduce the long way. 23 cards across 6 groups.",
     sections: [
       { title: "Cevians in General",
         note: "Any segment from a vertex to the opposite side. Stewart's covers every case, which is exactly why it is worth checking whether the cevian is special first.",
@@ -656,7 +656,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["incircle-tangent-lengths", "common-tangent-lengths", "power-of-a-point"] },
       { title: "Chords, Sides & Segments",
         note: "Lengths measured across a circle or across the triangle itself, including the two laws that convert any side into an angle and back.",
-        ids: ["chord-length", "common-chord-length", "equal-chords-arcs", "ptolemys-theorem", "law-of-cosines", "law-of-sines", "midsegment-theorem", "trapezoid-special-segments"] }
+        ids: ["chord-length", "common-chord-length", "equal-chords-arcs", "ptolemys-theorem", "law-of-cosines", "law-of-sines", "midsegment-theorem", "trapezoid-special-segments", "cotangent-rule"] }
     ] },
   { id: "config-solid-geometry", name: "The 3D Toolkit", kind: "configuration", subject: "Recognize",
     blurb: "Solid geometry gathered into one place, because the library files it across three subsections and a handful of methods, and in a problem you need all of it at once. 27 cards across 5 groups, running from the volumes you memorize to the two moves that collapse a 3D problem into a 2D one.",

@@ -1072,10 +1072,16 @@ The go-to for min/max of a quadratic without calculus, for finding a circle's ce
 - each bar wrapped around a variable mirrors the whole picture across that axis, so nesting draws copies of a simpler region, not a harder region
 - an inner shift moves where the copies sit: $\bigl||x|-1\bigr| + \bigl||y|-1\bigr| \le 1$ is the unit shape centered at each of $(\pm1,\pm1)$, giving four copies
 - two shapes worth knowing by sight: $|x|+|y| \le c$ is a square standing on its corner with diagonals $2c$ along the axes, and $\max(|x|,|y|) \le c$ is the same square untilted
+- a mixed term folds on its own zero set: $|x-y|$ adds the line $y = x$, so the plane splits into six sectors and the graph gains two more edges
+- $|x|+|y|+|x-y| = c$ is a centrally symmetric hexagon, because the expression is $2\max(|x|,|y|)$ where $x$ and $y$ share a sign and $2(|x|+|y|)$ where they do not
 - check whether the copies overlap before combining them, since that is the only place a count or an area over a nested region goes wrong
 
 ## Why it works
 In the first quadrant every bar can be dropped, because $|x| = x$ and $|y| = y$ there, so whatever is left is an ordinary relation you already know how to graph. The four sign choices for $(\pm x, \pm y)$ then give four congruent copies of that piece, glued along the axes, which is why $|x|+|y| \le c$ comes out as a square on its corner: the first-quadrant piece is the segment $x+y=c$ cutting off a right triangle, and four of those triangles make the square.
+
+The same reading handles a mixed term, which is where the four-quadrant recipe stops working on its own. $|x-y|$ is not even in $x$ by itself, so reflecting across the $y$-axis does not preserve it — but every bar is linear away from its own zero set, and those zero sets are the fold lines. For $|x| + |y| + |x-y|$ they are $x = 0$, $y = 0$ and $y = x$, cutting the plane into six sectors instead of four, with the expression linear in each. Evaluating it sector by sector gives $2\max(|x|,|y|)$ wherever $x$ and $y$ share a sign and $2(|x|+|y|)$ wherever they do not, so the level set $= c$ is a hexagon: two sides of a square in the first and third quadrants, and the diagonal $|x|+|y| = c/2$ across the second and fourth. At $c = 2$ its vertices are $(1,0), (1,1), (0,1), (-1,0), (-1,-1), (0,-1)$ and it encloses area $3$.
+
+One symmetry always survives, and it is worth naming: sending $(x,y)$ to $(-x,-y)$ leaves every one of $|x|$, $|y|$ and $|x-y|$ alone, so the figure is centrally symmetric. A centrally symmetric polygon with opposite sides equal is [[zonogon-minkowski|a zonogon]] — this hexagon is the sum of the segments $(0,1)$, $(1,0)$ and $(1,1)$ — which is why its perimeter comes out as twice the total of those three lengths without any case analysis at all.
 
 Reading it as symmetry rather than as [[casework-method|casework]] is what scales. A bar around a variable makes the relation even in that variable, and an even relation is exactly one whose graph is its own mirror image. So each bar is a reflection instruction, and bars nested inside a shift say where to put the reflected copies. Nothing about this is special to $|x|+|y|$; it applies to any relation built out of absolute values.
 
