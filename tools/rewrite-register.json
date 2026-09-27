@@ -1,0 +1,970 @@
+{
+ "_comment": "Cards whose intro (description) and explanation (Why it works, plus Full proof where one fits) have been rewritten to the standard in CONVENTIONS.md. The rewrite runs over many sessions; scan-conventions.py reports progress from this file and fails on an id that is not a card. Add an entry only after the card has been read rendered and every derivation checked by hand.",
+ "done": [
+  {
+   "id": "pythagorean-theorem",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "similar-figures-ratios",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "law-of-cosines",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "arithmetic-series",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "vietas-general",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "number-of-divisors",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "basic-probability",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "stars-and-bars",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "casework-method",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "geometric-probability",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "barycentric-coordinates",
+   "date": "2026-09-25",
+   "batch": "pilot"
+  },
+  {
+   "id": "constructive-counting",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "modular-basics",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "log-rules",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "difference-of-squares",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "geometric-series",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "bounding-diophantine",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "coordinate-bash",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "quadratic-formula",
+   "date": "2026-09-25",
+   "batch": "2"
+  },
+  {
+   "id": "floor-basics",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "complementary-counting",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "pie",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "base-conversion",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "bijection-method",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "complex-basics",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "permutations-combinations",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "factor-pair-counting",
+   "date": "2026-09-25",
+   "batch": "3"
+  },
+  {
+   "id": "special-right-triangles",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "angle-chasing",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "telescoping",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "trig-area",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "circle-basics",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "tangent-facts",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "weighted-average",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "tangent-circles",
+   "date": "2026-09-25",
+   "batch": "4"
+  },
+  {
+   "id": "equilateral-triangle-facts",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "binomial-theorem",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "proportion-properties",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "power-of-a-point",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "de-moivre",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "recursive-counting",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "roots-of-unity",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "crt",
+   "date": "2026-09-25",
+   "batch": "5"
+  },
+  {
+   "id": "law-of-sines",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "square-of-sum",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "angle-addition",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "angle-bisector-theorem",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "change-of-base",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "periodicity-mod-m",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "herons-formula",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "prism-pyramid-volumes",
+   "date": "2026-09-25",
+   "batch": "6"
+  },
+  {
+   "id": "vietas-quadratic",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "factor-remainder-theorem",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "sfft",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "inscribed-angle-theorem",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "linear-recurrence",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "triangle-inequality",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "floor-multiples",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "exponent-tracking",
+   "date": "2026-09-25",
+   "batch": "7"
+  },
+  {
+   "id": "symmetry-probability",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "shoelace-formula",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "double-angle",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "euclidean-algorithm",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "conditional-probability",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "completing-the-square",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "perpendicular-bisector-locus",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "relative-motion",
+   "date": "2026-09-25",
+   "batch": "8"
+  },
+  {
+   "id": "gcd-lcm-product",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "triangle-area-standard",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "stewarts-theorem",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "distance-midpoint",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "periodic-sequences",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "thales-theorem",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "cross-section-method",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "auxiliary-lines",
+   "date": "2026-09-25",
+   "batch": "9"
+  },
+  {
+   "id": "abs-value-relations",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "functional-substitution",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "states-recursion-prob",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "trapezoid-parallelogram-areas",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "chord-length",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "power-sums",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "multiset-permutations",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "binomial-row-sums",
+   "date": "2026-09-25",
+   "batch": "10"
+  },
+  {
+   "id": "invariants-coloring",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "inradius-area",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "circumradius-area",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "ptolemys-theorem",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "point-line-distance",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "fermats-little-theorem",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "legendres-formula",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "reflection-coordinates",
+   "date": "2026-09-25",
+   "batch": "11"
+  },
+  {
+   "id": "rotation-90",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "sp-substitution",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "uniform-overcount",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "circular-segment",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "am-gm",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "pythagorean-identities",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "divisibility-rules",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "handshakes-diagonals",
+   "date": "2026-09-25",
+   "batch": "12"
+  },
+  {
+   "id": "law-of-cosines-special-triangles",
+   "date": "2026-09-25",
+   "batch": "new card"
+  },
+  {
+   "id": "expected-value",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "conic-sections",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "cone-formulas",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "product-sum",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "non-adjacent-selection",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "homothety-monge",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "area-method",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "extremal-principle",
+   "date": "2026-09-25",
+   "batch": "13"
+  },
+  {
+   "id": "piecewise-graph-counting",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "altitude-hypotenuse",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "centroid-division",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "polygon-angle-sums",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "conjugate-root-theorems",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "half-angle",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "absolute-value-rules",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "work-rates",
+   "date": "2026-09-25",
+   "batch": "14"
+  },
+  {
+   "id": "repeating-decimals",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "binomial-probability",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "pigeonhole",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "same-base-area-ratio",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "law-cosines-60-120",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "radical-axis",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "multiplicative-order",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "vp-factorial",
+   "date": "2026-09-25",
+   "batch": "15"
+  },
+  {
+   "id": "lattice-points-gcd",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "mass-points",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "complex-bash",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "symmetric-polynomial-strategies",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "generating-function-method",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "burnsides-lemma",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "median-to-hypotenuse",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "midsegment-theorem",
+   "date": "2026-09-26",
+   "batch": "16"
+  },
+  {
+   "id": "regular-polygon-area",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "line-forms",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "exponent-laws",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "circular-permutations",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "grid-paths",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "rationalizing",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "shared-angle-area-ratio",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "apollonius-theorem",
+   "date": "2026-09-26",
+   "batch": "17"
+  },
+  {
+   "id": "point-plane-distance",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "golden-ratio-pentagon",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "triangular-numbers",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "binets-formula",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "eulers-theorem",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "difference-of-squares-rep",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "digit-count",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "multinomial-theorem",
+   "date": "2026-09-26",
+   "batch": "18"
+  },
+  {
+   "id": "permutation-cycle-structure",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "solid-tactics",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "denesting-radicals",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "symmetric-linear-system",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "finite-differences",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "multi-leg-rates",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "recognition-numbers",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "double-counting",
+   "date": "2026-09-26",
+   "batch": "19"
+  },
+  {
+   "id": "roots-of-unity-filter",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "cyclic-opposite-angles",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "circle-equation",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "space-diagonal",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "rational-root-theorem",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "sum-zero-identities",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "cauchy-schwarz",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "average-speed",
+   "date": "2026-09-26",
+   "batch": "20"
+  },
+  {
+   "id": "eulers-totient",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "chicken-mcnugget",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "handshake-lemma",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "quadrilateral-diagonal-area",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "orthocenter-properties",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "common-tangent-lengths",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "isosceles-tetrahedron",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "insphere-radius",
+   "date": "2026-09-26",
+   "batch": "21"
+  },
+  {
+   "id": "median-doubling",
+   "date": "2026-09-26",
+   "batch": "new cards"
+  },
+  {
+   "id": "parallel-line-similarity",
+   "date": "2026-09-26",
+   "batch": "new cards"
+  },
+  {
+   "id": "cyclic-equal-angles",
+   "date": "2026-09-26",
+   "batch": "new cards"
+  },
+  {
+   "id": "perp-to-angle-bisector",
+   "date": "2026-09-26",
+   "batch": "new cards"
+  },
+  {
+   "id": "plane-intercept-form",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "product-of-divisors",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "perfect-square-divisors",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "digit-sum-carries",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "vandermonde",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "bayes-theorem",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "newtons-sums",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "log-substitution",
+   "date": "2026-09-26",
+   "batch": "22"
+  },
+  {
+   "id": "angle-bisector-reflection",
+   "date": "2026-09-26",
+   "batch": "new cards"
+  },
+  {
+   "id": "trig-substitution",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "hensel-lifting",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "indicator-variables",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "tangency-condition",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "fx-pairing",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "shifted-polynomial-construction",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "descartes-circle-theorem",
+   "date": "2026-09-26",
+   "batch": "23"
+  },
+  {
+   "id": "partitions",
+   "date": "2026-09-26",
+   "batch": "23"
+  }
+ ]
+}

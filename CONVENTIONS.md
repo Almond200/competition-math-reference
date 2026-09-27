@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 539 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 557 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -35,10 +35,18 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 - `type` and `subject` appear on **105/105** `patterns.js` cards and on **0/434** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **538/539** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **557/557** cards. Use it even when there is no backslash.
+- **never write a raw `<` followed by a letter inside `$...$`** — write `\lt`. Every one of these
+  strings reaches the page through `innerHTML`, so the HTML parser sees `<j` as the start of a tag
+  and eats everything up to the next `>` before KaTeX is ever called. This shipped once as
+  `$\sum_{i<j} \lvert \vec v_i \times \vec v_j \rvert$` on `zonogon-minkowski`: the bullet lost its
+  formula and the bullet after it was mangled too. `scan-conventions.py` checks every `String.raw`
+  literal in the data files — descriptions, `latex`, write-ups and examples alike — and it looks
+  only *inside* math spans, because matching across the gap between two formulas just flags the
+  intentional `<br>` in examples.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
   `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
-  all 539 cards use one of the four canonical orders, the extra two being the same pair with an
+  all 557 cards use one of the four canonical orders, the extra two being the same pair with an
   optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
   something to show).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
@@ -52,7 +60,33 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 | `level` | drawn from `MATHCOUNTS` (106), `AMC10` (204), `AMC12` (290), `AIME` (385), `Olympiad` (198). No other string appears |
 | `keywords` | min 4, median 6, 90th percentile 9, max 20. Four is the floor — never ship fewer |
 | `name` | median 24 chars, max 55. 63 names use ` & `, 42 carry a parenthetical like `(PIE)` |
-| `description` | median 273 chars, 90th percentile 501, max 1001. Two to four sentences |
+| `description` | median 273 chars, 90th percentile 501, max 1001. Three to five sentences, to the intro standard below |
+
+### The intro (`description`) standard
+
+The description is the card's introduction. It is the first prose on the card's page, and its
+**first two sentences are all the section grid and search results show** (`firstSentences` in
+`js/app.js`), so those two must stand on their own. Adopted 2026-09-25, after a reader put it
+exactly: the old intros read "like someone who knows what they are talking about but isn't doing
+a good job of explaining it". Progress is tracked in `tools/rewrite-register.json`.
+
+- **Sentence one defines the topic of the card** — what the object, result or method is — before
+  any formula variant, use case or caveat. A term is defined ("Two integers are congruent modulo
+  $m$ when they leave the same remainder"), a theorem is stated in words ("In a right triangle,
+  the square of the hypotenuse equals the sum of the squares of the two legs"), a method says what
+  it does ("Stars and bars counts the ways to split $n$ identical objects into $k$ labeled
+  groups"). Never open with a list of variables ("For a cevian of length $d$ dividing side $a$
+  into..."), a mnemonic, a fragment ("For nonnegative reals; equality iff all equal"), or the
+  conditions under which something happens before saying what it is.
+- **Sentence two says when you reach for it and what it buys you.**
+- Then conditions, variants and symbol meanings, woven into sentences. Three to five in all.
+- **No `[[links]]`** — descriptions are not linkified, and the scan fails on one.
+- **Search reads it.** Descriptions feed both search channels, so rebuild the index and run the
+  eval after every batch. A specialisation's intro must not paraphrase the general card's
+  defining phrase: "The line through the circumcenter and the orthocenter..." on
+  `euler-line-parallel-side` took "line through the circumcenter centroid and orthocenter" off
+  `euler-line-ratio`, and "the circle that touches $AD$, touches $BC$..." on `sawayama-thebault`
+  took "radius of the circle touching all three sides" off `inradius-area`.
 
 ### Naming
 
@@ -63,18 +97,28 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**539 write-ups for 539 cards. One each, no orphans, no card without one.**
+**557 write-ups for 557 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      539/539
-## How to use it     539/539
-## On contests       539/539
+## Why it works      557/557
+## How to use it     557/557
+## On contests       557/557
 ```
 
-An optional fourth, `## Key forms`, appears on 109. There is exactly one other heading in the whole
-corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do not invent a fifth.
+Two optional headings, and no others (the scan fails on any other): `## Key forms`, on 109, and
+`## Full proof`, which renders collapsed behind a "Show full proof" button.
+
+- **Why it works explains; Full proof proves.** Open Why it works with the idea in one plain
+  sentence, then the argument step by step at a strong AMC 12 reader's level, each step saying why
+  it is allowed, in short paragraphs. No compressed gaps like "factors as a difference of squares,
+  twice". A concrete instance (the divisors of $360$) is often the clearest way in.
+- **Add a Full proof when Why it works is an outline or an instance** and a complete argument is
+  within contest reach: the general expansion behind Vieta, unique factorization behind the
+  divisor count, the determinant behind barycentric area ratios. Do not add one to a method or
+  pattern with nothing to prove, and do not duplicate a Why it works that is already complete.
+  Where the real proof is beyond contest level, say so in Why it works instead.
 
 - **Key forms is a `patterns.js` habit**: 98 of 105 `patterns.js` cards have one, against 11 of 434
   subject-file cards. If you are writing a formula card and reaching for Key forms, put the material
@@ -88,7 +132,7 @@ corpus (`## Full proof` on `mean-chain`), and it is a sanctioned exception. Do n
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 539** write-ups contain `**`. This rule is unbroken — do not be the first.
+  asterisks. **0 of 557** write-ups contain `**`. This rule is unbroken — do not be the first.
 - **Em dashes: median 2 per write-up, 90th percentile 5, and 87 write-ups use none.** Prefer commas.
   (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
@@ -139,12 +183,16 @@ positives and should be rejected every time they reappear:
   side), not `brahmaguptas-formula`, which is his area formula. Likewise "Pappus' chain" in `arbelos`
   is the chain of circles, not `pappus-centroid`, which is the solid-of-revolution theorem. Both
   reappear on every `--seed`, and both are rejections.
+  The library now holds **three** distinct Pappus results — `pappus-centroid` (solids of
+  revolution), Pappus' chain (a clause inside `arbelos`), and `pappus-hexagon` (the projective
+  theorem) — so the bare alias "Pappus" is genuinely ambiguous and `build-cross-links.py` holds
+  it back rather than guessing. That is the wanted behaviour: do not resolve it by hand.
 
 ---
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**539 example keys for 539 cards. Zero cards lack one.**
+**557 example keys for 557 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -162,14 +210,52 @@ window.MATH_EXAMPLES["your-card-id"] = { q: String.raw`...`, s: String.raw`...` 
 
 ## 4. The diagram — mandatory for geometry
 
-**187 of 187 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
-geometry card without a figure is incomplete. The count reached 187/187 only after a card shipped
+**200 of 200 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
+geometry card without a figure is incomplete. The count reached 200/200 only after a card shipped
 without one and had to be fixed, which is why `tools/scan-conventions.py` exits non-zero on any
 geometry card missing a diagram.
 
 Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 38/105,
 `algebra.js` 11/102, `counting.js` 3/67, `number-theory.js` 1/78.
 
+- **Figures inside the text.** A paragraph that is nothing but `{{figure:name}}` draws
+  `BODY["card-id"]["name"]` at that point in the write-up. Use one wherever a paragraph describes
+  something the reader would otherwise have to imagine: a construction, a labelled configuration,
+  a before-and-after, a worked diagram (`barycentric-coordinates` marks two points on the sides,
+  turns each cevian into an equation and solves for the crossing). Put it right after the paragraph
+  it illustrates, never repeat the figure at the top of the card, and make the caption say what to
+  look at. Label points with the values the text uses, vertex coordinates included. The scan fails
+  on a marker that names no figure, a figure no text places, and a marker sharing its paragraph
+  with prose. `EXAMPLE["card-id"] = { q, s }` is the same idea for an example's own figure: `q`
+  shows only the given setup, `s` an optional construction inside the solution.
+- **Keep paragraphs digestible.** One idea per paragraph, about 450 characters at most, and a
+  multi-step derivation or the key equation goes on its own line as display math (`$$...$$`)
+  instead of being threaded through a long sentence. A paragraph that walks through several steps
+  is split at the step boundaries. `scan-conventions.py` reports rewritten-card paragraphs over the
+  limit.
+- **Never name a specific problem on a card.** On contests, the write-up, the example and the
+  description describe problem types in general ("a cubic with no $x^2$ term", "two circles in a
+  corner") and may quote the tag counts, but never cite "2024 AIME II Problem 4" or similar; the
+  practice problems are listed under the card from `problem-db.js`, and that is where references
+  live. `scan-conventions.py` fails on any card text that names one.
+- **Keep each card in its lane.** A neighbouring card's result gets one sentence and a `[[link]]`,
+  never a re-derivation, a displayed copy of its formula, or its picture. A construction or
+  configuration is drawn and worked on the one card whose topic it is (the doubled median on
+  Doubling a Median, the 13-14-15 altitude split on the 13-14-15 card), and every other card
+  points there. Check the neighbours' figures before drawing a new one.
+- **Break up runs of long paragraphs.** Two or three paragraphs of three or more lines in a row are
+  hard to take in, so something visual should sit between them: on a geometry card, an in-text
+  figure (`{{figure:name}}`) of the configuration the text describes; on any card, a centered
+  display line with the key equation. Figures are for geometry. A non-geometry card gets one only
+  when a picture explains more than a centered line would, never as decoration. One or two
+  in-text figures per card is the norm, one for each distinct idea: a card covering two concepts
+  (the acute and the obtuse case, the theorem and its converse) gets a figure for each.
+- **Write to teach, not to list.** Each explanation should build understanding: say what the idea
+  is, why each step follows, and how the pieces connect, instead of stating facts one after another.
+  This is not a formal lesson, and most cards need far less than `barycentric-coordinates`, which
+  is the fullest case. Add a figure wherever a picture makes the concept clearer, and not only in
+  geometry: an area model for an algebraic identity, the grid of outcomes for a probability, a
+  graph for an extremum, a tiling for an algorithm.
 - Figures go through the diagram DSL in `js/data/diagrams/`, registered as
   `DIAGRAMS["card-id"] = [...]`. Geometry figures live in `geometry-diagrams.js`, everything else in
   `general-diagrams.js`.
@@ -210,6 +296,18 @@ Elsewhere it is the exception, reserved for configuration-heavy figures: `patter
   25% of its own radius. Beyond that the circle is plainly bigger than the frame on purpose -- four
   circumcircles of four triangles genuinely are -- and stays exempt. Today's data splits cleanly
   either side: the three real bugs sat at 4%, 17% and 23%, the deliberate arc at 90%.
+- **When a figure claims points are collinear, the drawn line must span all of them.** Take the
+  extremes along the line direction, never an arbitrary pair. `steiner-line` spanned `rs[0]` to
+  `rs[2]` while the middle reflection lay *outside* that pair, so the third point rendered as a dot
+  floating in empty space — a figure that visually contradicts its own caption while sitting
+  0.02px from the line. **No gate covers this**, and two attempts to build one both reached a 100%
+  false-positive rate: on 279 panels the "collinear but past the end" test flagged 41 legitimate
+  cases, and restricting it to same-coloured dots still flagged 8, all of them lattice grids where
+  collinear dots are the whole point. Check it by eye and by projecting the points onto the line.
+- **Corner/apex pairing is easy to get backwards.** In `equiangular-hexagon-area` the apex where
+  two extended sides meet is cut off by the side *between* them; pairing each apex with an adjacent
+  side instead produced three non-equilateral slivers that looked fine on screen. Measure the
+  triangles you draw.
 - **Never assign `DIAGRAMS["id"]` twice.** Six keys had drifted into a second definition that
   silently replaced the first, and for `median-to-hypotenuse` the *discarded* copy was the correct
   one. The checker now fails on a repeated key.

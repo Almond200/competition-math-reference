@@ -1,6 +1,6 @@
 # Competition Math Reference
 
-A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 539 cards
+A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 557 cards
 covering formulas, general techniques, and recurring problem formats, plus a database of
 1367 past contest problems cross-linked to the cards their solutions run through.
 

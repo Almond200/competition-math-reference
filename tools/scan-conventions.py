@@ -165,8 +165,40 @@ print("  cross-links: %d piped, %d bare  (bare must stay 0; a bare link renders 
       % (piped, len(bare)))
 if bare:
     print("  BARE LINKS: %s" % ", ".join("%s -> %s" % b for b in bare[:8]))
-print("  raw '<' inside maths: %d  (must stay 0)"
-      % sum(1 for v in DETAILS.values() if re.search(r"\$[^$]*<[A-Za-z/][^$]*\$", v)))
+# A raw "<" followed by a letter inside $...$ is swallowed by the HTML parser before KaTeX
+# ever sees it, because every one of these strings reaches the page through innerHTML. This
+# shipped once as "$\\sum_{i<j} ...$": everything from "<j" to the next ">" was eaten, the
+# bullet lost its formula AND the next bullet was mangled. Write "\\lt" instead. Descriptions,
+# latex, write-ups and examples all travel the same path, so every String.raw literal in the
+# data files is checked rather than write-ups alone.
+# Split on $...$ and look only at the math spans. Matching "$ ... < ... $" across the text
+# BETWEEN two formulas gives nothing but false hits on the intentional <br> in examples.
+_MATHSPAN = re.compile(r"\$[^$]*\$")
+_INNERLT = re.compile(r"<[A-Za-z/]")
+class _RawLt:
+    @staticmethod
+    def search(txt):
+        for _s in _MATHSPAN.findall(txt):
+            m = _INNERLT.search(_s)
+            if m: return _s
+        return None
+_RAWLT = _RawLt
+_KEY = re.compile(r'(?:id: "([a-z0-9-]+)"|^"([a-z0-9-]+)":|MATH_EXAMPLES\["([a-z0-9-]+)"\])', re.M)
+_lt = []
+for _f in (sorted(glob.glob("js/data/*.js")) + sorted(glob.glob("js/data/details/*.js"))):
+    _txt = io.open(_f, encoding="utf-8").read()
+    _keys = [(m.start(), m.group(1) or m.group(2) or m.group(3)) for m in _KEY.finditer(_txt)]
+    for _m in re.finditer(r"String\.raw`([^`]*)`", _txt):
+        if not _RAWLT.search(_m.group(1)):
+            continue
+        _owner = "?"
+        for _pos, _k in _keys:
+            if _pos < _m.start(): _owner = _k
+            else: break
+        _lt.append((os.path.basename(_f), _owner))
+print("  raw '<' inside maths: %d  (must stay 0)" % len(_lt))
+for _w, _k in _lt[:8]:
+    print("    %s: %s" % (_w, _k))
 
 # Every way a [[link]] can be written and silently not become a link. All three of these have
 # actually shipped: math in a label (linkifyCards splits the prose on $...$ first, so the
@@ -253,6 +285,112 @@ dupes = {w: v for w, v in seen.items() if len(v) > 1}
 for w in sorted(dupes, key=lambda w: -len(dupes[w]))[:12]:
     print("  %-16s %s" % (w, ", ".join(dupes[w])))
 
-bad = bool(missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples)
+print("\n-- figures in write-ups and examples --")
+# The registries are built by JS, so ask JS for their keys rather than regexing object literals.
+import subprocess as _sp, tempfile as _tf, json as _js
+_jsc = "/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc"
+_src = ("var window = {};\n" +
+        "".join("load(%r);\n" % f for f in ["js/data/diagrams/geometry-diagrams.js",
+                                           "js/data/diagrams/general-diagrams.js"]) +
+        "var B = window.MATH_BODY_DIAGRAMS || {}, X = window.MATH_EXAMPLE_DIAGRAMS || {}, o = {b: {}, x: {}};\n"
+        "Object.keys(B).forEach(function (k) { o.b[k] = Object.keys(B[k]); });\n"
+        "Object.keys(X).forEach(function (k) { o.x[k] = Object.keys(X[k]); });\n"
+        "print(JSON.stringify(o));\n")
+with _tf.NamedTemporaryFile("w", suffix=".js", delete=False) as _fh:
+    _fh.write(_src)
+_res = _sp.run([_jsc, _fh.name], capture_output=True, text=True)
+os.unlink(_fh.name)
+_reg = _js.loads(_res.stdout.strip().splitlines()[-1]) if _res.returncode == 0 else {"b": {}, "x": {}}
+if _res.returncode != 0:
+    print("  DIAGRAM FILES FAILED TO EVALUATE: %s" % _res.stderr.strip()[:200])
+fig_bad = []
+_used = set()
+for _k, _v in DETAILS.items():
+    for _blk in re.split(r"\n\s*\n", _v):
+        for _m in re.finditer(r"\{\{figure:([\w-]+)\}\}", _blk):
+            _used.add((_k, _m.group(1)))
+            _rest = [l.strip() for l in _blk.split("\n") if l.strip() and not l.strip().startswith("## ")]
+            if _rest != [_m.group(0)]:
+                fig_bad.append("%s: {{figure:%s}} must be a paragraph of its own -- inside prose it prints raw"
+                               % (_k, _m.group(1)))
+            if _m.group(1) not in _reg["b"].get(_k, []):
+                fig_bad.append("%s: {{figure:%s}} names no figure in MATH_BODY_DIAGRAMS[%r]"
+                               % (_k, _m.group(1), _k))
+for _k, _names in _reg["b"].items():
+    for _n in _names:
+        if (_k, _n) not in _used:
+            fig_bad.append("%s: figure %r is registered but no write-up places it" % (_k, _n))
+_exkeys = set(re.findall(r'^"([a-z0-9-]+)":', ex, re.M)) | set(re.findall(r'MATH_EXAMPLES\["([a-z0-9-]+)"\]', ex))
+for _k, _parts in _reg["x"].items():
+    if _k not in _exkeys:
+        fig_bad.append("%s: has an example figure but no example" % _k)
+    if "s" in _parts and "q" not in _parts:
+        fig_bad.append("%s: example figure has a solution panel but no setup panel" % _k)
+for _f in glob.glob("js/data/*.js"):
+    if "{{figure:" in io.open(_f, encoding="utf-8").read():
+        fig_bad.append("%s: a {{figure:...}} marker outside a write-up is never rendered" % _f)
+print("  in-text figures: %d placed on %d cards | example figures: %d"
+      % (len(_used), len({k for k, _ in _used}), len(_reg["x"])))
+print("  figure problems: %d  (must stay 0)" % len(fig_bad))
+for _x in fig_bad[:10]:
+    print("    " + _x)
+
+# Headings: the three required ones, Key forms, and Full proof (collapsible, rendered behind a
+# "Show full proof" button). Anything else renders as a stray <h4> nobody designed for.
+_ALLOWED = {"Why it works", "How to use it", "On contests", "Key forms", "Full proof"}
+_odd_heads = sorted(set(heads) - _ALLOWED)
+if _odd_heads:
+    print("  UNKNOWN HEADINGS: %s" % ", ".join(_odd_heads))
+
+# Progress of the intro-and-explanation rewrite, which runs over many sessions.
+try:
+    _rr = _js.load(io.open("tools/rewrite-register.json", encoding="utf-8"))
+    _done = [e["id"] for e in _rr.get("done", [])]
+    _unknown = [i for i in _done if i not in {c["id"] for c in CARDS}]
+    print("  rewritten intros and explanations: %d/%d%s"
+          % (len(set(_done)), len(CARDS), ("  (unknown ids: %s)" % ", ".join(_unknown)) if _unknown else ""))
+except FileNotFoundError:
+    _unknown = []
+    _done = []
+
+# Digestible paragraphs, measured on rewritten cards only: one idea per paragraph, and a long
+# derivation goes on its own line as display math rather than through a sentence. Source length
+# with display math and link targets removed; lists, figures and Key forms are exempt.
+_PARA_LIMIT = 500
+_long_paras = []
+for _id in set(_done):
+    _sec = ""
+    for _blk in re.split(r"\n\s*\n", DETAILS.get(_id, "").strip()):
+        _m = re.match(r"## (.+)\n?", _blk)
+        if _m:
+            _sec, _blk = _m.group(1).strip(), _blk[_m.end():]
+        if not _blk.strip() or _sec == "Key forms" or _blk.lstrip().startswith(("- ", "{{figure")):
+            continue
+        _plain = re.sub(r"\[\[[\w-]+\|([^\]]*)\]\]", r"\1", re.sub(r"\$\$.*?\$\$", "", _blk, flags=re.S))
+        if len(_plain) > _PARA_LIMIT:
+            _long_paras.append((_id, _sec, len(_plain)))
+print("  rewritten-card paragraphs over %d characters: %d  (must stay 0)" % (_PARA_LIMIT, len(_long_paras)))
+for _id, _sec, _n in sorted(_long_paras)[:8]:
+    print("    %s / %s: %d" % (_id, _sec, _n))
+
+# _lt (raw "<" inside maths) was printed as "must stay 0" but never counted towards the exit
+# code, so a planted fault showed in the output and the run still passed.
+# ---- card text never names a specific problem (Stanley, 2026-09-26) ----
+# Problems are listed under each card from problem-db; the card's own prose stays general.
+_PROBREF = re.compile(r"(?:19|20)\d\d\s+(?:AIME|AMC|HMMT|USAMO|USAJMO|IMO|ARML|PUMaC|CMIMC|BMT|Putnam|MATHCOUNTS)"
+                      r"|(?:AIME|AMC\s*1[02][AB]?|HMMT|USAMO|IMO)\s+(?:19|20)\d\d"
+                      r"|(?:AIME|AMC|HMMT|IMO)[^.\n`]{0,14}(?:Problem|#|\bP)\s*\d+")
+_probref_hits = []
+for _f in sorted(glob.glob(os.path.join(ROOT, "js/data/details/*-details.js"))) + [os.path.join(ROOT, "js/data/examples-supplement.js")] + [os.path.join(ROOT, "js/data", _n + ".js") for _n in ("geometry", "algebra", "number-theory", "counting", "patterns")]:
+    _src = open(_f, encoding="utf-8").read()
+    _src = re.sub(r"^\s*//.*$", "", _src, flags=re.M)
+    for _m in _PROBREF.finditer(_src):
+        _probref_hits.append((os.path.basename(_f), _m.group(0)))
+print("  card text naming a specific problem: %d  (must stay 0)" % len(_probref_hits))
+for _h in _probref_hits[:10]:
+    print("    %s: %s" % _h)
+
+bad = bool(missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples
+           or _lt or fig_bad or _odd_heads or _unknown or _long_paras or _probref_hits)
 print("\n%s" % ("FAILURES ABOVE" if bad else "no convention violations found"))
 sys.exit(1 if bad else 0)

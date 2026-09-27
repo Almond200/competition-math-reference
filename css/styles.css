@@ -419,6 +419,11 @@ body {
 }
 
 .nav-sub-link:hover { color: var(--text); border-left-color: var(--accent); }
+/* A subsection the section's filters have emptied: shown, so the outline stays whole,
+   but dimmed and inert, since there is nothing on the page to jump to. */
+.nav-sub-link.nav-empty, .nav-cluster-link.nav-empty { opacity: 0.4; cursor: default; }
+.nav-sub-link.nav-empty:hover { color: var(--text-dim); border-left-color: var(--border); }
+.nav-cluster-link.nav-empty:hover { color: var(--text-faint); border-left-color: var(--border); }
 
 /* ---------- Adding cards from a list's own page ---------- */
 
@@ -1104,6 +1109,13 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
 
 .detail-diagram { margin: 14px 0 4px; }
 .detail-diagram svg { max-width: 430px; }
+/* A figure placed inside the write-up at a {{figure:name}} marker, and an example's own
+   figure under its question. Both sit in running text, so they get vertical breathing room
+   and the same width cap as the figures at the top of the card. */
+.body-figure { margin: 6px 0 16px; }
+.body-figure svg, .example-figure svg { max-width: 430px; }
+.example-figure { margin: 6px 0 12px; }
+.problem-sol .example-figure { margin-top: 12px; }
 
 .detail-body h4::after,
 .key-forms h4::after,
@@ -1168,7 +1180,14 @@ body.nav-open ::-webkit-scrollbar-thumb { background: var(--scrollbar-dim); }
 /* ---------- Problem database ---------- */
 .practice-note { font-weight: 500; font-size: 11.5px; color: var(--text-faint); }
 .prob-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.prob-row { display: flex; align-items: center; gap: 10px; }
+/* The link sits at the far right of a wide row, so in a long list it is easy to lose which problem
+   it belongs to. Shading the whole row on hover ties the two ends together, and :focus-within
+   keeps the row marked after its AoPS link is clicked (that opens a new tab), until focus moves.
+   The negative margin puts the padding outside the text column, so nothing shifts. */
+.prob-row { display: flex; align-items: center; gap: 10px; padding: 3px 8px; margin: 0 -8px;
+            border-radius: 6px; transition: background 0.12s; }
+.prob-row:hover, .prob-row:focus-within { background: var(--accent-soft); }
+.prob-row:hover .prob-open, .prob-row:focus-within .prob-open { color: var(--accent); }
 .prob-row .prob-open { font-size: 13.5px; color: var(--text); text-decoration: none; font-weight: 600; }
 .prob-row .prob-open:hover { color: var(--accent); text-decoration: underline; }
 .prob-row .ref-ext-link { margin-left: auto; font-size: 11.5px; color: var(--accent); text-decoration: none; white-space: nowrap; }
@@ -1886,6 +1905,17 @@ select.tool-in { cursor: pointer; }
 .tool-tbl td.dv-no { color: rgb(239, 95, 139); }
 .tool-tbl td:last-child { text-align: left; }
 .rd-bar { border-top: 2px solid var(--accent); padding-top: 1px; color: var(--accent); }
+/* Mass-points balance (js/mass-balance.js): a canvas, sized in JS to the card's width. Touch
+   keeps scrolling the page; a mouse drag turns the view. */
+.mb-canvas {
+  display: block; margin: 12px auto 0; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-card); cursor: grab; touch-action: pan-y;
+}
+.mb-canvas:active { cursor: grabbing; }
+.mb-row .mb-in { width: 64px; }
+.mb-row .mb-in.mb-given { color: var(--gold); font-weight: 600; background: transparent; border-style: dashed; }
+.mb-out .tool-btn2 { margin-left: 6px; }
+.mb-prob { margin: 0 0 10px; }
 
 /* Practice-problem list: only the first few show until "Show more" is clicked.
    The button reuses .show-more-btn so it matches the app's other reveal controls. */
@@ -1899,7 +1929,13 @@ select.tool-in { cursor: pointer; }
 .full-proof .proof-body p:first-child { margin-top: 12px; }
 
 .contest-refs .prob-extra { display: none; }
-.contest-refs.probs-open .prob-extra { display: flex; }
+/* Problems are grouped by contest; each group is a small label over its own list. */
+.prob-group + .prob-group { margin-top: 18px; }
+.prob-group-head { font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+                   color: var(--accent); margin-bottom: 6px; }
+.prob-group-head .practice-note { letter-spacing: 0; margin-left: 2px; }
+.contest-refs .prob-group.probs-open .prob-extra { display: flex; }
+.prob-group .prob-more { margin-top: 6px; }
 .fg-curve { stroke: var(--accent); stroke-width: 2; fill: none; }
 .tool-bar { fill: var(--accent); }
 .sb-token { font-size: 20px; letter-spacing: 3px; word-break: break-all; line-height: 1.5; }

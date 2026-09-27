@@ -23,7 +23,7 @@ window.MATH_SECTIONS.push({
           id: "quadratic-formula",
           name: "Quadratic Formula & Discriminant",
           latex: String.raw`x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}, \qquad \Delta = b^2 - 4ac`,
-          description: String.raw`Roots are real and distinct if $\Delta > 0$, repeated if $\Delta = 0$, complex conjugates if $\Delta \lt  0$. Rational roots need $\Delta$ to be a perfect square.`,
+          description: String.raw`The quadratic formula gives the solutions of any quadratic equation $ax^2 + bx + c = 0$ with $a \ne 0$: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$. The number under the square root, the discriminant $\Delta = b^2 - 4ac$, decides what kind of roots there are without finding them: two real roots if $\Delta \gt 0$, one repeated root if $\Delta = 0$, and two complex conjugate roots if $\Delta \lt 0$. For a quadratic with integer coefficients the roots are rational exactly when $\Delta$ is a perfect square. Before using the formula, check whether the quadratic factors, or whether Vieta's formulas already answer the question.`,
           keywords: ["roots", "discriminant", "real solutions", "perfect square"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -32,7 +32,7 @@ window.MATH_SECTIONS.push({
           id: "vietas-quadratic",
           name: "Vieta's Formulas (Quadratic)",
           latex: String.raw`r + s = -\frac{b}{a}, \qquad rs = \frac{c}{a}, \qquad r^2 + s^2 = (r+s)^2 - 2rs, \qquad \frac{1}{r} + \frac{1}{s} = \frac{r+s}{rs}, \qquad |r - s| = \frac{\sqrt{\Delta}}{|a|}`,
-          description: String.raw`Sum and product of the roots of $ax^2 + bx + c = 0$. Also useful: $r^2 + s^2 = (r+s)^2 - 2rs$.`,
+          description: String.raw`Vieta's formulas for a quadratic give the sum and product of its roots straight from the coefficients: the roots $r$ and $s$ of $ax^2 + bx + c = 0$ satisfy $r + s = -\frac ba$ and $rs = \frac ca$. Any symmetric expression in the two roots then follows without solving, such as $r^2 + s^2 = (r + s)^2 - 2rs$ and $\frac1r + \frac1s = \frac{r + s}{rs}$. They also run in reverse: two numbers with sum $p$ and product $q$ are the roots of $x^2 - px + q = 0$, which solves a system like $x + y = 7$, $xy = 12$ at once.`,
           keywords: ["sum of roots", "product of roots", "vieta", "vietas formulas", "roots sum and product", "quadratic root relations"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -41,7 +41,7 @@ window.MATH_SECTIONS.push({
           id: "vietas-general",
           name: "Vieta's Formulas (General Degree)",
           latex: String.raw`e_k(r_1, \dots, r_n) = (-1)^k \frac{a_{n-k}}{a_n}, \qquad x^3 + bx^2 + cx + d: \;\; r+s+t = -b, \quad rs+rt+st = c, \quad rst = -d`,
-          description: String.raw`For $a_n x^n + \cdots + a_0$: the sum of roots is $-\frac{a_{n-1}}{a_n}$, sum of pairwise products is $\frac{a_{n-2}}{a_n}$, and the product of all roots is $(-1)^n \frac{a_0}{a_n}$.`,
+          description: String.raw`Vieta's formulas express the sum of a polynomial's roots, the sum of their products two at a time, and so on up to their product, in terms of its coefficients. Reach for them whenever a question is about the roots but never asks for one, which describes most AIME polynomial problems: the roots are usually impossible to find and never needed. For $a_nx^n + a_{n-1}x^{n-1} + \cdots + a_0$ the sum of the roots is $-\frac{a_{n-1}}{a_n}$, the sum of products two at a time is $\frac{a_{n-2}}{a_n}$, and the product of all $n$ roots is $(-1)^n\frac{a_0}{a_n}$, the signs alternating as the products get longer. Roots are counted with multiplicity, and complex roots count too.`,
           keywords: ["symmetric functions", "cubic", "sum of roots", "product of roots", "coefficients"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -59,7 +59,7 @@ window.MATH_SECTIONS.push({
           id: "factor-remainder-theorem",
           name: "Remainder & Factor Theorems",
           latex: String.raw`P(x) = (x - a)Q(x) + P(a), \qquad a, b \in \mathbb{Z} \implies (a - b) \mid P(a) - P(b)`,
-          description: String.raw`The remainder of $P(x)$ divided by $x - a$ is $P(a)$, so $x - a$ is a factor iff $P(a) = 0$; the remainder mod $(x-a)(x-b)$ is the line through $(a, P(a))$ and $(b, P(b))$. Over the integers the same theorem gives $(a-b) \mid P(a) - P(b)$, the standard tool for "no such polynomial exists" arguments.`,
+          description: String.raw`The remainder theorem says that dividing a polynomial $P(x)$ by $x - a$ leaves the remainder $P(a)$, and the factor theorem is the special case: $x - a$ divides $P(x)$ exactly when $P(a) = 0$. So remainders come from evaluating rather than dividing, and more generally the remainder on division by $(x - a)(x - b)$ is the line through $(a, P(a))$ and $(b, P(b))$. For polynomials with integer coefficients the same idea gives $(a - b) \mid P(a) - P(b)$ for all integers $a$ and $b$, the standard tool for proving that no such polynomial exists.`,
           keywords: ["remainder", "polynomial division", "root", "factor", "remainder theorem", "factor theorem", "integer polynomial", "divides difference", "impossible polynomial", "P(a) P(b)", "integer polynomial divisibility"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -68,7 +68,7 @@ window.MATH_SECTIONS.push({
           id: "rational-root-theorem",
           name: "Rational Root Theorem",
           latex: String.raw`x = \frac{p}{q} \implies p \mid a_0, \; q \mid a_n`,
-          description: String.raw`Any rational root of an integer polynomial (in lowest terms) has numerator dividing the constant term and denominator dividing the leading coefficient.`,
+          description: String.raw`The rational root theorem says that if a polynomial with integer coefficients has a rational root $\frac pq$ in lowest terms, then $p$ divides the constant term and $q$ divides the leading coefficient. It turns the search for rational roots into a finite list of candidates, which is the standard first step in factoring a cubic or a quartic. For a monic polynomial $q$ must be $1$, so every rational root is an integer that divides the constant term.`,
           keywords: ["rational roots", "integer polynomial", "candidates", "rational root test", "possible rational roots", "p over q roots"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -86,7 +86,7 @@ window.MATH_SECTIONS.push({
           id: "conjugate-root-theorems",
           name: "Conjugate Root Theorems",
           latex: String.raw`a + bi \text{ a root} \implies a - bi \text{ a root}; \qquad a + b\sqrt{d} \implies a - b\sqrt{d}`,
-          description: String.raw`Real-coefficient polynomials have complex roots in conjugate pairs; rational-coefficient polynomials have irrational roots in radical-conjugate pairs.`,
+          description: String.raw`The conjugate root theorems say that the non-real roots of a polynomial with real coefficients come in conjugate pairs, $a + bi$ and $a - bi$, and that for a polynomial with rational coefficients, a root $a + b\sqrt d$, with $\sqrt d$ irrational, comes paired with $a - b\sqrt d$. Each pair multiplies to a quadratic factor with the same kind of coefficients as the polynomial. So one given root is really two, which is often exactly the missing information in a problem about a polynomial.`,
           keywords: ["complex conjugate", "radical conjugate", "pairs of roots", "conjugate roots", "irrational roots in pairs", "imaginary roots in pairs"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -204,7 +204,7 @@ window.MATH_SECTIONS.push({
           id: "difference-of-squares",
           name: "Difference of Squares & Cubes",
           latex: String.raw`a^2 - b^2 = (a-b)(a+b), \qquad a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)`,
-          description: String.raw`The most-used factorizations in competition math: $a^2-b^2=(a-b)(a+b)$ turns a stubborn value into a product (the engine behind SFFT and countless Diophantine problems, and why $a^2-b^2=1$ forces $a-b=a+b=1$). The cubic versions $a^3\pm b^3=(a\pm b)(a^2\mp ab+b^2)$ handle sums and differences of cubes.`,
+          description: String.raw`A difference of squares is an expression of the form $a^2 - b^2$, and it always factors as $(a - b)(a + b)$; a sum or difference of two cubes factors too, as $a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)$. These are the most-used factorizations in competition math because they turn a subtraction into a product, and a product can be counted, cancelled or bounded: $x^2 - y^2 = n$ becomes a question about the factor pairs of $n$. They also clear square roots from denominators and turn $99 \cdot 101$ into $100^2 - 1$. A sum of two squares, $a^2 + b^2$, does not factor over the real numbers.`,
           keywords: ["factoring", "sum of cubes", "difference of cubes", "difference of two squares", "factor a^2-b^2", "sum and difference of cubes"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -240,7 +240,7 @@ window.MATH_SECTIONS.push({
           id: "square-of-sum",
           name: "Expansions of $(a+b+c)^2$",
           latex: String.raw`(a+b+c)^2 = a^2+b^2+c^2 + 2(ab+bc+ca), \qquad (a+b)^2 + (a-b)^2 = 2(a^2+b^2), \qquad (a+b)^2 - (a-b)^2 = 4ab`,
-          description: String.raw`Converts between the three fundamental symmetric quantities. The sum/difference-of-squares pair turns $a \pm b$ data into $a^2 + b^2$ and $ab$ instantly. Also $(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$ and $x^2 + \frac{1}{x^2} = \left(x + \frac{1}{x}\right)^2 - 2$.`,
+          description: String.raw`Squaring a sum of three terms gives each square once and each product of two different terms twice: $(a + b + c)^2 = a^2 + b^2 + c^2 + 2(ab + bc + ca)$. That makes it a converter between the sum $a + b + c$, the sum of the squares and the sum of the pairwise products: any two determine the third. Two relatives do the same job for two variables, $(a + b)^2 + (a - b)^2 = 2(a^2 + b^2)$ and $(a + b)^2 - (a - b)^2 = 4ab$, and one more climbs the powers of $x + \frac1x$: $x^2 + \frac{1}{x^2} = \left(x + \frac1x\right)^2 - 2$.`,
           keywords: ["symmetric sums", "expand", "x plus 1 over x", "(a+b)^2 expansion", "perfect square of a sum", "recover a^2+b^2"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -250,7 +250,7 @@ window.MATH_SECTIONS.push({
           name: "Binomial Theorem",
           latex: String.raw`(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k, \qquad (x+y)^n = x^n + \binom{n}{1}x^{n-1}y + \binom{n}{2}x^{n-2}y^2 + \cdots + y^n`,
           latexPlain: String.raw`(a+b)^n = a^n + \binom{n}{1}a^{n-1}b + \binom{n}{2}a^{n-2}b^2 + \cdots + \binom{n}{n-1}ab^{n-1} + b^n`,
-          description: String.raw`Expansion coefficients are the binomial coefficients — row $n$ of Pascal's triangle. Setting $x=y=1$ gives $\sum_k\binom{n}{k}=2^n$; setting $x=1,\,y=-1$ gives the alternating sum $0$ — the quick way to collapse coefficient sums.`,
+          description: String.raw`The binomial theorem expands a power of a sum: $(x + y)^n = \sum_{k=0}^{n}\binom nk x^{n-k}y^k$, so the coefficient of $x^{n-k}y^k$ is the binomial coefficient $\binom nk$, and the coefficients form row $n$ of Pascal's triangle. It turns a power into a sum you can read coefficients from, and in reverse it turns a sum of binomial coefficients into a power. Substituting values collapses whole rows: $x = y = 1$ gives $\sum_k\binom nk = 2^n$, and $x = 1$, $y = -1$ gives an alternating sum of $0$. It is also the quick route to remainders of powers such as $9^{100} = (10 - 1)^{100}$.`,
           keywords: ["expansion", "pascal", "binomial coefficients", "powers"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -313,7 +313,7 @@ window.MATH_SECTIONS.push({
           id: "sum-zero-identities",
           name: "When $a+b+c=0$",
           latex: String.raw`a+b+c = 0 \implies a^3+b^3+c^3 = 3abc, \qquad a^2+b^2+c^2 = -2(ab+bc+ca)`,
-          description: String.raw`The constraint collapses whole families of symmetric expressions. Also $a^4+b^4+c^4 = \tfrac{1}{2}(a^2+b^2+c^2)^2 = 2(ab+bc+ca)^2$, and the power sums chain: $\frac{a^5+b^5+c^5}{5} = \frac{a^3+b^3+c^3}{3}\cdot\frac{a^2+b^2+c^2}{2}$ and $\frac{a^7+b^7+c^7}{7} = \frac{a^5+b^5+c^5}{5}\cdot\frac{a^2+b^2+c^2}{2}$. All drop out of Newton's sums with $e_1 = 0$.`,
+          description: String.raw`The sum-zero identities are what symmetric expressions in $a$, $b$ and $c$ reduce to when $a + b + c = 0$; the two most used are $a^3 + b^3 + c^3 = 3abc$ and $a^2 + b^2 + c^2 = -2(ab + bc + ca)$. They apply whenever three quantities are forced to sum to zero, such as the roots of a cubic with no $x^2$ term, or the differences $a - b$, $b - c$ and $c - a$. The higher power sums follow as well: $a^4 + b^4 + c^4 = \frac12(a^2 + b^2 + c^2)^2$, and $\frac{a^5 + b^5 + c^5}{5} = \frac{a^3 + b^3 + c^3}{3} \cdot \frac{a^2 + b^2 + c^2}{2}$.`,
           keywords: ["conditional identity", "sum zero", "a+b+c=0", "a3+b3+c3=3abc", "power sums", "newton sums", "vanishing sum"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -336,7 +336,7 @@ window.MATH_SECTIONS.push({
           id: "arithmetic-series",
           name: "Arithmetic Sequence & Series",
           latex: String.raw`a_n = a_1 + (n-1)d, \qquad n = \frac{a_n - a_1}{d} + 1, \qquad S_n = \frac{n(a_1 + a_n)}{2}`,
-          description: String.raw`Sum = number of terms times the average of the first and last. Number of terms from $a$ to $b$ step $d$: $\frac{b-a}{d} + 1$.`,
+          description: String.raw`An arithmetic sequence changes by the same amount $d$ from each term to the next, so its $n$th term is $a_n = a_1 + (n-1)d$. Its sum is the number of terms times the average of the first and last terms, $S_n = \frac{n(a_1 + a_n)}{2}$, which turns any run of evenly spaced numbers into a single multiplication. The number of terms from $a$ to $b$ in steps of $d$ is $\frac{b-a}{d} + 1$, and forgetting that $+1$ is the most common mistake.`,
           keywords: ["arithmetic", "common difference", "sum", "average", "gauss", "triangular numbers", "1+2+3"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -345,7 +345,7 @@ window.MATH_SECTIONS.push({
           id: "triangular-numbers",
           name: "Triangular Numbers",
           latex: String.raw`T_n = \frac{n(n+1)}{2} = \binom{n+1}{2}, \qquad T_{n-1} + T_n = n^2, \qquad 8T_n + 1 = (2n+1)^2`,
-          description: String.raw`$1, 3, 6, 10, 15, 21, \dots$ counts the dots in a triangular array, and also the pairs drawn from $n+1$ objects. Two consecutive ones add to a perfect square, and a number $T$ is triangular exactly when $8T+1$ is an odd square, which is the fastest test.`,
+          description: String.raw`The triangular numbers $1, 3, 6, 10, 15, \ldots$ count the dots in a triangular array, and the $n$th one is $T_n = 1 + 2 + \cdots + n = \frac{n(n + 1)}{2} = \binom{n + 1}{2}$, so they also count the pairs that can be chosen from $n + 1$ objects. Two consecutive triangular numbers add to a perfect square, $T_{n-1} + T_n = n^2$. A number $T$ is triangular exactly when $8T + 1$ is an odd perfect square, which is the fastest test.`,
           keywords: ["triangular number", "figurate numbers", "sum of the first n integers", "consecutive triangular numbers sum to a square", "8T+1 square test", "handshake count"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -354,7 +354,7 @@ window.MATH_SECTIONS.push({
           id: "geometric-series",
           name: "Geometric Series",
           latex: String.raw`a_n = a\,r^{n-1}, \qquad S_n = a\,\frac{1 - r^n}{1 - r}, \qquad S_\infty = \frac{a}{1 - r} \;\; (|r| < 1)`,
-          description: String.raw`First term $a$, ratio $r$. The finite sum drops out of $S-rS=a-ar^n$; the infinite sum $\frac{a}{1-r}$ converges only for $|r|\lt 1$ and is the standard tool for repeating decimals and "sum of an infinite process" problems.`,
+          description: String.raw`A geometric sequence is one where each term is the previous term multiplied by the same number $r$, the common ratio, so its terms are $a, ar, ar^2, \ldots$ and the $n$th term is $ar^{n-1}$. The sum of its first $n$ terms is $a\frac{1 - r^n}{1 - r}$, and when $|r| \lt 1$ the terms shrink fast enough that the sum of all of them is finite, $\frac{a}{1 - r}$. That is what makes an endless process, a bouncing ball, a repeated dissection or a repeating decimal, add up to a number. Check $|r| \lt 1$ before summing forever; for $|r| \ge 1$ the infinite sum does not exist.`,
           keywords: ["geometric", "common ratio", "infinite sum", "converge"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -364,7 +364,7 @@ window.MATH_SECTIONS.push({
           name: "Sums of Powers of Integers",
           latex: String.raw`\sum_{k=1}^{n} k = \frac{n(n+1)}{2}, \quad \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}, \quad \sum_{k=1}^{n} k^3 = \left(\frac{n(n+1)}{2}\right)^2, \quad \sum_{k=1}^{n} (2k-1) = n^2, \quad \sum_{k=1}^{n} 2k = n(n+1)`,
           latexPlain: String.raw`1 + 2 + \cdots + n = \tfrac{n(n+1)}{2}, \quad 1^2 + 2^2 + \cdots + n^2 = \tfrac{n(n+1)(2n+1)}{6}, \quad 1^3 + 2^3 + \cdots + n^3 = \left(\tfrac{n(n+1)}{2}\right)^2, \quad 1 + 3 + \cdots + (2n-1) = n^2, \quad 2 + 4 + \cdots + 2n = n(n+1)`,
-          description: String.raw`Every sum here runs $k = 1$ to $n$, so each one totals the first $n$ terms: the number of terms is $n$, not the last term. The sum of cubes equals the square of the sum, $\sum_{k=1}^{n} k^3 = \left(\sum_{k=1}^{n} k\right)^2 = \left(\frac{n(n+1)}{2}\right)^2$ — Nicomachus's identity, worth remembering on its own. The last two lines are the first $n$ odd numbers, giving $n^2$, and the first $n$ even numbers, giving $n(n+1)$. Watch the endpoint there: the odd sum stops at $2n-1$ and the even sum at $2n$, so a sum of the even numbers up to $100$ has $n = 50$ terms, not $100$.`,
+          description: String.raw`The power sum formulas give the sums of the first $n$ positive integers, of their squares and of their cubes in closed form: $\sum k = \frac{n(n+1)}{2}$, $\sum k^2 = \frac{n(n+1)(2n+1)}{6}$ and $\sum k^3 = \left(\frac{n(n+1)}{2}\right)^2$, each summed from $k = 1$ to $n$. With them, any polynomial summed over a range reduces to a formula in $n$. The sum of the cubes is the square of the sum of the numbers, a fact worth knowing on its own. The first $n$ odd numbers add to $n^2$ and the first $n$ even numbers to $n(n+1)$; the number of terms is $n$, so the even numbers up to $100$ have $n = 50$.`,
           keywords: ["sum of squares", "sum of cubes", "square of the sum", "sum of the first n cubes", "sum of the first n squares", "1 cubed plus 2 cubed", "nicomachus", "triangular numbers", "odd numbers"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -382,7 +382,7 @@ window.MATH_SECTIONS.push({
           id: "binets-formula",
           name: "Binet's Formula",
           latex: String.raw`F_n = \frac{\varphi^n - \psi^n}{\sqrt{5}}, \quad \varphi = \frac{1+\sqrt5}{2},\ \psi = \frac{1-\sqrt5}{2}, \qquad F_{n-1}F_{n+1} - F_n^2 = (-1)^n, \qquad \gcd(F_m, F_n) = F_{\gcd(m,n)}, \qquad F_{m+n} = F_mF_{n+1} + F_{m-1}F_n, \qquad \sum_{i=1}^{n} F_i^2 = F_nF_{n+1}`,
-          description: String.raw`Useful identities: $F_1 + \cdots + F_n = F_{n+2} - 1$, Cassini's $F_{n-1}F_{n+1} - F_n^2 = (-1)^n$, and $\gcd(F_m, F_n) = F_{\gcd(m,n)}$.`,
+          description: String.raw`Binet's formula writes the $n$th Fibonacci number in closed form: $F_n = \frac{\varphi^n - \psi^n}{\sqrt5}$, with $\varphi = \frac{1 + \sqrt5}{2}$ and $\psi = \frac{1 - \sqrt5}{2}$. Since $|\psi| \lt 1$, $F_n$ is simply the nearest integer to $\frac{\varphi^n}{\sqrt5}$, which gives its growth rate and digit count at once. The card also collects the Fibonacci identities that do most of the contest work: $F_1 + \cdots + F_n = F_{n+2} - 1$, Cassini's $F_{n-1}F_{n+1} - F_n^2 = (-1)^n$, and $\gcd(F_m, F_n) = F_{\gcd(m, n)}$.`,
           keywords: ["fibonacci", "binet", "cassini", "golden ratio", "gcd", "lucas numbers"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -391,7 +391,7 @@ window.MATH_SECTIONS.push({
           id: "linear-recurrence",
           name: "Solving Linear Recurrences",
           latex: String.raw`a_n = c_1 a_{n-1} + \cdots + c_k a_{n-k} \implies x^k = c_1 x^{k-1} + \cdots + c_k, \qquad a_n = \sum_i A_i r_i^{\,n}, \qquad a_n = (A + Bn) r^n \;\; (\text{double root}), \qquad a_n = \rho^n (A\cos n\phi + B\sin n\phi) \;\; (\rho e^{\pm i\phi})`,
-          description: String.raw`Substituting $a_n = r^n$ turns the recurrence into its characteristic polynomial. Distinct roots give $a_n = \sum A_i r_i^{\,n}$; a root of multiplicity $m$ contributes $(A_0 + \cdots + A_{m-1}n^{m-1})r^n$; a complex pair $\rho e^{\pm i\phi}$ gives the oscillation $\rho^n(A\cos n\phi + B\sin n\phi)$. Initial terms fix the coefficients. For a non-homogeneous rule, add a particular solution matched to the forcing term.`,
+          description: String.raw`A linear recurrence with constant coefficients is a sequence in which each term is a fixed combination of the terms before it, $a_n = c_1a_{n-1} + \cdots + c_ka_{n-k}$, and it is solved through its characteristic equation $x^k = c_1x^{k-1} + \cdots + c_k$. Each root $r$ of that equation contributes a geometric term $Ar^n$, so with distinct roots $a_n = \sum_i A_ir_i^{\,n}$, and the $k$ initial terms fix the constants. A repeated root $r$ contributes $(A + Bn)r^n$, and a complex pair $\rho e^{\pm i\phi}$ contributes the oscillation $\rho^n(A\cos n\phi + B\sin n\phi)$. For a rule with an extra term $f(n)$, add a particular solution shaped like $f(n)$.`,
           keywords: ["recurrence", "recursion", "recursive", "recursive sequence", "characteristic equation", "closed form", "solving recurrences", "general form of a recursive sequence", "particular solution", "non-homogeneous recurrence", "repeated root", "complex roots oscillation", "substitution recurrence"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -441,7 +441,7 @@ window.MATH_SECTIONS.push({
           id: "am-gm",
           name: "AM–GM Inequality",
           latex: String.raw`\frac{a_1 + a_2 + \cdots + a_n}{n} \ge \sqrt[n]{a_1 a_2 \cdots a_n}`,
-          description: String.raw`For nonnegative reals; equality iff all equal. Two-variable form $a + b \ge 2\sqrt{ab}$ handles most AMC optimization problems.`,
+          description: String.raw`The AM–GM inequality says that the arithmetic mean of nonnegative numbers is at least their geometric mean: $\frac{a_1 + \cdots + a_n}{n} \ge \sqrt[n]{a_1 \cdots a_n}$, with equality exactly when all the numbers are equal. Its two-number form, $a + b \ge 2\sqrt{ab}$, handles most AMC optimization: a sum of positive terms whose product is fixed is smallest when the terms are equal, and a product with a fixed sum is largest then. The equality condition is what locates the minimum or maximum, so it must be achievable within the problem's constraints.`,
           keywords: ["arithmetic mean", "geometric mean", "optimization", "minimum", "maximum"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -468,7 +468,7 @@ window.MATH_SECTIONS.push({
           id: "cauchy-schwarz",
           name: "Cauchy–Schwarz Inequality",
           latex: String.raw`\left(\sum a_i b_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right), \qquad \sum \frac{x_i^2}{y_i} \ge \frac{\left(\sum x_i\right)^2}{\sum y_i}`,
-          description: String.raw`Equality iff the sequences are proportional. Engel form (Titu's Lemma): $\sum \frac{x_i^2}{y_i} \ge \frac{(\sum x_i)^2}{\sum y_i}$ for positive $y_i$.`,
+          description: String.raw`The Cauchy–Schwarz inequality says that $\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)$ for real numbers, with equality exactly when the two sequences are proportional. It is the default tool for bounding a sum of products, or a linear sum under a constraint on squares, and in vector language it is the bound $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$. Its Engel form, Titu's lemma, handles squares over positive denominators: $\sum \frac{x_i^2}{y_i} \ge \frac{\left(\sum x_i\right)^2}{\sum y_i}$.`,
           keywords: ["cauchy", "titu", "engel form", "dot product", "vectors"],
           importance: "high",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -608,7 +608,7 @@ window.MATH_SECTIONS.push({
           id: "log-rules",
           name: "Logarithm Rules",
           latex: String.raw`\log_b(xy) = \log_b x + \log_b y, \quad \log_b \frac{x}{y} = \log_b x - \log_b y, \quad \log_b x^n = n \log_b x, \quad \log_{b^m} x^n = \frac{n}{m}\log_b x, \quad b^{\log_b x} = x`,
-          description: String.raw`Every rule is an exponent law seen through the logarithm, with $\log_b b^x = x$ and $b^{\log_b x} = x$ saying the two functions undo each other. Raising the base to a power divides, so base and argument exponents combine as $\log_{b^m} x^n = \frac{n}{m}\log_b x$. Valid for positive arguments and base $b > 0$, $b \neq 1$; and $\log_b$ is increasing when $b > 1$ but decreasing when $0 \lt  b \lt  1$, which flips every inequality.`,
+          description: String.raw`A logarithm is an exponent: $\log_b x$ is the power you must raise $b$ to in order to get $x$, so $\log_2 8 = 3$ because $2^3 = 8$. Because logs are exponents, their rules are the exponent laws read backwards, and they turn multiplication into addition, which makes an equation that is nonlinear in $x$ linear in $\log x$. The log of a product is the sum of the logs, the log of a quotient is the difference, and a power comes out front as a multiplier, $\log_b x^n = n\log_b x$. They hold for positive arguments and a positive base $b \ne 1$, and when $0 \lt b \lt 1$ the logarithm is decreasing, which reverses inequalities.`,
           keywords: ["log properties", "product rule", "power rule", "exponent", "logarithm rules", "log of a product", "log of a power", "power in the base", "log base to a power", "log inequality direction", "decreasing logarithm"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -617,7 +617,7 @@ window.MATH_SECTIONS.push({
           id: "change-of-base",
           name: "Change of Base",
           latex: String.raw`\log_b a = \frac{\log_c a}{\log_c b} = \frac{1}{\log_a b}, \qquad \log_a b \cdot \log_b c \cdot \log_c d = \log_a d`,
-          description: String.raw`Rewrite any logarithm in whatever base is convenient. The chain rule is the same statement read forwards: adjacent factors cancel, so $\log_a b \cdot \log_b c \cdot \log_c d = \log_a d$ and any such product telescopes to the outermost base over the innermost argument.`,
+          description: String.raw`The change-of-base formula rewrites a logarithm in any other base: $\log_b a = \frac{\log_c a}{\log_c b}$, so every logarithm is a ratio of logarithms in whatever base is convenient. Its most useful consequences are the reciprocal rule $\log_b a = \frac{1}{\log_a b}$ and the chain rule $\log_a b \cdot \log_b c = \log_a c$, under which a product of logarithms telescopes to the outermost base and the innermost argument. It is the first move in nearly every log problem, since the other rules apply only once everything shares one base.`,
           keywords: ["change of base", "reciprocal", "telescoping logs", "log base change formula", "logarithm change of base", "convert log base", "logarithm chain rule", "chain rule for logs", "product of logarithms telescopes", "log a b times log b c"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -635,7 +635,7 @@ window.MATH_SECTIONS.push({
           id: "exponent-laws",
           name: "Exponent Laws",
           latex: String.raw`a^m a^n = a^{m+n}, \quad (a^m)^n = a^{mn}, \quad a^{-n} = \frac{1}{a^n}, \quad a^{1/n} = \sqrt[n]{a}`,
-          description: String.raw`To solve $a^x = b^y$ type equations, write both sides over a common base and equate exponents.`,
+          description: String.raw`The exponent laws say how powers combine: $a^ma^n = a^{m + n}$, $\frac{a^m}{a^n} = a^{m - n}$, $(a^m)^n = a^{mn}$ and $(ab)^n = a^nb^n$, with $a^0 = 1$, $a^{-n} = \frac1{a^n}$ and $a^{1/n} = \sqrt[n]a$. The main contest use is to write both sides of an equation over a common base and compare exponents, as in $4^x = 8^y$, which becomes $2^{2x} = 2^{3y}$. A tower $a^{b^c}$ means $a^{(b^c)}$, not $(a^b)^c$.`,
           keywords: ["powers", "radicals", "common base", "rules"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -649,7 +649,7 @@ window.MATH_SECTIONS.push({
           id: "complex-basics",
           name: "Modulus, Conjugate & $i$ Powers",
           latex: String.raw`|z|^2 = z\bar{z} = a^2 + b^2, \qquad i^2 = -1,\; i^4 = 1, \qquad \frac{1}{z} = \frac{\bar{z}}{|z|^2}`,
-          description: String.raw`For $z = a + bi$: $\bar{z} = a - bi$, $\frac{1}{z} = \frac{\bar z}{|z|^2}$, and $|zw| = |z||w|$. Powers of $i$ cycle with period 4.`,
+          description: String.raw`A complex number is $z = a + bi$, where $a$ and $b$ are real and $i$ is a number with $i^2 = -1$; its conjugate is $\bar z = a - bi$, and its modulus $|z| = \sqrt{a^2 + b^2}$ is its distance from $0$ in the plane. The three are tied together by $z\bar z = |z|^2$, which is what makes division possible: $\frac1z = \frac{\bar z}{|z|^2}$. Moduli multiply, $|zw| = |z||w|$, and powers of $i$ repeat every four steps: $i, -1, -i, 1$. On the unit circle the conjugate is the reciprocal, $\bar z = \frac1z$, the substitution behind most $|z| = 1$ problems.`,
           keywords: ["imaginary", "modulus", "conjugate", "cycle", "magnitude"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -667,7 +667,7 @@ window.MATH_SECTIONS.push({
           id: "de-moivre",
           name: "De Moivre's Theorem",
           latex: String.raw`(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta`,
-          description: String.raw`Expand the left side with the binomial theorem and compare parts to derive multiple-angle formulas like $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$.`,
+          description: String.raw`De Moivre's theorem says that raising $\cos\theta + i\sin\theta$ to the $n$th power multiplies the angle by $n$: $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$. More generally, a complex number of modulus $r$ and angle $\theta$ has an $n$th power of modulus $r^n$ and angle $n\theta$, which makes large powers such as $(1 + i)^{20}$ immediate. Run backwards, expanding the left side with the binomial theorem and comparing real and imaginary parts produces the multiple-angle formulas, such as $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$.`,
           keywords: ["de moivre", "powers", "multiple angle", "de moivre's theorem", "cis form power", "polar form powers"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -676,7 +676,7 @@ window.MATH_SECTIONS.push({
           id: "roots-of-unity",
           name: "Roots of Unity",
           latex: String.raw`z^n = 1 \iff z = e^{2\pi i k / n}, \quad k = 0, 1, \dots, n-1, \qquad z^n - 1 = \prod_{k=0}^{n-1}\left(z - \omega^k\right)`,
-          description: String.raw`The $n$ vertices of a regular $n$-gon on the unit circle. Their sum is $0$ (for $n > 1$), their product is $(-1)^{n+1}$, and $x^n - 1 = \prod (x - \omega^k)$.`,
+          description: String.raw`The $n$th roots of unity are the $n$ complex numbers $z$ with $z^n = 1$: $\omega^k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$ for $k = 0, 1, \ldots, n - 1$, the vertices of a regular $n$-gon on the unit circle with one vertex at $1$. They are exactly the roots of $x^n - 1$, so $x^n - 1 = \prod_{k=0}^{n-1}(x - \omega^k)$, and reading that factorization with Vieta's formulas gives their sum, $0$ for $n \gt 1$, and their product, $(-1)^{n+1}$. Powers of a root repeat with period $n$, so exponents can be reduced modulo $n$, and summing a power over all the roots kills every term except those whose exponent is a multiple of $n$.`,
           keywords: ["unit circle", "regular polygon", "sum zero", "omega", "nth roots"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -699,7 +699,7 @@ window.MATH_SECTIONS.push({
           id: "pythagorean-identities",
           name: "Pythagorean Identities",
           latex: String.raw`\sin^2\theta + \cos^2\theta = 1, \quad 1 + \tan^2\theta = \sec^2\theta, \quad 1 + \cot^2\theta = \csc^2\theta`,
-          description: String.raw`The second two follow from dividing the first by $\cos^2$ or $\sin^2$.`,
+          description: String.raw`The Pythagorean identities are $\sin^2\theta + \cos^2\theta = 1$ and the two forms derived from it, $1 + \tan^2\theta = \sec^2\theta$ and $1 + \cot^2\theta = \csc^2\theta$. The first is the Pythagorean theorem for the point $(\cos\theta, \sin\theta)$ on the unit circle, and the other two come from dividing it by $\cos^2\theta$ or by $\sin^2\theta$. They convert one trigonometric function into another: given one value they give the rest up to sign, and they turn an equation in several functions into a polynomial in one.`,
           keywords: ["sin squared", "identity", "sec", "csc"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -726,7 +726,7 @@ window.MATH_SECTIONS.push({
           id: "angle-addition",
           name: "Angle Addition & Subtraction",
           latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad \cos(a \pm b) = \cos a \cos b \mp \sin a \sin b, \qquad \tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}, \qquad \cot(a \pm b) = \frac{\cot a \cot b \mp 1}{\cot b \pm \cot a}`,
-          description: String.raw`The source of the double- and half-angle formulas. Also the harmonic form $a\sin\theta + b\cos\theta = \sqrt{a^2+b^2}\,\sin(\theta + \varphi)$ with $\tan\varphi = \frac{b}{a}$ — the amplitude and phase of a sum of sinusoids (its maximum is $\sqrt{a^2+b^2}$).`,
+          description: String.raw`The angle-addition formulas expand the sine and cosine of a sum of two angles, or of their difference, in terms of the sines and cosines of the two angles: $\sin(a \pm b) = \sin a\cos b \pm \cos a\sin b$ and $\cos(a \pm b) = \cos a\cos b \mp \sin a\sin b$, with $\tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a\tan b}$ following from them. Almost every other trigonometric identity comes from these: setting $a = b$ gives the double-angle formulas, and the half-angle and product-to-sum formulas follow. They give exact values at angles like $15^\circ$ and $75^\circ$, and read backwards they combine $a\sin\theta + b\cos\theta$ into a single wave, $\sqrt{a^2 + b^2}\sin(\theta + \varphi)$ with $\tan\varphi = \frac ba$.`,
           keywords: ["sum formula", "sin a plus b", "cos a plus b", "tan a plus b", "cot a plus b", "tan a minus b", "tangent of a sum", "tan sum formula", "sine addition", "cosine addition", "tangent addition"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -744,7 +744,7 @@ window.MATH_SECTIONS.push({
           id: "double-angle",
           name: "Double Angle Formulas",
           latex: String.raw`\sin 2\theta = 2\sin\theta\cos\theta, \quad \cos 2\theta = \cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta, \quad \tan 2\theta = \frac{2\tan\theta}{1-\tan^2\theta}`,
-          description: String.raw`The three forms of $\cos 2\theta$ let you pick whichever variable you want to keep.`,
+          description: String.raw`The double angle formulas give the sine, cosine and tangent of $2\theta$ in terms of those of $\theta$: $\sin 2\theta = 2\sin\theta\cos\theta$, $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}$. They are the angle addition formulas with both angles equal, and they are the tool whenever a problem has an angle and its double, as an inscribed and a central angle do. The cosine formula has three forms, $\cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta$, so you can keep whichever function you want. Read backwards they are the power-reduction formulas $\cos^2\theta = \frac{1 + \cos 2\theta}{2}$ and $\sin^2\theta = \frac{1 - \cos 2\theta}{2}$.`,
           keywords: ["double angle", "sin 2x", "cos 2x", "double angle formula", "sin 2 theta", "tan 2x", "power reduction"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -753,7 +753,7 @@ window.MATH_SECTIONS.push({
           id: "half-angle",
           name: "Half Angle Formulas",
           latex: String.raw`\sin^2\tfrac{\theta}{2} = \frac{1 - \cos\theta}{2}, \qquad \cos^2\tfrac{\theta}{2} = \frac{1 + \cos\theta}{2}, \qquad \tan\tfrac{\theta}{2} = \frac{\sin\theta}{1 + \cos\theta} = \frac{1 - \cos\theta}{\sin\theta}`,
-          description: String.raw`Also $\tan\frac{\theta}{2} = \frac{\sin\theta}{1 + \cos\theta} = \frac{1 - \cos\theta}{\sin\theta}$.`,
+          description: String.raw`The half angle formulas give the sine, cosine and tangent of $\frac\theta2$ from $\cos\theta$: $\sin^2\frac\theta2 = \frac{1 - \cos\theta}{2}$, $\cos^2\frac\theta2 = \frac{1 + \cos\theta}{2}$, and $\tan\frac\theta2 = \frac{\sin\theta}{1 + \cos\theta} = \frac{1 - \cos\theta}{\sin\theta}$. They are the double angle formulas read backwards. The tangent forms have no square roots, which makes them the ones to use in geometry, and in a triangle $\tan\frac A2 = \frac{r}{s - a}$ ties the half angle to the incircle.`,
           keywords: ["half angle", "power reduction", "tan half angle inradius", "half angle formula", "sin and cos half", "tan half angle"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -762,7 +762,7 @@ window.MATH_SECTIONS.push({
           id: "product-sum",
           name: "Product-to-Sum & Sum-to-Product",
           latex: String.raw`2\sin a\cos b = \sin(a{+}b)+\sin(a{-}b), \quad 2\cos a\cos b = \cos(a{+}b)+\cos(a{-}b), \quad 2\sin a\sin b = \cos(a{-}b)-\cos(a{+}b), \quad \sin a\pm\sin b = 2\sin\tfrac{a\pm b}{2}\cos\tfrac{a\mp b}{2}, \quad \cos a+\cos b = 2\cos\tfrac{a+b}{2}\cos\tfrac{a-b}{2}, \quad \cos a-\cos b = -2\sin\tfrac{a+b}{2}\sin\tfrac{a-b}{2}`,
-          description: String.raw`Product-to-sum (top three) turns products into sums — ideal for telescoping or integrating; sum-to-product (bottom four) factors sums, useful for proving a sum vanishes or simplifying. All follow from the angle-addition formulas by adding or subtracting them.`,
+          description: String.raw`The product-to-sum formulas rewrite a product of sines and cosines as a sum, such as $2\sin a\cos b = \sin(a + b) + \sin(a - b)$, and the sum-to-product formulas run the other way, such as $\sin a + \sin b = 2\sin\frac{a + b}{2}\cos\frac{a - b}{2}$. Products become sums when you want terms to telescope or cancel, and sums become products when you want to factor an equation. All of them come from adding or subtracting two angle addition formulas.`,
           keywords: ["product to sum", "sum to product", "telescoping trig", "factor sines", "cos plus cos", "sin plus sin"],
           importance: "medium",
           level: ["AIME"]
@@ -884,7 +884,7 @@ window.MATH_SECTIONS.push({
           id: "floor-basics",
           name: "Floor & Fractional Part",
           latex: String.raw`x = \lfloor x \rfloor + \{x\}, \qquad 0 \le \{x\} < 1, \qquad \left\lfloor \frac{n}{ab} \right\rfloor = \left\lfloor \frac{\lfloor n/a \rfloor}{b} \right\rfloor`,
-          description: String.raw`$\lfloor x + n \rfloor = \lfloor x \rfloor + n$ for integers $n$, and $\lfloor x \rfloor + \lfloor -x \rfloor = -1$ unless $x$ is an integer (then $0$).`,
+          description: String.raw`The floor of a real number $x$, written $\lfloor x \rfloor$, is the greatest integer less than or equal to $x$, and its fractional part $\{x\} = x - \lfloor x \rfloor$ is what is left over, always at least $0$ and less than $1$. So $\lfloor 3.7 \rfloor = 3$ and $\{3.7\} = 0.7$, but $\lfloor -3.7 \rfloor = -4$ and $\{-3.7\} = 0.3$, because the floor always rounds down. Floors count things: the number of multiples of $d$ from $1$ to $n$ is $\left\lfloor \frac nd \right\rfloor$. Integers pass through a floor unchanged, $\lfloor x + n \rfloor = \lfloor x \rfloor + n$, and $\lfloor x \rfloor + \lfloor -x \rfloor$ is $-1$ unless $x$ is an integer, when it is $0$.`,
           keywords: ["floor function", "fractional part", "greatest integer", "greatest integer function", "integer and fractional part", "brackets notation"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -920,7 +920,7 @@ window.MATH_SECTIONS.push({
           id: "absolute-value-rules",
           name: "Absolute Value Rules",
           latex: String.raw`|x| < a \iff -a < x < a, \qquad |x| > a \iff x < -a \text{ or } x > a, \qquad \sqrt{x^2} = |x|`,
-          description: String.raw`Split on the sign inside. $|x - c|$ is the distance from $x$ to $c$ on the number line, so $|x - c| = d$ marks the two points $d$ away from $c$. Also $|x| = |y| \iff x = \pm y$, $\;|xy| = |x||y|$, and the triangle inequality $|x + y| \le |x| + |y|$.`,
+          description: String.raw`The absolute value $|x|$ is the distance from $x$ to $0$ on the number line, so $|x - c|$ is the distance from $x$ to $c$. That one reading gives the rules: $|x - c| \lt d$ is the interval $c - d \lt x \lt c + d$, $|x - c| \gt d$ is the two rays outside it, and $|x - c| = d$ is the two points $c \pm d$. The algebraic rules follow as well: $|xy| = |x||y|$, $|x| = |y|$ exactly when $x = \pm y$, $\sqrt{x^2} = |x|$ rather than $x$, and the triangle inequality $|x + y| \le |x| + |y|$.`,
           keywords: ["absolute value", "distance on number line", "split cases", "sqrt x squared", "modulus"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -934,7 +934,7 @@ window.MATH_SECTIONS.push({
           id: "work-rates",
           name: "Combined Work Rates",
           latex: String.raw`\frac{1}{t_{\text{together}}} = \frac{1}{t_1} + \frac{1}{t_2} + \cdots`,
-          description: String.raw`Rates add, times don't: convert every worker/pipe/hose to jobs-per-hour, add, and invert at the end. Two workers taking $a$ and $b$ hours finish together in $\frac{ab}{a+b}$ hours.`,
+          description: String.raw`Work-rate problems combine workers, pipes or machines that each finish a job in a known time, and the rule is to add their rates, not their times. A worker who takes $t$ hours does $\frac1t$ of the job per hour, so a team working together does $\frac1{t_1} + \frac1{t_2} + \cdots$ of it per hour and finishes in the reciprocal of that. Two workers taking $a$ and $b$ hours together take $\frac{ab}{a + b}$ hours, and a drain or a leak is a negative rate.`,
           keywords: ["work rate", "together", "pipes fill", "jobs per hour", "combined time"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -943,7 +943,7 @@ window.MATH_SECTIONS.push({
           id: "average-speed",
           name: "Average Speed",
           latex: String.raw`v_{\text{avg}} = \frac{\text{total distance}}{\text{total time}}; \qquad \text{equal distances at } v_1, v_2: \; v_{\text{avg}} = \frac{2v_1v_2}{v_1+v_2}`,
-          description: String.raw`Average speed is never the plain average of speeds unless the times are equal. Over equal distances it is the harmonic mean — always closer to the slower speed. Compute total distance over total time and nothing can go wrong.`,
+          description: String.raw`Average speed is total distance divided by total time, and it is never the plain average of the speeds unless equal times are spent at each. Over two equal distances at speeds $v_1$ and $v_2$ it is the harmonic mean $\frac{2v_1v_2}{v_1 + v_2}$, which always lies closer to the slower speed. Computing total distance over total time is the one method that cannot go wrong.`,
           keywords: ["average speed", "harmonic mean", "round trip", "total distance over time"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -952,7 +952,7 @@ window.MATH_SECTIONS.push({
           id: "relative-motion",
           name: "Relative Motion",
           latex: String.raw`\text{closing speed} = v_1 + v_2 \;(\text{toward}), \quad v_1 - v_2 \;(\text{chasing}); \qquad \text{circular track: } \text{same way} \Rightarrow \text{faster gains } 1 \text{ lap}, \quad \text{opposite} \Rightarrow 1 \text{ lap between them}`,
-          description: String.raw`Work in the frame of one mover: gaps close at the sum (head-on) or difference (chase) of speeds, so time = gap ÷ closing speed. Rivers, moving walkways, and wind add or subtract a drift vector — for crossing problems, split the velocity into across-stream and along-stream components.`,
+          description: String.raw`Relative motion is the motion of one object as seen from another moving object: in the frame of the second, the first moves at the difference of their velocities. So the gap between two movers closes at the sum of their speeds when they approach head-on and at the difference when one chases the other, and the time until they meet is the gap divided by that closing speed. On a circular track the gap wraps around: runners going the same way meet each time the faster gains a full lap, and runners going opposite ways meet each time their distances add up to a lap. A current, wind or moving walkway adds a constant drift, so a boat with still-water speed $v$ moves at $v - c$ upstream and $v + c$ downstream.`,
           keywords: ["relative speed", "catch up", "head start", "river current", "upstream downstream", "closing speed", "circular track", "two runners", "laps", "same direction opposite direction", "when do they meet again", "running around a track"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -961,7 +961,7 @@ window.MATH_SECTIONS.push({
           id: "weighted-average",
           name: "Weighted Averages & Mixtures",
           latex: String.raw`\bar{x} = \frac{w_1x_1 + w_2x_2}{w_1 + w_2}; \qquad \text{mixing ratio } \frac{w_1}{w_2} = \frac{x_2 - \bar{x}}{\bar{x} - x_1}`,
-          description: String.raw`A mixture's concentration (or a combined class average) is the weight-weighted mean of the parts, and it always lies between them — the weights are inversely proportional to the distances (the "alligation" seesaw). Track the amount of pure substance before and after.`,
+          description: String.raw`A weighted average combines values $x_1$ and $x_2$ in proportion to their weights $w_1$ and $w_2$: $\bar x = \frac{w_1x_1 + w_2x_2}{w_1 + w_2}$. It is what a mixture's concentration, a combined class average or an overall speed actually is, and it always lies between the two values, closer to the heavier one. The weights are inversely proportional to the distances from the average, $\frac{w_1}{w_2} = \frac{x_2 - \bar x}{\bar x - x_1}$, which answers mixing questions in one line. The reliable way to set up any mixture is to track the amount of pure substance before and after.`,
           keywords: ["weighted mean", "mixture", "concentration", "alligation", "class average"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -970,7 +970,7 @@ window.MATH_SECTIONS.push({
           id: "proportion-properties",
           name: "Addendo, Componendo & Dividendo",
           latex: String.raw`\frac{a_1}{b_1}=\frac{a_2}{b_2}=\cdots=\frac{a_n}{b_n}=k \;\Longrightarrow\; \frac{a_1+a_2+\cdots+a_n}{b_1+b_2+\cdots+b_n}=k, \qquad \frac{a}{b}=\frac{c}{d} \Longrightarrow \frac{a+b}{a-b}=\frac{c+d}{c-d}`,
-          description: String.raw`The addendo (equal-ratios) property: when several fractions are all equal to $k$, the sum of every numerator over the sum of every denominator is again $k$, and you may scale each pair by any weights first. On a single proportion $\frac{a}{b}=\frac{c}{d}$ the companion moves are componendo $\frac{a+b}{b}=\frac{c+d}{d}$, dividendo $\frac{a-b}{b}=\frac{c-d}{d}$, and componendo-dividendo $\frac{a+b}{a-b}=\frac{c+d}{c-d}$, which clears denominators in one step. The addendo value is the mediant $\frac{a+c}{b+d}$, which for equal ratios lands exactly on the common value instead of merely between them.`,
+          description: String.raw`Addendo, componendo and dividendo are the rules for combining equal ratios. Addendo says that if several fractions all equal $k$, then the sum of their numerators over the sum of their denominators is also $k$, and each pair may be scaled by any weight first. On a single proportion $\frac ab = \frac cd$, componendo gives $\frac{a+b}{b} = \frac{c+d}{d}$, dividendo gives $\frac{a-b}{b} = \frac{c-d}{d}$, and together they give $\frac{a+b}{a-b} = \frac{c+d}{c-d}$, which clears a sum-and-difference form in one step. They save introducing a parameter on ratio and proportion problems.`,
           keywords: ["addendo", "componendo", "dividendo", "componendo dividendo", "componendo et dividendo", "invertendo", "alternendo", "equal ratios", "ratio and proportion", "proportion property", "sum of numerators over sum of denominators", "mediant", "adding equal fractions"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]

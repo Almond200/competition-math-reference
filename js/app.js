@@ -215,6 +215,10 @@
   const DENSITIES = ["comfortable", "compact"];
   const NOTATIONS = ["sigma", "expanded"];
   const TEXT_SIZES = ["normal", "large"];
+  // Card order on a section page. "curated" is file order, which is how the cards were
+  // written up; "problems" puts the cards the practice problems actually use first, and only
+  // falls back to the (subjective) importance tier for the cards no problem uses yet.
+  const ORDERS = ["curated", "problems"];
   const SECTION_IDS = SECTIONS.map(s => s.id);
 
   // Every write to localStorage can fail -- Safari private browsing refuses outright, and
@@ -260,6 +264,7 @@
       density: pick(P.density, DENSITIES),
       notation: pick(P.notation, NOTATIONS),
       text: pick(P.text, TEXT_SIZES),
+      order: pick(P.order, ORDERS),
       tags: P.tags === false ? false : true,
       autoGroup: P.autoGroup === false ? false : true
     };
@@ -277,7 +282,8 @@
         prefs: {
           layout: state.layout, diagrams: state.diagrams,
           density: state.density, notation: state.notation,
-          text: state.text, tags: state.tags, autoGroup: state.autoGroup
+          text: state.text, tags: state.tags, autoGroup: state.autoGroup,
+          order: state.order
         }
       };
       SECTION_IDS.forEach(id => {
@@ -300,6 +306,7 @@
     density: _loaded.density,    // "comfortable" | "compact"
     notation: _loaded.notation,  // "sigma" | "expanded"
     text: _loaded.text,          // "normal" | "large"
+    order: _loaded.order,        // "curated" | "problems" — card order on section pages
     tags: _loaded.tags,          // keyword chips on the card face
     autoGroup: _loaded.autoGroup // group a saved list into sections instead of one flat run
   };
@@ -1468,6 +1475,21 @@
     return section.subsections.reduce((n, sub) => n + sub.formulas.length, 0);
   }
 
+  // How many cards of a subsection, or of one cluster inside it, survive that section's
+  // filters. The sidebar greys out a link whose count is 0 and ignores clicks on it: the
+  // subsection is not rendered at all then, so there is nowhere for the click to go.
+  function navLinkCount(sectionId, subIdx, clusterIdx) {
+    const section = SECTIONS.find(s => s.id === sectionId);
+    const sub = section && section.subsections[subIdx];
+    if (!sub) return 0;
+    const ids = clusterIdx === undefined || !sub.groups
+      ? sub.formulas.map(f => f.id)
+      : (sub.groups[clusterIdx] || { ids: [] }).ids;
+    return ids.filter(id => BY_ID[id] && passesLevel(BY_ID[id].formula)).length;
+  }
+  const navLinkArgs = a =>
+    [a.dataset.section, +a.dataset.sub, a.dataset.cluster === undefined ? undefined : +a.dataset.cluster];
+
   function passesLevel(f) {
     const entry = BY_ID[f.id];
     const sf = entry ? state.sectionFilters[entry.section.id] : null;
@@ -1586,6 +1608,16 @@
   // plainly-worded questions because every individual word in them is common; the
   // word PAIR is what carries the intent.
   let BIGRAM_W = 50;
+  // A match through a synonym counts for less than the word itself. At full weight a bare
+  // "pick" found Harmonic Addition (Linear Combination) through pick -> combination and ranked
+  // it above Pick's Theorem, whose name IS the word; dropping the synonym instead lost
+  // "how many ways to pick 3 people from 10" entirely. Discounting keeps both readings.
+  // Measured 2026-09-25 (eval top-1 / MRR; probe 1; probe 2):
+  //   1.0  164/185 0.926   50/78   46/77      0.75  167/185 0.937   51/78   47/77
+  //   0.6  168/185 0.939   50/78   46/77      0.5   167/185 0.937   48/78   47/77
+  // 0.6 wins the eval by one query but gives it back on both probe sets, which is what
+  // fitting the list looks like; 0.7-0.8 is the plateau, and 0.75 sits in its middle.
+  let SYN_W = 0.75;
 
   function scoreEntry(entry, queryLower, tokens, mathForms, queryBigrams) {
     let total = 0;
@@ -1601,7 +1633,8 @@
       let bestTf = 0, bestWord = tok;
       for (const t of expandToken(tok)) {
         const r = fieldTf(entry, t);
-        if (r.tf > bestTf) { bestTf = r.tf; bestWord = r.word; }
+        const tf = t === tok ? r.tf : r.tf * SYN_W;
+        if (tf > bestTf) { bestTf = tf; bestWord = r.word; }
       }
       const idf = idfOf(bestTf > 0 ? bestWord : tok);
       demand += idf;
@@ -1816,6 +1849,21 @@
   // curated order (or search relevance) is always preserved.
   function sortEntries(entries) {
     return entries;
+  }
+
+  // ---------- "Most practice problems" order (Settings -> Card order) ----------
+  // The count is the number the card page lists under its problems, trick uses included.
+  function problemCount(id) { return (PROBLEMS_BY_FORMULA[id] || []).length; }
+  function impRank(f) { return IMP_RANK[f.importance] !== undefined ? IMP_RANK[f.importance] : 9; }
+  // Section and topic pages only. This is deliberately NOT sortEntries(), which also runs on
+  // search results: reordering those by problem count would throw away their relevance order.
+  // Used cards first, most-used first; the importance tier only decides ties and the cards no
+  // problem uses yet, which is the one place the subjective ranking is still all we have.
+  function browseOrder(entries) {
+    if (state.order !== "problems") return entries;
+    return entries.map((e, i) => ({ e, i, n: problemCount(e.formula.id) }))
+      .sort((a, b) => b.n - a.n || impRank(a.e.formula) - impRank(b.e.formula) || a.i - b.i)
+      .map(x => x.e);
   }
 
   // ---------- Rendering ----------
@@ -2126,7 +2174,7 @@
           <button class="copy-btn" data-latex="${escapeAttr(latexFor(f))}" title="Copy LaTeX">copy tex</button>
         </div>
         <div class="formula-display" data-latex="${escapeAttr(latexFor(f))}"></div>
-        <p class="card-desc">${f.description}</p>
+        <p class="card-desc">${firstSentences(f.description, GRID_SENTENCES)}</p>
         ${extraHtml(f)}
         ${tagRowHtml(f, queryTokens, entry.topics)}
         <div class="more-hint">open full page &rsaquo;</div>
@@ -2156,15 +2204,20 @@
     // MATH_EXAMPLES holds { q, s } pairs; legacy inline strings are a fallback.
     const items = [];
     const lead = (window.MATH_EXAMPLES || {})[f.id];
-    if (lead && lead.q) items.push(lead);
+    // An example's own figure: `q` shows the given setup under the question and must not give
+    // the answer away; the optional `s` sits inside the solution for a construction.
+    const exFig = (window.MATH_EXAMPLE_DIAGRAMS || {})[f.id] || {};
+    const figHtml = svg => svg ? `<div class="diagram example-figure">${svg}</div>` : "";
+    if (lead && lead.q) items.push(Object.assign({}, lead, { figQ: exFig.q, figS: exFig.s }));
     else if (f.example) items.push({ q: f.example, s: null });
     ((window.MATH_PROBLEMS || {})[f.id] || []).forEach(p => items.push(p));
     if (!items.length) return "";
     const blocks = items.map((p, i) => `
       <div class="problem">
         <p class="problem-q"><strong>Example ${i + 1}.</strong> ${p.q}</p>
+        ${figHtml(p.figQ)}
         ${p.s ? `<button class="sol-toggle" data-target="sol-${f.id}-${i}">Show solution</button>
-        <div class="problem-sol" id="sol-${f.id}-${i}" hidden>${p.s}</div>` : ""}
+        <div class="problem-sol" id="sol-${f.id}-${i}" hidden>${p.s}${figHtml(p.figS)}</div>` : ""}
       </div>`);
     return `<div class="practice"><h4>Examples</h4>${blocks.join("")}</div>`;
   }
@@ -2282,27 +2335,40 @@
   const famCount = f => Object.keys(DB_TREE[f]).reduce((n, y) => n + DB_TREE[f][y].length, 0);
   const DEFAULT_FAM = FAMILIES.slice().sort((a, b) => famCount(b) - famCount(a))[0] || null;
 
-  // Contest problems that use this formula — newest first, each opening a Database
-  // detail view and linking out to its AoPS wiki page for the statement.
-  // Cards for the common formulas can carry dozens of tagged problems, which
-  // buries whatever follows them. Show the first few and keep the rest one
-  // click away.
-  const PROB_PREVIEW = 5;
+  // Contest problems that use this formula, grouped by contest (AMC 8 up through AIME and the
+  // harder families, the Database's order) and newest first within each. The busiest cards carry
+  // dozens of problems, and one long list mixing every contest made it hard to find, say, the
+  // AMC 10 ones. Each group shows its first few rows, so every contest stays visible, and has
+  // its own button for the rest, so opening the AMC 10 problems does not also unroll 60 AIME ones.
+  const PROB_GROUP_PREVIEW = 3;
 
   function contestHtml(f) {
     const probs = PROBLEMS_BY_FORMULA[f.id] || [];
     if (!probs.length) return "";
-    const items = probs.map((p, i) =>
-      `<li class="prob-row${i >= PROB_PREVIEW ? " prob-extra" : ""}">
+    const groups = {};
+    probs.forEach(p => (groups[p.fam] = groups[p.fam] || []).push(p));
+    const fams = Object.keys(groups).sort((a, b) => {
+      const ia = FAM_ORDER.indexOf(a), ib = FAM_ORDER.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+    });
+    const body = fams.map(fam => {
+      const hidden = groups[fam].length - PROB_GROUP_PREVIEW;
+      const rows = groups[fam].map((p, i) => {
+        return `<li class="prob-row${i >= PROB_GROUP_PREVIEW ? " prob-extra" : ""}">
          <a class="prob-open" href="#/problem/${p.slug}">${refShort(p.ref)}</a>
          ${p.url ? `<a class="ref-ext-link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer" title="Open the source">${p.urlLabel} <span aria-hidden="true">&#8599;</span></a>` : ""}
-       </li>`).join("");
-    const hidden = probs.length - PROB_PREVIEW;
+       </li>`;
+      }).join("");
+      return `<div class="prob-group" data-fam="${escapeAttr(fam)}">
+          <div class="prob-group-head">${fam} <span class="practice-note">${groups[fam].length}</span></div>
+          <ul class="prob-list">${rows}</ul>
+          ${hidden > 0 ? `<button type="button" class="show-more-btn prob-more" aria-expanded="false">Show ${hidden} more ${fam}</button>` : ""}
+        </div>`;
+    }).join("");
     return `
       <div class="practice contest-refs">
         <h4>Practice problems <span class="practice-note">${probs.length}</span></h4>
-        <ul class="prob-list">${items}</ul>
-        ${hidden > 0 ? `<button type="button" class="show-more-btn prob-more" aria-expanded="false">Show ${hidden} more</button>` : ""}
+        ${body}
       </div>`;
   }
 
@@ -2583,9 +2649,9 @@
   // mid-clause, and splitting naively on "." would also break inside $...$ and after an
   // abbreviation, so sentence ends are only taken outside math and when followed by a
   // capital. At least one sentence always survives, however long it is.
-  function leadSentences(text, budget) {
-    const src = String(text || "").trim();
-    if (src.length <= budget) return src;
+  // Sentence ends, as offsets into the text: only outside $...$, and only where a capital or
+  // an opening bracket follows, so "e.g. the" and "$3.5$" never count.
+  function sentenceMarks(src) {
     const parts = src.split(/(\$[^$]*\$)/);
     let flat = "", marks = [];
     parts.forEach((p, i) => {
@@ -2595,6 +2661,23 @@
         if (/[.!?]/.test(p[k]) && /^\s+[A-Z(]/.test(p.slice(k + 1, k + 3) + "X")) marks.push(flat.length);
       }
     });
+    return { flat, marks };
+  }
+
+  // The card face in the section grid and in search results shows only the opening of the
+  // intro; the card's own page shows all of it. The intro is written so that its first two
+  // sentences already say what the result is and when to reach for it.
+  const GRID_SENTENCES = 2;
+  function firstSentences(text, n) {
+    const src = String(text || "").trim();
+    const { flat, marks } = sentenceMarks(src);
+    return marks.length >= n ? flat.slice(0, marks[n - 1]).trim() : src;
+  }
+
+  function leadSentences(text, budget) {
+    const src = String(text || "").trim();
+    if (src.length <= budget) return src;
+    const { flat, marks } = sentenceMarks(src);
     if (!marks.length) return src.slice(0, budget).replace(/\s+\S*$/, "");
     let cut = marks[0];
     for (const m of marks) { if (m <= budget) cut = m; else break; }
@@ -2670,7 +2753,18 @@
     requestAnimationFrame(place);          // the thumbnail's SVG can resolve a frame later
   }
 
-  function detailBodyHtml(body) {
+  // A block that is nothing but "{{figure:name}}" draws MATH_BODY_DIAGRAMS[card][name] at that
+  // point in the text, so a paragraph describing a construction can sit right above its
+  // picture instead of the reader scrolling back to the one figure at the top of the card.
+  // The markers are checked by tools/scan-conventions.py: every one must resolve and every
+  // registered figure must be used, so a typo cannot silently drop a figure.
+  const FIGURE_MARK = /^\{\{figure:([\w-]+)\}\}$/;
+  function bodyFigureHtml(fid, name) {
+    const svg = ((window.MATH_BODY_DIAGRAMS || {})[fid] || {})[name];
+    return svg ? `<div class="diagram body-figure">${svg}</div>` : "";
+  }
+
+  function detailBodyHtml(body, fid) {
     // Render the remaining lines of a block: an enumerated list when every line
     // starts with "- ", otherwise a paragraph. Enables explicit formula lists.
     const chunk = lines => {
@@ -2701,6 +2795,10 @@
         } else {
           html += `<h4>${title}</h4>`;
         }
+      }
+      const only = lines.map(l => l.trim()).filter(Boolean);
+      if (only.length === 1 && FIGURE_MARK.test(only[0])) {
+        return html + bodyFigureHtml(fid, only[0].match(FIGURE_MARK)[1]);
       }
       return html + chunk(lines);
     }).join("");
@@ -2734,10 +2832,15 @@
     $content.innerHTML = `
       <div class="detail">
         <div class="back-row">
+          ${backFromSearch
+            ? `<a class="back-link" href="#" data-back-search>&larr; Back to ${backFromSearch.adv
+                ? "tag results"
+                : `results for &ldquo;${escapeAttr(backFromSearch.query.trim())}&rdquo;`}</a>`
+            : ""}
           ${backFromFormula && backFromFormula.fid === f.id && anyList(backFromFormula.listId)
             ? `<a class="back-link" href="#/list/${backFromFormula.listId}">&larr; Back to ${escapeAttr(anyList(backFromFormula.listId).name)}</a>`
             : ""}
-          <a class="back-link" href="#">&larr; Back to ${entry.section.title}</a>
+          <a class="back-link" href="#" data-back-section>&larr; Back to ${entry.section.title}</a>
         </div>
         <p class="detail-crumb">${entry.section.title} &rsaquo; ${entry.subsection.title}</p>
         <div class="detail-head">
@@ -2763,7 +2866,7 @@
           const inner = panels.map(d => `<div class="diagram detail-diagram">${d}</div>`).join("");
           return `<div class="detail-diagrams dd-${Math.min(panels.length, 3)}">${inner}</div>`;
         })()}
-        ${rest && rest.trim() ? `<div class="detail-body">${detailBodyHtml(rest)}</div>` : ""}
+        ${rest && rest.trim() ? `<div class="detail-body">${detailBodyHtml(rest, f.id)}</div>` : ""}
         ${(window.MATH_WIDGETS || {})[f.id] ? `<div class="interactive"><h4>Interactive</h4><div id="formula-widget"></div></div>` : ""}
         ${practiceHtml(f)}
         ${contestHtml(f)}
@@ -2828,16 +2931,14 @@
   }
 
   function wireProblemToggle(root) {
-    const btn = (root || document).querySelector(".prob-more");
-    if (!btn) return;
-    btn.addEventListener("click", () => {
-      const box = btn.closest(".contest-refs");
+    (root || document).querySelectorAll(".prob-more").forEach(btn => btn.addEventListener("click", () => {
+      const box = btn.closest(".prob-group");
       const open = box.classList.toggle("probs-open");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
       btn.textContent = open
         ? "Show fewer"
-        : `Show ${box.querySelectorAll(".prob-extra").length} more`;
-    });
+        : `Show ${box.querySelectorAll(".prob-extra").length} more ${box.dataset.fam}`;
+    }));
   }
 
   function escapeAttr(s) {
@@ -2856,7 +2957,7 @@
     const placed = new Set();
     const parts = [];
     sub.groups.forEach((g, j) => {
-      const members = g.ids.map(id => byId.get(id)).filter(Boolean);
+      const members = browseOrder(g.ids.map(id => byId.get(id)).filter(Boolean));
       members.forEach(e => placed.add(e.formula.id));
       if (!members.length) return;
       parts.push(`
@@ -2884,7 +2985,7 @@
     shownIds = [];
     const subParts = [];
     section.subsections.forEach((sub, i) => {
-      const visible = sortEntries(sub.formulas.filter(passesLevel).map(f => BY_ID[f.id]));
+      const visible = browseOrder(sortEntries(sub.formulas.filter(passesLevel).map(f => BY_ID[f.id])));
       if (!visible.length) return;
       visible.forEach(e => shownIds.push(e.formula.id));
       // Methods and Patterns carry an optional third level: a subject holds clusters of
@@ -2979,11 +3080,18 @@
               "Full formula cards grouped under their subsection headings.") +
             settingsChoice("layout", "wiki", state.layout, "Wiki index",
               "Just names, in A\u2013Z columns. Subsections give way to the alphabet."))}
+          ${opt("Card order",
+            settingsChoice("order", "curated", state.order, "Curated",
+              "The order the cards were written in, under their subsection headings.") +
+            settingsChoice("order", "problems", state.order, "Most practice problems",
+              "The cards tagged practice problems use most come first. Cards no problem uses yet follow, by importance."))}
           ${opt("Keyword tags",
             settingsChoice("tags", "on", state.tags ? "on" : "off", "Show", "The chips under each card, also used by search.") +
             settingsChoice("tags", "off", state.tags ? "on" : "off", "Hide", "Cleaner cards; search is unaffected."))}
           <p class="settings-hint">The wiki index lists every formula in a section as a plain
-            link, so a whole subject fits on one screen. Open a name to read the full card.</p>
+            link, so a whole subject fits on one screen. Open a name to read the full card.
+            Card order applies to section and topic pages; search results always rank by
+            relevance, and study lists keep their own order.</p>
         </div>
 
         <div class="settings-group">
@@ -3306,7 +3414,7 @@
   // ---------- Topic view: every formula tagged with a topic, across sections ----------
   function renderTopic(topicId) {
     const topic = TOPICS_BY_ID[topicId];
-    const entries = entriesForTopic(topicId).filter(e => passesLevel(e.formula));
+    const entries = browseOrder(entriesForTopic(topicId).filter(e => passesLevel(e.formula)));
     shownIds = entries.map(e => e.formula.id);
     const parts = [`
       <div class="section-header">
@@ -3777,6 +3885,11 @@
   // Held in memory only — a reloaded page has no journey to remember.
   let backFromProblem = null;   // { slug, fid }
   let backFromFormula = null;   // { fid, listId }
+  // A card opened from search results. Unlike the two above this one is not a single hop: it
+  // lasts as long as you stay among the cards and problems you reached from those results,
+  // because the query is still sitting in the search box and "take me back to it" stays a
+  // fair offer. Any other navigation calls clearSearch(), which drops it.
+  let backFromSearch = null;    // { query, adv }
   let prevRoute = null, prevRouteKey = null;
 
   function routeKey(r) {
@@ -3785,10 +3898,21 @@
   }
   function trackOrigin(route) {
     const key = routeKey(route);
+    // Checked before the early return below: emptying the search box by hand re-renders the
+    // same "home" route without going through clearSearch(), and would otherwise leave a
+    // "Back to results" link pointing at a search that no longer exists.
+    if (route.type === "home" && !(state.query.trim() || state.adv)) backFromSearch = null;
     // A re-render of the page you are already on is not a journey.
     if (key === prevRouteKey) return;
     const prev = prevRoute;
     prevRoute = route; prevRouteKey = key;
+    if (route.type === "formula" || route.type === "problem") {
+      if (prev && prev.type === "home" && (state.query.trim() || state.adv)) {
+        backFromSearch = { query: state.query, adv: state.adv };
+      }
+    } else if (route.type !== "home") {
+      backFromSearch = null;
+    }
     if (route.type === "problem") {
       backFromProblem = (prev && prev.type === "formula")
         ? { slug: route.slug, fid: prev.entry.formula.id } : null;
@@ -4176,6 +4300,8 @@
       // sub-subjects) and keeps the drawer up; tapping that same (already-open)
       // section again takes you to its main page and closes the drawer. A
       // sub-subject tap always jumps there and closes.
+      // A subsection the filters have emptied is not on the page, so its link does nothing.
+      if (link && navLinkCount(...navLinkArgs(link)) === 0) { e.preventDefault(); return; }
       if (link) closeDrawer();
       if (btn) {
         const secId = btn.dataset.section;
@@ -4222,6 +4348,17 @@
       const btn = el.querySelector(".nav-group-btn");
       if (btn) btn.setAttribute("aria-expanded", mine ? "true" : "false");
     });
+    tree.querySelectorAll(".nav-sub-link, .nav-cluster-link").forEach(a => {
+      const empty = navLinkCount(...navLinkArgs(a)) === 0;
+      a.classList.toggle("nav-empty", empty);
+      if (empty) {
+        a.setAttribute("aria-disabled", "true");
+        a.title = "No cards here match this section's filters";
+      } else {
+        a.removeAttribute("aria-disabled");
+        a.removeAttribute("title");
+      }
+    });
     tree.querySelectorAll(".nav-section").forEach(el => {
       const isActive = onHome && !state.query.trim() && !state.adv
                        && el.dataset.section === state.activeSectionId;
@@ -4235,6 +4372,7 @@
     state.query = "";
     $search.value = "";
     state.adv = null;
+    backFromSearch = null;
   }
 
   // ---------- Level filter chips (multi-select) ----------
@@ -4496,8 +4634,11 @@
   syncSortSelect();
   updateGearActive();
 
+  // "/" jumps to search, except while typing in any other field: a widget that takes fractions
+  // like 7/2 would otherwise lose the keystroke and the focus.
+  const typingIn = el => !!el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
   document.addEventListener("keydown", e => {
-    if (e.key === "/" && document.activeElement !== $search) {
+    if (e.key === "/" && document.activeElement !== $search && !typingIn(document.activeElement)) {
       e.preventDefault();
       $search.focus();
       $search.select();
@@ -4668,6 +4809,17 @@
       if (l && confirm(`Remove all ${liveCount(l)} formulas from “${l.name}”?`)) { l.ids = []; saveLists(); render(); }
       return;
     }
+    // Both back links go to "#", which renders search results whenever a query is live. So
+    // each sets up what "#" should show before the link navigates: the search one puts the
+    // saved query back (the box may have been edited since), the section one clears it --
+    // which it never used to, so after a search "Back to Geometry" landed on the results.
+    if (e.target.closest("[data-back-search]") && backFromSearch) {
+      state.query = backFromSearch.query; $search.value = backFromSearch.query;
+      state.adv = backFromSearch.adv;
+    } else if (e.target.closest("[data-back-section]")) {
+      if (state.query.trim() || state.adv) listScrollY = 0;   // that position was the results'
+      clearSearch();
+    }
     if (e.target.closest("a")) return; // let real links (related items, back link) navigate
     const card = e.target.closest(".card[data-id]");
     if (card) {
@@ -4761,6 +4913,7 @@
         if (cfg.k1 != null) K1 = cfg.k1;
         if (cfg.corrob != null) CORROB = cfg.corrob;
         if (cfg.scale != null) SCALE = cfg.scale;
+        if (cfg.synW != null) SYN_W = cfg.synW;
         if (cfg.rrfK != null) RRF_K = cfg.rrfK;
         if (cfg.rrfKSem != null) RRF_K_SEM = cfg.rrfKSem;
         if (cfg.rrfLex != null) RRF_LEX = cfg.rrfLex;

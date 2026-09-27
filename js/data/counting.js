@@ -14,7 +14,7 @@ window.MATH_SECTIONS.push({
           id: "permutations-combinations",
           name: "Permutations & Combinations",
           latex: String.raw`P(n, k) = \frac{n!}{(n-k)!}, \qquad \binom{n}{k} = \frac{n!}{k!(n-k)!}`,
-          description: String.raw`Ordered vs. unordered selection of $k$ from $n$. They differ by the $k!$ orderings: $P(n,k) = k!\binom{n}{k}$.`,
+          description: String.raw`A permutation is an ordered selection and a combination is an unordered one: from $n$ distinct objects there are $P(n, k) = \frac{n!}{(n-k)!}$ ways to choose $k$ in order and $\binom nk = \frac{n!}{k!(n-k)!}$ ways to choose $k$ as a set. The only question to ask is whether order matters, as it does for a ranked top three and does not for a committee. The two counts differ exactly by the $k!$ ways to order a chosen set, $P(n, k) = k!\binom nk$. Both assume the objects are distinct; repeated objects need the multiset formula instead.`,
           keywords: ["choose", "arrange", "order matters", "factorial", "nCk", "nPk", "in a row", "line up", "n factorial"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -23,7 +23,7 @@ window.MATH_SECTIONS.push({
           id: "multiset-permutations",
           name: "Arrangements with Repeated Objects",
           latex: String.raw`\frac{n!}{n_1!\, n_2! \cdots n_k!}`,
-          description: String.raw`Arrangements of $n$ objects where $n_i$ are identical of type $i$. E.g. MISSISSIPPI: $\frac{11!}{4!\,4!\,2!}$. This is the multinomial coefficient.`,
+          description: String.raw`The number of arrangements of $n$ objects in a row, when some of them are identical, is $\frac{n!}{n_1!\,n_2! \cdots n_k!}$, where $n_1, n_2, \ldots, n_k$ are the sizes of the groups of identical objects. It counts words with repeated letters, such as $\frac{11!}{4!\,4!\,2!}$ for MISSISSIPPI, and anything that can be written as such a word: a lattice path, for example, is a string of right and up steps. The expression is also called a multinomial coefficient, and with two groups it is the binomial coefficient $\binom nk$.`,
           keywords: ["identical objects", "mississippi", "multinomial", "repeated letters"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -32,7 +32,7 @@ window.MATH_SECTIONS.push({
           id: "circular-permutations",
           name: "Circular Arrangements",
           latex: String.raw`(n - 1)! \qquad \text{necklaces (flips allowed): } \frac{(n-1)!}{2}`,
-          description: String.raw`Seat $n$ people around a round table where only relative order matters. Divide by 2 more if reflections are considered identical.`,
+          description: String.raw`The number of ways to seat $n$ people around a round table, when only their order around the table matters, is $(n - 1)!$. Each circular arrangement can be read starting from any of its $n$ seats, so the $n!$ rows fall into groups of $n$ that describe the same circle. If the arrangement can also be flipped over, as a necklace or a key ring can, mirror images count as the same too, and the count is $\frac{(n - 1)!}{2}$ for $n \ge 3$.`,
           keywords: ["round table", "necklace", "rotation", "circular"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -41,7 +41,7 @@ window.MATH_SECTIONS.push({
           id: "grid-paths",
           name: "Lattice Grid Paths",
           latex: String.raw`\#\text{paths } (0,0) \to (m, n) = \binom{m + n}{m}`,
-          description: String.raw`Right/up paths: choose which $m$ of the $m+n$ steps go right. With forbidden points, subtract paths through them; paths avoiding the diagonal lead to Catalan numbers.`,
+          description: String.raw`The number of shortest paths along grid lines from $(0, 0)$ to $(m, n)$, using unit steps right and up, is $\binom{m + n}{m}$. Each path is a string of $m$ R's and $n$ U's, so choosing a path means choosing which $m$ of the $m + n$ steps go right. Paths through a required point multiply, paths avoiding a point are found by subtraction, and paths that stay on one side of a diagonal are counted by the Catalan numbers.`,
           keywords: ["lattice paths", "grid walking", "right up", "block"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -59,7 +59,7 @@ window.MATH_SECTIONS.push({
           id: "handshakes-diagonals",
           name: "Handshakes, Games, Diagonals & Triangles",
           latex: String.raw`\text{pairs} = \binom{n}{2} = \frac{n(n-1)}{2}, \qquad \text{diagonals} = \frac{n(n-3)}{2}, \qquad \text{triangles} = \binom{n}{3}`,
-          description: String.raw`Handshakes among $n$ people or games in a round-robin are $\binom{n}{2}$; an $n$-gon has $\binom{n}{2} - n$ diagonals; $n$ points (no 3 collinear) determine $\binom{n}{3}$ triangles. In convex position the diagonals cross at $\binom{n}{4}$ interior points — each choice of four vertices gives exactly one crossing.`,
+          description: String.raw`Handshakes, round-robin games, diagonals and triangles are all counts of unordered pairs or triples: $n$ people shake hands $\binom n2 = \frac{n(n - 1)}{2}$ times, $n$ teams play $\binom n2$ games in a round robin, an $n$-gon has $\binom n2 - n = \frac{n(n - 3)}{2}$ diagonals, and $n$ points with no three on a line determine $\binom n3$ triangles. Inside a convex $n$-gon the diagonals cross at $\binom n4$ points when no three meet at one point, because every four vertices give exactly one crossing.`,
           keywords: ["handshakes", "round robin", "diagonals", "pairs", "points determine", "diagonal intersections", "n choose 4"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -101,7 +101,7 @@ window.MATH_SECTIONS.push({
           name: "Row Sums & Alternating Sums",
           latex: String.raw`\sum_{k=0}^{n} \binom{n}{k} = 2^n, \qquad \sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0`,
           latexPlain: String.raw`\binom{n}{0} + \binom{n}{1} + \binom{n}{2} + \cdots + \binom{n}{n} = 2^n, \qquad \binom{n}{0} - \binom{n}{1} + \binom{n}{2} - \cdots \pm \binom{n}{n} = 0`,
-          description: String.raw`Set $x = y = 1$ (or $x = 1, y = -1$) in the binomial theorem. Consequence: a set has as many even-sized subsets as odd-sized ones ($2^{n-1}$ each).`,
+          description: String.raw`The row sums of Pascal's triangle are the powers of $2$, $\sum_{k=0}^{n}\binom nk = 2^n$, and the alternating sums are $0$, $\sum_{k=0}^{n}(-1)^k\binom nk = 0$ for $n \ge 1$. The first counts all the subsets of an $n$-element set, grouped by size, and the second says a set has as many subsets of even size as of odd size, $2^{n-1}$ each. Both come from setting $x = 1$ and $y = \pm1$ in the binomial theorem, and other substitutions give other weighted sums, such as $\sum \binom nk 2^k = 3^n$.`,
           keywords: ["subsets", "2 to n", "alternating", "even odd subsets", "pascal's triangle", "pascals triangle", "row of pascal's triangle", "sum of a row", "row sum", "pascal triangle row", "sum of binomial coefficients"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -131,7 +131,7 @@ window.MATH_SECTIONS.push({
           name: "Vandermonde's Identity",
           latex: String.raw`\sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k} = \binom{m+n}{r}, \qquad \binom{m}{0}\binom{n}{r} + \binom{m}{1}\binom{n}{r-1} + \cdots + \binom{m}{r}\binom{n}{0} = \binom{m+n}{r}`,
           latexPlain: String.raw`\binom{m+n}{k} = \binom{m}{0}\binom{n}{k} + \binom{m}{1}\binom{n}{k-1} + \binom{m}{2}\binom{n}{k-2} + \cdots + \binom{m}{k}\binom{n}{0}`,
-          description: String.raw`Choose $r$ from a group of $m + n$ by splitting on how many come from the first group. The case $m = r = n$ collapses to a single coefficient, $\sum_k \binom{n}{k}^2 = \binom{2n}{n}$, and is common enough to have its own card.`,
+          description: String.raw`Vandermonde's identity says $\sum_k \binom mk\binom n{r-k} = \binom{m+n}{r}$: choosing $r$ people from a group of $m$ and a group of $n$, sorted by how many come from the first group, counts every choice of $r$ from all $m + n$ exactly once. It collapses any sum of products of two binomial coefficients whose bottom indices add to a constant. The case $m = n = r$ is the most common, $\sum_k \binom nk^2 = \binom{2n}{n}$.`,
           keywords: ["vandermonde", "convolution", "sum of squares of binomials", "central binomial"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -170,7 +170,7 @@ window.MATH_SECTIONS.push({
           id: "multinomial-theorem",
           name: "Multinomial Theorem",
           latex: String.raw`(x_1 + \cdots + x_m)^n = \sum_{k_1 + \cdots + k_m = n} \binom{n}{k_1, \dots, k_m} x_1^{k_1} \cdots x_m^{k_m}`,
-          description: String.raw`Where $\binom{n}{k_1, \dots, k_m} = \frac{n!}{k_1! \cdots k_m!}$. Coefficient extraction for trinomial expansions and beyond.`,
+          description: String.raw`The multinomial theorem expands a power of a sum of several terms: in $(x_1 + \cdots + x_m)^n$, the coefficient of $x_1^{k_1}\cdots x_m^{k_m}$, where $k_1 + \cdots + k_m = n$, is the multinomial coefficient $\frac{n!}{k_1!\cdots k_m!}$. It is the binomial theorem for more than two terms. The coefficient is the same number as the count of arrangements of a word with $k_1$ copies of one letter, $k_2$ of another, and so on.`,
           keywords: ["multinomial", "trinomial expansion", "coefficient", "multinomial expansion", "multinomial coefficient", "trinomial theorem"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -203,7 +203,7 @@ window.MATH_SECTIONS.push({
           id: "stars-and-bars",
           name: "Stars and Bars",
           latex: String.raw`x_1 + \cdots + x_k = n: \quad \binom{n + k - 1}{k - 1} \;\text{(} x_i \ge 0\text{)}, \qquad \binom{n - 1}{k - 1} \;\text{(} x_i \ge 1\text{)}`,
-          description: String.raw`Nonnegative or positive integer solutions; equivalently distributing $n$ identical balls into $k$ labeled boxes. For $x_i \ge a_i$, substitute $y_i = x_i - a_i$ first.`,
+          description: String.raw`Stars and bars counts the ways to split $n$ identical objects into $k$ labeled groups, which is the same as counting the solutions of $x_1 + x_2 + \cdots + x_k = n$ in nonnegative integers. There are $\binom{n+k-1}{k-1}$ of them, or $\binom{n-1}{k-1}$ if every group must get at least one object, and this single count covers most "distribute identical things" problems. It also counts choices with repetition allowed, since choosing $n$ items from $k$ types is deciding how many of each type to take. Lower bounds other than $0$ or $1$ are handled by subtracting them out first. Upper bounds break the formula and need inclusion-exclusion on top.`,
           keywords: ["identical balls", "boxes", "integer solutions", "distribute", "sticks and stones"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -254,7 +254,7 @@ window.MATH_SECTIONS.push({
           id: "non-adjacent-selection",
           name: "Choosing Non-Adjacent Objects",
           latex: String.raw`\text{in a row: } \binom{n-k+1}{k}, \qquad \text{in a circle: } \frac{n}{n-k}\binom{n-k}{k}`,
-          description: String.raw`Ways to choose $k$ of $n$ positions with no two adjacent. Row proof: place the $n - k$ unchosen objects, then drop the $k$ chosen ones into the $n - k + 1$ gaps.`,
+          description: String.raw`The number of ways to choose $k$ of $n$ objects in a row so that no two chosen ones are next to each other is $\binom{n - k + 1}{k}$; around a circle, where the first and last are also neighbors, it is $\frac{n}{n - k}\binom{n - k}{k}$. The row formula comes from the gap method: lay down the $n - k$ unchosen objects, which leave $n - k + 1$ gaps, and put the chosen ones into different gaps. Seats with no two neighbors taken, lamps with no two adjacent lit, and committees with no two neighbors are all this count.`,
           keywords: ["no two adjacent", "nonadjacent", "gap method", "circular selection", "spacing"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -322,7 +322,7 @@ window.MATH_SECTIONS.push({
           id: "partitions",
           name: "Partitions and Compositions",
           latex: String.raw`p(n): \; 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, \dots, \qquad \#\{\text{compositions of } n\} = 2^{n-1}`,
-          description: String.raw`Ways to write $n$ as an unordered sum of positive integers. Partitions into odd parts = partitions into distinct parts (Euler). Compositions (ordered sums) of $n$: $2^{n-1}$.`,
+          description: String.raw`A partition of $n$ is a way of writing $n$ as a sum of positive integers where order does not matter, and $p(n)$ counts them: $1, 2, 3, 5, 7, 11, 15, 22, 30, 42, \ldots$. A composition is the same with order mattering, and there are exactly $2^{n-1}$ compositions of $n$. Partitions have no closed form; their structure comes from pictures and bijections, such as Euler's theorem that partitions into odd parts and partitions into distinct parts are equally many.`,
           keywords: ["partition", "unordered sum", "compositions", "distinct parts"],
           importance: "low",
           level: ["AIME"]
@@ -340,7 +340,7 @@ window.MATH_SECTIONS.push({
           id: "permutation-cycle-structure",
           name: "Permutation Cycle Structure & Order",
           latex: String.raw`f^{\,k} = \mathrm{id} \iff \text{every cycle length divides } k, \qquad \operatorname{ord}(f) = \operatorname{lcm}(\text{cycle lengths})`,
-          description: String.raw`Take any bijection $f$ from a finite set to itself and follow one element: $x, f(x), f(f(x)), \dots$ must eventually return to $x$, so the set breaks into disjoint cycles, and that picture is what almost every question about $f$ is really about. Repeatedly applying $f$ rotates each cycle independently, so $f$ returns everything to its start after $\operatorname{lcm}$ of the cycle lengths steps, and $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$. Counting is by cycle type: the number with $m_c$ cycles of each length $c$ is $\frac{n!}{\prod_c c^{m_c} m_c!}$.`,
+          description: String.raw`The cycle structure of a permutation, a bijection $f$ from a finite set to itself, is the way it splits into disjoint cycles: following any element through $x, f(x), f(f(x)), \dots$ leads back to $x$, and these loops partition the set. Almost every question about applying $f$ repeatedly is really a question about that picture. The order of $f$, the number of applications that restores everything, is the $\operatorname{lcm}$ of the cycle lengths, and $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$. The number of permutations of $n$ elements with $m_c$ cycles of each length $c$ is $\frac{n!}{\prod_c c^{m_c} m_c!}$.`,
           keywords: ["cycle structure", "cycle type", "order of a permutation", "disjoint cycle decomposition", "iterating a function returns to start", "f composed with itself k times is the identity", "lcm of cycle lengths", "counting permutations by cycle type", "self-inverse function", "involution"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -395,7 +395,7 @@ window.MATH_SECTIONS.push({
           id: "basic-probability",
           name: "Basic Probability & Union",
           latex: String.raw`P(A) = \frac{\#\text{favorable}}{\#\text{total}}, \qquad P(A \cup B) = P(A) + P(B) - P(A \cap B)`,
-          description: String.raw`Equally likely outcomes. Complement: $P(\bar{A}) = 1 - P(A)$.`,
+          description: String.raw`The probability of an event, when every outcome is equally likely, is the number of outcomes in the event divided by the total number of outcomes. That turns a probability question into two counting questions, so every counting tool applies. For "$A$ or $B$", add the two probabilities and subtract the overlap, which was counted twice; for "not $A$", use $1 - P(A)$. None of it holds unless the outcomes really are equally likely, so check that first.`,
           keywords: ["favorable outcomes", "union", "complement", "probability basics", "favorable over total", "addition rule probability"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -404,7 +404,7 @@ window.MATH_SECTIONS.push({
           id: "conditional-probability",
           name: "Conditional Probability & Bayes",
           latex: String.raw`P(A \mid B) = \frac{P(A \cap B)}{P(B)}, \qquad P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}`,
-          description: String.raw`Restrict the sample space to $B$. Independence means $P(A \cap B) = P(A)P(B)$, i.e. $P(A \mid B) = P(A)$.`,
+          description: String.raw`Conditional probability is the probability of an event $A$ once you know that another event $B$ has happened, written $P(A \mid B)$ and equal to $\frac{P(A \cap B)}{P(B)}$. Knowing $B$ rules out every outcome outside $B$, and the formula measures $A$ within what is left. Rearranged as $P(A \cap B) = P(B)\,P(A \mid B)$, it multiplies probabilities along a sequence of dependent steps, and turning the condition around gives Bayes' theorem, $P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}$. Two events are independent when knowing one does not change the other, $P(A \mid B) = P(A)$, which is the same as $P(A \cap B) = P(A)\,P(B)$.`,
           keywords: ["given that", "bayes", "independent", "restrict sample space"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -413,7 +413,7 @@ window.MATH_SECTIONS.push({
           id: "binomial-probability",
           name: "Binomial Probability",
           latex: String.raw`P(k \text{ successes in } n \text{ trials}) = \binom{n}{k} p^k (1-p)^{n-k}`,
-          description: String.raw`Independent trials with success probability $p$. Expected number of successes: $np$.`,
+          description: String.raw`The binomial probability formula gives the chance of exactly $k$ successes in $n$ independent trials that each succeed with probability $p$: $\binom nk p^k(1 - p)^{n - k}$. It applies to repeated coin flips, dice rolls and any fixed number of identical, independent attempts. The expected number of successes is $np$, and the variance is $np(1 - p)$.`,
           keywords: ["coin flips", "repeated trials", "exactly k", "bernoulli"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -467,7 +467,7 @@ window.MATH_SECTIONS.push({
           id: "bayes-theorem",
           name: "Bayes' Theorem",
           latex: String.raw`P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}, \qquad P(B) = \sum_i P(B \mid A_i)\,P(A_i)`,
-          description: String.raw`Reverses a conditional: it converts "chance of the evidence given the cause" into "chance of the cause given the evidence." The denominator is the total probability of $B$, summed over all disjoint scenarios $A_i$. The heart of "the test is $99\%$ accurate — what's the chance you actually have it?" problems, where the base rate dominates.`,
+          description: String.raw`Bayes' theorem reverses a conditional probability: $P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}$, turning the chance of the evidence given a cause into the chance of the cause given the evidence. The denominator is the total probability of the evidence, $P(B) = \sum_i P(B \mid A_i)P(A_i)$, summed over every disjoint cause. It is the tool for "the test is 99% accurate; what is the chance you actually have it?", where the base rate usually dominates.`,
           keywords: ["bayes theorem", "conditional probability reversed", "posterior", "total probability", "false positive"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -489,8 +489,8 @@ window.MATH_SECTIONS.push({
         {
           id: "expected-value",
           name: "Expected Value & Linearity",
-          latex: String.raw`E[X] = \sum x_i\, p_i, \qquad E[X + Y] = E[X] + E[Y] \;\;\textbf{always}`,
-          description: String.raw`Linearity needs no independence — the key to hard expected-value problems. Decompose $X$ into indicator variables: $E[X] = \sum P(\text{event}_i)$.`,
+          latex: String.raw`E[X] = \sum x_i\, p_i, \qquad E[X + Y] = E[X] + E[Y] \;\;\text{(always)}`,
+          description: String.raw`The expected value of a random quantity is its long-run average, the sum of each possible value times its probability, $E[X] = \sum x_ip_i$. Its most useful property is linearity: $E[X + Y] = E[X] + E[Y]$ for any random quantities, whether or not they are independent. That makes hard problems easy, because a count can be split into indicator variables, one per event that might happen, and its expected value is then just the sum of those events' probabilities.`,
           keywords: ["expectation", "linearity", "indicator variables", "average"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -549,7 +549,7 @@ window.MATH_SECTIONS.push({
           id: "pigeonhole",
           name: "Pigeonhole Principle",
           latex: String.raw`n \text{ objects in } k \text{ boxes} \implies \text{some box holds} \ge \left\lceil \tfrac{n}{k} \right\rceil \text{ and some holds} \le \left\lfloor \tfrac{n}{k} \right\rfloor, \qquad n > k(r-1) \implies \text{some box holds} \ge r`,
-          description: String.raw`If $n$ objects go into $k$ boxes, some box holds at least $\lceil n/k \rceil$ (and some holds at most $\lfloor n/k \rfloor$). The whole difficulty is choosing the boxes: residues mod $m$, pairs summing to a target, sub-regions of a shape, or the averaging form ("some term is at least the mean"). Generalization: more than $km$ objects force some box to exceed $m$.`,
+          description: String.raw`The pigeonhole principle says that if $n$ objects are put into $k$ boxes with $n \gt k$, some box holds at least two; more precisely, some box holds at least $\lceil \frac nk \rceil$ and some holds at most $\lfloor \frac nk \rfloor$. It proves that something must exist without finding it. The whole difficulty is choosing the boxes: remainders modulo $m$, pairs that sum to a target, regions of a shape, or the averaging form, that some value is at least the average.`,
           keywords: ["pigeonhole", "boxes", "guarantee", "at least two", "ceiling", "at least one shared", "residues", "averaging argument", "dirichlet"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME", "Olympiad"]
@@ -590,7 +590,7 @@ window.MATH_SECTIONS.push({
           id: "handshake-lemma",
           name: "Handshake Lemma",
           latex: String.raw`\sum_{v} \deg(v) = 2E`,
-          description: String.raw`Every edge contributes two degree-endpoints, so the total degree is even — hence the number of odd-degree vertices is even. The prototype double-count.`,
+          description: String.raw`The handshake lemma says that in any graph the degrees of the vertices add up to twice the number of edges, $\sum_v \deg(v) = 2E$, because each edge has two ends. So the total degree is always even, and the number of vertices of odd degree is even. It is the prototype of double counting: it turns degree information into an edge count, and it rules out some configurations on parity alone.`,
           keywords: ["graph", "degrees", "edges", "double counting", "handshakes"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]

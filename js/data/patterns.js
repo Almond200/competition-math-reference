@@ -13,7 +13,8 @@ window.MATH_SECTIONS.push({
     {
       title: "Geometry",
       groups: [
-        { title: "Angle & Configuration Chasing", ids: ["angle-chasing", "directed-angles", "auxiliary-lines", "phantom-point", "perp-to-angle-bisector"] },
+        { title: "Angle & Configuration Chasing", ids: ["angle-chasing", "directed-angles", "phantom-point"] },
+        { title: "Standard Constructions", ids: ["auxiliary-lines", "median-doubling", "parallel-line-similarity", "angle-bisector-reflection", "perp-to-angle-bisector"] },
         { title: "Ratios, Masses & Areas", ids: ["mass-points", "area-method", "ravi-substitution"] },
         { title: "Transformations & Inversion", ids: ["spiral-similarity", "homothety-monge", "inversion-properties", "affine-transformations", "pole-polar"] },
         { title: "Coordinate & Algebraic Bashes", ids: ["coordinate-bash", "trig-bash", "complex-bash", "barycentric-coordinates"] },
@@ -26,7 +27,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{slice through the axis of symmetry} \Rightarrow \text{2D circles and lines}`,
-          description: String.raw`Spheres, cylinders, cones, and tori that are tangent to each other become tangent circles and lines in the plane through their common axis of symmetry. Solve the 2D picture (center distances = sums/differences of radii, similar triangles), then rotate back.`,
+          description: String.raw`The cross-section method solves a three-dimensional tangency problem by slicing through the common axis of symmetry, where spheres become circles, cylinders become pairs of parallel lines, cones become triangles and a torus becomes two circles. Solids of revolution about one axis touch along circles centered on that axis, so the slice keeps every radius and center distance that matters. Solve the flat picture with tangent circles and similar triangles, then read the answers back as radii of circles in space. It is the standard first move on AIME problems with spheres in cones, stacked balls or a torus in a sphere.`,
           keywords: ["cross section", "torus", "sphere tangent", "axial slice", "3d to 2d", "method"],
           importance: "medium",
           level: ["AIME"]
@@ -36,11 +37,44 @@ window.MATH_SECTIONS.push({
           name: "Perpendicular to an Angle Bisector",
           type: "method",
           subject: "geometry",
-          latex: String.raw`BP = c\sin\tfrac A2, \quad B' = \text{reflection of } B \text{ over the } A\text{-bisector} \in \overline{AC},\ AB' = c; \qquad PM = \tfrac{|b-c|}{2} \parallel AC`,
-          description: String.raw`The bisector of angle $A$ is a mirror that swaps ray $AB$ with ray $AC$. So the standard move — drop a perpendicular from $B$ to the bisector and extend it to double its length — reflects $B$ across the bisector: the foot $P$ is the midpoint, and the far end $B'$ lands on line $AC$ with $AB' = AB = c$. Consequences you can read off: the perpendicular length is $BP = c\sin\frac A2$ (so $BB' = 2c\sin\frac A2$), and $B'C = |b - c|$. Joining $P$ to the midpoint $M$ of $BC$ makes a midline of $\triangle BB'C$, so $PM \parallel AC$ with $PM = \frac{|b-c|}{2}$ — the quick way to locate that foot and get lengths in any angle-bisector configuration.`,
-          keywords: ["perpendicular to angle bisector", "reflect over bisector", "double the perpendicular", "foot of perpendicular to bisector", "c sin A/2", "b minus c over 2", "midline b-c", "auxiliary construction", "angle bisector mirror", "drop perpendicular and extend"],
+          latex: String.raw`BF \perp AD: \quad BF = c\sin\tfrac A2, \quad F = \text{midpoint of } BB' \text{ with } B' \in AC; \qquad FM = \tfrac{|b-c|}{2} \parallel AC`,
+          description: String.raw`The perpendicular from a vertex to an angle bisector is the segment from $B$ that meets the bisector of angle $A$ at a right angle, at a foot $F$. Extended to twice its length it lands on line $AC$, because the bisector reflects $B$ there, so $F$ is the midpoint of $BB'$ and $BF = c\sin\frac A2$. With $M$ the midpoint of $BC$, the segment $FM$ is a midline of triangle $BB'C$, parallel to $AC$ with length $\frac{|b - c|}{2}$, which is the quick way to get lengths wherever a perpendicular meets a bisector.`,
+          keywords: ["perpendicular to angle bisector", "foot of perpendicular to bisector", "double the perpendicular", "drop perpendicular and extend", "perpendicular from a vertex to a bisector", "c sin A/2", "b minus c over 2", "midline b-c", "auxiliary construction"],
           importance: "low",
           level: ["AIME", "Olympiad"]
+        },
+        {
+          id: "angle-bisector-reflection",
+          name: "Reflecting Across an Angle Bisector",
+          type: "method",
+          subject: "geometry",
+          latex: String.raw`B' = \text{reflection of } B \text{ in } AD: \quad B' \in AC,\ AB' = AB,\ B'D = BD, \qquad \triangle ABD \cong \triangle AB'D`,
+          description: String.raw`Reflecting across an angle bisector means reflecting the vertex $B$ of triangle $ABC$ in the bisector $AD$ of angle $A$, where $D$ is the point where the bisector meets $BC$. The bisector swaps the two sides of the angle, so the image $B'$ lands on $AC$ with $AB' = AB$, and $D$ stays where it is, so $B'D = BD$ and triangle $AB'D$ is a congruent copy of $ABD$. It turns an angle condition into equal lengths and isosceles triangles: $ABB'$ is always isosceles, and a length condition such as $AB + BD = AC$ makes $B'DC$ isosceles too.`,
+          keywords: ["reflect over the angle bisector", "reflect a vertex across the angle bisector", "angle bisector reflection", "isosceles triangle from an angle bisector", "reflect across the bisector", "AB plus BD equals AC", "angle B twice angle C", "congruent copy across the bisector", "auxiliary construction"],
+          importance: "medium",
+          level: ["AMC12", "AIME", "Olympiad"]
+        },
+        {
+          id: "median-doubling",
+          name: "Doubling a Median",
+          type: "method",
+          subject: "geometry",
+          latex: String.raw`MA' = AM \;\Rightarrow\; ABA'C \text{ is a parallelogram}, \qquad \triangle ABA' \text{ has sides } c,\ b,\ 2m_a`,
+          description: String.raw`Doubling a median means extending the median $AM$ of triangle $ABC$ past the midpoint $M$ to a point $A'$ with $MA' = AM$, which makes $ABA'C$ a parallelogram. It puts the two sides $b$ and $c$ and twice the median into one triangle, $ABA'$, so a condition on a median becomes an ordinary triangle problem for the law of cosines, the triangle inequality or an angle chase. Alternate angles carry angles across the parallelogram as well: $\angle BAM = \angle CA'M$, so an angle given at $A$ reappears at $A'$.`,
+          keywords: ["double the median", "doubling a median", "extend the median", "median parallelogram", "complete the parallelogram", "extend the median past the midpoint", "median to twice its length", "triangle with sides b c and 2m", "reflect a vertex through the midpoint", "auxiliary construction"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
+        },
+        {
+          id: "parallel-line-similarity",
+          name: "Drawing a Parallel Line",
+          type: "method",
+          subject: "geometry",
+          latex: String.raw`\ell \parallel BC \text{ meets } AB, AC \text{ at } D, E \;\Rightarrow\; \triangle ADE \sim \triangle ABC, \quad \frac{AD}{AB} = \frac{AE}{AC} = \frac{DE}{BC}`,
+          description: String.raw`Drawing a parallel line means adding, through a well-chosen point, a line parallel to a segment already in the figure, so that it cuts off a triangle similar to one that is there. It is the standard way to carry a ratio from one line of a figure to another when no similar triangles are visible yet, as in cevian-ratio problems and in the classical proof of the angle bisector theorem. The line usually passes through a point that divides a segment in a known ratio, through a midpoint, or through a vertex parallel to a cevian.`,
+          keywords: ["draw a parallel line", "parallel line construction", "auxiliary parallel", "line parallel to a cevian", "transfer a ratio with a parallel line", "parallel through a vertex", "parallel through a midpoint", "cevian ratio with a parallel line", "auxiliary construction"],
+          importance: "medium",
+          level: ["AMC10", "AMC12", "AIME"]
         },
         {
           id: "cavalieris-principle",
@@ -59,7 +93,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{coordinatize} \;\to\; \text{slice} \;\to\; \text{unfold} \;\to\; \text{recount the volume}`,
-          description: String.raw`The four standard attacks on 3D problems: (1) coordinatize with right angles at the origin — boxes, cubes, and right pyramids become vector arithmetic; (2) slice through the axis or plane of symmetry — tangency and inscribed-solid problems collapse to 2D; (3) unfold surfaces flat — shortest paths on boxes and cones become straight segments; (4) compute the volume two ways with different bases — the second reading extracts an inaccessible height or distance via $h = \frac{3V}{A}$.`,
+          description: String.raw`The 3D playbook is the short list of moves that turn a solid-geometry problem into a flat or algebraic one: coordinatize, slice, unfold, or compute a volume two ways. Coordinates suit boxes, cubes and right pyramids, where right angles make every length a formula. A slice through a plane of symmetry reduces spheres, cones and tangency to a plane figure, and unfolding a surface turns a shortest path on it into a straight segment. Reading one volume with two different bases recovers a height you cannot reach directly, through $h = \frac{3V}{A}$.`,
           keywords: ["3d tactics", "coordinatize", "slice symmetry", "unfold surface", "volume two ways", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -70,7 +104,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`OP \cdot OP^* = r^2, \qquad P^*Q^* = \frac{r^2 \cdot PQ}{OP \cdot OQ}`,
-          description: String.raw`Inversion centred at $O$ with radius $r$ sends $P$ to the point $P^*$ on ray $OP$ with $OP \cdot OP^* = r^2$. It is conformal, so it preserves angles and tangency, and it trades lines for circles through $O$.`,
+          description: String.raw`Inversion centered at $O$ with radius $r$ sends $P$ to the point $P^*$ on ray $OP$ with $OP \cdot OP^* = r^2$. It is conformal, so it preserves angles and tangency, and it trades lines for circles through $O$.`,
           keywords: ["inversion properties", "inverse point", "op op* = r^2", "line to circle", "conformal", "inversion distance formula", "circle preserving", "inversive geometry", "inversion"],
           importance: "low",
           level: ["Olympiad"]
@@ -81,7 +115,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{label an angle } \theta, \text{ then propagate it through the figure}`,
-          description: String.raw`The default first attack on any figure. Assign $\theta$ to one unknown angle and push it through the four propagators — triangle sums, base angles of isosceles triangles (equal sides $\Rightarrow$ equal angles), parallel-line angle pairs, and inscribed-angle/cyclic-quad relations — until the target angle is expressed in $\theta$ and solved.`,
+          description: String.raw`Angle chasing finds an unknown angle by naming one angle $\theta$ and pushing it through the figure with a few exact rules until the target is expressed in terms of $\theta$. It is the default first attack on any geometry figure, and on the AMC it is often the whole solution. The rules are the triangle sum, equal base angles in isosceles triangles, equal angles along parallel lines, and equal inscribed angles on one arc of a circle, with the cyclic-quadrilateral rule as a special case. Run backwards, the circle rules prove that four points lie on a circle, which is often the step a problem is waiting for.`,
           keywords: ["angle chasing", "label angles", "theta", "propagate", "first attack", "base angles", "method"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -92,7 +126,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`m_B \cdot BD = m_C \cdot DC, \qquad m_D = m_B + m_C`,
-          description: String.raw`Balance the triangle like a seesaw: assign masses inversely proportional to the segments a cevian creates; the cevian intersection ratios then read off directly ($AP : PD = m_D : m_A$). The fastest tool for "cevians divide the sides in given ratios, find a ratio" problems.`,
+          description: String.raw`Mass points find the ratios in which the cevians of a triangle cut each other by treating the triangle as a system of weights: put masses on the vertices so that each cevian's foot is the balance point of the masses at the two ends of its side. A foot carries the sum of the masses it balances, and the ratio along a cevian is read off from the masses at its two ends. It is the fastest tool when cevians divide the sides in given ratios and a ratio along a cevian is wanted.`,
           keywords: ["mass points", "cevian ratios", "balance", "method", "lever"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -114,7 +148,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`X \mapsto P + k(X-P);\ \ \text{three external similitude centers are collinear}`,
-          description: String.raw`A homothety (dilation) about $P$ with ratio $k$ scales every figure by $k$ and maps each circle to a circle; two circles always admit an external (and usually internal) center of similitude where their common tangents cross. Monge: for three circles, the three external centers are collinear. Homothety centered at a tangency point is the standard move for tangent-circle configurations.`,
+          description: String.raw`A homothety, or dilation, with center $P$ and ratio $k$ moves every point $X$ to $P + k(X - P)$: it scales the whole figure by $k$ about $P$, keeps every direction, and sends circles to circles and tangent lines to tangent lines. Two circles of different radii are related by homotheties centered at their centers of similitude, the external one where their external common tangents cross and the internal one where the internal tangents cross. Monge's theorem says the three external centers of similitude of three circles lie on one line.`,
           keywords: ["homothety", "dilation", "similitude center", "monge", "external tangents", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -136,7 +170,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`P = \alpha A + \beta B + \gamma C, \quad \alpha + \beta + \gamma = 1, \quad (\alpha : \beta : \gamma) = [PBC] : [PCA] : [PAB]`,
-          description: String.raw`Write each point as a mass-weighted average of the triangle's vertices; the normalized weights are the signed sub-triangle area ratios. Standard centers are clean: centroid $(1:1:1)$, incenter $(a:b:c)$, circumcenter $\bigl(a^2(b^2+c^2-a^2):\cdots\bigr)$, orthocenter $(\tan A:\tan B:\tan C)$. Cevians and lines become linear equations, and collinearity/concurrence become $3\times 3$ determinants — a coordinate system tailored to the triangle, ideal when a configuration is drowning in ratios and named centers.`,
+          description: String.raw`Barycentric coordinates describe every point of the plane by three weights on the vertices of a reference triangle, $P = \alpha A + \beta B + \gamma C$ with $\alpha + \beta + \gamma = 1$, and each weight is the fraction of the triangle's area in the sub-triangle opposite that vertex. They turn a triangle crowded with cevians, side ratios and named centers into linear algebra: points on sides, cevians and centers are written down directly, and collinearity becomes a $3 \times 3$ determinant. The standard centers have short coordinates, such as the centroid $(1:1:1)$ and the incenter $(a:b:c)$. Distances and circles are clumsy in this system, so it pays on incidence and ratio problems and rarely on metric ones.`,
           keywords: ["barycentric coordinates", "areal coordinates", "area ratios", "mass points", "incenter circumcenter coordinates", "homogeneous coordinates", "method"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -147,7 +181,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{put the figure on axes, then finish with distance / shoelace / slopes}`,
-          description: String.raw`When a synthetic attack stalls, drop the figure onto coordinates chosen to erase the algebra: a right angle at the origin, a side along the $x$-axis, a center or midpoint at the origin for symmetry. Then lengths, areas, collinearity, perpendicularity, and circle conditions all become computation — trading cleverness for reliability.`,
+          description: String.raw`Coordinate bashing places a geometry figure on coordinate axes and turns every question about it into algebra: lengths come from the distance formula, areas from the shoelace formula, and parallel, perpendicular and "on a circle" become equations. It is the reliable fallback when no synthetic idea appears, trading insight for computation that cannot get stuck. The whole skill is the placement, choosing the origin and axes so that as many coordinates as possible are $0$: a right angle at the origin, a side along an axis, a center or midpoint at the origin. When the algebra balloons anyway, that usually means a synthetic shortcut was intended.`,
           keywords: ["coordinate bash", "place on axes", "analytic geometry", "brute force geometry", "smart origin", "method"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -158,7 +192,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\text{add the right segment: altitude, parallel, radius, or a reflected copy}`,
-          description: String.raw`The decisive move in synthetic geometry is often a line not yet drawn. The standard repertoire: drop a perpendicular (height, distance), translate a diagonal to fuse two lengths, extend a cevian to meet a parallel (spawning similar triangles), join the center to a point of tangency (right angle), or reflect/rotate a point to straighten a bent path.`,
+          description: String.raw`An auxiliary line is a segment you add to a geometry figure that the problem did not draw, chosen to expose a relationship the figure only implies. The standard ones are few: a perpendicular to create a height or a right triangle, the radius to a point of tangency, a line parallel to a side to create similar triangles, a translated or doubled segment to bring two lengths into one triangle, and a reflection or rotation to straighten a path or complete a symmetry. When a synthetic problem stalls, the question to ask is which of these lines the figure is missing.`,
           keywords: ["auxiliary line", "construction", "drop perpendicular", "extend cevian", "add radius", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -180,7 +214,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`z \mapsto \omega z: \text{ rotation by } \arg\omega; \qquad \text{equilateral } \iff a^2 + b^2 + c^2 = ab + bc + ca`,
-          description: String.raw`Put the figure on the complex plane: multiplying by $e^{i\theta}$ rotates about the origin (about $p$: $z \mapsto p + e^{i\theta}(z - p)$), and scaling and rotating are one operation. Regular $n$-gon vertices are the roots of unity $\omega^k$, the centroid is $\frac{a+b+c}{3}$, and the orientation-free equilateral condition above collapses many rotation configurations to one line of algebra.`,
+          description: String.raw`Complex number bashing places a geometry figure in the complex plane, where multiplying by a complex number rotates and scales in one step. A rotation by $\theta$ about the point $p$ is $z \mapsto p + e^{i\theta}(z - p)$, the vertices of a regular $n$-gon centered at $0$ are the powers of $e^{2\pi i/n}$, and the quotient $\frac{c - a}{b - a}$ carries both the angle at $a$ and a ratio of lengths. It turns configurations built from rotations, such as equilateral triangles, squares on the sides and regular polygons, into short algebra.`,
           keywords: ["complex bash", "complex numbers geometry", "rotation by multiplication", "roots of unity polygon", "equilateral condition", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -235,7 +269,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "geometry",
           latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC} \qquad \frac{[PBC]}{[ABC]} = \frac{PD}{AD}`,
-          description: String.raw`Recast the whole configuration as (signed) areas: two triangles on a shared base have area ratio equal to the ratio of their apexes' distances, so every length ratio along a line is an area ratio and back again. Substituting lengths by the triangles that contain them lets bases and heights cancel dynamically — it behaves like mass points but keeps working for points outside the triangle and for parallel-line configurations, with no lever system to invent. Ceva (concurrency), Menelaus (collinearity), and "in what ratio does $X$ cut $YZ$?" all fall out of chaining a few shared-base ratios.`,
+          description: String.raw`The area method turns length ratios into area ratios and back: two triangles with the same apex and bases on one line have areas in the ratio of their bases, and two triangles on the same base have areas in the ratio of their heights. So a ratio along a line can be replaced by a ratio of areas, the areas split and recombined, and the answer turned back into lengths. It does what mass points do for cevians, and it keeps working for points outside the triangle and for configurations with parallel lines.`,
           keywords: ["area method", "area ratios", "signed area", "shared base ratio", "cevian ratio", "mass points alternative", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -260,7 +294,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\sqrt{a \pm \sqrt{b}} = \sqrt{\frac{a + \sqrt{a^2 - b}}{2}} \pm \sqrt{\frac{a - \sqrt{a^2 - b}}{2}}`,
-          description: String.raw`Works cleanly when $a^2 - b$ is a perfect square. E.g. $\sqrt{3 + 2\sqrt2} = 1 + \sqrt2$ — guess $(\sqrt x + \sqrt y)^2$ and match.`,
+          description: String.raw`Denesting a radical rewrites a square root that contains another square root, $\sqrt{a \pm \sqrt b}$, as a sum or difference of simpler roots, $\sqrt x \pm \sqrt y$. You match $(\sqrt x \pm \sqrt y)^2 = x + y \pm 2\sqrt{xy}$ against the radicand, which asks for two numbers with sum $a$ and product $\frac b4$. With rational $a$ and $b$ it works exactly when $a^2 - b$ is a perfect square, so $\sqrt{7 + 4\sqrt3} = 2 + \sqrt3$ but $\sqrt{2 + \sqrt2}$ does not denest.`,
           keywords: ["nested radical", "denest", "simplify square root", "denest a nested radical", "simplify sqrt of a plus sqrt b", "unnest radical"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -282,7 +316,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`p_k = e_1 p_{k-1} - e_2 p_{k-2} + \cdots + (-1)^{k-1} k\, e_k, \qquad p_1 = e_1, \qquad p_2 = e_1 p_1 - 2e_2, \qquad p_3 = e_1 p_2 - e_2 p_1 + 3e_3, \qquad p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 - 4e_4`,
-          description: String.raw`Relates power sums $p_k = \sum r_i^k$ of a polynomial's roots to the elementary symmetric polynomials $e_i$ (from Vieta). E.g. $p_2 = e_1 p_1 - 2e_2$, $p_3 = e_1 p_2 - e_2 p_1 + 3e_3$.`,
+          description: String.raw`Newton's sums express the power sums $p_k = \sum r_i^k$ of a polynomial's roots in terms of the elementary symmetric functions $e_1, e_2, \ldots$, which Vieta's formulas read off the coefficients. Each power sum is built from the earlier ones: $p_1 = e_1$, $p_2 = e_1p_1 - 2e_2$, $p_3 = e_1p_2 - e_2p_1 + 3e_3$, and so on. So any power sum of the roots can be found without finding the roots.`,
           keywords: ["power sums", "sum of squares of roots", "sum of cubes of roots", "symmetric"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -293,7 +327,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\text{every symmetric } f(r_1, \dots, r_n) \text{ is a polynomial in } e_1, \dots, e_n, \qquad \prod_{i=1}^{n} (a - r_i) = \frac{P(a)}{a_n}, \qquad \sum_{i=1}^{n} \frac{1}{a - r_i} = \frac{P'(a)}{P(a)}`,
-          description: String.raw`If an expression in the roots is unchanged by permuting them, it is computable from the coefficients alone — you never have to find the roots. Vieta supplies $e_1, \dots, e_n$, Newton's sums convert those to power sums, and any product over the roots is read off by evaluating $P$ at a well-chosen point (including a complex one).`,
+          description: String.raw`The fundamental theorem of symmetric polynomials says that any polynomial expression in the roots of a polynomial that is unchanged when the roots are permuted can be written in terms of the elementary symmetric sums, which Vieta's formulas read off from the coefficients. So such an expression can be computed without ever finding the roots. The fastest cases are products over the roots, which come from evaluating the polynomial: $\prod(a - r_i) = \frac{P(a)}{a_n}$, even at a complex number $a$.`,
           keywords: ["fundamental theorem of symmetric polynomials", "symmetric polynomial", "symmetric function of the roots", "elementary symmetric polynomials", "complex number evaluation trick", "plug in a value", "evaluate the polynomial at", "product over the roots", "never find the roots", "expressions in the roots", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -304,7 +338,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\text{each equation} = S + (\text{one variable}) \;\Longrightarrow\; \text{add all } n: \;\; (n+1)S = \sum_i c_i`,
-          description: String.raw`When every equation of a system says the same thing about a different variable, do not eliminate. Add all of them at once: the symmetric part collapses into a multiple of the grand total $S$, one subtraction then recovers each variable individually, and a system that looked like $n$ unknowns becomes one line of arithmetic. The cyclic version, where each equation ties one unknown to the next, closes the same way by substituting around the loop until you return to where you started.`,
+          description: String.raw`A symmetric linear system is one whose equations are the same up to relabeling the variables, such as $x_i + S = c_i$ for each $i$, where $S$ is the sum of all the variables. Instead of eliminating, add all the equations at once: the symmetric parts collapse into a multiple of the total $S$, and one subtraction then gives each variable. A cyclic system, where each equation ties one unknown to the next, closes the same way by substituting around the loop until you return to the start.`,
           keywords: ["add all the equations", "symmetric system", "cyclic system", "grand total", "sum of all variables", "solve without elimination", "substitute around the cycle", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -348,7 +382,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`x^2 + bx + c = \left( x + \tfrac{b}{2} \right)^2 + c - \tfrac{b^2}{4}`,
-          description: String.raw`Rewrite any quadratic as a perfect square plus a constant. This one move derives the quadratic formula, locates the vertex $\left( -\frac{b}{2}, \, c - \frac{b^2}{4} \right)$, proves a min or max without calculus, and turns a general circle $x^2 + y^2 + Dx + Ey + F = 0$ into center–radius form.`,
+          description: String.raw`Completing the square rewrites a quadratic as a perfect square plus a constant, $x^2 + bx + c = \left(x + \frac b2\right)^2 + c - \frac{b^2}{4}$, so that $x$ appears in only one place. That one rewrite locates the vertex of a parabola, at $x = -\frac b2$, and gives its minimum or maximum without calculus, because a square is never negative. Set equal to zero, it derives the quadratic formula, and in two variables it turns $x^2 + y^2 + Dx + Ey + F = 0$ into a circle's center and radius. With a leading coefficient $a$, factor it out of the $x$ terms first.`,
           keywords: ["completing the square", "perfect square", "vertex", "minimum", "circle center radius"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -381,7 +415,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`xy + ax + by + ab = (x + b)(y + a)`,
-          description: String.raw`Add a constant to complete a product. Standard for solving $xy + ax + by = c$ over integers: factor and enumerate divisor pairs.`,
+          description: String.raw`Simon's favorite factoring trick factors an expression like $xy + ax + by$ by adding the one constant it is missing: $xy + ax + by + ab = (x + b)(y + a)$. Added to both sides of $xy + ax + by = c$, it turns an equation in two integer unknowns into a product equal to a known number, $(x + b)(y + a) = c + ab$, whose solutions are read off from the factor pairs of $c + ab$. It is the standard attack on any equation that is linear in each variable separately. With a coefficient on $xy$, multiply through by it first.`,
           keywords: ["sfft", "complete the rectangle", "integer solutions", "diophantine"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -392,7 +426,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\frac{1}{(x+a)(x+b)} = \frac{1}{b-a}\left( \frac{1}{x+a} - \frac{1}{x+b} \right) \implies \sum_{k=1}^{n} \frac{1}{k(k+1)} = 1 - \frac{1}{n+1}`,
-          description: String.raw`Split each term with partial fractions, then let the sum collapse. A proper rational function with a factored denominator breaks uniquely into one piece per factor, and once a summand reads as $f(k) - f(k+1)$ every interior term cancels against its neighbour, leaving only the ends. The same decomposition is what pulls a closed form out of a rational generating function.`,
+          description: String.raw`A telescoping sum is one in which everything cancels except the two ends: each term can be written as a difference $f(k) - f(k+1)$, so neighboring terms cancel and the sum collapses to $f(\text{first}) - f(\text{last} + 1)$. The usual way to get that shape is to split a fraction with partial fractions, as in $\frac{1}{k(k+1)} = \frac1k - \frac1{k+1}$. Reach for it whenever a sum with many terms looks impossible to add directly, especially one whose denominators are products of evenly spaced factors. Products telescope the same way, with division in place of subtraction.`,
           keywords: ["telescope", "partial fractions", "collapse", "cancel", "decompose rational", "cover up", "generating function coefficients", "closed form from generating function", "method"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -403,7 +437,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\Delta a_n = a_{n+1} - a_n; \qquad \deg P = k \iff \Delta^k P \text{ is a nonzero constant}`,
-          description: String.raw`A degree-$k$ polynomial has constant $k$-th differences (and the constant is $k! \cdot$ leading coefficient). Given consecutive values $P(1), P(2), \dots$, build the difference table and extend it rightward to evaluate further values — no interpolation formula needed.`,
+          description: String.raw`Finite differences are the gaps between consecutive terms of a sequence, $\Delta a_n = a_{n+1} - a_n$, taken again and again to build a difference table. For a polynomial of degree $k$ the $k$th differences are constant, equal to $k!$ times the leading coefficient, and constant $k$th differences in turn force a polynomial of degree $k$. So from a few consecutive values you can find the degree and extend the table to further values, without finding any coefficients.`,
           keywords: ["difference table", "constant differences", "extend sequence", "polynomial degree"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -436,7 +470,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`u = \log_b x \implies x = b^{\,u}, \qquad t = \log_a b \implies \log_b a = \frac{1}{t}`,
-          description: String.raw`A log equation is usually an ordinary algebraic equation wearing a disguise. Name the repeated logarithm — $u = \log_b x$, or $t = \log_a b$ for a base-swap pair — and the problem turns into a polynomial or rational equation in that one variable. Solve it there, then convert back with $x = b^{\,u}$ and check every root against the original domain.`,
+          description: String.raw`Substituting for a logarithm means naming the repeated logarithm in an equation, such as $u = \log_b x$, so that a log equation becomes an ordinary polynomial or rational equation in $u$. It works because logarithms turn products and powers into sums and multiples, so an equation built from $\log x$ is really algebra in one variable. For a base-swapped pair use $t = \log_a b$, since $\log_b a = \frac1t$; then solve, convert back with $x = b^{\,u}$, and check every root against the original domain.`,
           keywords: ["log substitution", "substitute for a logarithm", "let u equal log x", "quadratic in log", "log equation", "disguised quadratic", "solve logarithmic equations", "convert back and check domain", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -469,7 +503,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\text{relation in } |x| \Rightarrow \text{solve on } x \ge 0,\ \text{then mirror} \qquad \bigl||x|-h\bigr| \Rightarrow \text{copies centered at } \pm h \qquad \text{each bar's zero set is a fold line}`,
-          description: String.raw`Do not split an equation in $|x|$ and $|y|$ into four sign cases. A relation in $|x|$ is unchanged when $x$ becomes $-x$, so solve it on $x \ge 0$, where the bars simply vanish, and mirror the result; with bars on both variables, work the first quadrant and reflect into the other three. Every bar wrapped around a variable mirrors the whole picture across that axis, so a nested expression draws copies of a simpler region rather than a harder one, and an inner shift just moves where the copies sit. The general rule behind all of it: every bar is linear except on its own zero set, so those zero sets are the fold lines that cut the plane into sectors, the relation is linear inside each, and the graph is a polygon with one edge per sector. A mixed term like $|x-y|$ adds the line $y = x$ as a fourth fold, giving six sectors rather than four.`,
+          description: String.raw`An absolute value relation is an equation or inequality in $x$ and $y$ built from absolute values, such as $|x| + |y| \le 3$, and its graph is found by symmetry rather than by splitting into sign cases. A bar around a variable makes the relation unchanged when that variable changes sign, so solve where the variables are nonnegative, where the bars simply vanish, and reflect the result across the axes. Nested bars draw copies of a simpler shape: in $\bigl||x| - 1\bigr| + \bigl||y| - 1\bigr| \le 1$ the inner shift places a copy of the diamond $|x| + |y| \le 1$ at each of $(\pm1, \pm1)$. In general each bar is linear except on its own zero set, so those zero sets cut the plane into sectors where the relation is linear, and the graph is a polygon.`,
           keywords: ["graphing absolute value", "absolute value relation", "two variable absolute value", "nested absolute value", "symmetry to remove absolute values", "solve for x positive and reflect", "reflect into the other quadrants", "region in the plane", "taxicab", "diamond region", "four copies", "graph an absolute value inequality", "fold lines are the zero sets", "mixed term |x-y|", "|x|+|y|+|x-y|", "six sectors", "centrally symmetric hexagon", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -480,7 +514,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\sqrt{a^2 - x^2}:\ x = a\sin\theta \qquad \sqrt{a^2 + x^2}:\ x = a\tan\theta \qquad \sqrt{x^2 - a^2}:\ x = a\sec\theta`,
-          description: String.raw`Match the radical to the substitution that clears it, and a Pythagorean identity does the rest: $x = a\sin\theta$ turns $\sqrt{a^2-x^2}$ into $a\cos\theta$, $x = a\tan\theta$ turns $\sqrt{a^2+x^2}$ into $a\sec\theta$, and $x = a\sec\theta$ turns $\sqrt{x^2-a^2}$ into $a\tan\theta$; $x = a\cot\theta$ serves the second case when the answer wants a cotangent. Beyond radicals the same move handles three other shapes: iterations such as $x \mapsto 2x^2-1$ become angle doubling, symmetric conditions like $a+b+c=abc$ become an angle sum through $a = \tan A$, and the Weierstrass substitution $t = \tan\frac\theta2$ runs the whole thing backwards to rationalize a trigonometric expression.`,
+          description: String.raw`Trigonometric substitution replaces a variable by a trigonometric function of an angle, chosen so that a Pythagorean identity clears a radical or an algebraic pattern becomes an angle identity. The radical forms are standard: $x = a\sin\theta$ turns $\sqrt{a^2 - x^2}$ into $a\cos\theta$, $x = a\tan\theta$ turns $\sqrt{a^2 + x^2}$ into $a\sec\theta$, and $x = a\sec\theta$ turns $\sqrt{x^2 - a^2}$ into $a\tan\theta$. The same move turns iterations such as $x \mapsto 2x^2 - 1$ into angle doubling, and symmetric conditions such as $a + b + c = abc$ into an angle sum.`,
           keywords: ["substitute cosine", "sqrt 1 minus x squared", "sqrt 1 plus x squared", "sqrt x squared minus 1", "x = a sin theta", "x = a tan theta", "x = a sec theta", "angle doubling", "triple angle 4x^3 - 3x", "tangent double angle", "a + b + c = abc tangent", "nested radicals", "chebyshev", "weierstrass substitution", "half angle radical", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -491,7 +525,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\text{try } (0,0), \; (x, 0), \; (x, x), \; (x, -x), \; (x, 1) \text{ in order}`,
-          description: String.raw`For an equation holding for all reals, plug in structured values: $(0,0)$ pins $f(0)$; $(x, 0)$ relates $f(x)$ to constants; $(x, x)$ and $(x, -x)$ produce doubling laws and parity. Cosine-flavored equations like $f(a+b) + f(a-b) = 2f(a)f(b)$ (2023 AMC 12B #22) yield to exactly this sequence.`,
+          description: String.raw`Functional equation substitution solves an equation for an unknown function, holding for all inputs, by plugging in chosen values that make terms collapse. Because the equation holds for every $x$ and $y$, it holds for $x = y = 0$, for $y = 0$, for $y = x$ and for $y = -x$, and each of these usually removes a variable: $(0, 0)$ pins down $f(0)$, $(x, 0)$ ties $f(x)$ to constants, $(x, x)$ gives a doubling law and $(x, -x)$ shows whether $f$ is even or odd. Run the substitutions in order, recording each fact before choosing the next. Recognizing a standard form, such as $f(x + y) = f(x) + f(y)$ or the cosine equation $f(a + b) + f(a - b) = 2f(a)f(b)$, tells you what the answer should look like.`,
           keywords: ["functional equation", "plug in zero", "substitution", "f(x+y)", "parity", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -502,7 +536,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`s = x + y, \; p = xy: \qquad x^2 + y^2 = s^2 - 2p, \qquad x^3 + y^3 = s^3 - 3sp, \qquad (x - y)^2 = s^2 - 4p`,
-          description: String.raw`Any symmetric system or expression in two variables collapses to the sum and product. Solve for $s$ and $p$, then recover $x, y$ as the roots of $t^2 - st + p = 0$ — Vieta run in reverse. For three variables the same game uses $e_1, e_2, e_3$ with Newton's sums.`,
+          description: String.raw`Symmetric substitution rewrites an expression or system that does not change when $x$ and $y$ are swapped in terms of their sum $s = x + y$ and product $p = xy$. Every such expression can be written this way, for example $x^2 + y^2 = s^2 - 2p$, so a symmetric system becomes a simpler system in $s$ and $p$. Once $s$ and $p$ are known, $x$ and $y$ are the two roots of $t^2 - st + p = 0$, which is Vieta's formulas run in reverse, and they are real exactly when $s^2 \ge 4p$. With three variables the same idea uses the three elementary symmetric sums and Newton's sums.`,
           keywords: ["symmetric substitution", "sum and product", "x plus y xy", "collapse system", "s p", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -513,7 +547,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\sum_i d_i = D, \qquad \sum_i \frac{d_i}{v_i} = T`,
-          description: String.raw`When a journey breaks into legs at different speeds, it is the times that add, never the speeds. Write each leg as $\frac{d_i}{v_i}$, sum those to the total time, and pair that with the distances summing to the total distance. Two travelers covering the same route give two such equations, and subtracting them kills the shared unknown.`,
+          description: String.raw`A multi-leg rate problem is a trip split into stretches traveled at different constant speeds, and it is solved by writing each leg's time as $\frac{d_i}{v_i}$. The times add to the total time and the distances add to the total distance, but the speeds never add. Two travelers covering the same route give two such equations, and subtracting them cancels what they share.`,
           keywords: ["multi leg journey", "different speed on each leg", "time is distance over rate", "two travelers same route", "walked then ran", "upstream and downstream", "legs of a trip", "meet partway"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -557,7 +591,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "algebra",
           latex: String.raw`\frac{1}{\sqrt{a} + \sqrt{b}} = \frac{\sqrt{a} - \sqrt{b}}{a - b}`,
-          description: String.raw`Multiplying by the conjugate telescopes sums like $\sum \frac{1}{\sqrt{k} + \sqrt{k+1}} = \sum (\sqrt{k+1} - \sqrt{k})$. Conjugate pairs also make $(3+\sqrt5)^n + (3-\sqrt5)^n$ an integer — the key to fractional-part-of-surd-power problems.`,
+          description: String.raw`Rationalizing removes square roots from a denominator by multiplying the top and bottom by the conjugate, the same expression with the sign between its terms flipped: $\frac1{\sqrt a + \sqrt b} = \frac{\sqrt a - \sqrt b}{a - b}$, because $(\sqrt a + \sqrt b)(\sqrt a - \sqrt b) = a - b$. Beyond tidying answers, conjugates make sums telescope, since $\frac1{\sqrt k + \sqrt{k + 1}} = \sqrt{k + 1} - \sqrt k$, and they make expressions like $(3 + \sqrt5)^n + (3 - \sqrt5)^n$ integers, the key to problems about the fractional part of a power of a surd.`,
           keywords: ["conjugate", "rationalize denominator", "telescoping radicals", "rationalize the denominator", "multiply by the conjugate", "rationalising surds"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -579,7 +613,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "number-theory",
           latex: String.raw`1001 = 7 \cdot 11 \cdot 13, \qquad 999 = 3^3 \cdot 37, \qquad 1024 = 2^{10}, \qquad 1729 = 7 \cdot 13 \cdot 19`,
-          description: String.raw`The "fake primes" — products of two primes that look prime: $91 = 7 \cdot 13$, $119 = 7 \cdot 17$, $133 = 7 \cdot 19$, $143 = 11 \cdot 13$, $187 = 11 \cdot 17$, $221 = 13 \cdot 17$, $247 = 13 \cdot 19$, $323 = 17 \cdot 19$. Also: $111 = 3 \cdot 37$, powers of 2 through $2^{10} = 1024 \approx 10^3$, $7! = 5040$, $10! = 3{,}628{,}800$, and the estimates $\sqrt2 \approx 1.414$, $\sqrt3 \approx 1.732$, $\sqrt5 \approx 2.236$, $\pi \approx 3.1416$.`,
+          description: String.raw`Numbers worth recognizing are the factorizations, powers and constants that come up so often on contests that knowing them on sight saves a computation. The most useful are the "fake primes", products of two primes from $7$ to $19$ that look prime: $91 = 7 \cdot 13$, $119 = 7 \cdot 17$, $133 = 7 \cdot 19$, $143 = 11 \cdot 13$, $187 = 11 \cdot 17$, $209 = 11 \cdot 19$, $221 = 13 \cdot 17$, $247 = 13 \cdot 19$ and $323 = 17 \cdot 19$. Also worth knowing are $1001 = 7 \cdot 11 \cdot 13$, $111 = 3 \cdot 37$, the powers of $2$ through $2^{10} = 1024 \approx 10^3$, $7! = 5040$, $10! = 3{,}628{,}800$, and $\sqrt2 \approx 1.414$, $\sqrt3 \approx 1.732$, $\sqrt5 \approx 2.236$, $\pi \approx 3.1416$.`,
           keywords: ["1001", "fake primes", "recognize factorizations", "powers of 2", "memorize constants", "1729", "sqrt approximations"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -623,7 +657,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "number-theory",
           latex: String.raw`f(a) \equiv 0 \!\!\pmod{p}, \; f'(a) \not\equiv 0 \!\!\pmod{p} \implies \text{unique lift mod } p^2`,
-          description: String.raw`Write $x = a + pt$ and expand: $f(a + pt) \equiv f(a) + pt\,f'(a) \pmod{p^2}$, a linear congruence in $t$. Each simple root mod $p$ lifts to exactly one root mod $p^2$ (and onward to $p^3, \dots$). The standard tool for "divisible by $p^2$" power congruences.`,
+          description: String.raw`Hensel lifting turns a solution of a polynomial congruence modulo a prime $p$ into a solution modulo $p^2$, $p^3$ and so on: write $x = a + pt$, expand, and only a linear congruence in $t$ is left. When $f(a) \equiv 0 \pmod p$ and $f'(a) \not\equiv 0 \pmod p$, the root lifts to exactly one root modulo $p^2$, and then modulo every higher power. It is the tool for congruences like $x^k \equiv c$ modulo a prime power.`,
           keywords: ["hensel", "lift mod p squared", "p squared divides", "linear congruence", "simple root", "lifting solutions mod p"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -678,7 +712,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "number-theory",
           latex: String.raw`\gcd \to \min(e_i, f_i), \quad \operatorname{lcm} \to \max(e_i, f_i), \quad \text{product} \to e_i + f_i, \quad \text{square} \to \text{all } e_i \text{ even}`,
-          description: String.raw`Every divisibility, gcd, lcm, perfect-power, and divisor-count condition is secretly a statement about prime exponents, one prime at a time. Write each number as $\prod p^{e_i}$, translate the conditions into min / max / sum / parity constraints on the exponents, and solve prime by prime — the primes never interact, so a hard multi-number condition splits into independent tiny problems.`,
+          description: String.raw`Prime exponent tracking solves divisibility problems by writing every number as a product of prime powers and turning each condition into a condition on the exponents, one prime at a time. The translation is simple: a gcd takes the smaller exponent at each prime, an lcm the larger, a product adds exponents, divisibility compares them, and a perfect $k$th power needs every exponent divisible by $k$. Because different primes never interact, a hard condition on several numbers splits into independent small problems, one per prime, whose counts multiply. It is the standard AIME approach to gcd and lcm counting.`,
           keywords: ["exponent tracking", "prime factorization method", "min max exponents", "gcd lcm exponents", "perfect power parity", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -689,7 +723,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "number-theory",
           latex: String.raw`\text{order the variables} \Rightarrow \text{the smallest is bounded} \Rightarrow \text{finite check}`,
-          description: String.raw`For a symmetric equation in positive integers, order the variables. The smallest one is then squeezed: in $\frac{1}{x} + \frac{1}{y} + \frac{1}{z} = 1$, the largest term is at least $\frac{1}{3}$ of the total, forcing $x \le 3$. Each surviving value of $x$ reduces the problem by one variable, and the recursion terminates in a short finite check.`,
+          description: String.raw`Bounding is the method of proving that a variable can take only a few values, so that an equation in positive integers reduces to a short list of cases to check. It is the standard attack on symmetric equations with no factoring trick, such as $\frac1x + \frac1y + \frac1z = 1$ or $xyz = x + y + z$. The key step is to order the variables: with $x \le y \le z$, one term is forced to carry at least an average share of the total, which caps one variable. Each surviving value removes a variable, and the search ends after a handful of checks, with every solution accounted for.`,
           keywords: ["bounding", "wlog ordering", "finitely many solutions", "smallest variable bound", "unit fractions", "finite check", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -700,7 +734,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "number-theory",
           latex: String.raw`\#\{(x, y) \in \mathbb{Z}_{>0}^2 : xy = N\} = d(N)`,
-          description: String.raw`Rearrange Diophantine equations into a product of factors equal to a constant (often via SFFT), then count divisor pairs — including negative ones when allowed.`,
+          description: String.raw`Factor-pair counting solves an equation in two integer unknowns by rewriting it as a product of two factors equal to a constant, $(\text{something})(\text{something}) = N$, so that every solution matches a way of splitting $N$ into two factors. The number of positive factor pairs is the divisor count $d(N)$, which turns an equation with no general method into a formula. The product is usually forced by factoring or by Simon's favorite factoring trick, and the answer then depends on three filters: whether negative factors are allowed, whether the pairs are ordered, and whether the two factors must have the same parity.`,
           keywords: ["factor pairs", "divisor counting", "sfft applications", "count factor pairs", "factor pairs of n", "divisor pair counting"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -723,7 +757,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\#(\text{good}) = \#(\text{total}) - \#(\text{bad})`,
-          description: String.raw`When "at least one" or a messy condition appears, count the opposite. The probability version: $P(\text{at least one}) = 1 - P(\text{none})$. The birthday problem is the standard case: the chance that $k$ uniform choices among $n$ options collide is $1 - \frac{n(n-1)\cdots(n-k+1)}{n^k}$, which passes one half at only $23$ people out of $365$ days.`,
+          description: String.raw`Complementary counting finds the number of objects with a property by counting the ones without it and subtracting from the total: good equals total minus bad. It pays whenever the opposite of a condition is simpler than the condition itself, and above all for "at least one", whose opposite "none" usually splits into independent choices. The probability version is $P(\text{at least one}) = 1 - P(\text{none})$. The birthday problem is the standard case: among just $23$ people, the chance that two share a birthday is already more than a half.`,
           keywords: ["at least one", "complement", "opposite", "total minus bad", "birthday problem", "collision probability", "all distinct", "shared birthday", "at least one match", "method"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -734,7 +768,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`|A_1 \cup \cdots \cup A_n| = \sum |A_i| - \sum |A_i \cap A_j| + \sum |A_i \cap A_j \cap A_k| - \cdots`,
-          description: String.raw`Two sets: $|A \cup B| = |A| + |B| - |A \cap B|$. Three sets: add singles, subtract pairs, add the triple.`,
+          description: String.raw`The principle of inclusion-exclusion counts the elements of a union of overlapping sets: add the sizes of the sets, subtract the sizes of their pairwise overlaps, add back the triple overlaps, and so on with alternating signs. For two sets it is $|A \cup B| = |A| + |B| - |A \cap B|$, and for three, add the singles, subtract the pairs and add back the triple. It pays because intersections are usually far easier to count than unions: "divisible by $3$ and by $5$" is one division, while "divisible by $3$ or by $5$" is not. Most problems want the complement, "none of these", which is the total minus the union.`,
           keywords: ["inclusion exclusion", "union", "overlap", "venn"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -745,7 +779,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`p_{\text{state}} = \sum_{\text{moves}} P(\text{move}) \cdot p_{\text{next state}}`,
-          description: String.raw`Name a probability variable per state, write one equation per state by conditioning on the first step, and solve the linear system. Handles random walks, games to $n$ wins, and gambler's ruin ($P = \frac{a}{a+b}$ for a fair walk).`,
+          description: String.raw`First-step analysis finds a probability or an expected number of steps for a random process by giving each state of the process its own unknown and conditioning on what happens in one step. Each state's value is then the average of the values of the states it can move to, weighted by the chances of moving there, plus $1$ when counting steps, and the states where the process stops anchor the system. It handles random walks, games played to a number of wins, frogs on lily pads and bugs on the corners of a cube. Merging states that behave identically keeps the system small, and the fair gambler's ruin, starting at $a$ with target $a + b$, has the closed form $\frac{a}{a + b}$.`,
           keywords: ["markov", "markov chain", "random walk", "random walk on a graph", "state collapse", "recursive probability", "gambler's ruin", "first step", "expected steps to return", "absorbing state", "cube corner walk", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -756,7 +790,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{by symmetry every position is equally likely}`,
-          description: String.raw`In a random arrangement, any particular position is equally likely to hold any particular item — ignore the reveal order. Many "conditional" setups collapse instantly under symmetry.`,
+          description: String.raw`A symmetry argument finds a probability without counting, by pairing up outcomes: if a swap or relabeling turns each outcome of one kind into one of another kind, one-to-one, the two kinds are equally likely. It is the fastest tool for random arrangements and for draws without replacement. In a shuffled deck the 17th card is an ace with probability $\frac{4}{52}$, the same as the top card, and of two named cards each is the higher one with probability $\frac12$. Before computing a probability that looks conditional or sequential, ask whether symmetry already forces the answer.`,
           keywords: ["by symmetry", "equally likely", "random order", "shortcut"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -767,7 +801,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{count one set two ways, then equate}`,
-          description: String.raw`Count incidences by rows and by columns. E.g. in any tournament, $\sum \binom{w_i}{2}$ counts "dominated pairs" — comparing to $\binom{n}{3}$ counts cyclic triangles.`,
+          description: String.raw`Double counting finds a number, or proves an identity, by counting one set in two different ways and setting the two counts equal. The set is usually a set of pairs, such as (person, committee) memberships or (point, line) incidences, counted once by rows and once by columns of the table that records them. For example, in a tournament $\sum \binom{w_i}{2}$ counts the triples in which one player beat both others, and subtracting it from $\binom n3$ counts the cyclic triangles.`,
           keywords: ["count two ways", "incidence", "tournament", "rows columns", "committee counting"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -778,7 +812,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\#(\text{total}) = \#(\text{case } 1) + \#(\text{case } 2) + \cdots \quad (\text{disjoint and exhaustive})`,
-          description: String.raw`Split on a decisive feature — the largest element, the leading digit, the position of the special object, a parity. The two failure modes are overlapping cases (double count) and missed cases (undercount); choose the splitting feature so each object lands in exactly one case. Switch to complementary counting when the cases explode.`,
+          description: String.raw`Casework counts a set by splitting it into cases that do not overlap and together cover everything, counting each case, and adding. It is the default first move on a counting or probability problem too tangled to count in one go, because each case can be made strictly simpler than the whole. The craft is choosing what to split on, usually the most constrained feature, such as the largest value, the first digit, or where a special object sits. The two ways to go wrong are cases that overlap, which double count, and cases that miss something, which undercount.`,
           keywords: ["casework", "split into cases", "disjoint", "exhaustive", "organize the count", "method"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -789,7 +823,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\#(\text{objects}) = (\text{choices for step } 1) \times (\text{choices for step } 2) \times \cdots`,
-          description: String.raw`Build the object one decision at a time and multiply the choice counts — valid only when every step has the same number of options regardless of earlier picks. Start with the most restricted slot (last digit of an even number, the seat of the picky person); if a step's count depends on history, split into cases or subtract overcounts. Divide at the end by symmetries you didn't intend to distinguish. Counting integers by digit rule is the same move applied position by position, which is why "how many numbers below $N$ have property P" is built rather than listed.`,
+          description: String.raw`Constructive counting builds each object one decision at a time and multiplies the numbers of choices at each step. It is the engine behind digit counts, seatings, codes and license plates, and the inner loop of nearly every harder count. It works only when each step offers the same number of choices whatever came before, so fill the most restricted slot first, such as the last digit of an even number, and split into cases when a step's count still depends on earlier picks. If each object gets built more than once, divide by how many times.`,
           keywords: ["constructive counting", "multiplication principle", "build step by step", "most restricted first", "overcount divide", "digit counting", "count numbers with a digit property", "no digit 7", "digit sum", "digit dp", "count by position", "how many numbers", "method"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -800,7 +834,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\#(\text{objects}) = \frac{\#(\text{constructions})}{k} \quad \text{when every object is built exactly } k \text{ times}`,
-          description: String.raw`Count something easier that produces each target object the same number of times, then divide by that number. The division is legal only while $k$ is genuinely constant. An object with extra symmetry is built fewer times, so it has to be removed, divided separately, and added back.`,
+          description: String.raw`Counting with a uniform overcount means counting something easier that produces every target object the same number of times, $k$, and then dividing by $k$. It is how unordered selections come from ordered ones, $\binom nr = \frac{n!}{(n - r)!\,r!}$, and how circular arrangements come from rows. The division is valid only while $k$ really is the same for every object. An object with extra symmetry is produced fewer times, so it has to be set aside, counted on its own and added back.`,
           keywords: ["overcount then divide", "divide by the number of orderings", "each object counted k times", "unordered from ordered", "correcting for symmetry", "symmetric cases break the division", "divide by 2 for order"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -811,7 +845,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{hard set} \;\xleftrightarrow{\;1 : 1\;}\; \text{easy set} \implies \text{same count}`,
-          description: String.raw`Recount the same objects in friendlier clothing: strictly increasing sequences $\leftrightarrow$ subsets, sums $\leftrightarrow$ stars-and-bars arrangements, paths $\leftrightarrow$ letter words, "at most" $\leftrightarrow$ complements via $k \leftrightarrow n - k$. If a clean formula counts the target, some bijection to a known family is usually hiding.`,
+          description: String.raw`A bijection is a one-to-one pairing between two sets, and counting by bijection means counting a hard set by pairing it perfectly with an easy one. It is the elegant route whenever a strange-looking count has a clean answer, because a clean answer usually means a familiar family is hiding: increasing sequences are subsets, solutions of $x_1 + \cdots + x_k = n$ are stars-and-bars rows, and lattice paths are words in R and U. A bijection removes casework rather than organizing it, since the constraint gets absorbed into the new objects. To trust one, show that it can be undone: every easy object must come from exactly one hard object.`,
           keywords: ["bijection", "one to one correspondence", "recount", "transform the problem", "same count", "method"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -822,7 +856,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`a_n = c_1 a_{n-1} + c_2 a_{n-2} + \cdots \quad (\text{classify by the final choice})`,
-          description: String.raw`Classify arrangements by their last step or last block, express $a_n$ in terms of smaller cases, then compute forward from tiny $n$. The workhorse for strings avoiding patterns, tilings, and seatings; with several interacting constraints, track one sequence per state and update them together.`,
+          description: String.raw`Recursive counting finds the number of arrangements of size $n$ by classifying them according to how they end, which expresses $a_n$ in terms of the counts for smaller sizes. Computing forward from the small cases then gives any $a_n$ without a closed formula. It is the workhorse for strings that avoid a pattern, tilings, and seatings with neighbor constraints; the classic example is that tilings of a $1 \times n$ strip by squares and dominoes, like binary strings with no two consecutive $1$s, follow the Fibonacci recurrence $a_n = a_{n-1} + a_{n-2}$. When several constraints interact, track one sequence per state and update them together.`,
           keywords: ["recursion", "count by last step", "state counting", "build up", "strings avoiding pattern", "tiling recurrence", "tilings of a 1 by n strip", "no two consecutive ones", "fibonacci tiling", "method", "build up by last step"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -833,7 +867,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`X = X_1 + X_2 + \cdots + X_n \implies E[X] = \sum_i P(\text{event } i \text{ happens})`,
-          description: String.raw`To find an expected count, write it as a sum of $0/1$ indicators — one per potential occurrence — and add their probabilities. Linearity needs no independence whatsoever, which is the whole magic: dependent, overlapping events sum just as easily. Turns most "expected number of ..." problems into one-line computations.`,
+          description: String.raw`Indicator variables turn an expected count into a sum of probabilities: write the count as a sum of $0$/$1$ variables, one for each place the thing could happen, and its expected value is the sum of their probabilities. It works by linearity of expectation, which needs no independence, so overlapping and dependent events add up just as easily. It makes most "expected number of" problems a one-line computation.`,
           keywords: ["indicator variables", "linearity of expectation", "expected number", "no independence needed", "sum of probabilities", "method"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -844,7 +878,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{invariant unchanged by every move} \ne \text{target} \Rightarrow \text{impossible}`,
-          description: String.raw`To prove a process can never reach a state or a tiling can never exist, find a quantity every legal move preserves — a parity, a sum mod $n$, a checkerboard color count — and show start and target disagree on it. Monovariants (quantities that only increase or decrease) prove termination the same way.`,
+          description: String.raw`An invariant is a quantity that no legal move can change, and it proves that a process can never reach a certain state: if the start and the target disagree on the invariant, no sequence of moves connects them. Typical invariants are a parity, a sum or product taken mod $n$, or the difference between the numbers of dark and light squares under a coloring. A coloring argument proves a tiling impossible the same way, by showing that every piece covers the colors in a fixed pattern the region cannot match. A monovariant, a quantity that only ever moves in one direction, proves instead that a process must stop.`,
           keywords: ["invariant", "coloring argument", "checkerboard", "parity argument", "impossible tiling", "monovariant", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -855,7 +889,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\frac{1}{1-x} = \sum_{n \ge 0} x^n, \qquad \frac{1}{(1-x)^k} = \sum_{n \ge 0} \binom{n+k-1}{k-1} x^n, \qquad [x^N]\prod_i f_i(x)`,
-          description: String.raw`Encode each independent decision as a polynomial or series whose exponents are its possible values, multiply the factors, and read the coefficient of $x^N$. Dice sums use $(x + \cdots + x^6)^k$; coin and stamp combinations use $\prod \frac{1}{1 - x^{a_i}}$; bounded parts use truncated factors. The identity $\frac{1}{(1-x)^k} = \sum_n \binom{n+k-1}{k-1}x^n$ is stars and bars in disguise. Then extract: set $x = 1$ for a total, differentiate for a weighted sum, or apply a roots-of-unity filter for a residue class.`,
+          description: String.raw`A generating function encodes a counting problem as a polynomial or power series: each independent choice becomes a factor whose exponents are its possible values, and after multiplying, the coefficient of $x^N$ counts the ways to reach a total of $N$. Dice sums use $(x + x^2 + \cdots + x^6)^k$, unlimited coins of value $a$ use $\frac1{1 - x^a}$, and the series $\frac1{(1 - x)^k} = \sum_n\binom{n + k - 1}{k - 1}x^n$ is stars and bars in disguise. Setting $x = 1$ totals the coefficients, and roots of unity pick out residue classes.`,
           keywords: ["generating function method", "generating function", "encode as polynomial", "coefficient extraction", "coefficient of x^n", "dice sums", "coin combinations", "stars and bars generating function", "exponential generating function", "encode choices", "method"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -866,7 +900,7 @@ window.MATH_SECTIONS.push({
           type: "method",
           subject: "counting",
           latex: String.raw`\text{take the extreme object (largest / smallest / closest)}`,
-          description: String.raw`When you cannot build the object directly, look at the most extreme one that already exists and ask what it is unable to do. Take the longest path in a graph: it cannot be extended, so every neighbour of its endpoint must already lie on the path, and that one observation usually forces the structure you were asked to find. The same move against a smallest counterexample gives a contradiction instead, because producing a smaller one shows the assumed smallest was not smallest. Largest, smallest, closest, longest: each comes with something it provably cannot do, and that is the whole leverage. The word carries a second, lighter sense on the AMC and AIME: an optimum over a constrained set sits at an extreme of the constraints, so you evaluate the boundary case instead of searching the interior.`,
+          description: String.raw`The extremal principle proves that something exists, or that something is impossible, by looking at the most extreme object available, the largest, smallest, longest or closest, and asking what it cannot do. A longest path in a graph cannot be extended, so every neighbor of its endpoint already lies on it; a smallest counterexample cannot have a smaller one, so producing one is a contradiction. On the AMC and AIME the same instinct appears as optimization: the best value over a constrained set occurs at an extreme of the constraints, so check the boundary case instead of searching the middle.`,
           keywords: ["extremal principle", "largest smallest", "minimal counterexample", "closest pair", "consider the extreme", "well ordering", "optimum at the boundary", "push to the extreme case", "which constraint is tight", "method"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -902,7 +936,7 @@ window.MATH_SECTIONS.push({
   id: "tools-patterns",
   group: "tools",
   title: "Patterns",
-  blurb: "Specific recurring problem formats with an intended solution you are expected to know on sight. Single-pile take-away games, minimising a sum of absolute values, cryptarithms, and their relatives, filed by the subject they belong to.",
+  blurb: "Specific recurring problem formats with an intended solution you are expected to know on sight. Single-pile take-away games, minimizing a sum of absolute values, cryptarithms, and their relatives, filed by the subject they belong to.",
   subsections: [
     {
       title: "Geometry",
@@ -968,7 +1002,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "geometry",
           latex: String.raw`OH \parallel BC \iff \tan B \tan C = 3 \iff AH = 2\,HD \iff \cos A = 2\cos B\cos C`,
-          description: String.raw`The line through the circumcenter and the orthocenter runs parallel to $BC$ exactly when those two points stand at the same height above it. One of those heights is free: the circumcenter's distance to $BC$ is always half of $AH$, so the condition forces $HD = \frac{1}{2}AH$ and the orthocenter cuts the $A$-altitude in the ratio $2 : 1$ from the vertex. In angles that is $\tan B \tan C = 3$. More generally $AH : HD = (\tan B \tan C - 1) : 1$, so the parallel case is simply the one where that ratio equals $2$.`,
+          description: String.raw`The Euler line $OH$ runs parallel to $BC$ exactly when $O$ and $H$ stand at the same height above that side. One of those heights is free: the circumcenter's distance to $BC$ is always half of $AH$, so the condition forces $HD = \frac{1}{2}AH$ and the orthocenter cuts the $A$-altitude in the ratio $2 : 1$ from the vertex. In angles that is $\tan B \tan C = 3$. More generally $AH : HD = (\tan B \tan C - 1) : 1$, so the parallel case is simply the one where that ratio equals $2$.`,
           keywords: ["euler line parallel to a side", "OH parallel to BC", "euler line parallel to the base", "tan B tan C = 3", "orthocenter two thirds down the altitude", "cos A = 2 cos B cos C", "AH = 2 HD", "method", "pattern"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -1012,7 +1046,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "geometry",
           latex: String.raw`\text{distance(center, line)} = r \qquad\text{or}\qquad \Delta = 0`,
-          description: String.raw`When a system "has exactly one solution" and its pieces are a circle and a line (or two circles, or a curve and a line), uniqueness means tangency: set the distance from the center to the line equal to the radius, or set the discriminant of the combined equation to zero, and solve for the parameter.`,
+          description: String.raw`The tangency condition turns "exactly one solution" into an equation: when a line and a circle, or a line and a curve, have exactly one common point, they are tangent, so the distance from the center to the line equals the radius, or the quadratic from substituting one equation into the other has discriminant zero. Solving that equation gives the parameter. The phrase "exactly one solution" is the whole hint, and there are usually two answers, one for each side the line can touch from.`,
           keywords: ["tangent", "unique solution", "discriminant zero", "distance equals radius", "exactly one intersection", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -1054,7 +1088,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "algebra",
           latex: String.raw`\text{pair } f(x) \text{ with } f(1-x) \;\text{(or } k \text{ with } n-k\text{)}, \quad \sum_{k=1}^{n-1} f\!\left(\tfrac{k}{n}\right) = \tfrac{n-1}{2}\Big(f(x)+f(1-x)\Big) \text{ when that pair is constant}`,
-          description: String.raw`When a sum's arguments are symmetric about a centre, pair the first term with the last, the second with the second-last, and look at what one pair gives. The pair is often constant, and then the whole sum is just (number of pairs) times that constant, but not always: it frequently reduces to a trigonometric expression, or to something that only simplifies once every pair is added. The method is the pairing itself, and the pair's value is what you go and find out. Gauss's $1+2+\cdots+n$ is the arithmetic case.`,
+          description: String.raw`Pairing symmetric terms means adding the first term of a sum to the last, the second to the second-last, and so on, when the arguments are symmetric about a center, and looking at what one pair gives. Often every pair gives the same constant, and then the sum is the number of pairs times that constant, as in Gauss's $1 + 2 + \cdots + n$. Even when the pair is not constant it is usually simpler than either term, so the method is to compute one pair first.`,
           keywords: ["pairing", "f(x) + f(1-x)", "pair first with last", "symmetric sum", "gauss trick", "sum symmetric about a centre", "k with n-k", "symmetry of a function about a centre", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -1066,7 +1100,7 @@ window.MATH_SECTIONS.push({
           subject: "algebra",
           latex: String.raw`\sum_{k \equiv r \,(\mathrm{mod}\, n)} \binom{m}{k} = \frac{1}{n} \sum_{j=0}^{n-1} \omega^{-jr} (1 + \omega^j)^m, \qquad \binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}`,
           latexPlain: String.raw`\binom{m}{r} + \binom{m}{r+n} + \binom{m}{r+2n} + \cdots = \frac{1}{n}\left[(1+\omega^0)^m + \omega^{-r}(1+\omega)^m + \cdots + \omega^{-(n-1)r}(1+\omega^{n-1})^m\right], \qquad \binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}`,
-          description: String.raw`Extracts every $n$-th coefficient of a generating function using $\omega = e^{2\pi i/n}$. E.g. $\binom{m}{0} + \binom{m}{3} + \binom{m}{6} + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}$.`,
+          description: String.raw`The roots of unity filter picks out the coefficients of a polynomial whose index lies in one residue class, such as every third coefficient, by averaging the polynomial's values at the $n$th roots of unity. It is the tool for sums like $\binom m0 + \binom m3 + \binom m6 + \cdots$ and for counting subsets whose size or sum is divisible by $n$. With $\omega = e^{2\pi i/n}$, the terms whose exponent is a multiple of $n$ survive the average and all the others cancel; for $n = 3$, $\binom m0 + \binom m3 + \binom m6 + \cdots = \frac{2^m + 2\cos(m\pi/3)}{3}$.`,
           keywords: ["roots of unity filter", "filter", "every third", "generating function", "coefficient extraction", "extract coefficients", "pattern"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -1088,7 +1122,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "algebra",
           latex: String.raw`f(a_i) = k \;\forall i \implies f(x) = c\prod_i (x-a_i) + k, \qquad f(a_i) = g(a_i) \;\forall i \implies f(x) = \left(\prod_i (x-a_i)\right)Q(x) + g(x)`,
-          description: String.raw`If a polynomial agrees with something simple at several points, subtract that thing. When $f$ takes the same value $k$ at $a_1,\dots,a_m$, the polynomial $f(x)-k$ vanishes at all of them, so it carries the factors $(x-a_i)$. The same works against any $g$: if $f(a_i) = g(a_i)$ for each $i$, then $f - g$ has those roots, so $f(x) = \left(\prod (x-a_i)\right)Q(x) + g(x)$.`,
+          description: String.raw`Building a polynomial from equal values means subtracting the repeated value: if $f$ takes the same value $k$ at $a_1, \ldots, a_m$, then $f(x) - k$ has those numbers as roots, so $f(x) = (x - a_1)\cdots(x - a_m)\,Q(x) + k$. It is the tool whenever a table of values repeats an output, and comparing degrees shows how much is left to find. The same works against any polynomial $g$ that $f$ agrees with at those points: $f(x) = \left(\prod(x - a_i)\right)Q(x) + g(x)$.`,
           keywords: ["equal values", "same value at several points", "f(a) = f(b)", "subtract the constant", "shifted polynomial", "construct the polynomial", "known roots plus constant", "f(x) - k has roots", "reconstruct a polynomial", "f(a) = g(a)", "agrees with another polynomial", "subtract the interpolating polynomial", "f minus g has roots", "method", "pattern"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -1099,7 +1133,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "algebra",
           latex: String.raw`a_n \text{ eventually repeats with period } p:\ \ a_n = a_{\,n \bmod p}`,
-          description: String.raw`Nonlinear recursions built from a fixed rational rule (like $t_n = \frac{5t_{n-1}+1}{25t_{n-2}}$ or $a_{n+1} = |a_n| - a_{n-1}$) are very often periodic: iterate by hand until the initial pair reappears, confirm one full extra cycle, then reduce the target index modulo the period. Watch for pre-periods (a few irregular terms before the cycle starts).`,
+          description: String.raw`A periodic sequence repeats the same block of terms forever, and many recursions with a fixed rule turn out to be periodic: once the terms that determine the next one come back, the whole sequence replays. That is the way into any problem asking for, say, the 2024th term of a recursion that does not simplify. Compute terms exactly, as fractions, until the starting terms reappear, then reduce the index modulo the period. Some rules have well-known periods, such as $x_{n+1} = \frac{1}{1 - x_n}$ with period $3$ and $a_{n+1} = a_n - a_{n-1}$ with period $6$. Watch for a few irregular terms before the cycle starts.`,
           keywords: ["periodic", "cycle", "recursion repeats", "index mod period", "iterate", "periodic recurrence", "period of recursion", "cyclic sequence", "lyness cycle", "mobius map order", "recurrence period", "tan addition recurrence", "1/(1-x)", "recursive", "todd equation", "period 8 recurrence", "x_n over x_{n-1}", "multiplicative periodic recurrence", "period 6 cycle", "pattern"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -1110,7 +1144,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "algebra",
           latex: String.raw`\#\text{solutions of } f(x) = c \;=\; \#\text{crossings of } y = f(x) \text{ with } y = c`,
-          description: String.raw`For nested absolute values and piecewise functions, don't solve — draw. Build the graph by transformations (each $|\cdot|$ folds the picture upward; each subtraction shifts it), then slide the horizontal line and count crossings as the parameter varies. Corner heights tell you exactly where the count jumps.`,
+          description: String.raw`Counting solutions by graphing replaces solving an equation $f(x) = c$ with counting how many times the horizontal line $y = c$ crosses the graph of $f$. It is the right tool for nested absolute values and other piecewise functions, where algebra splits into many cases: build the graph by folding and shifting, mark its corners, and read off the count. The count can change only when the line passes the height of a corner, so the corner heights split the values of $c$ into bands with a constant number of solutions.`,
           keywords: ["absolute value graph", "count solutions", "W shape", "fold", "parameter", "method", "pattern"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -1126,7 +1160,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "number-theory",
           latex: String.raw`a_n \bmod m \text{ is eventually periodic} \implies a_N \equiv a_{\,n_0 + ((N - n_0)\,\bmod\,T)} \pmod m`,
-          description: String.raw`To find a far-out term's remainder — the last digits of $7^{2024}$, the $2015$th Fibonacci number mod $1000$, a recurrence's term mod $m$ — list the values mod $m$ until they repeat. There are only finitely many possible states (one residue for a power, or a fixed-length tuple of residues for a linear recurrence), so the sequence must cycle; find the period $T$ (and any pre-period), then reduce the index $N$ modulo $T$. Powers cycle with the multiplicative order of the base; linear recurrences cycle with the Pisano-style period of their state vector.`,
+          description: String.raw`Periodicity mod $m$ is the fact that a sequence computed step by step modulo $m$ must eventually repeat, so the remainder of a far-out term can be found by locating the cycle and reducing the index. It is the standard route to questions like the last digits of $7^{2024}$ or the $2015$th Fibonacci number modulo $1000$. List the residues until a state repeats, note where the cycle starts and its length $T$, then replace the index $N$ by its position within the cycle. Powers of a base coprime to $m$ cycle from the very start, with period equal to the base's multiplicative order.`,
           keywords: ["periodicity mod m", "find the cycle", "remainder of a huge term", "last digits of a power", "pisano period", "eventually periodic", "reduce the exponent", "order", "cycle hunting", "method", "pattern"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -1223,7 +1257,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "counting",
           latex: String.raw`\#\text{orbits} = \frac{1}{|G|} \sum_{g \in G} |\mathrm{Fix}(g)|`,
-          description: String.raw`Distinct colorings under symmetry = average number of colorings fixed by each symmetry. E.g. colorings of a cube's faces with $k$ colors: $\frac{k^6 + 3k^4 + 12k^3 + 8k^2}{24}$.`,
+          description: String.raw`Burnside's lemma counts objects up to symmetry: the number of distinct colorings, when colorings related by a rotation or reflection count as the same, is the average number of colorings left unchanged by each symmetry, $\frac1{|G|}\sum_g|\mathrm{Fix}(g)|$. A coloring is unchanged by a symmetry exactly when each cycle of positions the symmetry moves around is a single color, so with $k$ colors a symmetry with $c$ cycles fixes $k^c$ colorings. For the faces of a cube with $k$ colors this gives $\frac{k^6 + 3k^4 + 12k^3 + 8k^2}{24}$.`,
           keywords: ["burnside", "symmetry", "orbits", "colorings", "rotations", "necklace", "counting colorings up to symmetry", "pattern"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -1245,7 +1279,7 @@ window.MATH_SECTIONS.push({
           type: "pattern",
           subject: "counting",
           latex: String.raw`P = \dfrac{\text{favorable length / area / volume}}{\text{total length / area / volume}}`,
-          description: String.raw`For continuous uniform choices, draw the region. Classic: two points in $[0,1]$ are within $d$ of each other with probability $1 - (1-d)^2$; "broken stick makes a triangle" is $\frac{1}{4}$.`,
+          description: String.raw`Geometric probability measures chance as a ratio of sizes: when a point, a time or a length is chosen uniformly at random from a continuous range, the probability of an event is the length, area or volume of its region divided by that of all possible outcomes. Draw one axis for each random quantity, shade the outcomes that satisfy the condition, and the answer usually comes from a few triangles and trapezoids, never an integral. Two classics are worth knowing: two points chosen in $[0, 1]$ land within $d$ of each other with probability $1 - (1-d)^2$, and a stick broken at two random points forms a triangle with probability $\frac14$.`,
           keywords: ["area probability", "continuous", "uniform random", "broken stick", "meet", "two people arrive", "waiting time problem", "unit square probability", "method", "pattern"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]

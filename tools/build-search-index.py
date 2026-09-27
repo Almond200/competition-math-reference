@@ -149,7 +149,7 @@ DEFINITIONS = {
     "telescope": "sum where consecutive terms cancel leaving only the ends",
     "surjection": "function hitting every possible output, onto",
     "injection": "function sending different inputs to different outputs, one to one",
-    # --- triangle parts and centres ---
+    # --- triangle parts and centers ---
     "cevian": "segment from a vertex to a point on the opposite side of a triangle",
     "median": "cevian from a vertex to the midpoint of the opposite side",
     "altitude": "perpendicular segment from a vertex straight down to the opposite side, "
@@ -160,9 +160,9 @@ DEFINITIONS = {
     "medial": "triangle made by joining connecting the midpoints of the three sides",
     "contact": "triangle made by the points where the inscribed circle touches is tangent to the three sides",
     "intouch": "triangle made by the points where the inscribed circle touches is tangent to the three sides",
-    "excentral": "triangle made by the three excentres, the centres of the escribed circles",
+    "excentral": "triangle made by the three excenters, the centers of the escribed circles",
     "symmedian": "reflection of a median across the angle bisector from the same vertex",
-    "apothem": "distance from the centre out to the middle of a side",
+    "apothem": "distance from the center out to the middle of a side",
     "hypotenuse": "longest side of a right triangle, the side opposite the right angle",
     "midsegment": "segment joining connecting the midpoints of two sides, a midline",
     "bisector": "line or ray splitting something into two equal halves",
@@ -170,12 +170,12 @@ DEFINITIONS = {
     "diagonal": "segment joining two corners that are not next to each other",
     "perimeter": "total distance all the way around the outside",
     "semiperimeter": "half of the distance around the outside",
-    # --- centres ---
-    "circumcenter": "point where the perpendicular bisectors meet, centre of the circle through all vertices",
-    "incenter": "point where the angle bisectors meet, centre of the inscribed circle",
+    # --- centers ---
+    "circumcenter": "point where the perpendicular bisectors meet, center of the circle through all vertices",
+    "incenter": "point where the angle bisectors meet, center of the inscribed circle",
     "orthocenter": "point where the three altitudes meet or cross",
-    "centroid": "point where the medians meet, the centre of mass or balance point",
-    "excenter": "centre of a circle touching tangent to one side and the extensions of the other two",
+    "centroid": "point where the medians meet, the center of mass or balance point",
+    "excenter": "center of a circle touching tangent to one side and the extensions of the other two",
     "circumradius": "radius of the circle passing through all three vertices corners",
     "inradius": "radius of the inscribed circle touching and tangent to every side",
     "exradius": "radius of a circle touching tangent to one side and the extensions of the others",
@@ -187,11 +187,11 @@ DEFINITIONS = {
     "tangent": "line just touching a curve at exactly one point without crossing it",
     "arc": "curved part of the edge of a circle",
     "sector": "pie slice wedge of a circle between two radii",
-    "annulus": "ring shaped region between two circles with the same centre",
+    "annulus": "ring shaped region between two circles with the same center",
     "sagitta": "height of an arc above its chord",
     "concyclic": "lying together on one common circle, four points all on the same circle",
     "cyclic": "lying on one circle, inscribed in a circle, concyclic",
-    "inscribed": "drawn inside just touching and tangent to the boundary, and an angle at the edge of a circle is half the angle at the centre",
+    "inscribed": "drawn inside just touching and tangent to the boundary, and an angle at the edge of a circle is half the angle at the center",
     "circumscribed": "drawn around the outside enclosing and touching",
     # --- quadrilaterals and polygons ---
     "trapezoid": "quadrilateral with one pair of parallel sides",
@@ -213,7 +213,7 @@ DEFINITIONS = {
     "tetrahedron": "solid with four triangular faces, a triangular pyramid",
     "dihedral": "angle between two flat faces meeting at an edge",
     # --- transformations ---
-    "homothety": "scaling everything by the same factor about a fixed centre, a dilation",
+    "homothety": "scaling everything by the same factor about a fixed center, a dilation",
     "inversion": "map sending a point to another along the same ray so the distances multiply to a fixed value",
     "locus": "set of all the points satisfying some condition, the path traced",
     # --- number theory ---

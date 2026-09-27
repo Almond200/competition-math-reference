@@ -31,12 +31,22 @@ CIRCLE_SLICE = 0.25
 
 def dump(rel):
     """Render every panel in one diagram file to SVG text via jsc."""
-    src = ('var window = {};\nload(%r);\nvar D = window.MATH_DIAGRAMS || {};\n'
+    # Three registries, one set of rules: the figures at the top of a card, an example's own
+    # figures ({q, s}), and the figures placed inside a write-up at a {{figure:name}} marker.
+    # The last two are newer, and a figure nobody checks is exactly how off-canvas points and
+    # sliced circles used to ship.
+    src = ('var window = {};\nload(%r);\n'
+           'function out(name, p) { if (typeof p === "string") { print("###" + name); print(p); } }\n'
+           'var D = window.MATH_DIAGRAMS || {};\n'
            'Object.keys(D).forEach(function (k) {\n'
            '  var v = D[k]; if (!Array.isArray(v)) v = [v];\n'
-           '  v.forEach(function (p, i) {\n'
-           '    if (typeof p === "string") { print("###" + k + "#" + i); print(p); }\n'
-           '  });\n});\n' % os.path.join(ROOT, rel))
+           '  v.forEach(function (p, i) { out(k + "#" + i, p); });\n});\n'
+           'var X = window.MATH_EXAMPLE_DIAGRAMS || {};\n'
+           'Object.keys(X).forEach(function (k) { ["q", "s"].forEach(function (w) {\n'
+           '  if (X[k][w]) out("example:" + k + "#" + w, X[k][w]); }); });\n'
+           'var B = window.MATH_BODY_DIAGRAMS || {};\n'
+           'Object.keys(B).forEach(function (k) { Object.keys(B[k]).forEach(function (n) {\n'
+           '  out("body:" + k + "/" + n, B[k][n]); }); });\n' % os.path.join(ROOT, rel))
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as fh:
         fh.write(src)
         tmp = fh.name

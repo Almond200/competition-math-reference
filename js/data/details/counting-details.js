@@ -3,60 +3,90 @@ window.MATH_DETAILS = window.MATH_DETAILS || {};
 
 Object.assign(window.MATH_DETAILS, {
 
-"permutations-combinations": String.raw`## Why it works
-$P(n,k)$: fill $k$ slots in order — $n$ choices, then $n-1$, down to $n-k+1$. $\binom{n}{k}$: the same count where order is irrelevant, so divide out the $k!$ orderings of each selection.
+"permutations-combinations": String.raw`
+## Why it works
+An ordered selection is built slot by slot, and each unordered selection corresponds to exactly $k!$ ordered ones.
+
+To choose $k$ objects in order from $n$, fill the first slot in $n$ ways, the second in $n - 1$ ways, since one object is used up, and so on down to the $k$th slot, which has $n - k + 1$ options. By the multiplication principle, and multiplying top and bottom by $(n - k)!$, $$P(n, k) = n(n - 1)\cdots(n - k + 1) = \frac{n!}{(n - k)!}.$$
+
+Now group the ordered selections by which set of objects they use. Each set of $k$ objects can be put in order in $k!$ ways, so every set appears exactly $k!$ times among the ordered selections, and dividing out that overcount leaves $$\binom nk = \frac{P(n, k)}{k!} = \frac{n!}{k!(n-k)!}.$$ From $10$ people, the $P(10, 3) = 10 \cdot 9 \cdot 8 = 720$ ranked top-three lists collapse to $\frac{720}{6} = 120$ committees.
+
+The symmetry $\binom nk = \binom n{n-k}$ has a one-line reason: choosing which $k$ objects to take is the same as choosing which $n - k$ to leave behind.
 
 ## How to use it
-The decision is always "does order matter?", and when in doubt count the ordered version and divide by the overcount — that is safer than guessing, because the overcount is usually easy to name.
+The decision is always "does order matter?", and when in doubt count the ordered version and divide by the overcount. That is safer than guessing, because the overcount is usually easy to name.
 
-Three habits cover most problems. Read $P(n,k)$ as filling slots one at a time with a shrinking menu, which is how "chains of choices" problems appear in disguise. Use the [[complementary-counting|complementary framing]] $\binom nk=\binom n{n-k}$ whenever the smaller side is easier to count. And when the objects are not all distinct, switch to [[multiset-permutations|the multiset formula]] rather than trying to patch $\binom nk$.
+Three habits cover most problems. Read $P(n,k)$ as filling slots one at a time with a shrinking menu, which is how "chains of choices" problems appear in disguise. Use the [[complementary-counting|complementary framing]] $$\binom nk = \binom n{n-k}$$ whenever the smaller side is easier to count. And when the objects are not all distinct, switch to [[multiset-permutations|the multiset formula]] rather than trying to patch $\binom nk$.
 
-The common error is mixing the two within one problem — counting an ordered stage and an unordered stage and then multiplying without checking that the second count does not depend on the first.
+The common error is mixing the two within one problem: counting an ordered stage and an unordered stage and then multiplying without checking that the second count does not depend on the first.
 
 ## On contests
-The atoms of all counting. AMC layers them: committees with restrictions, words from letters, and hybrid counts where one part is ordered (officers) and another is not (members).`,
+The atoms of all counting, which is why they are rarely the whole answer: 2 of the 24 problems tagged here use them alone, and [[casework-method|casework]] joins them in 4. The recurring shapes layer the two kinds of selection: committees with restrictions, words formed from letters, and hybrid counts where one stage is ordered, like officers, and another is not, like ordinary members.
+`,
 
-"multiset-permutations": String.raw`## Why it works
-Arrange all $n$ objects as if distinct ($n!$ ways), then divide by the internal reorderings of each identical group ($n_i!$ each) since they produce the same visible arrangement.
+"multiset-permutations": String.raw`
+## Why it works
+Label the identical objects to make them distinct, count those arrangements, then divide out the labels, since they do not change what you see.
+
+With every object distinct there are $n!$ arrangements. Now erase the labels. Each visible arrangement came from $n_1!$ labeled ones that differ only in the order of the first group's labels, times $n_2!$ for the second group, and so on, because each group's labels can be shuffled among that group's positions independently. So each visible arrangement was counted $n_1!\,n_2! \cdots n_k!$ times, and dividing gives the formula.
+
+{{figure:labels}}
+
+With two groups of sizes $k$ and $n - k$ the formula is $\frac{n!}{k!\,(n - k)!} = \binom nk$: arranging $k$ identical A's and $n - k$ identical B's is the same as choosing which $k$ positions get the A's.
 
 ## How to use it
-Any arrangement of objects that are not all distinct is this formula: write the multiset, take $n!$, and divide by a factorial for each repeated type. Grid paths are the most common disguise, since a path is just a string of R's and U's.
+Any arrangement of objects that are not all distinct is this formula: list the multiset, take $n!$, and divide by a factorial for each repeated type. Grid paths are the most common disguise, since a path across a $5 \times 3$ grid is a word of five R's and three U's, and there are $\frac{8!}{5!\,3!} = 56$ of them.
 
-With an added restriction, do not try to patch the formula. Arrange the unrestricted objects first, then place the repeated ones into the gaps between them — for "no two I's adjacent" in MISSISSIPPI, arrange the other eight letters, then choose four of the nine gaps for the I's.
-
-When several types are restricted at once, handle them one at a time from the most constrained outward, or switch to inclusion-exclusion on the adjacency conditions.
+With a restriction, do not patch the formula. Arrange the unrestricted objects first, then place the repeated ones into the gaps between them. For "no two I's adjacent" in MISSISSIPPI, arrange the other seven letters, then choose $4$ of the $8$ gaps for the I's: $$\frac{7!}{4!\,2!} \cdot \binom84 = 105 \cdot 70 = 7350.$$ When several types are restricted at once, handle the most constrained first, or switch to inclusion-exclusion on the adjacency conditions.
 
 ## On contests
-Constant at every level. The subtle uses: treating identical-looking steps/objects as a multiset word converts many problems into one formula.`,
+Eight problems here, seven of them AIME, and none by it alone: it counts the pieces of a [[casework-method|casework]] split or the outcomes of a [[basic-probability|probability]], and twice it counts the words a [[bijection-method|bijection]] produces. The useful habit is to see identical-looking steps or objects as the letters of a word, which turns many problems into this one formula.
+`,
 
-"circular-permutations": String.raw`## Why it works
-Rotations of a circular arrangement look identical, and there are $n$ rotations of each linear order — so $\frac{n!}{n} = (n-1)!$. Equivalently: seat one person to kill the rotational symmetry, arrange the remaining $n-1$ freely. Flips halve again when reflections are indistinguishable.
+"circular-permutations": String.raw`
+## Why it works
+Every circular arrangement corresponds to exactly $n$ rows, one for each seat you could start reading from, so dividing the $n!$ rows by $n$ counts the circles: $(n - 1)!$.
+
+{{figure:rotations}}
+
+Equivalently, seat one person anywhere; since rotations do not matter, that seat is as good as any other. The remaining $n - 1$ people then fill the remaining seats in order, in $(n - 1)!$ ways. When flips count as the same, each circle and its mirror image are one object, so divide by $2$ again, as long as $n \ge 3$ so that a circle differs from its mirror image.
 
 ## How to use it
-"Fix one person" is the habit worth building: pin someone to a seat, and the remaining $n-1$ arrange linearly. This is not just a derivation, it is how you handle added constraints — for "$A$ opposite $B$", fix $A$, note that $B$'s seat is then forced, and arrange the other $n-2$ freely.
+Fixing one person is the habit worth building, because it also handles constraints. For "$A$ sits directly opposite $B$" at a table of $8$, fix $A$; then $B$'s seat is forced, and the other $6$ people fill the remaining seats in $6!$ ways.
 
-Decide from the problem's physicality whether reflections count. A keychain or a bracelet can be flipped, so divide by $2$; people seated at a table cannot, so do not. If the problem says "arrangements are the same if one is a rotation of the other" without mentioning flips, take rotations only.
-
-For blocks around a circle, glue first and then fix: treat the block as one unit, giving $(n-k)!$ circular arrangements of the units, times $k!$ within the block.
+Decide from the physical situation whether flips count: a bracelet or a key ring can be turned over, so divide by $2$, but people at a table cannot. For people who must sit together, glue them into a block first. A block of $k$ among $n$ people leaves $n - k + 1$ units around the circle, so the count is $$(n - k)! \cdot k!.$$ In general this division is the [[uniform-overcount|uniform overcount]] idea.
 
 ## On contests
-Round-table arrangements with adjacency conditions (glue couples into blocks, remember the $2!$ inside each block) are an AMC fixture; necklace versions with beads bring in the $\div 2$.`,
+Four problems here, all AIME, none by it alone; two use [[complementary-counting|complementary counting]] for "no two of these sit together" conditions. Round tables with adjacency conditions are an AMC fixture as well, and bead necklaces bring in the extra division by $2$.
+`,
 
-"complementary-counting": String.raw`## Key forms
+"complementary-counting": String.raw`
+## Key forms
 - $\#(\text{good})=\#(\text{total})-\#(\text{bad})$ — the counting form, used when the bad side has more structure
 - $P(\text{at least one})=1-P(\text{none})$ — the probability form, and the phrase that triggers it
 - $P(\text{none})=\prod_i(1-p_i)$ — why flipping pays: independent complements multiply
 
 ## Why it works
-Good and bad outcomes partition the total; counting whichever side is structurally simpler is pure economy. "At least one" conditions have complements ("none") that factor into independent choices — that asymmetry is the whole trick.
+Every object either has the property or does not, so the two counts add up to the total, and whichever is easier to count gives the other by subtraction.
+
+The flip helps as often as it does because of an asymmetry in how conditions combine. "At least one of four rolls is a $6$" can happen in many overlapping ways, the first roll, the second, two of them, and counting those without double counting is exactly the mess that [[pie|inclusion-exclusion]] exists to clean up.
+
+Its opposite, "no roll is a $6$", is one condition on each roll separately, and separate conditions multiply: $5^4$ of the $6^4$ outcomes, so $$P(\text{at least one } 6) = 1 - \left(\frac56\right)^4.$$ "At least one" is an "or" across the trials, and the opposite of an "or" is an "and", which factors.
+
+The same asymmetry says when not to flip. If the condition is already an "and", such as "every digit is odd", count it directly; its complement would be the messy side.
 
 ## How to use it
-Trigger phrases: "at least one," "not all," "some pair." Compute the total, subtract the structured complement. For "at least two," complement is "zero or one" — still usually easier. In probability: $P(\text{at least one}) = 1 - P(\text{none})$, and for independent events $P(\text{none})$ is a clean product.
+Listen for the trigger phrases: "at least one", "not all", "some pair", "two of them share". Count the total, count the structured complement, and subtract. For "at least two" the complement is "zero or one", which is still usually the easier side even though it is two cases. In probability the move is $P(\text{at least one}) = 1 - P(\text{none})$, and when the trials are independent, $P(\text{none})$ is a product of single-trial probabilities.
+
+The one discipline is matching the universe. The total and the complement must count exactly the same kind of object, ordered with ordered and unordered with unordered, or the subtraction means nothing.
 
 ## On contests
-Possibly the most-used single idea on AMC counting problems. The classic error is a mismatched universe — make sure "total" counts exactly the same kind of object as "bad."
+A setup step rather than a whole solution: none of the 28 problems tagged here uses it alone, and 27 of them are AIME. Its partner is [[pie|inclusion-exclusion]] in 8, because the complement of a union of bad events is itself a union that needs correcting.
 
-The birthday problem is the canonical case. Asking for the chance that two of $k$ people share a birthday means summing over a mess of overlapping coincidences, but its complement factors cleanly: all $k$ distinct has probability $\frac{n(n-1)\cdots(n-k+1)}{n^{k}}$, since each person in turn must avoid the days already taken. With $n=365$ that product drops below $\frac12$ at $k=23$, so the collision probability passes one half at only $23$ people, which is the famous part. The same product answers any "are these $k$ uniform choices all different" question, hash collisions included.`,
+The birthday problem is the canonical case. Asking for the chance that two of $k$ people share a birthday means summing over a mess of overlapping coincidences, but its complement factors cleanly: all $k$ birthdays distinct has probability $\frac{n(n-1)\cdots(n-k+1)}{n^{k}}$, since each person in turn must avoid the days already taken.
+
+With $n = 365$ that product drops below $\frac12$ at $k = 23$, so the chance of a shared birthday passes one half at only $23$ people, which is the famous part. The same product answers any "are these $k$ uniform choices all different" question.
+`,
 
 "counting-blocks": String.raw`## Key forms
 - $k!\,(n-k+1)!$ — glue $k$ items that must stay together into one block, then order within it
@@ -71,18 +101,22 @@ Gluing forced-adjacent items into a super-object preserves the bijection with va
 ## On contests
 Bread-and-butter AMC 10 material; the circular variants (gaps around a table) and multi-block problems (two couples, three languages of books) are the standard escalations.`,
 
-"grid-paths": String.raw`## Why it works
-A monotone path is a word in $\{R, U\}$ with exactly $m$ R's and $n$ U's; choosing which positions are R's is $\binom{m+n}{m}$ — a multiset permutation in disguise.
+"grid-paths": String.raw`
+## Why it works
+A path is determined by its sequence of steps, and the sequence is any arrangement of $m$ R's and $n$ U's, so the paths match the ways to choose which $m$ of the $m + n$ positions hold an R. That is $\binom{m + n}{m}$, an instance of [[multiset-permutations|arrangements with repeated letters]].
+
+The same count also builds up point by point. The last step into any point comes either from the left or from below, so the number of paths to a point is the sum of the numbers at those two neighbors. Filling in the grid from the corner reproduces Pascal's triangle, tilted.
+
+{{figure:counts}}
 
 ## How to use it
-Every monotone lattice path is a string of $m$ R's and $n$ U's, so the count is a single binomial coefficient. Everything harder is built from three moves on top of that.
+From $(0, 0)$ to $(4, 3)$ there are $\binom73 = 35$ paths. A required waypoint $P$ multiplies: $$\#(\text{paths through } P) = \#(\text{paths to } P) \times \#(\text{paths from } P).$$ A forbidden point subtracts the paths through it, with [[pie|inclusion-exclusion]] when there are several, and a diagonal barrier is the [[reflection-principle|reflection principle]], which is where the [[catalan-numbers|Catalan numbers]] come from.
 
-Forced waypoints multiply: paths through $P$ equal paths to $P$ times paths from $P$, because the two halves are independent. Forbidden points subtract, using inclusion-exclusion when there are several. A diagonal barrier is the [[reflection-principle|reflection principle]], which is where the [[catalan-numbers|Catalan numbers]] come from.
-
-When the formulas start tangling — several forbidden cells, or an awkward region — abandon them and write the count into each lattice node, each node being the sum of the node below and the node to its left. That block-by-block recursion is slower but never wrong, and on a small grid it is often faster than getting the inclusion-exclusion right.
+When the formulas start tangling, with several forbidden points or an awkward region, write the count at each point as the sum of the counts to its left and below. It is slower, but it is never wrong, and on a small grid it is often faster than getting inclusion-exclusion right.
 
 ## On contests
-AMC standard; AIME versions add barriers, diagonal moves, or 3D. Write the two-coordinate model explicitly — most errors are mis-tallied step counts.`,
+Four problems here, all AIME, one solved by it alone; the others pair it with a [[bijection-method|bijection]], a [[recursive-counting|recursion]] or [[stars-and-bars|stars and bars]]. AMC uses the plain count, and AIME adds barriers, diagonal steps or a third dimension. Most errors are miscounted steps, so write the two totals $m$ and $n$ down explicitly.
+`,
 
 "rectangles-in-grid": String.raw`## Why it works
 A rectangle is determined by choosing 2 of the $m+1$ vertical grid lines and 2 of the $n+1$ horizontal ones — the choices are independent. Squares are the constrained version, since the two spans must be equal: summing over the side length $k$ gives $\sum_k (m+1-k)(n+1-k)$, which collapses to $\sum_{k=1}^{n} k^2$ on a square grid.
@@ -97,14 +131,24 @@ For sub-rectangles containing a marked cell, count the line choices on each side
 ## On contests
 "How many rectangles/squares in this grid" appears verbatim on MATHCOUNTS/AMC 10; chessboard variants (counting those containing a given square) are the common twist.`,
 
-"handshakes-diagonals": String.raw`## Why it works
-All three count unordered pairs or triples: handshakes and games are $\binom{n}{2}$ directly; diagonals are all pairs minus the $n$ adjacent ones (sides); triangles from $n$ general-position points choose any 3 vertices.
+"handshakes-diagonals": String.raw`
+## Why it works
+Each count chooses a few objects from $n$ without regard to order, which is what $\binom nk$ counts.
+
+A handshake is an unordered pair of people, and so is a game in a round robin, so both number $\binom n2$. A diagonal is a pair of vertices that are not neighbors: of the $\binom n2$ pairs, $n$ are sides, which leaves $$\binom n2 - n = \frac{n(n - 1)}{2} - n = \frac{n(n - 3)}{2}.$$
+
+Equivalently, each vertex has $n - 3$ diagonals, to every vertex except itself and its two neighbors, and each diagonal is counted from both ends. A triangle is a set of three points, and with no three on a line every such set gives a real triangle.
+
+The crossing count is a pairing. Any four vertices of a convex polygon form a quadrilateral whose two diagonals cross exactly once, and every crossing of two diagonals comes from the four endpoints of those diagonals, so crossings and sets of four vertices match one-to-one.
+
+{{figure:crossings}}
 
 ## How to use it
-Reverse-engineering is common: "45 handshakes" → $\binom{n}{2} = 45$ → $n = 10$. Points with some collinear: subtract degenerate triples $\binom{k}{3}$ per collinear family. Intersections of diagonals in convex position: $\binom{n}{4}$ (each 4 vertices give one crossing) — the elegant cousin.
+Counts often run backwards: $45$ handshakes means $\binom n2 = 45$, so $n = 10$. When some of the points are collinear, subtract the triples that do not make triangles, $\binom k3$ for each line through $k$ of the points. When three diagonals of a polygon do meet at one point, as the three long diagonals of a regular hexagon meet at its center, $\binom n4$ overcounts, and the coinciding crossings must be corrected by hand.
 
 ## On contests
-MATHCOUNTS/AMC staples; the $\binom{n}{4}$ diagonal-intersection fact and collinearity corrections are the AIME-level upgrades.`,
+Six problems here, spread across AMC 10, AMC 12 and AIME, three solved by it alone; two others use it as the total in [[complementary-counting|complementary counting]], such as counting all triples of points and removing the collinear ones. The $\binom n4$ crossing count and the collinearity corrections are the AIME-level versions.
+`,
 
 "counting-functions": String.raw`## Why it works
 Each of the $n$ inputs independently selects an output: $k$ options each, multiplied. Injections consume options: $k(k-1)\cdots(k-n+1)$. Subsets are functions to $\{$in, out$\}$: $2^n$.
@@ -134,31 +178,39 @@ The other use is absorption: applying the rule repeatedly collapses a sum of con
 ## On contests
 Identity manipulation on AMC 12/AIME: recognize when an awkward sum is one Pascal application away from collapsing. Conditioning-on-an-element is also a general proof technique worth extracting.`,
 
-"binomial-row-sums": String.raw`## Why it works
-$(1+1)^n$ expands to the row sum; $(1-1)^n = 0$ expands to the alternating sum. Combinatorially: subsets of all sizes total $2^n$; the involution "toggle element 1" pairs even with odd subsets.
+"binomial-row-sums": String.raw`
+## Why it works
+Both identities count subsets: the row sum counts all of them, and the alternating sum compares the even-sized ones with the odd-sized ones.
+
+Each of the $n$ elements is either in a subset or not, so there are $2^n$ subsets, and grouping them by size gives $$\binom n0 + \binom n1 + \cdots + \binom nn = 2^n.$$ Algebraically this is $(1 + 1)^n$ expanded by the [[binomial-theorem|binomial theorem]].
+
+For the alternating sum, pair each subset with the one obtained by toggling element $1$: add it if it is absent, remove it if it is present. Toggling twice gets back the original, so this splits all the subsets into pairs, and each pair has one even-sized and one odd-sized member. So there are equally many of each, $2^{n-1}$, and $\sum (-1)^k\binom nk = 0$. Algebraically it is $(1 - 1)^n = 0$, which needs $n \ge 1$.
+
+{{figure:toggle}}
 
 ## How to use it
-Both identities come from substituting into $(x+y)^n$, and that substitution is a general coefficient-sum machine rather than two isolated facts. Put $x=1$ and $y=1$ for the total, $x=1$ and $y=-1$ for the alternating version, and any other value when the sum carries weights — $\sum_k\binom nk2^k=3^n$ is the same move at $x=2$.
+Substituting into $(x + y)^n$ is a general machine for coefficient sums, not just two facts. Put $x = y = 1$ for the total, $x = 1$ and $y = -1$ for the alternating version, and other values when the sum carries weights: $\sum_k \binom nk 2^k = (1 + 2)^n = 3^n$.
 
-The even/odd split settles parity-constrained subset counts instantly: exactly $2^{n-1}$ subsets have even size, whatever $n$ is.
+The even/odd split settles parity-constrained subset counts at once: exactly $2^{n-1}$ subsets of an $n$-element set have even size, for any $n \ge 1$. Adding the two identities also gives the sum of every other entry in a row, $\binom n0 + \binom n2 + \binom n4 + \cdots = 2^{n-1}$.
 
-When the sum has a factor of $k$ in it, substitution alone will not reach it — differentiate $(1+x)^n$ first, or use the absorption identity, which is what the committee-chair card covers.
+When the sum has a factor of $k$ in it, substitution alone will not reach it: use $k\binom nk = n\binom{n-1}{k-1}$, which is [[committee-chair|the committee-chair identity]], or differentiate $(1 + x)^n$ first.
 
 ## On contests
-"How many subsets have even size" ($2^{n-1}$), weighted sums via clever substitution, and the roots-of-unity filter's base case. AMC 12 loves substitute-and-evaluate identities.`,
+Eight problems here, seven of them AIME, and none by it alone. Four pair it with a [[bijection-method|bijection]] that turns the problem into a count of subsets, and others use $2^n$ as the total in [[complementary-counting|complementary counting]]. Weighted sums by clever substitution, and the base case of the roots-of-unity filter, are the other regular appearances.
+`,
 
 "nested-subset-pairs": String.raw`## Key forms
 - $\#\{(A,B):A\subseteq B\subseteq S\}=3^n$ — three destinations per element
-- $\sum_{k=0}^{n}\binom nk 2^k=3^n$ — the same count organised by $|B|$
+- $\sum_{k=0}^{n}\binom nk 2^k=3^n$ — the same count organized by $|B|$
 - chains $A_1\subseteq\cdots\subseteq A_m\subseteq S$ give $(m+1)^n$
 
 ## Why it works
 Build the pair element by element rather than set by set. For each element of $S$ there are exactly three consistent possibilities: it belongs to $A$, in which case it belongs to $B$ as well; it belongs to $B$ only; or it belongs to neither. The fourth combination, in $A$ but not $B$, is precisely what $A\subseteq B$ forbids. The elements are independent, so the count is $3^n$.
 
-Organising the same count by the size of $B$ gives the identity. There are $\binom nk$ sets $B$ of size $k$, and once $B$ is fixed any of its $2^k$ subsets serves as $A$, so the total is $\sum_k\binom nk 2^k$. That is $(1+2)^n$ by the binomial theorem, so both routes give $3^n$ and each proves the other.
+Organizing the same count by the size of $B$ gives the identity. There are $\binom nk$ sets $B$ of size $k$, and once $B$ is fixed any of its $2^k$ subsets serves as $A$, so the total is $\sum_k\binom nk 2^k$. That is $(1+2)^n$ by the binomial theorem, so both routes give $3^n$ and each proves the other.
 
 ## How to use it
-Recognise the shape: two sets with one required to sit inside the other, and a question asking how many such pairs exist. Counting by element is immediate, while counting by size leads to a binomial sum you then have to evaluate — so use the element argument to get the answer and the sum only if the problem asks for that form.
+Recognize the shape: two sets with one required to sit inside the other, and a question asking how many such pairs exist. Counting by element is immediate, while counting by size leads to a binomial sum you then have to evaluate — so use the element argument to get the answer and the sum only if the problem asks for that form.
 
 The extension is worth remembering because it is free. A chain of $m$ nested sets inside $S$ gives each element $m+1$ choices: the first set in the chain it enters, or none at all. Two nested sets is the $m=2$ case, $3^n$.
 
@@ -169,31 +221,34 @@ The AMC and AIME phrasings hide it well — ordered pairs of subsets with a cont
 Telescoping Pascal: $\binom{n+1}{r+1} = \binom{n}{r} + \binom{n}{r+1}$, expand the last term repeatedly. Combinatorially: to choose $r+1$ from $\{1..n+1\}$, condition on the largest element chosen — the cases are the diagonal terms.
 
 ## How to use it
-Any sum of binomial coefficients with a fixed lower index collapses in one step, so recognising the diagonal is all that is required.
+Any sum of binomial coefficients with a fixed lower index collapses in one step, so recognizing the diagonal is all that is required.
 
-Its real reach is polynomial sums. Express $k$, $k^2$, $k^3$ in the binomial basis — $k=\binom k1$, $k^2=2\binom k2+\binom k1$, and so on — then hockey-stick each piece separately. That is the systematic route to the power-sum formulas, and unlike memorising them it extends to any degree.
+Its real reach is polynomial sums. Express $k$, $k^2$, $k^3$ in the binomial basis — $k=\binom k1$, $k^2=2\binom k2+\binom k1$, and so on — then hockey-stick each piece separately. That is the systematic route to the power-sum formulas, and unlike memorizing them it extends to any degree.
 
 The same rewriting handles products: $k(k+1)=2\binom{k+1}{2}$ and $k(k+1)(k+2)=6\binom{k+2}{3}$, so sums of consecutive-integer products telescope immediately.
 
 ## On contests
 AIME sum evaluations and stars-and-bars cumulative counts ("solutions with $x_1 + \cdots \le n$" = hockey stick over exact sums). The largest-element conditioning is reusable everywhere.`,
 
-"vandermonde": String.raw`## Key forms
-- $\sum_{k}\binom{n}{k}^2 = \binom{2n}{n}$ — the $m = n = r$ case, and by far the one that actually appears; choosing $k$ from the first $n$ and $n-k$ from the second is the same as choosing $n$ from all $2n$
+"vandermonde": String.raw`
+## Key forms
+- $\sum_{k}\binom{n}{k}^2 = \binom{2n}{n}$ — the $m = n = r$ case, by far the one that appears; choosing $k$ from the first $n$ and $n-k$ from the second is choosing $n$ from all $2n$
 - $\binom{n}{k} = \binom{n}{n-k}$ — the symmetry the squared form leans on, since it turns $\binom{n}{k}\binom{n}{n-k}$ into $\binom{n}{k}^2$
 
 ## Why it works
-Choose $r$ from a group of $m$ men and $n$ women: condition on how many men ($k$) are chosen. Generating-function view: matching the $x^r$ coefficient in $(1+x)^m(1+x)^n = (1+x)^{m+n}$.
+Both sides count the committees of $r$ chosen from $m$ men and $n$ women.
+
+The right side counts them directly. The left side sorts them by the number $k$ of men, who can be chosen in $\binom mk$ ways, with the other $r - k$ chosen from the women in $\binom n{r-k}$ ways; every committee has exactly one value of $k$, so the sorted counts add to the total.
+
+Generating functions say the same thing. The coefficient of $x^r$ in $$(1 + x)^m(1 + x)^n = (1 + x)^{m+n}$$ is the sum on the left, from multiplying out the two factors, and $\binom{m+n}{r}$ on the right.
 
 ## How to use it
-Recognising the shape is the whole skill: a sum of products of two binomial coefficients whose bottom indices add to a constant is a Vandermonde convolution, and it collapses to a single coefficient.
+Recognizing the shape is the whole skill: two binomial coefficients multiplied, bottom indices adding to a constant, summed over the split. It collapses to a single coefficient.
 
-The most-quoted case is the self-convolution $\sum_k\binom nk^2=\binom{2n}{n}$, which looks different only because the symmetry $\binom nk=\binom n{n-k}$ has already been applied to one factor.
-
-It also runs in reverse: when a problem hands you $\binom{m+n}{r}$ and you need to split it by a two-group structure, expanding into the convolution is often what makes the counting argument work. [[generating-function-method|Generating functions]] give the same identity as the coefficient of $x^r$ in $(1+x)^m(1+x)^n$, which is the quickest proof if you already have that machinery.
+It also runs in reverse: when a count naturally splits a group in two, expanding $\binom{m+n}{r}$ into the sum can be what makes the argument work. In probability it is why the hypergeometric probabilities add up to $1$: $$\sum_k \frac{\binom mk\binom n{r-k}}{\binom{m+n}{r}} = 1.$$
 
 ## On contests
-AIME identity evaluations and probability normalizations (hypergeometric distributions sum to 1 by Vandermonde). If a sum has two binomials whose bottom indices add to a constant — this is it.`,
+Two problems here, both AIME, neither solved by it alone. Typical uses count how often each element appears across pairs of subsets, which produces a sum of squared binomial coefficients, or read a double sum as a single committee count.`,
 
 "committee-chair": String.raw`## Why it works
 Count (committee, chair) pairs twice: pick the $k$-committee then its chair ($k\binom{n}{k}$), or pick the chair first then the rest ($n\binom{n-1}{k-1}$). Summing over $k$: chair first ($n$ ways), each remaining person in or out ($2^{n-1}$).
@@ -208,18 +263,20 @@ For a factor of $k^2$, do not apply it twice directly. Write $k^2=k(k-1)+k$, abs
 ## On contests
 [[weighted-binomial-sums|Weighted binomial sums]] on AMC 12/AIME ($\sum k\binom{n}{k}$, $\sum k^2\binom{n}{k} = n(n+1)2^{n-2}$), and expected-size-of-random-subset arguments ($= \frac{n}{2}$, this identity divided by $2^n$).`,
 
-"multinomial-theorem": String.raw`## Why it works
-Expanding $(x_1 + \cdots + x_m)^n$ picks one variable from each factor; the coefficient of a monomial counts the arrangements of that multiset of picks — the multinomial coefficient.
+"multinomial-theorem": String.raw`
+## Why it works
+Expanding $(x_1 + \cdots + x_m)^n$ means picking one term from each of the $n$ brackets and multiplying, so each product corresponds to a word of length $n$ recording the picks.
+
+A word with $k_1$ copies of $x_1$, $k_2$ of $x_2$, and so on produces the monomial $x_1^{k_1}\cdots x_m^{k_m}$, and the number of such words is the number of arrangements of that multiset, $\frac{n!}{k_1!\cdots k_m!}$. Collecting like terms gives that coefficient. With two terms it is the [[binomial-theorem|binomial theorem]], and the count is the one on [[multiset-permutations|arrangements with repeated objects]].
 
 ## How to use it
-For coefficient extraction, first solve the small equation $k_1+\cdots+k_m=n$ that produces the exponent pattern you want, then compute $\frac{n!}{k_1!\cdots k_m!}$ and multiply by each variable's own coefficient raised to the matching power. Forgetting that last factor is the usual error when the terms are not simply $x$, $y$, $z$.
+To extract a coefficient, find the exponent pattern that produces the wanted monomial, then take the multinomial coefficient and multiply by each term's own coefficient raised to its power. For $x^3y^2z^2$ in $(x + 2y - z)^7$: $$\frac{7!}{3!\,2!\,2!} \cdot 2^2 \cdot (-1)^2 = 210 \cdot 4 = 840.$$ Forgetting the coefficients of the terms is the usual error.
 
-If several exponent patterns give the same monomial, sum their contributions rather than picking one.
-
-Setting all $x_i=1$ gives $m^n$, which is worth doing as a check: the multinomial coefficients of a full expansion must add to it. The coefficient itself is the same number as the multiset arrangement count, which is why this theorem and the MISSISSIPPI formula are the same fact seen from two sides.
+If several exponent patterns give the same monomial, as when some terms are powers of the same variable, add their contributions. Setting every $x_i = 1$ gives $m^n$, a check that the coefficients of a full expansion must pass.
 
 ## On contests
-"Coefficient of $x^3y^2z^2$ in $(x + 2y - z)^7$"-type AMC/AIME items: multinomial count times $2^2 \cdot (-1)^2$. Also underlies counting ordered set partitions with prescribed sizes.`,
+Four problems here, mostly AMC, none by it alone and each with a different partner. Coefficient extraction in a trinomial is the standard form, and the same coefficient counts ordered splits of a set into groups of prescribed sizes.
+`,
 
 "pascal-parity": String.raw`## Why it works
 [[lucas-theorem|Lucas' theorem]] mod 2: $\binom{m}{n}$ is odd iff every binary digit of $n$ fits under $m$'s. The number of valid $n$ is $2^{(\text{number of 1-bits of } m)}$ — each 1-bit offers a free binary choice.
@@ -234,18 +291,26 @@ Drawing Pascal's triangle mod $2$ produces the Sierpinski triangle, and the pict
 ## On contests
 "How many entries of row 100 are odd" ($100 = 1100100_2$, so $2^3 = 8$) and divisibility-pattern problems. Mod 4 or higher powers needs more than Lucas — don't overextend the tool.`,
 
-"stars-and-bars": String.raw`## Why it works
-Write $n$ identical units as stars; $k-1$ bars split them into $k$ labeled groups. Arrangements of the $n + k - 1$ symbols choose bar positions: $\binom{n+k-1}{k-1}$. Positive solutions: place bars in the $n-1$ internal gaps instead.
+"stars-and-bars": String.raw`
+## Why it works
+Line up the $n$ objects as stars and drop $k - 1$ bars among them; the bars cut the row into $k$ groups, and the sizes of the groups are the $x_i$.
+
+For $x_1 + x_2 + x_3 = 7$, the row $\star\star \mid \star\star\star \mid \star\star$ stands for $2 + 3 + 2$, as in the figure, and the row $\mid \star\star\star\star\star\star\star \mid$ stands for $0 + 7 + 0$: a bar at either end, or two bars side by side, simply makes an empty group. Every solution gives exactly one such row and every row gives exactly one solution, so counting solutions is the same as counting rows.
+
+A row has $n + k - 1$ symbols, and it is decided completely by which $k - 1$ of those positions hold bars. So there are $$\binom{n+k-1}{k-1}$$ rows, and that many solutions.
+
+When every $x_i$ must be at least $1$, no group may be empty, so no two bars may touch and none may sit at an end. The bars then go into the $n - 1$ gaps between neighboring stars, at most one per gap, which gives $\binom{n-1}{k-1}$. The same answer comes from the first formula by handing each variable its required $1$ in advance and distributing the remaining $n - k$ freely: $$\binom{(n-k)+k-1}{k-1} = \binom{n-1}{k-1}.$$
 
 ## How to use it
-Identify which of the two forms applies by checking whether empty boxes are allowed, since that is the only difference between them. If the lower bounds are not all $0$ or all $1$, subtract them out first with $y_i=x_i-a_i$ and apply the non-negative formula to what remains.
+Identify which of the two forms applies by checking whether empty boxes are allowed, since that is the only difference between them. If the lower bounds are not all $0$ or all $1$, subtract them out first, $$y_i = x_i - a_i,$$ and apply the nonnegative formula to what remains.
 
-The bijection is worth holding onto rather than the formula: arrange $n$ identical stars and $k-1$ bars in a row, and the bars cut the stars into $k$ groups. That picture tells you immediately why the count is a single binomial coefficient and what changes when the rules change.
+Upper bounds break the picture, because a bound like $x_i \le 4$ is not about empty groups. Count everything, then subtract the solutions that break a bound: for each variable that is too big, give it the excess in advance and count what is left, correcting for overlaps with [[pie|inclusion-exclusion]].
 
-Upper bounds break the bijection and need inclusion-exclusion on top — give a violating variable its excess and re-count, alternating signs, which is the neighbouring card.
+For $x + y + z = 10$ with every variable at most $4$, there are $\binom{12}{2} = 66$ solutions in all and $\binom{7}{2} = 21$ with $x \ge 5$, the same for $y$ and $z$. Each of the three pairs of variables can both be at least $5$ in exactly $\binom{2}{2} = 1$ way, which forces the third to be $0$, so the answer is $$66 - 3 \cdot 21 + 3 \cdot 1 = 6.$$
 
 ## On contests
-Among the highest-yield formulas at every level: dice-sum counts, coin distributions, monomial counting ($x^ay^bz^c$ with $a+b+c=n$: $\binom{n+2}{2}$ monomials), and AIME digit/partition hybrids.`,
+A counting workhorse that rarely stands alone: 3 of the 23 problems tagged here need nothing else, and [[casework-method|casework]] joins it in 6, usually to split a problem into pieces that are each a clean distribution. The recurring disguises are dice or digits with a fixed total, identical coins or candies handed out to people, and monomials $x^ay^bz^c$ of a fixed degree $n$, of which there are $\binom{n+2}{2}$.
+`,
 
 "stars-bars-upper-bound": String.raw`## Why it works
 Violating a cap $x_i \le m$ means $x_i \ge m+1$ — substitute $x_i' = x_i - (m+1)$ and count freely; inclusion-exclusion alternates over which caps are violated since violations can overlap. With a common cap $m$ on all $k$ variables this closes up as $\sum_j(-1)^j\binom kj\binom{n-j(m+1)+k-1}{k-1}$, and the terms vanish once $j(m+1)\gt n$, which is why the sum is short in practice.
@@ -267,9 +332,9 @@ Distinct balls into distinct boxes is a free choice per ball, giving $k^n$ assig
 
 Identical balls into distinct boxes is [[stars-and-bars|stars and bars]]: lay the $n$ balls in a row and insert $k-1$ bars to cut them into $k$ groups, so every arrangement of $n$ stars and $k-1$ bars is exactly one distribution. With every box nonempty, drop one ball into each box first and distribute the remaining $n-k$ freely, which is $\binom{(n-k)+k-1}{k-1}=\binom{n-1}{k-1}$. With at most one per box you are only choosing which boxes are occupied, so it is $\binom kn$.
 
-Unlabelled boxes mean partitioning the balls into groups with no order among the groups. For distinct balls that is the Stirling number of the second kind $S(n,k)$, and summing over the number of groups gives the Bell number. This also explains the surjection formula: take an unlabelled partition into $k$ blocks and glue labels onto the boxes in $k!$ ways, so the number of onto maps is $k!\,S(n,k)$.
+Unlabeled boxes mean partitioning the balls into groups with no order among the groups. For distinct balls that is the Stirling number of the second kind $S(n,k)$, and summing over the number of groups gives the Bell number. This also explains the surjection formula: take an unlabeled partition into $k$ blocks and glue labels onto the boxes in $k!$ ways, so the number of onto maps is $k!\,S(n,k)$.
 
-With nothing labelled at all, a distribution is just a way to write $n$ as a sum of positive parts — an integer partition, which has no closed form. Use the recursion $p_k(n)=p_{k-1}(n-1)+p_k(n-k)$, splitting on whether the smallest part is $1$ or every part is at least $2$, or simply list them for small $n$.
+With nothing labeled at all, a distribution is just a way to write $n$ as a sum of positive parts — an integer partition, which has no closed form. Use the recursion $p_k(n)=p_{k-1}(n-1)+p_k(n-k)$, splitting on whether the smallest part is $1$ or every part is at least $2$, or simply list them for small $n$.
 
 ## How to use it
 Answer two yes/no questions before writing a single number: are the balls distinguishable, and are the boxes distinguishable? Those pick the row. A third question — must every box be nonempty? — picks the column. Confusing identical with distinct is the most common counting mistake there is, and applying stars and bars to distinguishable objects, or $k^n$ to identical ones, is the classic way to lose the problem. Constraints ride on top of the twelve cells rather than needing new formulas. A per-box minimum $m_i$: hand out the minimums first and distribute the remaining $n - \sum m_i$ freely, which is the substitution $x_i \mapsto x_i - m_i$. An upper cap $x_i \le c$: inclusion-exclusion, giving an offending box $c+1$ up front and alternating signs. At most one ball per box: just choose the boxes, $\binom{k}{n}$ for identical balls and $\binom{k}{n}n! = k(k-1)\cdots(k-n+1)$ for distinct ones.
@@ -285,34 +350,46 @@ If instead the box sizes are fixed in advance, none of the table applies: puttin
 ## On contests
 Run the two-question checklist first. AMC and AIME sample every cell of the table — identical candies into distinct bags for stars and bars, distinct people into identical teams for Stirling, coin and score totals for partitions — and love bolting a minimum or a cap on top, which the substitution and inclusion-exclusion recipes above clear away.`,
 
-"pie": String.raw`## Key forms
+"pie": String.raw`
+## Key forms
 - $|A\cup B|=|A|+|B|-|A\cap B|$ — subtract the overlap that both terms counted twice
 - $|A\cup B\cup C|=\sum|A_i|-\sum|A_i\cap A_j|+|A\cap B\cap C|$ — add singles, subtract pairs, add the triple
 - $\left|\bigcup A_i\right|=\sum_{\emptyset\ne S}(-1)^{|S|+1}\left|\bigcap_{i\in S}A_i\right|$ — an element in exactly $t$ sets is counted $\binom t1-\binom t2+\cdots=1$ time
 - $\sum_{j}(-1)^{j+1}\binom kj N_j$ — the symmetric case, when every $j$-fold intersection has the same size $N_j$
 
 ## Why it works
-An element in exactly $t$ of the sets is counted $\binom{t}{1} - \binom{t}{2} + \binom{t}{3} - \cdots = 1$ time (alternating binomial sum), so the alternating formula counts every covered element once.
+Adding the sizes of overlapping sets counts each shared element more than once, and the alternating terms are exactly the corrections that bring every element back to a count of one.
+
+With two sets, $|A| + |B|$ counts every element of $A \cap B$ twice, once in each set, so subtracting $|A \cap B|$ once fixes it.
+
+With three sets it is easiest to follow one element at a time. An element in exactly one set is added once. An element in exactly two sets is added twice among the singles and subtracted once among the pairs, net $1$. An element in all three is added $3$ times, subtracted $3$ times, once for each pair it belongs to, and added once in the triple, net $3 - 3 + 1 = 1$.
+
+In general, an element that lies in exactly $t$ of the sets appears in $\binom t1$ single terms, $\binom t2$ pair terms, $\binom t3$ triple terms, and so on, so the formula counts it $$\binom t1 - \binom t2 + \binom t3 - \cdots$$ times. That alternating sum is $1$ for every $t \ge 1$, because $\binom t0 - \binom t1 + \binom t2 - \cdots = (1 - 1)^t = 0$ by the [[binomial-theorem|binomial theorem]].
+
+So every element of the union is counted exactly once, and elements outside every set are never counted at all.
 
 ## How to use it
-The principle exists to fix a specific failure: adding overlapping counts double-counts the overlaps, and there is no way to avoid that by being careful. Inclusion-exclusion is the correction term, and its real payoff is that counting an intersection is usually far easier than counting a union — "divisible by both 3 and 5" is one division, while "divisible by 3 or 5" is not directly countable at all. So the principle trades a hard count for several easy ones.
+The principle exists to fix a specific failure: adding overlapping counts double-counts the overlaps, and there is no way to avoid that by being careful. Inclusion-exclusion is the correction, and its real payoff is that counting an intersection is usually far easier than counting a union, so the principle trades one hard count for several easy ones.
 
-Almost always, flip it. Problems ask for "none of these conditions", and that is the complement of the union, so the answer is the total minus the inclusion-exclusion sum — which is why this card and [[complementary-counting|complementary counting]] appear together on 8 of its 28 problems, more than any other pairing. Counting what you do not want and subtracting is the default move, not a trick.
+Almost always, flip it. Problems ask for "none of these conditions", and that is the complement of the union, so the answer is $$\#(\text{none}) = \text{total} - |A_1 \cup A_2 \cup \cdots \cup A_k|.$$ That is why this card and [[complementary-counting|complementary counting]] appear together in 8 of its 28 problems, more than any other pairing. Counting what you do not want and subtracting is the default move, not a trick.
 
-When the conditions are symmetric the sum collapses. If every choice of $j$ conditions has the same intersection size $N_j$, the whole alternating sum becomes $\sum(-1)^{j+1}\binom kj N_j$, turning $2^k$ terms into $k$ of them. That collapse is what makes forbidden-position and surjection problems tractable, and spotting the symmetry is the entire step.
+When the conditions are symmetric the sum collapses. If every choice of $j$ conditions has the same intersection size $N_j$, the whole alternating sum becomes $$\sum_{j=1}^{k} (-1)^{j+1}\binom kj N_j,$$ which turns $2^k$ terms into $k$ of them. That collapse is what makes forbidden-position and surjection problems tractable, and spotting the symmetry is the entire step.
 
-For two or three sets, stop computing and draw. A Venn diagram filled from the innermost region outwards is faster and much harder to get wrong than the formula.
+For two or three sets, stop computing and draw. A Venn diagram filled from the center outward is faster than the formula and much harder to get wrong. For the numbers $1$ to $30$ divisible by $2$, $3$ or $5$, the center holds the one multiple of $30$; each pairwise region holds the multiples of $6$, $10$ or $15$ minus that one; and each single region holds what is left of its set.
+
+{{figure:venn-2-3-5}}
 
 ## On contests
 Almost never alone — 2 of 28 — because it is a correction applied to counts something else produced. Its partners are [[complementary-counting|complementary counting]] (8) and [[casework-method|casework]] (6), which is the honest picture: set up cases, count them, then correct the overlaps.
 
-Four shapes recur: divisibility unions, forbidden positions of the derangement family, counting surjections, and seatings with forbidden adjacencies. The last three are all symmetric, so the collapsed form applies and the work is choosing $N_j$ correctly.`,
+Four shapes recur: divisibility unions, forbidden positions of the derangement family, counting surjections, and seatings with forbidden adjacencies. The last three are all symmetric, so the collapsed form applies and the work is choosing $N_j$ correctly.
+`,
 
 "derangements": String.raw`## Why it works
 [[pie|PIE]] over the events "element $i$ is fixed": $D_n = \sum_j (-1)^j\binom{n}{j}(n-j)! = n!\sum \frac{(-1)^j}{j!}$ — the truncated $e^{-1}$ series, whence the nearest-integer form. The recurrence $D_n = (n-1)(D_{n-1} + D_{n-2})$ conditions on where element 1 goes and whether the swap closes.
 
 ## How to use it
-Recognise the setup as "no object in its own place" — hats returned to the wrong owners, letters in wrong envelopes, a permutation with no fixed point.
+Recognize the setup as "no object in its own place" — hats returned to the wrong owners, letters in wrong envelopes, a permutation with no fixed point.
 
 The nearest-integer formula is the fastest route for a specific $n$: compute $\frac{n!}{e}$ and round. It is not an approximation but exact, which makes it safe under time pressure.
 
@@ -338,7 +415,7 @@ $1, 2, 5, 14, 42, 132, 429, 1430$ should be recognizable on sight. AIME problems
 The cycle lemma or [[reflection-principle|reflection principle]]: bad sequences (where B ties or leads at some point) biject with sequences starting with a B-vote, giving the clean $\frac{a-b}{a+b}$ fraction of orderings.
 
 ## How to use it
-Recognise the shape as a running-total condition: one count must stay ahead of another throughout a random ordering. Vote counts are the classic dressing, but queues with correct change and lattice paths above a line are the same problem.
+Recognize the shape as a running-total condition: one count must stay ahead of another throughout a random ordering. Vote counts are the classic dressing, but queues with correct change and lattice paths above a line are the same problem.
 
 The reflection argument is what to reproduce: any ordering where the counts tie can be reflected before the first tie, biject the bad orderings with the ones starting with a $B$, and the subtraction gives the clean fraction.
 
@@ -347,25 +424,31 @@ Check which version the problem wants. "Always strictly ahead" gives $\frac{a-b}
 ## On contests
 Vote-counting and queue problems on AIME; also the engine behind Catalan path counts (the $a = b$ boundary case). Reflection-principle fluency transfers to many "stay above the line" problems.`,
 
-"burnsides-lemma": String.raw`## Key forms
-- $|\mathrm{Fix}(g)|=k^{c(g)}$ — count the cycles of $g$, since every cycle must be a single colour
+"burnsides-lemma": String.raw`
+## Key forms
+- $|\mathrm{Fix}(g)|=k^{c(g)}$ — count the cycles of $g$, since every cycle must be a single color
 - rotation by $d$ on an $n$-cycle has $\gcd(n,d)$ cycles — the subcount behind every necklace problem
 - reflections join the group only when flips are allowed — a bracelet, not a seating chart
 
 ## Why it works
-Count pairs (symmetry $g$, coloring fixed by $g$) two ways: summing $|\mathrm{Fix}(g)|$ over $g$, or noting each orbit contributes exactly $|G|$ pairs (stabilizer-orbit theorem). Dividing by $|G|$ counts orbits.
+Count the pairs made of a symmetry and a coloring it fixes, in two ways.
+
+Summing over the symmetries gives $\sum_g|\mathrm{Fix}(g)|$. Summing over the colorings instead, each coloring is fixed by the symmetries in its stabilizer, which by the orbit-stabilizer theorem has $\frac{|G|}{\text{orbit size}}$ elements. So the colorings in one orbit contribute $$\text{orbit size} \times \frac{|G|}{\text{orbit size}} = |G|$$ pairs between them, whatever the orbit, and the total is $|G|$ times the number of orbits.
+
+A coloring is fixed by $g$ exactly when $g$ never moves a position to one of a different color, that is, when every cycle of $g$ is one color, which gives $|\mathrm{Fix}(g)| = k^{c(g)}$.
+
+{{figure:rotations}}
 
 ## How to use it
-Work in three steps: list the symmetry group, count the colourings each element fixes, then average. The middle step is the only real work, and it is always the same question — a colouring survives $g$ exactly when every cycle of $g$ is a single colour, so $|\mathrm{Fix}(g)|=k^{c(g)}$ and you only ever need the cycle count.
+List the symmetry group, count the colorings each element fixes, and average. Choose the group first, since the answer depends on it: rotations alone for an object fixed in place, and reflections as well when flipping it over gives something indistinguishable, like a necklace that can be turned over.
 
-Choose the group before anything else, since the answer depends on it. Rotations alone are right when the object is fixed in place, and reflections join them only when flipping it over gives something indistinguishable — a necklace that may be turned over, but not a seating chart. Rotation by $d$ positions on an $n$-cycle has $\gcd(n,d)$ cycles, which is the subcount behind every necklace problem.
+For $2$-colorings of the corners of a square up to rotation, the identity fixes $2^4 = 16$, the quarter turns fix $2$ each, and the half turn fixes $2^2 = 4$, so there are $$\frac{16 + 2 + 4 + 2}{4} = 6.$$ On a necklace of $n$ beads, rotation by $d$ positions has $\gcd(n, d)$ cycles.
 
-For the solids, precompute the cycle structure once. The cube has $24$ rotations, and grouping them by axis — identity, face turns, edge flips, vertex turns — gives $\frac{k^6+3k^4+12k^3+8k^2}{24}$ for face colourings, a result worth carrying into the exam.
-
-Check the answer for divisibility: the sum over the group must be a multiple of $|G|$, so a non-integer average means a miscounted fixed set. Burnside gives only the number of orbits — when a problem asks how many colourings use a prescribed number of each colour, you need Pólya enumeration instead.
+The sum over the group must be a multiple of $|G|$, so a non-integer average means a miscounted fixed set. Burnside counts orbits only; for colorings with a prescribed number of each color, use [[polya-enumeration|Pólya enumeration]].
 
 ## On contests
-Necklaces, colored cubes (the 24 rotations and their cycle structures are worth pre-computing), and seating-up-to-rotation counts. AIME expects the rotation-only case; full dihedral for physical flippable objects.`,
+Five problems here, four of them AIME, one solved by it alone; two combine it with [[constructive-counting|constructive counting]] of the fixed colorings. AIME usually needs only rotations, while flippable physical objects need the reflections too. The cube's $24$ rotations and their cycle structures are worth working out once in advance.
+`,
 
 "stirling-bell": String.raw`## Why it works
 $S(n,k)$ recursion conditions on element $n$: either it forms its own block ($S(n-1,k-1)$) or joins one of the $k$ existing blocks ($kS(n-1,k)$). Bell numbers sum over all block counts.
@@ -373,7 +456,7 @@ $S(n,k)$ recursion conditions on element $n$: either it forms its own block ($S(
 ## How to use it
 The recurrence is the practical tool and its derivation tells you how to adapt it: consider the last element, which either joins one of the $k$ existing blocks or forms a block of its own.
 
-Keep the distinction between labelled and unlabelled straight, since it decides which count you need. Objects labelled and blocks unlabelled gives $S(n,k)$; labelling the blocks as well multiplies by $k!$ and gives surjections; making the objects identical instead gives integer partitions.
+Keep the distinction between labeled and unlabeled straight, since it decides which count you need. Objects labeled and blocks unlabeled gives $S(n,k)$; labeling the blocks as well multiplies by $k!$ and gives surjections; making the objects identical instead gives integer partitions.
 
 Bell numbers answer "how many ways to partition into any number of blocks", and their own recurrence $B_{n+1}=\sum_k\binom nkB_k$ comes from choosing the block containing a fixed element.
 
@@ -381,31 +464,45 @@ Bell numbers answer "how many ways to partition into any number of blocks", and 
 "Partition 5 students into study groups" ($B_5$ or $S(5,k)$ depending on wording) and surjection counts. The labeled/unlabeled distinction (Stirling vs. surjection) is the tested subtlety.`,
 
 
-"non-adjacent-selection": String.raw`## Why it works
-Row: lay down the $n-k$ unchosen positions, creating $n-k+1$ gaps (ends included); choosing $k$ gaps for the chosen items enforces separation — $\binom{n-k+1}{k}$. Circle: fix-and-split into the row case, giving the $\frac{n}{n-k}\binom{n-k}{k}$ correction.
+"non-adjacent-selection": String.raw`
+## Why it works
+Putting the chosen objects into different gaps between the unchosen ones is exactly the same as choosing a set with no two neighbors.
+
+In a row, the $n - k$ unchosen objects leave $n - k + 1$ gaps: one between each neighboring pair and one at each end. Putting each chosen object into a different gap guarantees an unchosen object between any two chosen ones, and every non-adjacent choice arises this way from exactly one set of gaps. So there are $\binom{n - k + 1}{k}$.
+
+{{figure:gaps}}
+
+For a circle, split on whether a fixed object, say object $1$, is chosen. If it is, its two neighbors are not, and the other $k - 1$ come from a row of $n - 3$, giving $\binom{n - k - 1}{k - 1}$. If it is not, the rest form a row of $n - 1$, giving $\binom{n - k}{k}$.
+
+Since $\binom{n - k - 1}{k - 1} = \frac{k}{n - k}\binom{n - k}{k}$, the two cases add up to $\frac{n}{n - k}\binom{n - k}{k}$.
 
 ## How to use it
-Do not attack the condition directly. Lay out the unchosen items, which creates $n-k+1$ gaps, and choose which gaps receive the selected items — one per gap guarantees non-adjacency automatically.
+Do not attack the condition directly; lay out the unchosen objects and choose gaps. For $3$ of $8$ chairs in a row, the $5$ unchosen chairs leave $6$ gaps, so there are $\binom63 = 20$ ways; around a round table there are $\frac85\binom53 = 16$.
 
-The circular case needs care because the first and last positions are now neighbours. The standard fix is to split on whether a fixed position is chosen, which reduces each branch to a row problem and produces the $\frac{n}{n-k}$ factor.
-
-For "at least $d$ apart" rather than merely non-adjacent, pre-place $d-1$ spacers in each gap and apply the same formula to what remains. The complement, "at least two adjacent", is total minus this.
+For "at least $d$ apart" instead of merely not adjacent, put $d - 1$ spacers into each inner gap first; the row count becomes $\binom{n - (k - 1)(d - 1)}{k}$. The complement, "at least two adjacent", is the total $\binom nk$ minus the non-adjacent count.
 
 ## On contests
-Seat selections, lighting non-adjacent lamps, and committee-with-feuds problems. The circular formula handles round tables — deriving it live is error-prone, so know it.`,
+Six problems here, all AIME, none by it alone; two turn the count into a [[basic-probability|probability]] by dividing by $\binom nk$. The circular formula is the one to know by heart, since deriving it under time pressure invites an off-by-one error.
+`,
 
-"partitions": String.raw`## Why it works
-No closed form; the structure lives in [[bijection-method|bijections]]. Conjugation (flip the Ferrers diagram) proves partitions into $\le k$ parts = partitions into parts $\le k$. Euler's odd = distinct theorem comes from binary-splitting parts.
+"partitions": String.raw`
+## Why it works
+Compositions are easy because order makes every choice independent. Write $n$ as $n$ ones in a row; a composition is a choice, at each of the $n - 1$ gaps, of whether to break there, so there are $2^{n-1}$.
+
+Partitions ignore order, which destroys that independence, so there is no formula. What they have instead is a picture, the Ferrers diagram, with one row of dots for each part, longest first. Reflecting it across its diagonal swaps rows and columns, so it matches the partitions with at most $k$ parts with the partitions whose parts are at most $k$.
+
+{{figure:conjugate}}
+
+Euler's theorem comes from splitting parts. An odd part repeated $m$ times regroups, by writing $m$ in binary, into distinct parts, and every distinct part is an odd number times a power of $2$, so the process runs backwards and the two kinds of partitions are equally many.
 
 ## How to use it
-Distinguish partitions from compositions first, since the two counts are wildly different: compositions have the clean $2^{n-1}$, partitions have no closed form and must be built up.
+Decide first whether order matters, since the two counts are wildly different. For small $n$, list partitions in decreasing order of the largest part to avoid repeats, as in the example.
 
-For small $n$, generate $p(n)$ by listing in decreasing order to avoid duplicates, or use the generating function $\prod_k\frac{1}{1-x^k}$ when a restriction is imposed — restricting the parts just drops factors from that product.
-
-The conjugation trick is the one that turns hard restrictions into easy ones. Reflecting a Young diagram swaps rows with columns, so "partitions of $n$ into at most $k$ parts" and "partitions of $n$ into parts of size at most $k$" are the same count — often one side is far easier to enumerate.
+With a restriction on the parts, use the generating function $$\prod_{k \ge 1} \frac{1}{1 - x^k},$$ which counts all partitions; dropping factors restricts the allowed parts. Conjugation turns a hard restriction into an easy one, since at most $k$ parts is the same count as parts at most $k$.
 
 ## On contests
-[[casework-method|Casework]] enumeration of small partitions (distributing identical objects to identical boxes), and composition counts. AIME occasionally rewards the conjugation trick on restricted counts.`,
+Three problems here, two AIME and one AMC 12, none solved by it alone. Typical uses count compositions in disguise, such as the halves of a palindrome or the jump sequences of a frog, and partitions under a parity or size restriction, alongside [[stars-and-bars|stars and bars]] and [[casework-method|casework]].
+`,
 
 "surjections": String.raw`## Why it works
 Inclusion–exclusion over which outputs are missed: $\sum_{j=0}^{k}(-1)^j\binom{k}{j}(k-j)^n$ subtracts the assignments that avoid $j$ chosen outputs, alternating to correct for double-counted overlaps. It equals $k!\,S(n,k)$ because a surjection is an unordered partition of the $n$ inputs into $k$ nonempty blocks — that count is $S(n,k)$, a Stirling number of the second kind — followed by a bijection matching the $k$ blocks to the $k$ labeled outputs, which adds a factor of $k!$.
@@ -420,24 +517,38 @@ The Stirling form is often faster when $k$ is small, since $k!\,S(n,k)$ separate
 ## On contests
 "Each of 3 mailboxes gets at least one of 6 letters," "every color is used," "no group left empty" — all recurring AMC/AIME shapes. The [[pie|PIE]] formula plus fluency with the small cases handles essentially all of them.`,
 
-"permutation-cycle-structure": String.raw`## Key forms
+"permutation-cycle-structure": String.raw`
+## Key forms
 - $\operatorname{ord}(f) = \operatorname{lcm}$ of the cycle lengths — so $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$, which turns a condition on the function into a condition on a partition of $n$
 - $\dfrac{n!}{\prod_c c^{m_c} m_c!}$ functions have $m_c$ cycles of each length $c$ — divide by $c$ per cycle, since a cycle can be written starting anywhere, and by $m_c!$ because equal-length cycles are interchangeable
 - $f = f^{-1}$ means every cycle has length $1$ or $2$ — an involution, the $k = 2$ case, counted by $\sum_j \binom{n}{2j}(2j-1)!!$
 - a single $c$-cycle on a chosen set of $c$ elements can be written $(c-1)!$ ways — the [[circular-permutations|circular arrangement]] count, which is where the $c^{m_c}$ comes from
 
 ## Why it works
-Start anywhere and iterate: $x,\ f(x),\ f(f(x)),\dots$ cannot go forever without repeating, and because $f$ is a bijection the first repeat must be $x$ itself rather than a collision partway along. So the orbit closes into a cycle. Delete it and repeat on what is left, and the whole set decomposes into disjoint cycles, uniquely up to the order you list them in.
+Following an element must lead back to it, and the loops that result do not interact.
 
-Applying $f$ once rotates every cycle by one step, and the cycles do not interact. A cycle of length $c$ is back where it started after exactly the multiples of $c$, so all of them are simultaneously home after $\operatorname{lcm}$ of the lengths — that is the order, and $f^{\,k}$ is the identity precisely when each $c$ divides $k$.
+Start at $x$ and iterate. The set is finite, so some value repeats, say $f^{\,i}(x) = f^{\,j}(x)$ with $i \lt j$ and $i$ as small as possible. If $i$ were positive, $f$ being one-to-one would give the earlier repeat $f^{\,i-1}(x) = f^{\,j-1}(x)$, so $i = 0$ and the first repeat is $x$ itself. The orbit closes into a cycle, and repeating on what is left splits the whole set into disjoint cycles.
+
+{{figure:cycles}}
+
+Applying $f$ turns every cycle one step. A cycle of length $c$ is back in place after exactly the multiples of $c$ steps, so all of them are back at once after a common multiple of the lengths. The first such time is the $\operatorname{lcm}$, and $f^{\,k} = \mathrm{id}$ exactly when every length divides $k$.
+
+The counting formula comes from writing permutations down. List the $n$ elements in a row, in $n!$ ways, and cut the row into consecutive blocks of the chosen lengths, each block a cycle. Each permutation is written $c$ times per $c$-cycle, once for each starting point, and equal-length cycles can be listed in any of $m_c!$ orders, so dividing by $\prod_c c^{m_c} m_c!$ counts each permutation once.
 
 ## How to use it
-Whenever a problem constrains an iterate of $f$, translate it immediately into which cycle lengths are allowed, then case on the partitions of $n$ using only those parts and count each type with the formula. Read backwards it answers the reverse question too: the largest order available to a permutation of $n$ elements is the largest lcm of any partition of $n$, which is why the answer is usually far bigger than $n$ but far smaller than $n!$. The same decomposition is what makes a permutation's parity well defined, since a $c$-cycle is $c-1$ transpositions.
+When a problem constrains an iterate of $f$, translate it at once into allowed cycle lengths: $$f^{\,k}(x) = x \text{ for every } x \iff \text{every cycle length divides } k.$$ Then list the partitions of $n$ into allowed parts and count each type with the formula, as in the example.
 
-One family is worth knowing in closed form, because it comes up whenever something steps around a ring: moving $k$ places at a time around $n$ positions splits the $n$ elements into exactly $\\gcd(n,k)$ cycles, each of length $n/\\gcd(n,k)$. The orbit of a single element closes as soon as $mk \\equiv 0 \\pmod n$, which first happens at $m = n/\\gcd(n,k)$, and the orbits partition the ring.
+The picture answers the reverse question too. The largest order of a permutation of $n$ elements is the largest $\operatorname{lcm}$ of a partition of $n$; for $n = 8$ it is $15$, from $3 + 5$. Parity also reads off the cycles: a $c$-cycle is a product of $c - 1$ swaps, so a permutation is even exactly when it has an even number of cycles of even length.
+
+One family comes up whenever something steps around a ring. Moving $k$ places at a time around $n$ positions splits them into $$\gcd(n, k) \text{ cycles, each of length } \frac{n}{\gcd(n, k)}.$$ A position comes back after $m$ steps exactly when $n$ divides $mk$, which first happens at $m = \frac{n}{\gcd(n, k)}$, and since every cycle has that length there are $\gcd(n, k)$ of them.
 
 ## On contests
-The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are exactly the divisors of $k$; 2026 AIME I Problem 7 is that question with $k = 6$. [[derangements|Derangements]] ask the complementary question about fixed points, averaging over cycle structure is what [[burnsides-lemma|Burnside's lemma]] does, and counting by how many cycles there are, rather than by their type, is [[stirling-first-kind|Stirling numbers of the first kind]].`,
+Four problems here, all AIME, none solved by it alone, and three of them finish with [[casework-method|casework]] over cycle types. The standard shape is "count the functions with $f^{\,k}(x) = x$ for every $x$", where the allowed cycle lengths are the divisors of $k$, as in the example.
+
+Variations forbid every cycle shorter than some length, count arrangements such as handshake rings that are cycle structures in disguise, or step around a ring of $n$ points, where $\gcd(n, k)$ decides the cycles.
+
+[[derangements|Derangements]] ask about fixed points instead, [[burnsides-lemma|Burnside's lemma]] averages over cycle structure, and counting by the number of cycles rather than their lengths is [[stirling-first-kind|Stirling numbers of the first kind]].
+`,
 
 "stirling-first-kind": String.raw`## Why it works
 Permutations decompose uniquely into disjoint cycles; $c(n,k)$ counts those with exactly $k$ cycles. Recursion: element $n$ starts its own cycle ($c(n-1,k-1)$) or inserts into any of $n-1$ positions inside existing cycles ($(n-1)c(n-1,k)$).
@@ -466,57 +577,89 @@ If flips also count as the same object, the group is dihedral rather than cyclic
 Circular binary strings up to rotation, bead necklaces, and AIME's occasional "distinguishable up to rotation" counts. The prime-$n$ simplification doubles as a proof of [[fermats-little-theorem|Fermat's little theorem]].`,
 
 
-"basic-probability": String.raw`## Why it works
-With equally likely outcomes, probability is proportional counting. The union formula is [[pie|PIE]] scaled by the sample-space size.
+"basic-probability": String.raw`
+## Why it works
+If all the outcomes are equally likely, each one holds the same share of the total probability, so an event's probability is just how many shares it holds.
+
+Suppose there are $N$ equally likely outcomes. Their probabilities add up to $1$ and are all the same, so each one is $\frac{1}{N}$. An event made of $k$ of them therefore has probability $$k \cdot \frac{1}{N} = \frac{k}{N},$$ which is favorable over total.
+
+The union rule is a counting fact divided by $N$. Counting the outcomes in $A$ and then the outcomes in $B$ counts every outcome in both of them twice, so $|A \cup B| = |A| + |B| - |A \cap B|$, and dividing by $N$ gives $$P(A \cup B) = P(A) + P(B) - P(A \cap B).$$ With three or more events the same correction becomes [[pie|inclusion-exclusion]].
+
+The complement rule is the special case where $A$ and "not $A$" never overlap and together cover every outcome, so their probabilities add to $1$.
+
+When the outcomes are not equally likely, none of this applies. The sums $2, 3, \ldots, 12$ of two dice are eleven outcomes, but a sum of $7$ happens six ways and a sum of $2$ only one, so they do not share the probability equally. The fix is always to go back to a finer list that is equally likely, here the $36$ ordered pairs, and count there.
 
 ## How to use it
-The first thing to check is that your outcomes really are equally likely, because the counting formula is meaningless otherwise. Listing "sum of two dice is $2,3,\dots,12$" as eleven outcomes is the standard way to go wrong; the $36$ ordered pairs are the equally likely ones.
-
 Choose the sample space so that a single count answers the question, then use the union rule for "or" and the complement for "at least one". The complement is almost always shorter, because "none" factors into independent choices while "at least one" does not.
 
-Multiply probabilities only after confirming independence. When the draws are without replacement they are dependent, so either condition step by step or count the favourable and total selections directly with binomial coefficients.
+Multiply probabilities only after confirming independence. When the draws are without replacement they are dependent, so either condition step by step or count the favorable and total selections directly with binomial coefficients.
 
 ## On contests
-The framing step of every counting-probability hybrid. When outcomes aren't equally likely, weight them or switch to a finer space that is uniform.`,
+It is the frame around most probability problems rather than the step that solves them: of the 46 problems tagged here, only one needs nothing else. The partner that does the work is almost always a counting technique, [[casework-method|casework]] in 14 of them and [[constructive-counting|constructive counting]] in 5, because once the outcomes are equally likely the whole problem is two counts.
 
-"conditional-probability": String.raw`## Why it works
-Conditioning restricts the sample space to $B$ and renormalizes; [[bayes-theorem|Bayes' theorem]] is the definition applied twice to swap the conditioning order.
+The recurring trap on AMC and AIME is a sample space that looks uniform and is not, like the dice sums above; the fix is to rebuild it from ordered, distinguishable choices.
+`,
+
+"conditional-probability": String.raw`
+## Why it works
+Once $B$ is known to have happened, the outcomes outside $B$ are impossible and the ones inside keep their relative likelihoods, so conditioning means restricting to $B$ and rescaling.
+
+With equally likely outcomes this is plain counting. If $B$ has $|B|$ outcomes and $|A \cap B|$ of them are in $A$, then among the outcomes still possible a fraction $\frac{|A \cap B|}{|B|}$ lie in $A$. Dividing the top and bottom by the size of the whole space turns this into $\frac{P(A \cap B)}{P(B)}$.
+
+The same ratio is taken as the definition when outcomes are not equally likely, because it is the only rescaling that keeps the outcomes of $B$ in their original proportions and makes their total $1$.
+
+{{figure:dice}}
+
+Bayes' theorem is the definition used twice. Both $P(A \mid B)\,P(B)$ and $P(B \mid A)\,P(A)$ equal $P(A \cap B)$, so they equal each other, and dividing by $P(B)$ gives $P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}$. That is how a conditional probability is reversed, and [[bayes-theorem|Bayes' theorem]] has its own card.
 
 ## How to use it
-Read $P(A\mid B)$ as "throw away every outcome outside $B$, then measure $A$ within what remains" — that picture handles most problems without any formula.
+Read $P(A \mid B)$ as "throw away every outcome outside $B$, then measure $A$ within what remains." With equally likely outcomes that is a count of $A \cap B$ over a count of $B$, and it handles most problems without any formula.
 
-The rearranged form is what you use going forwards: a sequence of dependent choices multiplies as $P(\text{first})\cdot P(\text{second}\mid\text{first})\cdots$, which is how without-replacement draws are computed step by step.
+The rearranged form is what you use going forward: a sequence of dependent choices multiplies as $$P(\text{first}) \cdot P(\text{second} \mid \text{first}) \cdots,$$ which is how draws without replacement are computed step by step. Drawing two red balls from $3$ red and $2$ blue happens with probability $\frac35 \cdot \frac24 = \frac{3}{10}$, since after one red is gone, $2$ of the $4$ remaining balls are red.
 
-Two traps are worth naming. $P(A\mid B)$ and $P(B\mid A)$ are different numbers, and confusing them is exactly the error Bayes' theorem exists to correct. And independence is a claim to verify, not to assume from the story — "the two draws feel unrelated" is not evidence, whereas checking $P(A\cap B)=P(A)P(B)$ is.
+Two traps are worth naming. $P(A \mid B)$ and $P(B \mid A)$ are different numbers, and confusing them is exactly the error Bayes' theorem exists to correct. And independence is a claim to check, not to assume from the story: "the two draws feel unrelated" is not evidence, while checking $P(A \cap B) = P(A)\,P(B)$ is.
 
 ## On contests
-AMC/AIME "given that" problems reward direct restricted counting. Watch the classic traps: "at least one boy" vs "the older is a boy" condition different spaces.`,
+Eleven problems here, ten of them AIME, and none solved by it alone: the condition defines the restricted space, then [[casework-method|casework]] or [[constructive-counting|a direct count]] measures it, and three of them reverse the condition with [[bayes-theorem|Bayes' theorem]]. The classic trap is which space the condition defines. For two children, "at least one is a boy" leaves three equally likely cases and makes two boys $\frac13$, while "the older one is a boy" leaves two cases and makes it $\frac12$.
+`,
 
-"binomial-probability": String.raw`## Why it works
-A specific sequence with $k$ successes has probability $p^k(1-p)^{n-k}$ by independence; $\binom{n}{k}$ sequences share that probability.
+"binomial-probability": String.raw`
+## Why it works
+One particular sequence of outcomes with $k$ successes has probability $p^k(1 - p)^{n - k}$, and $\binom nk$ different sequences have that many successes.
+
+Because the trials are independent, the probability of a particular sequence, such as success, failure, success, failure, is the product $p \cdot (1 - p) \cdot p \cdot (1 - p)$. Every sequence with exactly $k$ successes has the same product, $p^k(1 - p)^{n - k}$, whatever the order. Such a sequence is fixed by which $k$ of the $n$ positions hold the successes, so there are $\binom nk$ of them, and their probabilities add.
+
+{{figure:sequences}}
 
 ## How to use it
-Check three conditions before using it: the trials are independent, the number of trials is fixed in advance, and $p$ is the same each time. If any fails, this is the wrong model — drawing without replacement is hypergeometric, and waiting for a first success is geometric.
+Check three conditions first: the trials are independent, their number is fixed in advance, and $p$ is the same every time. If one fails, this is the wrong model: drawing without replacement is hypergeometric, and waiting for the first success is [[geometric-distribution|geometric]].
 
-The formula factors into two pieces worth reading separately: $p^k(1-p)^{n-k}$ is the probability of one specific sequence with $k$ successes, and $\binom nk$ counts how many such sequences there are.
-
-For "at least $k$" questions, sum the terms from $k$ upward, or subtract the smaller tail from $1$ when that is shorter. Expected counts need no summation at all — linearity gives $np$ immediately, without touching the distribution, and the variance is $np(1-p)$, largest at $p=\tfrac12$.
+For "at least $k$" questions, add the terms from $k$ upward, or subtract the shorter tail from $1$. Expected counts need no sum at all, since [[expected-value|linearity]] gives $np$ directly: $4$ fair flips average $2$ heads, while exactly $2$ heads has probability $\binom42 \cdot \frac1{16} = \frac38$.
 
 ## On contests
-Coin/dice repetition problems throughout AMC. AIME variants weight the coin or condition on the outcome — combine with Bayes and the binomial coefficients carefully.`,
+Five problems here, all AIME, two solved by it alone; the others add [[symmetry-probability|symmetry]], a [[generating-function-method|generating function]] or a [[bijection-method|bijection]]. AMC uses the plain formula on coins and dice, and AIME variants weight the coin, compare two binomial probabilities, or condition on the outcome.
+`,
 
-"expected-value": String.raw`## Why it works
-Expectation is a weighted average, and linearity holds because summation commutes with weighting — no independence needed anywhere in the proof. The same argument in one variable gives $E[aX+b]=aE[X]+b$, so expectation is linear in the variable as well as across variables.
+"expected-value": String.raw`
+## Why it works
+Expectation is a weighted average, and a weighted average of a sum is the sum of the weighted averages, whatever the relationship between the terms.
+
+Over a finite sample space whose outcomes $\omega$ have probabilities $p(\omega)$, $E[X] = \sum_\omega X(\omega)\,p(\omega)$. Splitting the sum gives $$E[X + Y] = \sum_\omega \bigl(X(\omega) + Y(\omega)\bigr)p(\omega) = E[X] + E[Y].$$ Independence never enters, because nothing about how $X$ and $Y$ relate was used. The same step gives $E[aX + b] = aE[X] + b$.
+
+The table shows it for three coin flips: averaging the row totals gives the same answer as averaging each column and adding.
+
+{{figure:flips}}
 
 ## How to use it
-Linearity is the whole toolkit, and the reason is that it needs no independence — dependent, overlapping events add just as cleanly as independent ones. That is what makes hard problems tractable. When the quantity is a count, write it as a sum of [[indicator-variables|indicator variables]] and apply linearity termwise, which is the single most common way expectation problems collapse.
+When the question asks for an expected number of something, write the count as a sum of [[indicator-variables|indicators]], one for each place the thing could happen, each equal to $1$ if it happens and $0$ if not. An indicator's expected value is the probability of its event, so the answer is a sum of probabilities, and the distribution of the total is never needed.
 
-The standard move is decomposition: write the quantity as a sum of indicators, one for each thing that might happen, and add their probabilities. "Expected number of ..." problems become one-line computations this way, because you never need the distribution of the total, only the probability of each individual occurrence.
+For the number of fixed points of a random permutation of $n$ items, the indicator for each position has expected value $\frac1n$, so $$E[\text{fixed points}] = n \cdot \frac1n = 1,$$ even though the events are far from independent.
 
-Compute $E[X]=\sum x_ip_i$ directly only when the distribution is short. If the values run over a long or infinite range, either use the indicator decomposition or the tail-sum formula, both of which avoid enumerating the distribution at all.
+Compute $E[X] = \sum x_ip_i$ directly only when the distribution is short. For a long or infinite range, use indicators or the [[tail-sum-expectation|tail-sum formula]]; for a process that moves between states, use [[states-recursion-prob|first-step analysis]].
 
 ## On contests
-AIME expected-value problems are almost always linearity-of-indicators in disguise; recognizing "count = sum of indicators" replaces heavy [[casework-method|casework]] with one-line sums.`,
+Six problems here, five of them AIME, none by it alone; two continue into [[states-recursion-prob|first-step analysis]] and two into [[indicator-variables|indicator variables]]. AIME expected-value problems are almost always linearity of indicators in disguise, and recognizing a count as a sum of indicators replaces heavy [[casework-method|casework]] with a one-line sum.
+`,
 
 "geometric-distribution": String.raw`## Why it works
 Self-similarity: after one failure the situation resets, so $E = 1 + (1-p)E$, giving $E = \frac{1}{p}$. The series view sums $\sum k p(1-p)^{k-1}$ (arithmetico-geometric), whose terms are the distribution itself: the first success falls exactly on trial $k$ with probability $P(X=k)=(1-p)^{k-1}p$.
@@ -524,7 +667,7 @@ Self-similarity: after one failure the situation resets, so $E = 1 + (1-p)E$, gi
 ## How to use it
 Set up the self-similar equation rather than summing a series: after one trial you have either succeeded or are back where you started, so $E=1+(1-p)E$, giving $E=\frac1p$. The same conditioning handles variants the closed form does not cover.
 
-Coupon collector is a sum of geometric waits. Once you hold $k$ distinct types, the chance the next draw is new is $\frac{n-k}{n}$, so that stage takes $\frac{n}{n-k}$ on average; adding the stages gives $nH_n$. Recognising it as a sum of independent waits is what makes it easy.
+Coupon collector is a sum of geometric waits. Once you hold $k$ distinct types, the chance the next draw is new is $\frac{n-k}{n}$, so that stage takes $\frac{n}{n-k}$ on average; adding the stages gives $nH_n$. Recognizing it as a sum of independent waits is what makes it easy.
 
 Watch what is being counted. "Trials until the first success" includes the successful trial and averages $\frac1p$; "failures before the first success" excludes it and averages $\frac{1-p}{p}$.
 
@@ -544,60 +687,102 @@ If the turn order is not strictly alternating, or the success probability change
 ## On contests
 Alternating dice/coin duels are AMC/AIME classics ("first to roll a six wins — probability the second player wins" $= \frac{5}{11}$). Set up the restart equation directly; series are backup.`,
 
-"geometric-probability": String.raw`## Key forms
-- $P=\dfrac{\text{favourable measure}}{\text{total measure}}$ — length, area or volume, whichever matches the number of free quantities
+"geometric-probability": String.raw`
+## Key forms
 - one axis per random quantity — two arrival times become a point in a square, three become a point in a cube
-- every condition becomes an inequality cutting that region — the answer is then an area of triangles and trapezoids, never an integral
-- $|x-y|\le t$ — the meeting condition, a band around the diagonal whose complement is two corner triangles
-- $x+y\gt z$ style constraints — the broken-stick family, where the triangle inequalities cut the square to a quarter
+- $|x - y| \le t$ — the meeting condition, a band around the diagonal whose complement is two corner triangles
+- $x$, $y - x$, $1 - y$ all below $\frac12$ — the broken-stick family, where the triangle inequalities cut the square down to a quarter
 
 ## Why it works
-For uniform continuous choices, probability is measure (length/area/volume) — counting becomes integration-free region geometry when constraints are linear.
+"Uniform" means that equally long pieces of the range are equally likely, so probability is proportional to size.
+
+With one number $x$ chosen uniformly from $[0, 1]$, the chance that it lands in a subinterval is that subinterval's length: two intervals of the same length must be equally likely, and the whole of $[0, 1]$ has probability $1$.
+
+With two independent uniform numbers $x$ and $y$, the pair is a point chosen uniformly from the unit square, and the chance that it lands in a region is that region's area: $$P\big((x, y) \in R\big) = \text{area of } R.$$ Each additional random quantity adds a dimension, so three give a point in a cube and probability becomes volume.
+
+That is why the method reduces to geometry. A condition like $x + y \lt 1$ or $|x - y| \le t$ is an inequality, and a linear inequality cuts the square along a straight line. The favorable region is then a polygon, and its area comes from triangles and trapezoids.
 
 ## How to use it
-Draw the region. Put each random quantity on its own axis, shade the outcomes satisfying the condition, and take the ratio of areas — the picture does the work that algebra would make painful.
+Draw the region. Put each random quantity on its own axis, shade the outcomes satisfying the condition, and take the ratio of areas; the picture does the work that algebra would make painful.
 
-Two habits make the shading reliable. Translate every condition into an inequality in the coordinates before drawing, and check whether the region is bounded by lines through the origin, which usually means the answer is a simple fraction of the square. For meeting problems ("both arrive between 1 and 2, wait 15 minutes"), the condition $|x-y|\le t$ carves a band around the diagonal, and the complement is two corner triangles.
+Two habits make the shading reliable. Translate every condition into an inequality in the coordinates before drawing, and check whether the region is bounded by lines through the origin, which usually means the answer is a simple fraction of the square.
 
-The triangle-from-a-broken-stick classic is the same picture: the three triangle inequalities cut the unit square down to a quarter of its area.
+For meeting problems, such as two people arriving between 1 and 2 and each waiting 15 minutes, the condition is $$|x - y| \le \tfrac14 \text{ hour},$$ a band around the diagonal whose complement is two corner triangles with legs $\frac34$, so the probability is $1 - \left(\frac34\right)^2 = \frac{7}{16}$.
+
+The broken stick is the same picture. Break a stick of length $1$ at two uniform points $x$ and $y$. The three pieces form a triangle exactly when each is shorter than $\frac12$, since a piece of length at least $\frac12$ is at least as long as the other two put together.
+
+When $x \lt y$ the pieces are $x$, $y - x$ and $1 - y$, and the three conditions carve out the triangle with corners $\left(0, \frac12\right)$, $\left(\frac12, \frac12\right)$ and $\left(\frac12, 1\right)$; the case $y \lt x$ gives its mirror image. Each has area $\frac18$, so the probability is $\frac14$.
+
+{{figure:broken-stick}}
 
 ## On contests
-"Two people arrive uniformly at random..." and stick-breaking problems are AMC/AIME fixtures. Corner-triangle arithmetic beats integration every time; just keep the geometry exact.`,
+A fixture of AMC and AIME probability, with 17 tagged problems here, 11 of them AIME, and only 2 that need nothing else. The usual partner is [[casework-method|casework]], when the favorable region has to be cut into pieces before its area can be taken.
 
-"states-recursion-prob": String.raw`## Key forms
+The standing shapes are two people arriving at random times and waiting for each other, sticks broken at random points, and points dropped in a square or on a segment. In all of them corner-triangle arithmetic beats integration, as long as the region is drawn exactly.
+`,
+
+"states-recursion-prob": String.raw`
+## Key forms
 - $p_S=\sum_{\text{moves}}P(\text{move})\,p_{S'}$ — one equation per state, conditioning on the first step
 - $E_S=1+\sum_{\text{moves}}P(\text{move})\,E_{S'}$ — the same for expected number of steps
 - $p_{\text{absorb}}=1$, $p_{\text{fail}}=0$, $E_{\text{absorb}}=0$ — the anchors that close the system
 - $P=\frac{a}{a+b}$, $E=ab$ — gambler's ruin from $a$ with target $a+b$ on a fair walk
 
 ## Why it works
-Markov structure: the future depends only on the current state, so probabilities/expectations per state satisfy linear equations obtained by conditioning on one step.
+What happens next depends only on the current state, not on how the process got there, so the value from a state is a weighted average of the values from the states it moves to.
+
+Let $p_S$ be the probability of eventually winning from state $S$. The first step goes to $S'$ with probability $P(S \to S')$, and from there the process starts afresh at $S'$, winning with probability $p_{S'}$. Adding over the possible first steps, $$p_S = \sum_{S'} P(S \to S')\,p_{S'}.$$
+
+For the expected number of steps, the first step costs $1$ and the process then continues from $S'$, so $$E_S = 1 + \sum_{S'} P(S \to S')\,E_{S'}.$$
+
+The stopping states supply the constants: $p = 1$ at a win, $p = 0$ at a loss, and $E = 0$ wherever the process has ended.
+
+A bug on a cube, stepping to a random neighboring corner until it reaches the corner opposite its start, has eight positions but only four kinds of state: distance $0$, $1$, $2$ or $3$ from the start. Corners at the same distance behave identically, so they share one unknown.
+
+{{figure:cube}}
+
+The equations are $$E_0 = 1 + E_1, \qquad E_1 = 1 + \tfrac13E_0 + \tfrac23E_2, \qquad E_2 = 1 + \tfrac23E_1 + \tfrac13 \cdot 0.$$ Substituting the first and third into the second gives $E_1 = 2 + \frac79E_1$, so $E_1 = 9$, and the walk from the start takes $E_0 = 10$ steps on average.
 
 ## How to use it
-Name a variable per state, write one equation per state ("value = weighted average of neighbor values, plus 1 if counting steps"), solve the small linear system. Absorbing states anchor the system (probability 1/0, expectation 0). Gambler's ruin closed form: fair walk from $a$ with target $a+b$ succeeds with probability $\frac{a}{a+b}$.
+Name one unknown per state, merging states that are the same by symmetry. Write one equation per state from its first step, fix the stopping states, and solve the small linear system. Without merging, the cube would need eight unknowns.
+
+Gambler's ruin is the one-dimensional case: from $a$, step up with probability $p$ and down with probability $q = 1 - p$, stopping at $0$ or $N$. Then $$p_a = p\,p_{a+1} + q\,p_{a-1}, \qquad p_0 = 0, \quad p_N = 1.$$ In a fair game each $p_a$ is the average of its neighbors, so the values are in arithmetic progression and $p_a = \frac aN$, and the expected length of the game is $a(N - a)$. A biased game gives $p_a = \frac{1 - (q/p)^a}{1 - (q/p)^N}$.
+
+Some walks have closed forms worth recognizing. On a tetrahedron, where every other corner is a neighbor, the chance of being back at the start after $n$ steps is $$\tfrac14 + \tfrac34\left(-\tfrac13\right)^n.$$ For a process with a fixed length, such as a best-of-seven series, the same idea runs as a recursion on the score instead of a system of equations.
 
 ## On contests
-AIME's standard hard-probability format: frogs on lily pads, bugs on cube vertices, best-of series. Symmetry first (merge equivalent states) — the system often collapses from 8 states to 3.
+Nine problems here, all AIME, and four solved by it alone: this is the standard format for a hard AIME probability question, with frogs on lily pads, bugs on the corners of a solid, and series played to a number of wins. Others combine it with [[expected-value|expected value]]. Look for the symmetry that merges states before writing any equations, since it is what keeps the system small enough to solve by hand.
+`,
 
-Two named cases are worth recognising, and both are this method with the states already chosen.
-
-Gambler's ruin is the one-dimensional walk: from $a$, step $+1$ with probability $p$ and $-1$ with probability $q=1-p$, stopping at $0$ or $N$. First-step analysis gives $p_a = p\,p_{a+1} + q\,p_{a-1}$ with $p_0=0$, $p_N=1$. Fair play makes the $p_a$ arithmetic, so $p_a = \frac{a}{N}$; biased play gives $p_a=\frac{1-(q/p)^a}{1-(q/p)^N}$.
-
-Random walks on a graph are the same thing once symmetric vertices are merged. A particle hopping to a random neighbour is a Markov chain, and collapsing vertices that behave identically usually reduces a graph of eight vertices to three or four states. On a cube, the corners collapse to distance $0,1,2,3$ from the start, and the expected number of steps to reach the opposite corner is $10$; on a tetrahedron the return probability after $n$ steps is $\frac14+\frac34\left(-\frac13\right)^n$. Always look for the collapse before writing equations, since it is what keeps the system small enough to solve by hand.`,
-
-"symmetry-probability": String.raw`## Key forms
+"symmetry-probability": String.raw`
+## Key forms
 - every position is equally likely to hold every item — so a given position is special with probability $\frac{\#\text{special}}{\#\text{total}}$, whatever the position
 - $P(A\text{ before }B)=\frac12$ — relative-order questions need no computation at all
 - $\frac1{k!}$ — the chance of one prescribed relative order among $k$ items
 
 ## Why it works
-A uniformly random arrangement induces a uniform distribution on any single position's content — revealing other information in a symmetric way cannot break the symmetry.
+A symmetry argument is a one-to-one pairing between two sets of equally likely outcomes, and two sets of the same size have the same probability.
+
+In a uniformly random arrangement of $n$ items, every one of the $n!$ orders has probability $\frac{1}{n!}$. Take two named items $A$ and $B$ and swap their places. This sends every order with $A$ before $B$ to an order with $B$ before $A$, and doing the swap again gives back the order you started with, so no two orders are sent to the same place. The two sets are therefore the same size, $\frac{n!}{2}$ each, and $P(A\text{ before }B) = \frac12$.
+
+{{figure:swap}}
+
+Positions work the same way. Exchanging the contents of position $1$ and position $k$ is again a swap that undoes itself, and it matches the arrangements with an ace in position $k$ to those with an ace in position $1$. So every position holds an ace with the same probability, and for the top card it is plain: $$P(\text{ace in position } k) = P(\text{ace on top}) = \frac{4}{52}.$$
+
+With $k$ named items, rearranging their places among themselves matches any one of their relative orders with any other, so each of the $k!$ orders has probability $\frac{1}{k!}$.
+
+The argument needs the outcomes to be equally likely to begin with and the swap to keep them that way. A shuffled deck, a random permutation or a uniformly chosen subset qualify. A setup that favors one side, such as a game where one player moves first, does not, and there the shortcut gives a wrong answer.
 
 ## How to use it
-"The $k$-th card is an ace" has probability $\frac{4}{52}$ regardless of $k$; "A is before B" is $\frac{1}{2}$; "A, B, C in this cyclic order" is $\frac{1}{3}$. Before computing, ask what the answer must be by exchangeability — many conditional-looking problems have symmetric answers.
+Look for the outcomes the problem cannot tell apart, then divide. "The $k$-th card is an ace" has probability $\frac{4}{52}$ whatever $k$ is. "$A$ is before $B$" is $\frac12$, "$A$ comes first among $A$, $B$, $C$" is $\frac13$, and "$A$, $B$, $C$ appear in that order" is $\frac16$.
+
+Irrelevant items can be ignored. Among the four aces and four kings of a shuffled deck, the first of those eight cards to appear is equally likely to be any of the eight, so it is an ace with probability $\frac48 = \frac12$; the other $44$ cards change nothing.
+
+Many sequential-looking setups dissolve the same way. Drawing without replacement is just reading a random order from the left, so the chance that the third ball drawn is red equals the chance that the first is red, whatever happened in between.
 
 ## On contests
-Massive shortcut on AMC/AIME: relative-order questions ($P(\text{A beats B beats C})$ among random orderings), position questions, and "without replacement" draws that look sequential but are exchangeable.`,
+Twelve problems here use it, nine of them AIME, and none by it alone: it is the step that fixes one probability or removes a case inside a [[casework-method|casework]] count or a [[basic-probability|direct probability]] computation. Typical sightings are relative-order questions, a particular position in a random arrangement, and draws without replacement that look sequential but are exchangeable.
+`,
 
 "hypergeometric": String.raw`## Why it works
 Choosing $n$ from a population with $K$ marked items: favorable choices pick $k$ marked and $n-k$ unmarked independently; divide by all $\binom{N}{n}$.
@@ -652,58 +837,78 @@ Treat "probability" here as a density over a growing range rather than a genuine
 ## On contests
 Mostly enrichment; finite coprime-pair counts on AIME go through the Möbius/inclusion-exclusion sum rather than the constant.`,
 
-"pigeonhole": String.raw`## Why it works
-If $n$ objects go into $k$ boxes and $n > k$, some box holds two or more — because if every box held at most one, the total would be at most $k \lt  n$. The generalized form is the same counting-by-averages argument: with $n$ objects in $k$ boxes, some box holds at least $\lceil n/k \rceil$, since the maximum is never below the average.
+"pigeonhole": String.raw`
+## Why it works
+If every box held fewer than the average, the boxes together would hold fewer than all the objects, which is impossible.
+
+With $n$ objects in $k$ boxes the average box holds $\frac nk$, and the fullest box holds at least the average. Since box counts are whole numbers, it holds at least $\lceil \frac nk \rceil$. In the simplest case, $n \gt k$ makes the average more than $1$, so some box holds two. Run backwards, forcing some box to hold $r$ objects needs more than $k(r - 1)$ of them.
 
 ## How to use it
-The whole difficulty is inventing the boxes. You control that design. Pick a feature that (a) has few possible values (the boxes) and (b) makes "two objects sharing a value" imply what you want. Classic box choices: remainders mod $m$ (two numbers with equal residue $\Rightarrow$ their difference is divisible by $m$); regions of a subdivided figure (two points in one region $\Rightarrow$ they are close); sum or subset (two subsets with equal sum). For "at least $r$" bounds, run it backward: to force some box to $r$, you need more than $k(r-1)$ objects.
+Invent the boxes. Choose a feature with few possible values, which become the boxes, such that two objects sharing a value gives what you want. Two integers with the same remainder mod $m$ differ by a multiple of $m$; two points in the same small region are close together; two subsets with the same sum can be compared.
+
+For five points in a unit square, cut it into four squares of side $\frac12$. Five points in four squares put two in the same one, and two points in a square of side $\frac12$ are at most its diagonal, $\frac{\sqrt2}{2}$, apart.
+
+{{figure:square}}
 
 ## On contests
-The signature of a pigeonhole problem is a guarantee — "prove there must exist," "show two of them," a specific number appearing as $k+1$. On AMC/AIME it shows up quietly inside divisibility and geometry existence problems; the art is always the choice of pigeons and holes, never the principle itself.`,
+Five problems here, mostly AMC, three solved by it alone. The signature is a guarantee: "show that two of them must", or a number exactly one more than the count of some category, as in the fewest socks that guarantee a matching pair. The art is always the choice of boxes, never the principle itself.
+`,
 
-"handshake-lemma": String.raw`## Why it works
-Summing degrees [[double-counting|counts each edge at its two endpoints]] — so the total is even, forcing evenly many odd-degree vertices.
+"handshake-lemma": String.raw`
+## Why it works
+Count the pairs (vertex, edge at that vertex) in two ways.
+
+Grouped by vertex, a vertex of degree $\deg(v)$ contributes $\deg(v)$ pairs. Grouped by edge, each edge has exactly two ends and contributes two. Both count the same pairs, so $$\sum_v \deg(v) = 2E.$$
+
+The total is even, and the vertices of even degree contribute an even amount, so the odd degrees must also add to an even number, which needs an even number of them.
 
 ## How to use it
-Use it in two directions. Forwards, it converts degree information into an edge count, which is how "each of $n$ people shakes $k$ hands" problems are solved.
+Use it in two directions. Forwards, it converts degree information into an edge count: if each of $n$ people shakes $k$ hands, there are $\frac{nk}{2}$ handshakes.
 
-Backwards, it is a [[invariants-coloring|parity obstruction]]: since the odd-degree vertices come in pairs, any configuration requiring an odd number of them is impossible. "Can seven people each shake exactly three hands?" is answered instantly — the degree sum would be $21$, an odd number, so no such graph exists.
+Backwards, it is a [[invariants-coloring|parity obstruction]]. Can seven people each shake exactly three hands? The degrees would add to $$7 \cdot 3 = 21,$$ an odd number, so no such arrangement exists.
 
-The lemma also underlies [[eulerian-paths|Eulerian path conditions]], where the count of odd-degree vertices must be $0$ or $2$, and that count being even is precisely why $1$ or $3$ never occurs.
+The lemma also underlies [[eulerian-paths|Eulerian paths]]: a path through every edge needs $0$ or $2$ vertices of odd degree, and the count being even is why $1$ or $3$ never occurs.
 
 ## On contests
-Party-handshake parity questions and graph-flavored AMC problems; the double-count template extends to tournaments, committees, and face-edge counts in polyhedra.`,
+Three problems here, two AIME and one AMC 10, one solved by it alone. Typical uses add up the degrees of a network to count its edges, split a polyhedron's vertices by degree once [[eulers-polyhedron-formula|Euler's formula]] gives how many there are, or use the odd degrees to bound a trail through a graph. The same template counts games in a tournament and edges of a polyhedron from its faces.`,
 
-"double-counting": String.raw`## Key forms
+"double-counting": String.raw`
+## Key forms
 - $\sum_v\deg v=2E$ — count edge-endpoints once per vertex and once per edge
 - $k\binom nk=n\binom{n-1}{k-1}$ — count (committee, chair) pairs by committee first or by chair first
 - $\sum_i\binom{w_i}{2}$ against $\binom n3$ — count dominated pairs in a tournament to extract the cyclic triangles
 - rows against columns of a $0/1$ incidence matrix — the picture underneath all of them
 
 ## Why it works
-One set of incidences, two partitions of it — the totals must match. Formally you are sizing a set of ordered pairs $S \subseteq A \times B$ two ways: sum over $a \in A$ of how many $b$ it pairs with, or sum over $b \in B$ of how many $a$. Both count $|S|$, so the expressions are equal. All the power is in choosing what to count — the identity is free once the right set of pairs is named.
+One set, counted two ways, has one size.
+
+Formally you are sizing a set of pairs $S \subseteq A \times B$. Grouping the pairs by their first entry gives a sum over $a \in A$ of how many partners $a$ has, grouping by the second gives a sum over $b \in B$, and both equal $|S|$. In a grid with a dot for each pair, these are the row totals added up and the column totals added up.
+
+{{figure:incidence}}
+
+The identity is free; all the work is in choosing what to count. The right set is one where both ways of grouping give something you can evaluate, or at least bound.
 
 ## How to use it
-Name a set of pairs whose two [[binomial-row-sums|row sums]] you can both evaluate, then equate them. The recurring choices are memberships (people × committees), incidences (points × lines, or students × problems solved), edge-endpoints (vertex × edge), and ordered outcomes (winner × loser in a tournament).
+Name a set of pairs whose two groupings you can both handle, then equate them. The recurring choices are memberships (people and committees), incidences (points and lines, or students and problems solved), edge-endpoints (vertices and edges), and ordered outcomes (winner and loser in a tournament).
 
-Three shapes are worth recognising.
+Three shapes are worth recognizing.
 
-- Both sums computable — you get an identity, like $k\binom{n}{k} = n\binom{n-1}{k-1}$ from counting a committee together with its chair.
-- One sum computable, the other bounded — you get an inequality, which is how most olympiad "at most / at least" combinatorics is proved.
-- One sum computable and constant across rows — you get an exact value, the standard route to counting a design's configurations.
+- Both sums computable: you get an identity, like $k\binom{n}{k} = n\binom{n-1}{k-1}$ from counting a committee together with its chair.
+- One sum computable, the other bounded: you get an inequality, which is how most olympiad "at most" and "at least" combinatorics is proved.
+- One sum computable and every row the same: you get an exact count, as in the example.
 
-When a problem hands you a global constraint and asks for a local bound, this is nearly always the intended tool: count the constrained pairs, then divide by how many any single object can absorb.
+When a problem gives a global total and asks about a local count, or the other way around, this is nearly always the intended tool: count the constrained pairs, then divide by how many any single object can take part in.
 
 ## On contests
-AIME combinatorics regularly hinges on one clean double count — e.g. counting (student, problem-pair) incidences to bound how many students can agree. When stuck on a counting constraint, ask "what can I count in two ways?"`,
+Four problems here, all AIME, one solved by it alone. The recurring shapes are counting pairs of lines once in all and once at each crossing point, where $k$ lines through a point account for $\binom k2$ pairs; counting tournament points by games and by players; counting ownerships by item and by person, alongside [[pie|inclusion-exclusion]]; and counting element by element instead of pair by pair, which often ends in [[vandermonde|Vandermonde's identity]].`,
 
 "ramsey-33": String.raw`## Why it works
 Among one person's 5 relations, pigeonhole gives 3 of one type; those 3 either contain a matching pair (closing a monochromatic triangle with the center) or form the opposite triangle themselves. $K_5$'s two-pentagon coloring shows 6 is tight.
 
 ## How to use it
-The proof is a two-step pigeonhole worth reproducing. Fix one person: of their five relationships, at least three share a colour, say three friends. If any two of those three are friends with each other, that trio plus the fixed person is a monochromatic triangle; if none are, those three are mutual strangers.
+The proof is a two-step pigeonhole worth reproducing. Fix one person: of their five relationships, at least three share a color, say three friends. If any two of those three are friends with each other, that trio plus the fixed person is a monochromatic triangle; if none are, those three are mutual strangers.
 
-Minimality needs a construction, not an argument — colour a $5$-cycle one way and its complement the other, and no monochromatic triangle exists. Contest problems asking to show a bound is tight always need this second half.
+Minimality needs a construction, not an argument — color a $5$-cycle one way and its complement the other, and no monochromatic triangle exists. Contest problems asking to show a bound is tight always need this second half.
 
 The general lesson is that these results are proved by fixing one vertex and pigeonholing its edges, which is the standard opening for any small Ramsey-style question. Do not expect the pattern to continue cheaply — Ramsey numbers grow ferociously, with $R(4,4)=18$ and $R(5,5)$ still unknown.
 
@@ -728,7 +933,7 @@ Backward induction. The terminal position's label is forced by the rules, so "ta
 Tabulate $0, 1, 2, \dots$ by hand until the pattern repeats twice, which is what confirms the period, then answer counting questions with modular arithmetic. The strategy falls straight out of the labels: from a winning position, move to any losing one and repeat. Care at the boundary, since "last token wins" and "last token loses" flip the base case and therefore the whole table. For two-pile or richer games, look for a symmetry strategy (mirror the opponent) before brute-forcing, and for genuine multi-pile Nim use the XOR rule directly.
 
 ## On contests
-2024 AIME I #3 is the direct application: players remove $1$ or $4$ tokens, and the first player loses exactly at $n \equiv 0, 2 \pmod 5$, giving $809$ values of $n \le 2024$. AMC versions typically ask who wins with optimal play for one specific $n$, which the same table answers instantly.`
+The direct application is a take-away game with a bound: find the losing starting positions up to some $n$, which the table turns into a residue pattern. In a game where each move removes $1$ or $3$ tokens, for instance, the losing positions are exactly the even piles, since every move changes the parity. AMC versions typically ask who wins with optimal play for one specific $n$, which the same table answers instantly.`
 
 });
 
@@ -747,11 +952,11 @@ Expected values over random subsets ($E[|S|^2]$ for uniform random subsets needs
 The Prüfer correspondence: repeatedly delete the smallest-labeled leaf and record its neighbor; a tree on $n$ labeled vertices produces a sequence of $n-2$ labels, and the process reverses uniquely. Sequences are free choices: $n^{n-2}$.
 
 ## How to use it
-The formula is short but the bijection is what solves problems. Encode a tree by repeatedly deleting the smallest-labelled leaf and recording its neighbour; the resulting $n-2$ labels determine the tree uniquely, and every sequence arises exactly once.
+The formula is short but the bijection is what solves problems. Encode a tree by repeatedly deleting the smallest-labeled leaf and recording its neighbor; the resulting $n-2$ labels determine the tree uniquely, and every sequence arises exactly once.
 
 That correspondence answers the harder variants directly. Since a vertex appears one fewer time than its degree, counting trees with prescribed degrees $d_1,\dots,d_n$ becomes the multinomial coefficient $\binom{n-2}{d_1-1,\dots,d_n-1}$, and counting trees in which a given vertex is a leaf becomes counting sequences that omit it.
 
-Watch the labelling assumption — the count is for distinguishable vertices, and unlabelled trees have no closed form.
+Watch the labeling assumption — the count is for distinguishable vertices, and unlabeled trees have no closed form.
 
 ## On contests
 AIME/olympiad network-counting problems ("how many ways to connect $n$ towns with $n-1$ roads so all are reachable"). The degree-refinement (multinomial over Prüfer sequences) handles "each hub connects to exactly $k$ cities" variants.`,
@@ -773,14 +978,14 @@ For "minimum retraced distance" problems, the number of odd vertices tells you h
 Incremental counting: a new line crossing $k$ existing lines is cut into $k+1$ pieces, each splitting one region — so lines add $1, 2, 3, \dots$ new regions, summing to $1 + \sum_{i=1}^{n} i = \frac{n^2+n+2}{2}$. A new circle crossing each old one twice is cut into $2(n-1)$ arcs, each adding a region.
 
 ## How to use it
-Derive rather than memorise: adding the $k$-th line crosses the previous $k-1$ lines, and each crossing splits one more region, so it adds $k$ regions in total. Summing gives $1+\sum_{k=1}^{n}k$, which is the closed form. The same argument with two crossings per circle gives the circle count.
+Derive rather than memorize: adding the $k$-th line crosses the previous $k-1$ lines, and each crossing splits one more region, so it adds $k$ regions in total. Summing gives $1+\sum_{k=1}^{n}k$, which is the closed form. The same argument with two crossings per circle gives the circle count.
 
 That incremental principle is the transferable part — it handles configurations the formulas do not cover, such as a mix of lines and circles, or lines with some parallels, by counting crossings as each curve is added.
 
 Check the general-position hypothesis before quoting a maximum. Any parallel pair or triple concurrence loses regions, and problems often specify a configuration that deliberately fails it.
 
 ## On contests
-Direct AMC questions ("max pieces of a pancake with 5 cuts": 16) and the backbone of 2025 AIME I #13 (expected regions from random chords = 1 + chords + expected crossings, by linearity).`,
+Direct AMC questions ask for the most pieces from a few straight cuts, such as $16$ pieces of a pancake from $5$ cuts, and harder problems use the same count, $1 +$ lines $+$ crossings, for the expected number of regions from random chords, by linearity.`,
 
 "order-statistics": String.raw`## Why it works
 By symmetry, $n$ uniform points plus the two interval endpoints split $[0,1]$ into $n+1$ exchangeable gaps, so each gap expects $\frac{1}{n+1}$; the $k$-th smallest point sits after $k$ gaps at $E[X_{(k)}] = \frac{k}{n+1}$. Directly: $P(\max \le x) = x^n$ integrates to $E[\max] = \frac{n}{n+1}$.
@@ -797,7 +1002,7 @@ Group the outcomes by which case $A_i$ occurred and average within cases first: 
 ## How to use it
 Choose the partition that makes each conditional expectation easy, and conditioning on the first step is almost always that choice — it turns a process into an equation relating $E[X]$ to itself.
 
-Wald's identity is the case worth recognising separately: when a random number of independent pieces are summed, the expected total is the product of the two expectations, provided $N$ does not depend on the values of the pieces. That proviso matters, and dropping it is the standard error.
+Wald's identity is the case worth recognizing separately: when a random number of independent pieces are summed, the expected total is the product of the two expectations, provided $N$ does not depend on the values of the pieces. That proviso matters, and dropping it is the standard error.
 
 The technique pairs naturally with state recursions: the law of total expectation writes one equation per state, and solving the small system gives every expectation at once. Whichever partition you pick, check it is disjoint and exhaustive — the same requirement as ordinary [[casework-method|casework]], and the usual source of a wrong weighted average.
 
@@ -806,24 +1011,34 @@ The organizing principle behind nearly every AIME expected-value problem: condit
 
 
 
-"bijection-method": String.raw`## Key forms
+"bijection-method": String.raw`
+## Key forms
 - strictly increasing sequences $\leftrightarrow$ subsets — choosing the set fixes the order, so $\binom nk$ counts both
 - solutions of $x_1+\cdots+x_k=n$ $\leftrightarrow$ [[stars-and-bars|stars and bars]] — a solution is a row of stars cut by $k-1$ bars
 - lattice paths $\leftrightarrow$ words in R and U — a path is the string of its own steps
 - "at most $k$" $\leftrightarrow$ its complement — $k\leftrightarrow n-k$ turns an awkward bound into an easy one
 
 ## Why it works
-A one-to-one correspondence pairs the two sets off perfectly, so they have the same size — even when one is a mess and the other is a textbook family. Counting the easy set is counting the hard set.
+If every object in one set is paired with exactly one object in the other, and nothing is left over on either side, the two sets have the same size.
+
+Such a pairing needs two things. No two objects may share a partner, or the second set would be smaller, and every object in the second set must be someone's partner, or it would be larger. The cleanest way to check both at once is to write down the reverse rule: if every easy object can be turned back into exactly one hard object, the pairing is perfect.
+
+Take the strictly increasing sequences of three numbers from $1$ to $9$. Each is a list like $2, 5, 7$, and forgetting the order turns it into a set: $$(2, 5, 7) \longleftrightarrow \{2, 5, 7\}.$$ Going back, a three-element set can be written in increasing order in exactly one way. So the sequences pair off perfectly with the three-element subsets, and there are $\binom93 = 84$ of them. Nothing was counted about the sequences themselves; the count came entirely from the set they were paired with.
 
 ## How to use it
-Standard dictionary worth memorizing: strictly increasing $k$-sequences from $[n]$ $\leftrightarrow$ $k$-subsets ($\binom{n}{k}$); nondecreasing sequences $\leftrightarrow$ stars and bars (shift by position: $b_i = a_i + i$ turns nondecreasing into increasing); lattice paths $\leftrightarrow$ words in R and U; solutions with $x_i \ge a_i$ $\leftrightarrow$ solutions with $y_i \ge 0$ (substitute $y_i = x_i - a_i$); "at most half" $\leftrightarrow$ "at least half" via complement. To verify a bijection, exhibit the inverse map — if you can undo it uniquely, the correspondence is genuine.
+To verify a candidate bijection, exhibit the reverse map. If you can undo it uniquely, the correspondence is genuine; if two hard objects land on the same easy one, or some easy object has no source, the count will be off.
 
-A bijection replaces the set you cannot count with one you can, and the reason to hunt for one is that it removes the casework rather than organising it. Casework on a constraint is always available and always long; a bijection that absorbs the constraint into the objects themselves makes the count immediate. Strictly increasing sequences with a gap condition become ordinary subsets once you subtract $0,1,2,\dots$ from the terms; lattice paths become arrangements of two letters; subsets with no two adjacent elements become shorter subsets with no condition at all.
+A bijection replaces the set you cannot count with one you can, and the reason to hunt for one is that it removes the casework rather than organizing it. Casework on a constraint is always available and always long; a bijection that absorbs the constraint into the objects makes the count immediate. A lattice path from one corner of a grid to the other is nothing but the word spelled by its steps, so counting paths is counting arrangements of two letters.
+
+{{figure:path-word}}
+
+The same idea turns other constraints into nothing. Nondecreasing sequences become strictly increasing ones once you add $0, 1, 2, \ldots$ to the terms in order. Subsets with no two adjacent elements become ordinary subsets of a smaller range once you subtract $0, 1, 2, \ldots$ from their sorted elements. And "at most $k$" becomes "at least $n - k$" by swapping each object for its complement.
 
 ## On contests
 The elegant path on AMC and AIME counting, alone in 3 of its 27 problems. Its partners name the two families it usually serves: [[binomial-row-sums|row sums of Pascal's triangle]] (4 problems) and [[base-conversion|base representations]] (3), the latter because writing a number in base two is itself a bijection between integers and subsets.
 
-The tell is the answer. If a strange-looking count comes out as a clean binomial coefficient or a power of two, a bijection was the intended route, and finding it afterwards is how you learn to see it next time.`,
+The tell is the answer. If a strange-looking count comes out as a clean binomial coefficient or a power of two, a bijection was the intended route, and finding it afterwards is how you learn to see it next time.
+`,
 
 "grid-path-fill": String.raw`## Key forms
 - $N(\text{cell})=\sum N(\text{cells that step into it})$, with $N(\text{start})=1$ — the whole method
@@ -832,39 +1047,56 @@ The tell is the answer. If a strange-looking count comes out as a clean binomial
 - right/up/diagonal gives the Delannoy numbers, $1,3,13,63,321,\dots$ along the main diagonal
 
 ## Why it works
-Every path into a cell arrives by exactly one final step, so the paths reaching that cell are partitioned by which neighbour they came from. Adding the neighbours' counts therefore counts each path once. That is the same argument as [[recursive-counting|classifying by the last step]], drawn on the grid rather than written as a table, which is why no separate justification is needed: the grid is the recursion.
+Every path into a cell arrives by exactly one final step, so the paths reaching that cell are partitioned by which neighbor they came from. Adding the neighbors' counts therefore counts each path once. That is the same argument as [[recursive-counting|classifying by the last step]], drawn on the grid rather than written as a table, which is why no separate justification is needed: the grid is the recursion.
 
 A removed square needs no new idea. Nothing can stand there, so it holds $0$, and every later sum that would have drawn on it draws on nothing instead.
 
 ## How to use it
-Write $1$ at the start. Sweep in an order that fills a cell only after everything stepping into it is already filled — for right/up steps, the bottom row left to right, then the next row up, and so on. Each cell gets the sum of its left and lower neighbours, plus the lower-left diagonal if diagonal steps are allowed. Read the answer off the destination.
+Write $1$ at the start. Sweep in an order that fills a cell only after everything stepping into it is already filled — for right/up steps, the bottom row left to right, then the next row up, and so on. Each cell gets the sum of its left and lower neighbors, plus the lower-left diagonal if diagonal steps are allowed. Read the answer off the destination.
 
 Compare with the closed form before choosing. On a clear grid $\binom{m+n}{m}$ is instant and the sweep is a waste. With one forbidden point, subtracting the paths through it is still easy: paths to it times paths from it. From two obstacles on, that subtraction becomes [[pie|inclusion-exclusion]] over the ways a path can meet several of them, and the bookkeeping is where the mistakes live. The sweep costs the same no matter how many squares are gone.
 
 ## On contests
 The standard MATHCOUNTS and AMC phrasing is a street map: shortest routes from one corner to another with a closed intersection or a missing block. Filling the grid answers those in one pass, and it is the only practical method once the obstacles interact. Keep [[grid-paths|the binomial count]] for the clear-grid case and reach for the sweep the moment a square is missing.`,
 
-"recursive-counting": String.raw`## Key forms
+"recursive-counting": String.raw`
+## Key forms
 - $a_n=\sum(\text{ways to finish})\times a_{\text{smaller}}$ — classify by the last step or the last block
 - one sequence per state, updated together — the move when several constraints interact
 - disjoint, exhaustive cases and hand-checked base cases — the two places these arguments go wrong
 
 ## Why it works
-Every valid configuration of size $n$ ends in some final step, and removing that step leaves a valid smaller configuration. Classifying by the last step therefore partitions the count into copies of smaller counts — a recurrence, computable forward from base cases without any closed form.
+Every valid arrangement of size $n$ ends in some way, and removing its ending leaves a valid smaller arrangement, so the count splits into copies of smaller counts.
+
+Take tilings of a $1 \times n$ strip by $1 \times 1$ squares and $1 \times 2$ dominoes. The last tile is either a square or a domino, never both, so these two cases split the tilings with no overlap. Removing a final square leaves a tiling of length $n - 1$, and every tiling of length $n - 1$ extends by a square in exactly one way; removing a final domino leaves a tiling of length $n - 2$, likewise. So $a_n = a_{n-1} + a_{n-2}$.
+
+{{figure:last-tile}}
+
+Two things make the argument valid, and they are the two things to check. The cases must be disjoint and exhaustive, which classifying by the ending guarantees, since every arrangement has exactly one ending. And removing the ending must give back every smaller arrangement exactly once, which fails if the ending interacts with what comes before it.
+
+When it does, as when a string's last digit restricts the digit before it, split the count into states, such as strings ending in $0$ and strings ending in $1$, and write one recurrence for each.
 
 ## How to use it
-Ask: what can the ending look like? Strings with no $11$: end in $0$ (anything before) or $01$ (anything before that) — $a_n = a_{n-1} + a_{n-2}$. Tilings with dominoes: last tile vertical or two horizontals. When one sequence isn't enough (say, the constraint depends on the last character), keep one sequence per state — $z_n$ = valid strings ending in 0, $o_n$ = ending in 1 — and update the vector each step. Compute a small table by hand; contest sizes rarely exceed $n = 20$.
+Ask: what can the ending look like? Strings with no $11$: end in $0$ (anything before) or $01$ (anything before that), so $a_n = a_{n-1} + a_{n-2}$. Tilings with dominoes: last tile vertical or two horizontals.
+
+When one sequence isn't enough (say, the constraint depends on the last character), keep one sequence per state, such as $z_n$ for valid strings ending in $0$ and $o_n$ for those ending in $1$, and update the vector each step. Compute a small table by hand; contest sizes rarely exceed $n = 20$.
 
 ## On contests
 The AIME workhorse for strings, seatings, and paths with adjacency constraints. AMC versions are usually two-term recurrences in disguise (often Fibonacci); the AIME versions need 2–4 states. The reflex to build: "constraint on neighbors" $\Rightarrow$ recursion on the last block, computed as a table.
 
-Two recurrences are worth knowing on sight, and they are the same one. Tilings of a $1\times n$ strip by $1\times1$ and $1\times2$ tiles satisfy $a_n=a_{n-1}+a_{n-2}$, classifying on whether the last tile is short or long, so the counts are Fibonacci. Binary strings with no two consecutive $1$s obey the same recurrence, classifying on the last digit: a string ending in $0$ can follow anything of length $n-1$, and one ending in $1$ forces a $0$ before it. Changing the tile set changes only the shape of the recurrence, so $1\times3$ tiles give $a_n=a_{n-1}+a_{n-3}$.`
+Two recurrences are worth knowing on sight, and they are the same one. Tilings of a $1\times n$ strip by $1\times1$ and $1\times2$ tiles satisfy $a_n=a_{n-1}+a_{n-2}$, classifying on whether the last tile is short or long, so the counts are Fibonacci.
+
+Binary strings with no two consecutive $1$s obey the same recurrence, classifying on the last digit: a string ending in $0$ can follow anything of length $n-1$, and one ending in $1$ forces a $0$ before it.
+
+Changing the tile set changes only the shape of the recurrence, so $1\times3$ tiles give $a_n=a_{n-1}+a_{n-3}$.
+`
 
 });
 
 Object.assign(window.MATH_DETAILS, {
 
-"constructive-counting": String.raw`## Key forms
+"constructive-counting": String.raw`
+## Key forms
 - $n(n-1)\cdots(n-k+1)$ — an ordered selection built one slot at a time from a shrinking menu
 - $\binom nk=\frac{n(n-1)\cdots(n-k+1)}{k!}$ — the same build, divided by the orders producing one unordered object
 - fill the most restricted slot first — the last digit of an even number, or the picky person's seat
@@ -872,62 +1104,112 @@ Object.assign(window.MATH_DETAILS, {
 - $\binom 9n$ — numbers with strictly increasing digits, since choosing the digit set fixes the order
 
 ## Why it works
-The multiplication principle: if a sequence of decisions builds each object exactly once, and step $i$ always offers $c_i$ options no matter what came before, the total is $\prod c_i$. The two ways it breaks are exactly the two things to watch: a step whose option count depends on earlier choices (fix: reorder the steps or split into cases), and an object built more than once (fix: divide by the number of times each is built). Digit conditions are the cleanest case, because they are independent across positions, so the count factors into a product instead of an enumeration.
+If a sequence of decisions produces each object exactly once, the number of objects is the product of the numbers of choices at the steps.
+
+Picture the decisions as a tree. The first decision branches $c_1$ ways, each of those branches splits $c_2$ ways at the second decision, and so on; the finished objects are the leaves. A tree in which every branch point at level $i$ has $c_i$ branches has $$c_1c_2\cdots c_k$$ leaves. In the figure, choosing a president and then a vice president from three people gives $3 \cdot 2 = 6$ outcomes.
+
+{{figure:decision-tree}}
+
+The figure also shows the one condition that matters. The second step always has $2$ options, but which two depends on the first pick. That is allowed: the number of choices must be the same on every branch, while the choices themselves may change freely. The count for a 3-letter code with no repeated letter is $26 \cdot 25 \cdot 24$ for the same reason.
+
+The principle breaks in two ways, and each has a standard fix. If a step's count depends on earlier picks, as when an even number's units digit being $0$ or not changes what its leading digit may be, reorder the steps so the restricted one comes first, or split into cases.
+
+If each object is built more than once, as when an unordered group is built in order, divide by the number of builds. A group of $k$ can be built in $k!$ orders, which is exactly why $$\binom nk = \frac{n(n-1)\cdots(n-k+1)}{k!}.$$
 
 ## How to use it
-Order the decisions from most constrained to least, so the restricted slot's count stays uniform. For "at least one" constraints, construction usually loses to [[complementary-counting|complementary counting]]; for identical objects or unordered selections, construct the ordered version and divide, by $k!$ for unordered, $n$ for rotations, $2$ for reflections. The reflex check before multiplying is "does this step's count ever depend on what I picked earlier?"
+Three habits keep a construction honest.
 
-For counting integers by a digit rule, the slots are the digit positions. At a fixed length, multiply the choices per slot with the leading digit avoiding $0$. Up to a bound $N$, sweep the position where the number first drops below $N$: earlier digits match $N$, that digit is strictly smaller, and the rest are free, then sum over positions. This is the digit-DP idea, and it scales to AIME-sized bounds where listing cannot. Treat "digit sum $=k$" with [[stars-and-bars|stars and bars]] across the slots, and remember that complementary counting, total minus the ones that do contain a $7$, is often shorter than the direct build.
+- Order the decisions from most constrained to least, so that the restricted slot's count stays the same whatever came before.
+- For identical objects or unordered selections, construct the ordered version and divide: by $k!$ for unordered, $n$ for rotations, $2$ for reflections.
+- For "at least one" constraints, construction usually loses to [[complementary-counting|complementary counting]].
+
+The reflex check before multiplying is "does this step's count ever depend on what I picked earlier?"
+
+For counting integers by a digit rule, the slots are the digit positions. At a fixed length, multiply the choices per slot with the leading digit avoiding $0$.
+
+Up to a bound $N$, sweep the position where the number first drops below $N$: earlier digits match $N$, that digit is strictly smaller, and the rest are free, then sum over positions. This is the digit-DP idea, and it scales to AIME-sized bounds where listing cannot.
+
+Treat "digit sum $=k$" with [[stars-and-bars|stars and bars]] across the slots, and remember that complementary counting, total minus the ones that do contain a $7$, is often shorter than the direct build.
 
 ## On contests
-The default engine for digit counts, seatings, and license-plate problems at MATHCOUNTS and AMC level, and the inner loop inside nearly every harder count. "How many integers below $N$ have property P" is constant at every level. The classic trap is the leading-zero and last-digit interaction, as in the even-distinct-digits example where units $0$ or not changes the thousands count, which is why "most restricted first, then case if needed" is the discipline.`,
+The most-tagged counting card after [[casework-method|casework]], with 73 problems here, and one of the more self-sufficient: 14 need nothing else. Casework is its partner in 27, because the usual shape is a count that multiplies cleanly inside each case.
 
-"indicator-variables": String.raw`## Key forms
+Digit counts, seatings, codes and license plates are the standard setups at MATHCOUNTS and AMC level, and "how many integers below $N$ have property P" appears at every level.
+
+The classic trap is the interaction between a leading digit and a last digit, as in the even-distinct-digits example, where whether the units digit is $0$ changes the count for the thousands digit; that is why the discipline is most restricted first, then cases if needed.
+`,
+
+"indicator-variables": String.raw`
+## Key forms
 - $X=\sum_iX_i$ with $E[X]=\sum_iP(\text{occurrence }i)$ — the whole method in one line
-- one indicator per pair, per position, or per adjacency — choosing the atomic occurrence is the only real decision
+- one indicator per pair, per position or per adjacency — choosing the atomic occurrence is the only real decision
 
 ## Why it works
-Expectation is linear: $E[X + Y] = E[X] + E[Y]$ with no independence assumption, because expectation is a sum over outcomes and sums reorder freely. An indicator $X_i$ (1 if event $i$ occurs, else 0) has $E[X_i] = P(X_i = 1)$, so any counting random variable $X = \sum X_i$ has expectation $\sum P(\text{event}_i)$ — each potential occurrence contributes its own probability, overlaps and all.
+Expectation is linear, $E[X + Y] = E[X] + E[Y]$, whether or not $X$ and $Y$ are independent, because an expected value is a weighted sum over outcomes and sums can be reordered freely.
+
+An indicator $X_i$, equal to $1$ if event $i$ happens and $0$ otherwise, has expected value $1 \cdot P(\text{event } i) + 0 = P(\text{event } i)$. So any count $X = X_1 + \cdots + X_n$ has $$E[X] = \sum_i P(\text{event } i),$$ each potential occurrence contributing its own probability, overlaps and all.
 
 ## How to use it
-Identify the atomic occurrences being counted — fixed points, adjacent pairs, satisfied people, monochromatic triangles — and write one indicator each. Compute a single $P(X_i = 1)$ (symmetry usually makes them all equal), multiply by how many there are. Never condition, never case. Classics: [[expected-fixed-points|expected fixed points]] of a permutation $= n \cdot \frac{1}{n} = 1$; expected records $= H_n$; coupon-collector via a different decomposition. It computes expectations of dependent counts that would be hopeless by distribution. The whole method is linearity of expectation applied to a sum of $0$/$1$ terms, so it inherits every property of [[expected-value|expected value]], including that the indicators need not be independent.
+Identify the atomic occurrences being counted: fixed points, adjacent pairs, matched people, monochromatic triangles. Write one indicator for each, find one probability, since symmetry usually makes them all equal, and multiply by how many there are. The [[expected-fixed-points|expected number of fixed points]] of a random permutation is $$n \cdot \frac1n = 1$$ for every $n$, even though the events are far from independent.
+
+Never condition and never split into cases; avoiding that is the point of the method. An average over all configurations is an [[expected-value|expected value]] in disguise, so translate it and use indicators.
 
 ## On contests
-The intended solution to most AIME "find the expected number of ..." problems, and the only humane one when events overlap. If a problem asks for an average over all configurations, translate it to an expectation and fire indicators — averages are expectations in disguise.`,
+Three problems here, two AIME and one AMC 12, one solved by it alone. The shapes are an expected number of chosen consecutive pairs, an expected score in a guessing game played optimally, and an expected number of regions formed by random chords, where one indicator per pair of chords counts the crossings, as on [[plane-regions|plane regions]].
+`,
 
-"invariants-coloring": String.raw`## Key forms
-- $\operatorname{parity}(\text{sum})$ or $\operatorname{parity}(\text{count})$ — by far the most common invariants
-- $\#\text{black}-\#\text{white}$ — a checkerboard colouring builds one, since a domino covers one of each and an L-tromino does not
-- a sum or product taken $\bmod n$ — the invariant of choice when moves add or scale by fixed amounts
-- $I(\text{after})\ge I(\text{before})$ — a monovariant instead, which proves termination rather than unreachability
+"invariants-coloring": String.raw`
+## Key forms
+- parity of a sum or of a count — by far the most common invariant
+- $\#\text{dark} - \#\text{light}$ — a checkerboard coloring builds one, since a domino always covers one square of each color
+- a sum or product $\bmod n$ — the invariant of choice when moves add or multiply by fixed amounts
+- $(i + j) \bmod 3$ — the coloring for $1 \times 3$ tiles, which then cover one square of each color in either direction
+- $I(\text{after}) \lt I(\text{before})$ — a monovariant, which proves that a process terminates rather than that a state is unreachable
 
 ## Why it works
-If every legal move preserves a quantity, then the quantity is constant along any sequence of moves — so states with different values of the invariant are mutually unreachable, no matter how clever the play. Colorings are invariants in disguise: assigning weights (colors) to cells and checking what each piece or move covers turns a geometric impossibility into arithmetic.
+If every move leaves a quantity unchanged, it has the same value after any number of moves, so a state with a different value can never be reached, however the moves are chosen.
+
+The standard example is a chessboard with two opposite corners removed, to be tiled by dominoes. Color it as usual. The two removed corners have the same color, so $30$ squares of that color remain and $32$ of the other.
+
+Each domino covers two neighboring squares, which always have different colors, so any set of dominoes covers equally many squares of each color. A tiling would have to cover $31$ and $31$, while the board has $30$ and $32$, so no tiling exists, and no amount of searching could find one.
+
+{{figure:board}}
+
+A coloring is an invariant in disguise: it gives each square a value, and checking what each piece covers turns a geometric question into arithmetic. A monovariant uses the same logic in one direction. A quantity that changes the same way with every move and cannot keep doing so forever, such as a positive integer that decreases at every step, forces the process to stop.
 
 ## How to use it
-Hunt in this order: parity of a natural quantity (sum, number of inversions, count of a symbol), then sums mod 3 or 4, then colorings — checkerboard first, then stripes or four-colorings for L-shaped and longer pieces. For termination questions use a monovariant: a bounded quantity that strictly moves one way. The craft is matching the coloring to the piece: a $1 \times 3$ tile wants three-coloring by column mod 3, a T-tetromino wants the checkerboard imbalance.
+Hunt in this order: the parity of a natural quantity, such as a sum, a count of some symbol or the number of inversions, then sums mod $3$ or mod $4$, then colorings, starting with the checkerboard and moving to other patterns for longer pieces.
+
+Match the coloring to the piece. For $1 \times 3$ tiles, color the square in row $i$ and column $j$ with $$(i + j) \bmod 3;$$ every tile, horizontal or vertical, then covers one square of each of the three colors, so a region whose three color counts differ cannot be tiled.
+
+When stuck, compute a few small cases by hand and watch what does not change. For a question about whether a process ends, look for a monovariant: a whole-number quantity that every move strictly decreases.
 
 ## On contests
-The standard finisher for "show it's impossible" — mutilated chessboards, coin-flipping games, chip-firing puzzles. AMC versions hide it as "which of these positions can be reached"; olympiad versions demand inventing the invariant. If a process problem stumps you, compute a few small states and watch what doesn't change.`
+Eight problems here, five AIME and three AMC, two solved by it alone; two others pair it with the [[extremal-principle|extremal principle]], which picks the object an invariant or monovariant is applied to. AMC versions hide it as "which of these positions can be reached", and olympiad versions ask you to invent the invariant. It is the standard finisher for any question that asks you to show something is impossible.
+`
 
 });
 
 Object.assign(window.MATH_DETAILS, {
 
-"bayes-theorem": String.raw`## Why it works
-Both $P(A \cap B) = P(A)P(B \mid A)$ and $P(A \cap B) = P(B)P(A \mid B)$ describe the same overlap. Setting them equal and dividing by $P(B)$ gives Bayes' theorem — a bookkeeping identity that swaps the direction of the conditioning. The denominator $P(B) = \sum_i P(B \mid A_i)P(A_i)$ is the law of total probability: sum the evidence's probability across every disjoint cause. Since that denominator does not depend on which cause you are testing, the shape worth remembering is that the posterior is proportional to the likelihood times the prior.
+"bayes-theorem": String.raw`
+## Why it works
+Both $P(A)\,P(B \mid A)$ and $P(B)\,P(A \mid B)$ are the probability of the overlap $A \cap B$, so they are equal, and dividing by $P(B)$ gives the theorem. It is bookkeeping that swaps the direction of the conditioning.
+
+The denominator is the law of total probability. If the causes $A_i$ are disjoint and cover every outcome, the evidence happens through exactly one of them, so $$P(B) = \sum_i P(B \mid A_i)\,P(A_i).$$ That denominator is the same whichever cause is being tested, so the chance of a cause is proportional to its prior times its likelihood, and comparing causes needs only the numerators.
 
 ## How to use it
-Identify which direction you are given and which you want. Problems hand you $P(\text{evidence}\mid\text{cause})$ — the test's accuracy — and ask for $P(\text{cause}\mid\text{evidence})$, and Bayes is the conversion.
+Identify which direction you are given and which you want. Problems give $P(\text{evidence} \mid \text{cause})$, such as a test's accuracy, and ask for $P(\text{cause} \mid \text{evidence})$.
 
-The reliable method is not the formula but counting whole people. Take a population of $100{,}000$, split it by the base rate, apply the accuracy rates to each group, and read the answer as true positives over all positives. It is faster under time pressure and makes the result intuitive rather than surprising.
+Counting whole people is more reliable than the formula. For a disease in $1\%$ of people and a test that is $90\%$ accurate both ways, take $100{,}000$ people: $1{,}000$ are sick and $900$ of them test positive, while $9{,}900$ of the $99{,}000$ healthy people also test positive. So $$P(\text{sick} \mid +) = \frac{900}{900 + 9{,}900} = \frac{1}{12}.$$
 
-The lesson to carry is that a rare condition drowns even a very accurate test in false positives: when the base rate is far below the false-positive rate, most positives are false, no matter how good the test sounds.
+A rare condition drowns even an accurate test in false positives: when the base rate is far below the false-positive rate, most positives are false.
 
 ## On contests
-The intended tool for "given that [evidence], find the probability of [cause]" — defective-item-from-a-factory, positive-medical-test, drawn-from-an-unknown-urn. On AMC/AIME it usually reduces to the tree-diagram form: favorable path over total paths, which is Bayes in disguise.`,
+Three problems here, all AIME, none solved by it alone, and each pairs it with [[conditional-probability|conditional probability]]. The shapes are a coin or die that might be fair or biased, judged after a few outcomes; a population split into groups with different rates, where it helps to count $100$ people; and a lottery, the chance of the top prize given some prize.`,
 
-"generating-function-method": String.raw`## Key forms
+"generating-function-method": String.raw`
+## Key forms
 - $\frac{1}{1-x}=\sum_{n\ge0}x^n$ — an unlimited supply of one item
 - $1+x+\cdots+x^m$ — an item usable at most $m$ times; $(1+x)$ for at most once, and $(1+x)^n$ for take-or-leave over $n$ items
 - $\frac{1}{(1-x)^k}=\sum_n\binom{n+k-1}{k-1}x^n$ — [[stars-and-bars|stars and bars]], read off as a coefficient
@@ -935,44 +1217,59 @@ The intended tool for "given that [evidence], find the probability of [cause]" �
 - $[x^N]\prod_i f_i(x)$ — multiply the factors and read the coefficient; the product handles every interaction
 
 ## Why it works
-Multiplying $\left(\sum_i x^{a_i}\right)\left(\sum_j x^{b_j}\right)$ produces a term $x^{a_i + b_j}$ for every pair of choices, so the coefficient of $x^N$ in the product counts exactly the combinations summing to $N$. Independent decisions multiply as factors and the exponents do the addition for you, which is to say that multiplying polynomials convolves their coefficient sequences. A generating function is bookkeeping for "ways per total".
+Multiplying two sums of powers of $x$ produces one term for every pair of choices, and the exponents add, so the coefficient of $x^N$ counts exactly the pairs of choices with total $N$.
+
+For two dice, $(x + x^2 + \cdots + x^6)^2$ expands into $36$ terms $x^{i + j}$, one for each pair of rolls. Collecting like terms groups the rolls by their sum, so the coefficient of $x^5$ is the number of rolls summing to $5$, which is $4$. More factors work the same way: independent choices multiply, and the exponents do the adding.
+
+{{figure:product}}
 
 ## How to use it
-Model each choice as a factor whose exponents are its allowed contributions: a die is $x + x^2 + \cdots + x^6$, an unlimited supply of value-$a$ coins is $\frac{1}{1 - x^a} = 1 + x^a + x^{2a} + \cdots$, a bounded part $0 \le k \le m$ is $1 + x + \cdots + x^m$. Multiply, then extract the coefficient of $x^N$ by expansion, by a known series such as $\frac{1}{(1-x)^k} \to \binom{n+k-1}{k-1}$, or by partial fractions when you want a closed form. Splitting a rational generating function into pieces $\frac{c}{1-rx}$ makes each one a [[geometric-series|geometric series]], so $a_n$ becomes a sum of $r^n$ terms, which is the generating-function proof of linear-recurrence closed forms.
+Model each choice as a factor whose exponents are its allowed contributions: a die is $x + \cdots + x^6$, unlimited coins of value $a$ are $$1 + x^a + x^{2a} + \cdots = \frac1{1 - x^a},$$ and a part between $0$ and $m$ is $1 + x + \cdots + x^m$. Multiply, then extract the coefficient of $x^N$ by expanding, by a known series such as $\frac1{(1 - x)^k}$, or by partial fractions when a closed form is wanted.
 
-Global tricks: substitute $x = 1$ to total all coefficients, differentiate then set $x = 1$ for a weighted sum, and use a roots-of-unity filter to select one residue class of exponents.
-
-Everything above uses ordinary generating functions, which count unlabeled totals. [[exponential-generating-functions|Exponential generating functions]], where the count sits on $\frac{x^n}{n!}$, handle labeled or ordered structures instead; multiplying EGFs interleaves labels, which is why $e^x$ builds permutations and $\frac{e^x + e^{-x}}{2}$ builds even-size subsets.
+To total all the coefficients, set $x = 1$; for a weighted sum, differentiate first. To select the exponents in one residue class, average over roots of unity, which is the [[roots-of-unity-filter|roots-of-unity filter]]. For labeled structures, [[exponential-generating-functions|exponential generating functions]] put the count on $\frac{x^n}{n!}$ instead.
 
 ## On contests
-The systematic route for coin, stamp and dice-sum counts and for constrained integer solutions, and the natural home for the roots-of-unity filter on AIME "count the subsets whose sum is divisible by $k$" problems. It also covers dice-sum distributions, including the famous relabel-two-dice problem, partition-with-conditions counts, and it is the unifying view behind stars and bars and the [[pie|PIE]] identities. It trades cleverness for a reliable model-multiply-extract pipeline, so reach for it when [[casework-method|casework]] on the count would explode.`
+Five problems here, four of them AIME, one solved by it alone; two finish with the [[roots-of-unity-filter|roots-of-unity filter]], as in counting subsets whose sum is divisible by some $k$. It trades cleverness for a reliable pipeline of model, multiply and extract, so reach for it when [[casework-method|casework]] on the count would explode.
+`
 
 });
 
 Object.assign(window.MATH_DETAILS, {
 
-"extremal-principle": String.raw`## Key forms
+"extremal-principle": String.raw`
+## Key forms
 - take $\max S$ or $\min S$ and contradict its extremeness — what usually falls is the assumption that the configuration exists at all
-- the longest path or chain — its endpoint has no unused neighbours, so every neighbour already lies on it
+- the longest path or chain — its endpoint has no unused neighbors, so every neighbor already lies on it
 - the closest pair of points — nothing is nearer, which rules out any construction that would produce a shorter distance
 - a minimal counterexample — build a smaller one from it and the minimality is contradicted, which is infinite descent run over a finite set
 - well-ordering: every non-empty set of positive integers has a least element — the guarantee that "smallest" exists at all
 - an optimum over a constrained set — it sits at an extreme of the constraints, so test the boundary rather than the interior
 
 ## Why it works
-A finite collection, or any set of positive integers, has a largest and a smallest member. Naming one hands you a property no other element has. The maximum admits no larger neighbour and the minimum no smaller one, so if you can show the extreme object could be pushed a little further, you have contradicted the very thing that defined it. That is the entire method: not constructing an object, but showing that the extreme one cannot behave the way the problem assumes.
+A finite set, or any set of positive integers, has a largest and a smallest member, and naming one hands you a property no other member has: nothing is larger, or nothing is smaller. If you can show the extreme object could be pushed a little further, you contradict the very thing that defined it.
 
-Concretely, take the longest path $v_1 v_2 \dots v_k$ in a graph. If $v_1$ had a neighbour off the path, the path could be lengthened, which is impossible. So every neighbour of $v_1$ sits somewhere on the path, and now the degree of $v_1$ tells you something about the path's length. Nothing was built; the extreme object simply had nowhere left to go.
+Take a longest path $v_1v_2\ldots v_k$ in a graph. If $v_1$ had a neighbor off the path, adding it at the front would give a longer path, which is impossible. So every neighbor of $v_1$ lies on the path, and the path has more vertices than $v_1$ has neighbors.
+
+{{figure:longest-path}}
+
+Nothing was constructed. The extreme object simply had nowhere left to go, and that forced the structure the problem asked about.
 
 ## How to use it
-Pick the extreme that matches the structure. The longest path or chain traps its endpoints' neighbours inside it. The closest pair of points leaves no room for anything nearer. The vertex of highest degree bounds what its neighbours can do. The smallest positive value of a quantity is what infinite descent attacks. The minimal counterexample is the default when the claim is an impossibility.
+Pick the extreme that matches the structure.
 
-Then push on it, in one of two directions: show the extremal object forces the configuration you want, or show it could be extended or improved, which is the contradiction. Before either, make sure the extreme exists, which is immediate for a finite set and is well-ordering for the positive integers, but needs an argument on an infinite set of reals.
+- The longest path or chain traps its endpoints' neighbors.
+- The closest pair of points leaves no room for anything nearer.
+- The vertex of highest degree bounds what its neighbors can do.
+- The smallest positive value of a quantity is what infinite descent attacks.
+- A minimal counterexample is the default when the claim is that something cannot happen.
 
-There is a second, lighter use of the same word, and it is the one that turns up on the AMC and AIME. When a quantity is being maximized or minimized over a constrained set, the optimum sits at an extreme of the constraints, not in the middle of them, so the work is to identify which boundary and check it rather than to search. Minimizing a positive fraction means the smallest admissible numerator against the largest admissible denominator; maximizing a spread means pushing every unit of a fixed total out to the ends. The two readings share the instinct, look at the extreme case, but not the payoff: this one evaluates a candidate, while the combinatorial principle above derives a contradiction. When the pushing is done one step at a time and each step is shown not to hurt, that is [[smoothing-method|smoothing]] rather than this.
+Then push on it: show the extreme object forces the configuration you want, or show it could be improved, which is a contradiction. Check first that the extreme exists, which is automatic for a finite set and for positive integers but needs an argument on an infinite set of real numbers.
+
+The optimization reading is the one that turns up on the AMC and AIME. When a quantity is maximized or minimized over a constrained set, the optimum sits at an extreme of the constraints, so identify which boundary and evaluate it: to minimize a positive fraction, take the smallest allowed numerator and the largest allowed denominator. When the pushing is done one step at a time, each step shown not to hurt, that is [[smoothing-method|smoothing]] instead.
 
 ## On contests
-An olympiad workhorse for existence and impossibility proofs, especially graph and grid problems, combinatorial geometry, and "show some configuration must occur". The optimization reading is what carries it below olympiad level, and it is the more common sighting here: of the problems this library tags with the card, all of them are AMC or AIME questions asking for a largest or smallest value, where naming the extreme configuration is the whole solution and no contradiction is ever drawn. When a problem resists direct construction, ask what the largest or smallest object must look like; when it asks for an optimum, ask which constraint is tight.`
+Six problems here, four AIME and two AMC, one solved by it alone; two pair it with [[invariants-coloring|invariants]], the other standard tool for proving that something must or cannot happen. Below olympiad level it appears mostly in its optimization form, where naming the extreme configuration is the whole solution. When a problem resists direct construction, ask what the largest or smallest object must look like; when it asks for an optimum, ask which constraint is tight.
+`
 
 });
 
@@ -995,7 +1292,7 @@ The proof is the technique worth carrying: attach to each term the pair (longest
 
 If no run reached $m+1$ or $n+1$, every label would lie in an $m\times n$ grid of possibilities — only $mn$ of them for $mn+1$ terms, which pigeonhole forbids.
 
-Recognise the trigger as any problem asking to guarantee a monotone subsequence, or to show a sequence cannot avoid one. The labelling idea generalises: pairing each element with two extremal statistics and counting the available pairs is a reusable pigeonhole setup.
+Recognize the trigger as any problem asking to guarantee a monotone subsequence, or to show a sequence cannot avoid one. The labeling idea generalises: pairing each element with two extremal statistics and counting the available pairs is a reusable pigeonhole setup.
 
 ## On contests
 Olympiad combinatorics, typically as a lemma ("among these $N$ values, some $k$ form a monotone chain"), and a natural companion to the [[pigeonhole|Pigeonhole Principle]]. The bound $mn+1$ is sharp — a grid of decreasing blocks of decreasing runs achieves $mn$ with no long monotone subsequence.`,
@@ -1008,7 +1305,7 @@ Use the bound to prove non-planarity by counting: a graph with more edges than $
 
 For triangle-free graphs use the sharper form, because every face then needs at least four edges. That is what disposes of $K_{3,3}$, which is bipartite with $9\gt2\cdot6-4=8$.
 
-The bound runs one way only — violating it disproves planarity, but satisfying it proves nothing. A useful corollary is that every planar graph has a vertex of degree at most $5$, which is the starting point for planar colouring arguments.
+The bound runs one way only — violating it disproves planarity, but satisfying it proves nothing. A useful corollary is that every planar graph has a vertex of degree at most $5$, which is the starting point for planar coloring arguments.
 
 ## On contests
 AMC/AIME problems about maps, networks, and polyhedra, and olympiad graph theory. It is the corollary of Euler's Polyhedron Formula (filed under Geometry) — the same identity read as a planar graph rather than a solid; keep the two linked in your head.`,
@@ -1021,7 +1318,7 @@ To prove a matching exists, verify Hall's condition; to prove none exists, exhib
 
 Checking all $2^{|X|}$ subsets is rarely necessary. Structural arguments usually suffice: in a $k$-regular bipartite graph, counting the edges leaving $S$ shows $|N(S)|\ge|S|$ at once, so a perfect matching always exists.
 
-The standard dressings are assigning people to tasks, placing non-attacking rooks, and choosing distinct representatives from a family of sets — recognising any of these as bipartite matching is the first step.
+The standard dressings are assigning people to tasks, placing non-attacking rooks, and choosing distinct representatives from a family of sets — recognizing any of these as bipartite matching is the first step.
 
 ## On contests
 Olympiad combinatorics: systems of distinct representatives, Latin-square and tiling completions, and "can these be paired / assigned?" existence problems. The whole task reduces to checking Hall's condition or naming the one set that fails it.`
@@ -1034,11 +1331,11 @@ Object.assign(window.MATH_DETAILS, {
 A chain and an antichain share at most one element, so you always need at least (largest antichain) chains to cover the poset — the easy direction. That this many suffice is the theorem, provable by induction or via [[konigs-theorem|Kőnig's theorem]] on an associated bipartite graph. Mirsky's dual swaps chains and antichains.
 
 ## How to use it
-Recognise the setup as a partial order — divisibility, containment, or dominance in two coordinates — where you must either cover everything with few chains or find a large incomparable family.
+Recognize the setup as a partial order — divisibility, containment, or dominance in two coordinates — where you must either cover everything with few chains or find a large incomparable family.
 
 The theorem converts between the two, which is what makes it useful: bounding one side is usually much easier than the other. To show few chains suffice, exhibit a small antichain bound; to show a large antichain exists, exhibit a covering.
 
-Erdős–Szekeres falls out by ordering terms by both index and value, where chains are monotone subsequences and antichains are the opposite monotonicity — recognising that specialisation is often the quickest route into a sequence problem.
+Erdős–Szekeres falls out by ordering terms by both index and value, where chains are monotone subsequences and antichains are the opposite monotonicity — recognizing that specialisation is often the quickest route into a sequence problem.
 
 ## On contests
 Olympiad combinatorics: partitioning into monotone pieces, scheduling, "cover with few chains." Building the right poset and quoting Dilworth or Mirsky is usually the cleanest path.`,
@@ -1058,8 +1355,8 @@ Olympiad extremal set theory. Carry two things: the answer $\binom{n}{\lfloor n/
 
 "polya-enumeration": String.raw`## Key forms
 - $Z_G=\frac{1}{|G|}\sum_g\prod_i x_i^{c_i(g)}$ — the cycle index, recording how each symmetry splits the positions into cycles
-- $x_i=k$ — substituting this recovers [[burnsides-lemma|Burnside's]] plain count of $k$-colourings
-- $x_i=\sum_j y_j^{\,i}$ — substituting this instead breaks the count down by how many of each colour, which Burnside alone cannot do
+- $x_i=k$ — substituting this recovers [[burnsides-lemma|Burnside's]] plain count of $k$-colorings
+- $x_i=\sum_j y_j^{\,i}$ — substituting this instead breaks the count down by how many of each color, which Burnside alone cannot do
 - $Z_{C_n}=\frac1n\sum_{d\mid n}\varphi(d)\,x_d^{\,n/d}$ — the cycle index for necklaces
 
 ## Why it works
@@ -1097,9 +1394,9 @@ Olympiad combinatorics on grids and bipartite structures. The min–max duality 
 Among $K_{r+1}$-free graphs, rebalancing degrees (Zykov symmetrization) never creates a clique and only adds edges, pushing the maximum to the Turán graph — the complete $r$-partite graph with near-equal parts — which has $(1-\frac1r)\frac{n^2}{2}$ edges.
 
 ## How to use it
-Recognise the shape as an extremal question: how many edges can a graph have before a clique of a given size is unavoidable. The bound answers it and the Turán graph shows it cannot be improved.
+Recognize the shape as an extremal question: how many edges can a graph have before a clique of a given size is unavoidable. The bound answers it and the Turán graph shows it cannot be improved.
 
-Mantel's case is the one that appears at contest level — at most $\lfloor n^2/4\rfloor$ edges without a triangle, attained by the balanced complete bipartite graph. Proving that case directly is short: for any edge, its endpoints share no neighbour, so their degrees sum to at most $n$.
+Mantel's case is the one that appears at contest level — at most $\lfloor n^2/4\rfloor$ edges without a triangle, attained by the balanced complete bipartite graph. Proving that case directly is short: for any edge, its endpoints share no neighbor, so their degrees sum to at most $n$.
 
 Use it in the contrapositive when a problem gives you many edges and asks for a clique — exceeding the bound guarantees one exists without having to construct it.
 
@@ -1110,11 +1407,11 @@ Olympiad extremal graph theory, with Mantel occasionally surfacing on harder pro
 Greedy coloring in any order uses $\le \Delta + 1$ colors: each vertex sees at most $\Delta$ colored neighbors, so a color is free. Two colors suffice exactly when the graph is bipartite, which is equivalent to having no odd cycle (a 2-coloring is a bipartition). Planar 4-colorability is the deep Four Color Theorem.
 
 ## How to use it
-Bound from both sides. The greedy bound caps the chromatic number above, and any clique caps it below, so exhibiting a $k$-clique together with a $k$-colouring settles $\chi=k$ exactly.
+Bound from both sides. The greedy bound caps the chromatic number above, and any clique caps it below, so exhibiting a $k$-clique together with a $k$-coloring settles $\chi=k$ exactly.
 
-The bipartite test is the one used most: two colours suffice precisely when there is no odd cycle, and producing a single odd cycle is usually the fastest way to prove three are needed.
+The bipartite test is the one used most: two colors suffice precisely when there is no odd cycle, and producing a single odd cycle is usually the fastest way to prove three are needed.
 
-The greedy bound is rarely tight — Brooks' theorem sharpens it to $\Delta$ for every connected graph except complete graphs and odd cycles, which is worth knowing when the bound looks one too large. Pair it with the clique bound $\chi(G)\ge\omega(G)$ from below: exhibiting a $k$-clique alongside a $k$-colouring settles $\chi=k$ exactly.
+The greedy bound is rarely tight — Brooks' theorem sharpens it to $\Delta$ for every connected graph except complete graphs and odd cycles, which is worth knowing when the bound looks one too large. Pair it with the clique bound $\chi(G)\ge\omega(G)$ from below: exhibiting a $k$-clique alongside a $k$-coloring settles $\chi=k$ exactly.
 
 ## On contests
 Scheduling, map, and conflict problems on AMC/AIME, plus olympiad [[invariants-coloring|coloring arguments]]. The everyday facts are the greedy $\Delta + 1$ bound and "bipartite ⟺ no odd cycle."`,
@@ -1189,9 +1486,9 @@ Object.assign(window.MATH_DETAILS, {
 Weighting the $n$-th term by $\frac{1}{n!}$ makes the product of two EGFs reindex as $c_n=\sum_k\binom{n}{k}a_k b_{n-k}$ — exactly "split the $n$ labels between two labeled structures." So EGF multiplication is the labeled analogue of the choose operation, where ordinary (unlabeled) GFs would undercount.
 
 ## How to use it
-Use EGFs when the objects are labelled and ordinary [[generating-function-method|generating functions]] fail — that is, whenever the count involves choosing which labels go to which part, since that is exactly what the $\binom nk$ in the product supplies.
+Use EGFs when the objects are labeled and ordinary [[generating-function-method|generating functions]] fail — that is, whenever the count involves choosing which labels go to which part, since that is exactly what the $\binom nk$ in the product supplies.
 
-The dictionary is short: $e^x$ builds one structure per label, $\frac{1}{1-x}$ as an EGF builds linear orders, and exponentiating an EGF partitions the labels into an unordered collection of that structure. [[derangements|Derangements]], set partitions, and labelled trees all come out of applying that exponential rule.
+The dictionary is short: $e^x$ builds one structure per label, $\frac{1}{1-x}$ as an EGF builds linear orders, and exponentiating an EGF partitions the labels into an unordered collection of that structure. [[derangements|Derangements]], set partitions, and labeled trees all come out of applying that exponential rule.
 
 Extract $a_n$ by reading the coefficient and multiplying back by $n!$ — forgetting that final factorial is the standard slip.
 
@@ -1262,7 +1559,7 @@ Count the ways to choose $n$ things from $2n$, having split the $2n$ into two ha
 It is [[vandermonde|Vandermonde's identity]] with $m=r=n$, but the special case behaves differently from the general one: the answer collapses to a single binomial coefficient instead of staying a convolution, which is what makes it usable in the middle of a computation.
 
 ## How to use it
-Recognise it whenever squares of binomial coefficients are being summed, and replace the whole sum with one coefficient. The reverse direction matters just as much: a lone $\binom{2n}{n}$ can be opened up into $\sum_k\binom nk^2$ when you need a sum to compare against another sum.
+Recognize it whenever squares of binomial coefficients are being summed, and replace the whole sum with one coefficient. The reverse direction matters just as much: a lone $\binom{2n}{n}$ can be opened up into $\sum_k\binom nk^2$ when you need a sum to compare against another sum.
 
 The probability reading is the one worth carrying. Two people each flip $n$ fair coins; the chance they get the same number of heads is $\sum_k\binom nk^2/4^n$, which the identity turns into $\binom{2n}{n}/4^n$. Everything else follows by symmetry — the two of them are equally likely to be ahead, so each wins with probability $\tfrac12\left(1-\binom{2n}{n}/4^n\right)$.
 
@@ -1304,18 +1601,35 @@ The bound is deliberately crude, using only the mean, so it is the right tool wh
 ## On contests
 Rare on AMC and AIME as a named result, but the reasoning appears constantly in disguise: "the average is $m$, so some term is at least $m$" is the one-line version, and its contrapositive settles many "show some configuration exists" olympiad problems. Pair it with [[indicator-variables|linearity of expectation]], which computes the mean, and Markov converts that mean into a guarantee.`,
 
-"casework-method": String.raw`## Key forms
+"casework-method": String.raw`
+## Key forms
 - $\#(\text{total})=\sum_i\#(\text{case}_i)$ — valid only if the cases are disjoint and exhaustive, the two things to check first
 - $P(A)=\sum_i P(A\mid B_i)P(B_i)$ — the weighted version, the law of total probability
 
 ## Why it works
-The addition principle: if every object belongs to exactly one case, the total is the sum of the case counts. All the craft is in choosing the splitting feature so that "exactly one" holds and each case becomes strictly easier than the original.
+If every object lands in exactly one case, adding up the cases counts every object exactly once.
+
+That is the addition principle, and both halves of "exactly one" matter. If an object can fall into two cases, the sum counts it twice; if it falls into none, the sum misses it. So the cases must be disjoint, meaning no overlaps, and exhaustive, meaning nothing left out; then $$|S| = |S_1| + |S_2| + \cdots + |S_m|.$$ Everything that makes casework reliable is a way of guaranteeing those two properties.
+
+It works as often as it does because fixing one feature removes a whole layer of difficulty. Once you know the largest element, or the first digit, or which seat the special person takes, the remaining choices usually become independent, and independent choices simply multiply. A problem no single formula counts becomes several problems that each have one.
 
 ## How to use it
-Split on the most constrained element: the largest value, the leading digit, where the special person sits, how many of some type appear. Before summing, run the two sanity checks — can an object satisfy two cases (overlap)? can it satisfy none (gap)? If the case count balloons past five or six, that's the signal to switch: [[complementary-counting|complementary counting]], a bijection, or a recursion usually compresses it. Symmetric cases can be counted once and multiplied.
+Split on the most constrained feature: the largest value, the leading digit, where the special person sits, or how many objects of some type appear. A good split is one where, inside each case, the remaining choices no longer interfere with each other.
+
+Before adding, run the two checks by name.
+
+- Can one object satisfy two cases? Then the cases overlap.
+- Can an object satisfy none? Then there is a gap.
+
+Splitting on a single value, such as "the largest element is $k$" for each $k$, makes both checks automatic, since every object has exactly one largest element.
+
+Watch the number of cases. If it grows past five or six, a different tool is usually shorter: [[complementary-counting|complementary counting]] when the cases describe "at least one", a bijection, or a recursion when each case looks like a smaller copy of the problem. Cases that are mirror images of each other can be counted once and multiplied by the number of copies.
 
 ## On contests
-The single most-used counting technique at every level. MATHCOUNTS problems are often pure two-case splits; AMC problems reward finding the split that makes cases symmetric; AIME problems layer casework inside other techniques — the errors are almost always an overlap or a forgotten case, so the discipline of naming the cases explicitly is the whole game.`,
+The most-used technique in the whole library: it appears in 195 tagged problems, 152 of them AIME, and 17 need nothing else. Its usual partners show what it is for, [[constructive-counting|constructive counting]] in 27 problems and [[basic-probability|probability]] in 14, because splitting into cases is how a count that no single formula covers gets built.
+
+MATHCOUNTS problems are often a clean two-case split, AMC problems reward finding the split that makes the cases symmetric, and AIME problems nest casework inside other techniques. The errors are almost always an overlap or a forgotten case.
+`,
 
 "reflection-principle": String.raw`## Key forms
 - $\#\{\text{paths touching the barrier}\}=\#\{\text{paths to the reflected endpoint}\}$ — reflect after the first touch; the map is reversible
@@ -1331,7 +1645,8 @@ Recipe: total paths minus $\binom{\cdot}{\cdot}$ to the reflected endpoint. Comp
 ## On contests
 Vote-count and never-trailing problems, queue problems (people with 5- and 10-dollar bills), and lattice paths avoiding a diagonal. When a path constraint says "never above/below," reflect before attempting recursion — the closed form is one subtraction.`,
 
-"uniform-overcount": String.raw`## Key forms
+"uniform-overcount": String.raw`
+## Key forms
 - $\#(\text{objects}) = \frac{\#(\text{constructions})}{k}$ — legal exactly while $k$ does not depend on the object
 - $\binom nr = \frac{n!}{(n-r)!} \div r!$ — arrangements divided by the $r!$ orders inside one selection
 - $\frac{n!}{n} = (n-1)!$ — $n$ rotations of a row give the same circular arrangement
@@ -1339,17 +1654,28 @@ Vote-count and never-trailing problems, queue problems (people with 5- and 10-do
 - $\frac{N - f}{k} + f$ — the repair, when $f$ objects are built fewer than $k$ times
 
 ## Why it works
-The map from constructions to objects is $k$-to-one, so the two counts stand in the ratio $k$. That is the whole argument, and it is also where the method fails: if some object has extra symmetry, fewer distinct constructions produce it, the map is no longer uniformly $k$-to-one, and dividing by $k$ undercounts exactly those objects.
+If every object is built exactly $k$ times, the constructions fall into groups of $k$, one group per object, so there are $k$ times as many constructions as objects.
+
+Choosing $r$ people in order can be done in $\frac{n!}{(n - r)!}$ ways, and each unordered group of $r$ appears $r!$ times, once for each order of its members. Every group appears the same number of times, so dividing gives $\binom nr$. Seating $n$ people around a table works the same way: each circular arrangement appears as $n$ different rows, one starting from each seat, so there are $$\frac{n!}{n} = (n - 1)!.$$
+
+The argument breaks exactly when some objects are built fewer times than others. Choosing two scoops from four flavors, allowing a double, gives $16$ ordered choices: each mixed pair is built twice, but each double only once, so dividing $16$ by $2$ would undercount the doubles.
+
+{{figure:grid}}
+
+The repair is to set the special objects aside. If $f$ objects are built once and the rest $k$ times, the count is $$\frac{N - f}{k} + f;$$ here $\frac{16 - 4}{2} + 4 = 10$.
 
 ## How to use it
 Say out loud how many times a typical object gets built before dividing. If the answer depends on which object it is, do not divide yet.
 
-Then check the symmetric cases by hand. Pairs where the two halves are identical, colorings fixed by a rotation, and arrangements that read the same reversed are the usual culprits. Pull them out of the count, divide the rest, and add them back once each. Choosing two subsets whose union is a given set is the standard example: order does not matter, so almost everything is doubled, but the one pair with both subsets equal is not, giving $\frac{3^n - 1}{2} + 1$.
+Then check the symmetric cases by hand: pairs whose two halves are identical, colorings fixed by a rotation, and arrangements that read the same backwards are the usual culprits. Pull them out, divide the rest, and add them back once each.
 
-When the symmetric cases are numerous rather than exceptional, stop patching and use [[burnsides-lemma|Burnside's lemma]], which averages over the symmetries and needs no repair step at all.
+Choosing two subsets of an $n$-element set whose union is the whole set is the standard example. In order there are $3^n$ choices, since each element goes in the first subset, the second or both, and only the pair with both subsets equal to the whole set is built once, so the unordered count is $$\frac{3^n - 1}{2} + 1.$$
+
+When the symmetric cases are many rather than a few exceptions, stop patching and use [[burnsides-lemma|Burnside's lemma]], which averages over the symmetries and needs no repair step.
 
 ## On contests
-The most frequently botched step in AMC counting, and the reason an answer is often off by a small amount rather than wildly wrong. It is the step hidden inside [[multiset-permutations|arrangements with repeats]] and [[circular-permutations|circular arrangements]], and it finishes what [[constructive-counting|constructive counting]] starts, since that method builds the constructions this one divides.`,
+Seven problems here, spread across AMC 10, AMC 12 and AIME, one solved by it alone. It is the step hidden inside [[multiset-permutations|arrangements with repeated objects]] and [[circular-permutations|circular arrangements]], and it finishes what [[constructive-counting|constructive counting]] starts, since that method builds the constructions this one divides. It is also the most often botched step in AMC counting, which is why a wrong answer is usually off by a little rather than by a lot.
+`,
 
 
 

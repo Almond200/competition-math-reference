@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 539
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 557
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -12,12 +12,11 @@ reference rather than people editing it.
 
 ## Write-up style
 
-**Four headings, and no fifth.** A write-up uses `## Why it works`, `## How to use it`,
-`## On contests`, and optionally `## Key forms`. Do not invent another one. A card may gain or
-lose its Key forms block as its content changes — that is not "adding a subsection", which is
-what this rule is about. Census across 539 write-ups: Why it works 539, On contests 539, How to
-use it 539, Key forms 109, and one sanctioned exception (`mean-chain` carries a `## Full proof`
-holding complete proofs of the four mean inequalities, which genuinely is not a "why it works").
+**Five headings, and no sixth.** A write-up uses `## Why it works`, `## How to use it`,
+`## On contests`, and optionally `## Key forms` and `## Full proof` (collapsed behind a button;
+see CONVENTIONS §2 for when one belongs). Do not invent another one; `scan-conventions.py` fails on
+any other heading. A card may gain or lose an optional block as its content changes. Census
+across 557 write-ups: Why it works 557, On contests 557, How to use it 557, Key forms 51.
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
   of related statements, which in practice means methods and patterns: 93 of the 100 cards in
@@ -411,6 +410,29 @@ variables. On top of that, all three lose the same four working features:
 One gotcha for whoever builds it: `tidyDiagram` re-appends every filled circle of radius $\le 7$ to
 the end of the SVG (`js/app.js:1702`), so a vertex dot drawn *behind* a face gets hoisted in front
 of it. Use a larger radius or an unfilled marker on projected solids.
+
+## Configurations considered and deliberately left out — 2026-09-25
+
+Thirty less-common geometry configurations were tested against the library. **Two were false
+alarms**: Van Schooten's theorem is already present as `ptolemy-equilateral`, and "the radical axis
+of two tangent circles is their common tangent" is already owned by `radical-axis`. Eight were
+added (`steiner-line`, `anticomplementary-triangle`, `ptolemy-second-theorem`, `poncelet-closure`,
+`sawayama-thebault`, `conway-circle`, `japanese-theorem`, `pappus-hexagon`).
+
+The remaining **thirteen are named-centre results and were excluded on purpose**: the Nagel line,
+the Mittenpunkt, the Bevan point, the Exeter point, the Kosnita point, the Schiffler point, the
+Parry point, the Steiner point (the one on the circumcircle, not `steiner-line`), the Tarry point,
+the Gray/ETC-style listed centres generally, the orthopole, the Simson line's envelope
+(the Steiner deltoid), and the de Longchamps point. The last of these is not lost — it is a clause
+inside `anticomplementary-triangle`, which is where it is actually usable.
+
+The reason is uniform: each names a point that a problem must hand you outright before the fact
+helps, none has a sighting in the 1367-problem database, and none pairs with a card already in the
+library the way the eight that were added do. **Do not re-open this from scratch.** If one of them
+turns up in a real official solution, that is a new argument and it should be added; absent that,
+the list above is the answer.
+
+---
 
 ## Persisted state must never be rebuilt from loaded data
 

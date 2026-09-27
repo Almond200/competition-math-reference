@@ -14,7 +14,7 @@ window.MATH_SECTIONS.push({
           id: "gcd-lcm-product",
           name: "GCD × LCM",
           latex: String.raw`\gcd(a, b) \cdot \operatorname{lcm}(a, b) = ab`,
-          description: String.raw`For positive integers (two variables only — fails for three). In prime factorizations, gcd takes the min exponent of each prime, lcm the max.`,
+          description: String.raw`For two positive integers, the greatest common divisor times the least common multiple equals the product of the numbers: $\gcd(a, b) \cdot \operatorname{lcm}(a, b) = ab$. So any three of $a$, $b$, their gcd and their lcm determine the fourth, and a problem that fixes the gcd and the lcm fixes the product. The reason is prime by prime: for each prime the gcd takes the smaller of the two exponents and the lcm the larger, and the smaller plus the larger is the two exponents together. The identity is special to two numbers; for three, $\gcd \cdot \operatorname{lcm}$ is usually not $abc$.`,
           keywords: ["gcd", "lcm", "product", "min max exponents"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -23,8 +23,8 @@ window.MATH_SECTIONS.push({
           id: "euclidean-algorithm",
           name: "Euclidean Algorithm",
           latex: String.raw`\gcd(a, b) = \gcd(b, a \bmod b)`,
-          description: String.raw`Repeat until the remainder is 0. Also $\gcd(a, b) = \gcd(a - b, b)$ — useful for things like $\gcd(n^2 + 1, n + 1) = \gcd(2, n+1)$.`,
-          keywords: ["euclid", "remainder", "gcd algorithm", "subtract"],
+          description: String.raw`The Euclidean algorithm finds the greatest common divisor of two numbers by repeatedly replacing the larger one with its remainder on division by the smaller, $\gcd(a, b) = \gcd(b, a \bmod b)$, until one of them is $0$; the other is then the gcd. It works because subtracting a multiple of one number from the other does not change their common divisors. That makes it just as useful on expressions as on numbers: $\gcd(n^2 + 1, n + 1) = \gcd(2, n + 1)$, since $n^2 + 1 = (n + 1)(n - 1) + 2$. Run backwards, the same steps write the gcd as $ax + by$ for integers $x$ and $y$.`,
+          keywords: ["euclid", "euclidean algorithm", "repeated division", "gcd algorithm", "compute a gcd", "subtract"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
         },
@@ -32,7 +32,7 @@ window.MATH_SECTIONS.push({
           id: "floor-multiples",
           name: "Counting Multiples",
           latex: String.raw`\#\{k \le n : d \mid k\} = \left\lfloor \frac{n}{d} \right\rfloor`,
-          description: String.raw`Combine with inclusion-exclusion to count multiples of $a$ or $b$: $\lfloor n/a \rfloor + \lfloor n/b \rfloor - \lfloor n/\operatorname{lcm}(a,b) \rfloor$.`,
+          description: String.raw`The number of multiples of $d$ among $1, 2, \ldots, n$ is $\left\lfloor \frac nd \right\rfloor$, the whole-number part of $\frac nd$. It is the basic counting step behind most "how many numbers up to $N$" questions, and combined with inclusion-exclusion it counts the numbers divisible by $a$ or $b$: $\left\lfloor \frac na \right\rfloor + \left\lfloor \frac nb \right\rfloor - \left\lfloor \frac{n}{\operatorname{lcm}(a, b)} \right\rfloor$. To count within a range from $a$ to $b$, count up to $b$ and subtract the count up to $a - 1$.`,
           keywords: ["count multiples", "floor", "inclusion exclusion", "count multiples up to n", "how many multiples", "floor division counting"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -59,7 +59,7 @@ window.MATH_SECTIONS.push({
           id: "divisibility-rules",
           name: "Divisibility Rules",
           latex: String.raw`3, 9: \text{digit sum}; \quad 11: \text{alternating digit sum}; \quad 4, 8: \text{last } 2, 3 \text{ digits}`,
-          description: String.raw`For 7 and 13: use $1001 = 7 \cdot 11 \cdot 13$ — alternate sums of 3-digit blocks. A number is divisible by 6, 12, etc. iff divisible by the coprime factor pieces.`,
+          description: String.raw`Divisibility rules test whether a number is divisible by a small integer using only its digits: a number is divisible by $3$ or $9$ when the sum of its digits is, by $11$ when its alternating digit sum is, and by $4$ or $8$ when its last two or three digits are. Each rule comes from the remainders that powers of $10$ leave. For $7$ and $13$, use $1001 = 7 \cdot 11 \cdot 13$ and alternate the sums of three-digit blocks. A number is divisible by a composite like $72$ exactly when it is divisible by each coprime piece, here $8$ and $9$.`,
           keywords: ["digit sum", "divisible", "rules", "alternating", "1001"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -91,7 +91,7 @@ window.MATH_SECTIONS.push({
           id: "number-of-divisors",
           name: "Number of Divisors",
           latex: String.raw`n = p_1^{e_1} \cdots p_k^{e_k} \implies d(n) = (e_1 + 1)(e_2 + 1) \cdots (e_k + 1)`,
-          description: String.raw`$n$ is a perfect square iff $d(n)$ is odd. To count divisors satisfying a condition, work exponent by exponent.`,
+          description: String.raw`The number of divisors of $n$, written $d(n)$, counts its positive divisors, and it can be read straight off the prime factorization: $p_1^{e_1}p_2^{e_2}\cdots p_k^{e_k}$ has exactly $(e_1 + 1)(e_2 + 1)\cdots(e_k + 1)$ of them. So counting divisors needs only the exponents, never a list, and the formula runs backwards as well: a number with exactly $12$ divisors must have one of four exponent patterns. The count is odd exactly when the number is a perfect square. To count only the divisors with some property, such as being even or a perfect square, restrict the exponent choices prime by prime and multiply again.`,
           keywords: ["tau", "count divisors", "factors", "perfect square odd"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -118,7 +118,7 @@ window.MATH_SECTIONS.push({
           id: "product-of-divisors",
           name: "Product of Divisors",
           latex: String.raw`\prod_{d \mid n} d = n^{d(n)/2}`,
-          description: String.raw`Divisors pair up as $d \cdot \frac{n}{d} = n$, giving $\frac{d(n)}{2}$ pairs, so the product is $n^{d(n)/2}$. When $d(n)$ is odd — exactly when $n$ is a perfect square — the middle divisor $\sqrt{n}$ is its own partner.`,
+          description: String.raw`The product of all the positive divisors of $n$ is $n^{d(n)/2}$, where $d(n)$ is the number of divisors. The divisors pair up as $d$ and $\frac nd$, each pair multiplying to $n$, and there are $\frac{d(n)}{2}$ pairs. When $d(n)$ is odd, which happens exactly when $n$ is a perfect square, the middle divisor $\sqrt n$ is its own partner and supplies the half power.`,
           keywords: ["product of factors", "pairing divisors", "product of all divisors", "multiply the divisors of n", "n to the d(n)/2"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -127,7 +127,7 @@ window.MATH_SECTIONS.push({
           id: "eulers-totient",
           name: "Euler's Totient Function",
           latex: String.raw`\varphi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right)`,
-          description: String.raw`Counts integers in $[1, n]$ coprime to $n$. Multiplicative: $\varphi(mn) = \varphi(m)\varphi(n)$ when $\gcd(m,n) = 1$; $\varphi(p^k) = p^k - p^{k-1}$.`,
+          description: String.raw`Euler's totient $\varphi(n)$ counts the integers from $1$ to $n$ that are coprime to $n$, and it equals $n\prod\left(1 - \frac1p\right)$ over the distinct primes $p$ dividing $n$. It counts the fractions $\frac kn$ already in lowest terms, the step sizes that trace a single star polygon, and the exponent in Euler's theorem. It is multiplicative, $\varphi(mn) = \varphi(m)\varphi(n)$ when $\gcd(m, n) = 1$, and on a prime power $\varphi(p^k) = p^k - p^{k-1}$.`,
           keywords: ["phi", "totient", "coprime count", "multiplicative"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -172,7 +172,7 @@ window.MATH_SECTIONS.push({
           id: "perfect-square-divisors",
           name: "Perfect-Square Divisors",
           latex: String.raw`\#\{\text{square divisors of } \textstyle\prod p_i^{e_i}\} = \prod \left(\left\lfloor \tfrac{e_i}{2} \right\rfloor + 1\right)`,
-          description: String.raw`A divisor is a perfect square iff every exponent in it is even — so count the even choices $0, 2, 4, \dots$ for each prime independently. Same idea with multiples of 3 for cube divisors.`,
+          description: String.raw`The number of perfect-square divisors of $n = \prod p_i^{e_i}$ is $\prod\left(\left\lfloor \frac{e_i}{2} \right\rfloor + 1\right)$, because a divisor is a perfect square exactly when every exponent in it is even. Each prime's exponent is chosen from $0, 2, 4, \ldots$ up to $e_i$, independently of the others, so the choices multiply. The same count with multiples of $3$, or of $k$, counts the cube divisors, or the $k$th-power divisors.`,
           keywords: ["square divisors", "cube divisors", "even exponents", "count divisors condition"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -204,7 +204,7 @@ window.MATH_SECTIONS.push({
           id: "modular-basics",
           name: "Congruence Rules",
           latex: String.raw`x \equiv a,\; y \equiv b \pmod m \implies \begin{cases} x \pm y \equiv a \pm b \\ xy \equiv ab \\ x/y \equiv ab^{-1} & \text{if } \gcd(b,m)=1 \end{cases} \qquad ka \equiv kb \implies a \equiv b \pmod{m/\gcd(k,m)}`,
-          description: String.raw`Congruences add, subtract and multiply termwise, so $\equiv$ behaves almost like $=$. Division works too, but only as multiplication by an inverse: if $\gcd(y, m) = 1$ then $x/y$ means $x y^{-1}$, and that inverse exists exactly when $y$ and $m$ are coprime. Cancelling a common factor $k$ instead shrinks the modulus to $m/\gcd(k,m)$. Exponents are the one place the pattern breaks: you may reduce a base mod $m$ freely, but an exponent reduces mod $\varphi(m)$, never mod $m$.`,
+          description: String.raw`Two integers are congruent modulo $m$, written $a \equiv b \pmod m$, when they leave the same remainder on division by $m$, which is the same as $m$ dividing $a - b$. Congruences can be added, subtracted and multiplied like equations, so any number may be replaced by its remainder at any point, which keeps the numbers small and turns infinite searches into finite ones. Division works only as multiplication by an inverse, which exists exactly when the divisor is coprime to $m$; cancelling a shared factor $k$ instead shrinks the modulus to $\frac{m}{\gcd(k, m)}$. Exponents are the exception: a base may be reduced mod $m$, but an exponent reduces mod $\varphi(m)$, and only when the base is coprime to $m$.`,
           keywords: ["modular arithmetic", "congruence", "mod rules", "cancellation", "cannot divide", "add multiply mod", "residue", "divide mod n", "a mod n divided by b mod n", "termwise rules", "reduce the exponent"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
@@ -213,7 +213,7 @@ window.MATH_SECTIONS.push({
           id: "fermats-little-theorem",
           name: "Fermat's Little Theorem",
           latex: String.raw`a^{p-1} \equiv 1 \pmod{p} \quad (p \nmid a)`,
-          description: String.raw`For prime $p$. Equivalently $a^p \equiv a \pmod p$ for all $a$. The engine behind reducing huge exponents mod a prime.`,
+          description: String.raw`Fermat's little theorem says that for a prime $p$ and an integer $a$ not divisible by $p$, $a^{p-1} \equiv 1 \pmod p$; equivalently, $a^p \equiv a \pmod p$ for every integer $a$. It is the tool for reducing a large exponent modulo a prime: since $a^{p-1}$ is $1$, the exponent only matters mod $p - 1$. For a composite modulus the same role is played by Euler's theorem, and the two combine with the Chinese remainder theorem for moduli like $1000$.`,
           keywords: ["fermat", "prime modulus", "exponent reduction", "a to p minus 1"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -222,7 +222,7 @@ window.MATH_SECTIONS.push({
           id: "eulers-theorem",
           name: "Euler's Theorem",
           latex: String.raw`a^{\varphi(n)} \equiv 1 \pmod{n} \quad (\gcd(a, n) = 1)`,
-          description: String.raw`Generalizes Fermat to composite moduli. To find last digits of $a^{big}$, reduce the exponent mod $\varphi(n)$ (when $\gcd(a,n)=1$).`,
+          description: String.raw`Euler's theorem says that if $a$ and $n$ are coprime, then $a^{\varphi(n)} \equiv 1 \pmod n$, where $\varphi(n)$ counts the numbers from $1$ to $n$ that are coprime to $n$. It extends Fermat's little theorem from prime moduli to all moduli, and it lets a huge exponent be reduced modulo $\varphi(n)$. Its main use is reducing a big exponent before computing a remainder, with $\varphi(100) = 40$ and $\varphi(1000) = 400$ for the last two and three digits.`,
           keywords: ["euler", "totient exponent", "last digits", "composite modulus"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -249,7 +249,7 @@ window.MATH_SECTIONS.push({
           id: "crt",
           name: "Chinese Remainder Theorem",
           latex: String.raw`\begin{cases} x \equiv a_1 \pmod{n_1} \\ x \equiv a_2 \pmod{n_2} \\ \;\;\vdots \\ x \equiv a_k \pmod{n_k} \end{cases} \implies x \text{ unique} \pmod{n_1 n_2 \cdots n_k}`,
-          description: String.raw`With pairwise coprime moduli, there is a unique solution mod $n_1 n_2 \cdots n_k$. Solve big-modulus problems by splitting into prime-power pieces and recombining.`,
+          description: String.raw`The Chinese remainder theorem says that a system of congruences $x \equiv a_i \pmod{n_i}$ with pairwise coprime moduli has exactly one solution modulo the product $n_1n_2\cdots n_k$. Its main use is splitting: a question modulo a large composite number becomes separate questions modulo its prime-power factors, which are answered and then recombined. The recombination is usually done by hand, two congruences at a time. When the moduli share factors, a solution exists exactly when the congruences agree on every common factor.`,
           keywords: ["crt", "system of congruences", "coprime moduli", "unique solution"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -258,7 +258,7 @@ window.MATH_SECTIONS.push({
           id: "multiplicative-order",
           name: "Multiplicative Order",
           latex: String.raw`a^k \equiv 1 \pmod{n} \implies \operatorname{ord}_n(a) \mid k`,
-          description: String.raw`The order (smallest such positive $k$) divides any exponent giving 1 — in particular $\operatorname{ord}_n(a) \mid \varphi(n)$. Cycle lengths of repeating decimals are orders of 10.`,
+          description: String.raw`The multiplicative order of $a$ modulo $n$, for $a$ coprime to $n$, is the smallest positive exponent $k$ for which $a^k$ leaves remainder $1$ on division by $n$, that is, $a^k \equiv 1 \pmod n$. Its key property is that $a^m \equiv 1$ exactly when the order divides $m$; in particular the order divides $\varphi(n)$, so only the divisors of $\varphi(n)$ need testing. The period of the repeating decimal of $\frac1n$ is the order of $10$ modulo $n$, and in general the order is the exact length of the cycle of powers of $a$.`,
           keywords: ["order", "cycle length", "repeating decimal period", "divides"],
           importance: "medium",
           level: ["AIME"]
@@ -394,7 +394,7 @@ window.MATH_SECTIONS.push({
           id: "legendres-formula",
           name: "Legendre's Formula",
           latex: String.raw`v_p(n!) = \sum_{i=1}^{\infty} \left\lfloor \frac{n}{p^i} \right\rfloor = \frac{n - s_p(n)}{p - 1}`,
-          description: String.raw`The exponent of prime $p$ in $n!$, where $s_p(n)$ is the digit sum of $n$ in base $p$. Trailing zeros of $n!$ = $v_5(n!)$.`,
+          description: String.raw`Legendre's formula gives the exponent of a prime $p$ in the prime factorization of $n!$: $v_p(n!) = \left\lfloor \frac np \right\rfloor + \left\lfloor \frac n{p^2} \right\rfloor + \left\lfloor \frac n{p^3} \right\rfloor + \cdots$, a sum that stops once $p^k$ exceeds $n$. It answers "what is the largest power of $p$ dividing $n!$" and, with $p = 5$, "how many zeros does $n!$ end in". An equivalent form is $\frac{n - s_p(n)}{p - 1}$, where $s_p(n)$ is the digit sum of $n$ in base $p$.`,
           keywords: ["factorial", "prime exponent", "trailing zeros", "valuation"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -403,7 +403,7 @@ window.MATH_SECTIONS.push({
           id: "vp-factorial",
           name: "Counting a Prime's Factors in $n!$",
           latex: String.raw`v_p(n!) = \left\lfloor \frac{n}{p} \right\rfloor + \left\lfloor \frac{n}{p^2} \right\rfloor + \left\lfloor \frac{n}{p^3} \right\rfloor + \cdots \quad \text{(stop when } p^k > n\text{)}`,
-          description: String.raw`The hands-on procedure behind Legendre's formula: divide $n$ by $p$, then $p^2$, then $p^3$, flooring each time, and add. Each term counts one extra factor from the multiples of that power. Trailing zeros of $n!$ = the count for $p = 5$ (fives are scarcer than twos); for binomial coefficients, subtract: $v_p\binom{n}{k} = v_p(n!) - v_p(k!) - v_p((n-k)!)$.`,
+          description: String.raw`To count how many times a prime $p$ divides $n!$, divide $n$ by $p$, then by $p^2$, then by $p^3$, and so on, rounding each quotient down, and add the results, stopping once $p^k$ exceeds $n$. Each quotient counts the multiples of one power of $p$, so each number up to $n$ is counted as many times as $p$ divides it. With $p = 5$ this gives the number of zeros at the end of $n!$, and subtracting the counts for $k!$ and $(n - k)!$ from the count for $n!$ gives the power of $p$ in $\binom nk$.`,
           keywords: ["factors of prime in factorial", "how many times divides factorial", "trailing zeros recipe", "divide and floor", "largest power dividing factorial"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -481,7 +481,7 @@ window.MATH_SECTIONS.push({
           id: "chicken-mcnugget",
           name: "Chicken McNugget (Frobenius) Theorem",
           latex: String.raw`g(a,b) = ab - a - b, \qquad \#\{\text{non-representable}\} = \frac{(a-1)(b-1)}{2}`,
-          description: String.raw`For coprime positive $a, b$: the largest integer not expressible as $ax + by$ with $x, y \ge 0$ is $ab - a - b$. Sylvester's count: exactly $\frac{(a-1)(b-1)}{2}$ nonnegative integers are non-representable.`,
+          description: String.raw`The Chicken McNugget theorem says that for coprime positive integers $a$ and $b$, the largest amount that cannot be made as $ax + by$ with nonnegative integers $x$ and $y$ is $ab - a - b$. It is the tool for coin and stamp problems that ask for the largest impossible amount. Sylvester's count goes with it: exactly $\frac{(a - 1)(b - 1)}{2}$ amounts cannot be made at all.`,
           keywords: ["frobenius", "sylvester", "sylvester formula", "coin problem", "postage stamp", "non-representable", "coprime"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -526,7 +526,7 @@ window.MATH_SECTIONS.push({
           id: "difference-of-squares-rep",
           name: "Difference of Two Squares Representability",
           latex: String.raw`n = a^2 - b^2 \text{ solvable} \iff n \not\equiv 2 \pmod 4`,
-          description: String.raw`Since $a^2 - b^2 = (a-b)(a+b)$ needs two factors of the same parity. The number of representations equals the number of such factor pairs — count divisor pairs of matching parity.`,
+          description: String.raw`A positive integer $n$ can be written as a difference of two squares, $n = a^2 - b^2$, exactly when $n$ is not $2$ more than a multiple of $4$. The reason is the factoring $a^2 - b^2 = (a - b)(a + b)$: the two factors always have the same parity, so their product is either odd or a multiple of $4$. The number of representations is the number of factor pairs of $n$ with matching parity.`,
           keywords: ["a squared minus b squared", "representable", "factor parity", "difference of two squares representation", "which numbers are a difference of squares", "not two mod four"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -576,7 +576,7 @@ window.MATH_SECTIONS.push({
           id: "base-conversion",
           name: "Base-$b$ Representation",
           latex: String.raw`(d_k d_{k-1} \cdots d_0)_b = \sum_{i=0}^{k} d_i\, b^i`,
-          description: String.raw`A number has $\lfloor \log_b n \rfloor + 1$ digits in base $b$. Convert to base $b$ by repeated division; many digit puzzles are secretly polynomial equations in $b$.`,
+          description: String.raw`Writing a number in base $b$ means expressing it as a sum of powers of $b$, each multiplied by a digit from $0$ to $b - 1$: $(d_k \cdots d_1d_0)_b = d_kb^k + \cdots + d_1b + d_0$. Every positive integer has exactly one such representation, found by dividing by $b$ repeatedly, and it has $\lfloor \log_b n \rfloor + 1$ digits. The point for contests is that a digit string is a polynomial in the base, so a puzzle about digits in an unknown base is usually a polynomial equation in $b$, with the digit bounds $0 \le d \lt b$ cutting the candidates down.`,
           keywords: ["base b", "digits", "convert", "binary", "positional"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -585,7 +585,7 @@ window.MATH_SECTIONS.push({
           id: "repeating-decimals",
           name: "Repeating Decimals to Fractions",
           latex: String.raw`0.\overline{d_1 d_2 \cdots d_k} = \frac{d_1 d_2 \cdots d_k}{\underbrace{99\cdots9}_{k}}`,
-          description: String.raw`The period of $\frac{1}{n}$ (for $\gcd(n, 10) = 1$) is $\operatorname{ord}_n(10)$, which divides $\varphi(n)$. E.g. $\frac{1}{7} = 0.\overline{142857}$ with period 6.`,
+          description: String.raw`A repeating decimal whose block of $k$ digits repeats from the start is that block divided by $k$ nines: $0.\overline{36} = \frac{36}{99} = \frac4{11}$. A few digits before the repeat just shift the fraction by a power of $10$. Going the other way, $\frac1n$ with $n$ coprime to $10$ repeats with period equal to the multiplicative order of $10$ modulo $n$, the smallest $k$ with $n \mid 10^k - 1$; for example $\frac17 = 0.\overline{142857}$ has period $6$.`,
           keywords: ["repeating decimal", "period", "nines", "fraction"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -594,7 +594,7 @@ window.MATH_SECTIONS.push({
           id: "digit-sum-carries",
           name: "Digit Sums and Carries",
           latex: String.raw`s(a+b) = s(a) + s(b) - 9c, \qquad c = \#\{\text{carries when adding } a + b\}`,
-          description: String.raw`Each carry moves ten units out of one place and returns one to the next, so the digit sum falls by exactly $9$ every time one happens. In base $b$ the drop is $b-1$. Read backwards, the identity counts the carries: $c = \frac{s(a)+s(b)-s(a+b)}{9}$.`,
+          description: String.raw`The digit sum of a sum drops by $9$ for every carry: $s(a + b) = s(a) + s(b) - 9c$, where $c$ is the number of carries when $a$ and $b$ are added. Each carry takes ten units out of one place and puts one unit into the next, a net loss of $9$; in base $b$ the loss is $b - 1$. Read backwards it counts the carries, and "no carrying" means exactly $s(a + b) = s(a) + s(b)$.`,
           keywords: ["digit sum of a sum", "carries", "digit sum drops by nine", "count the carries", "no carrying addition", "base b carry drop", "s(a+b)"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -612,7 +612,7 @@ window.MATH_SECTIONS.push({
           id: "digit-count",
           name: "Number of Digits",
           latex: String.raw`\#\text{digits of } n \text{ in base } b = \lfloor \log_b n \rfloor + 1`,
-          description: String.raw`E.g. $2^{100}$ has $\lfloor 100 \log_{10} 2 \rfloor + 1 = 31$ digits. Remember $\log_{10} 2 \approx 0.3010$ and $\log_{10} 3 \approx 0.4771$.`,
+          description: String.raw`The number of digits of a positive integer $n$ is $\lfloor \log_{10} n \rfloor + 1$, and in base $b$ it is $\lfloor \log_b n \rfloor + 1$. With $\log_{10} 2 \approx 0.30103$ and $\log_{10} 3 \approx 0.47712$, it handles numbers far too large to write out: $2^{100}$ has $\lfloor 30.103 \rfloor + 1 = 31$ digits. The fractional part of the logarithm also gives the leading digits.`,
           keywords: ["digits", "log", "how many digits", "leading digit"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -653,7 +653,7 @@ window.MATH_SECTIONS.push({
           id: "lattice-points-gcd",
           name: "Lattice Points on a Segment",
           latex: String.raw`\#\{\text{lattice points strictly between } (0,0) \text{ and } (a, b)\} = \gcd(a, b) - 1, \qquad \#\{\text{grid squares crossed}\} = m + n - \gcd(m, n)`,
-          description: String.raw`Pairs with Pick's Theorem for lattice-polygon problems: total boundary points on the segment including endpoints is $\gcd(a,b) + 1$. In three dimensions the same inclusion-exclusion counts the unit cubes a diagonal passes through: $a + b + c - \gcd(a,b) - \gcd(b,c) - \gcd(c,a) + \gcd(a,b,c)$.`,
+          description: String.raw`The segment from $(0, 0)$ to $(a, b)$, with $a$ and $b$ integers, passes through $\gcd(a, b) - 1$ lattice points strictly between its ends, and $\gcd(a, b) + 1$ counting the ends. The same idea counts the unit squares a diagonal crosses: the diagonal of an $m \times n$ grid of squares passes through the interiors of $m + n - \gcd(m, n)$ of them. It supplies the boundary count in Pick's theorem, one edge at a time.`,
           keywords: ["lattice", "segment", "visible points", "gcd", "squares crossed by diagonal", "diagonal of grid"],
           importance: "medium",
           level: ["AMC12", "AIME"]

@@ -53,6 +53,9 @@
   "angle-bisector-length": [
    "Length of an Angle Bisector"
   ],
+  "angle-bisector-reflection": [
+   "Reflecting Across an Angle Bisector"
+  ],
   "angle-bisector-theorem": [
    "Angle Bisector Theorem"
   ],
@@ -61,6 +64,9 @@
   ],
   "angle-chord-secant": [
    "Angles from Chords, Secants, Tangents"
+  ],
+  "anticomplementary-triangle": [
+   "Anticomplementary Triangle"
   ],
   "antisymmetric-factorization": [
    "a-b",
@@ -321,8 +327,8 @@
    "Length of a Chord"
   ],
   "circle-basics": [
-   "Circumference, Area, Arc",
-   "Circumference, Area, Arc & Sector"
+   "Circle Area, Circumference, Arcs",
+   "Circle Area, Circumference, Arcs & Sectors"
   ],
   "circle-equation": [
    "Equation of a Circle"
@@ -416,6 +422,9 @@
   "convex-position": [
    "Points in Convex Position"
   ],
+  "conway-circle": [
+   "The Conway Circle"
+  ],
   "coordinate-bash": [
    "Coordinate Bashing"
   ],
@@ -434,6 +443,9 @@
   ],
   "cot-tan-telescoping": [
    "Cotangent–Tangent Telescoping"
+  ],
+  "cotangent-rule": [
+   "The Cotangent Rule"
   ],
   "counting-blocks": [
    "Grouping Method"
@@ -467,6 +479,9 @@
   "cryptarithms": [
    "Alphametics",
    "Cryptarithms"
+  ],
+  "cyclic-equal-angles": [
+   "Equal Angles in a Cyclic Quadrilateral"
   ],
   "cyclic-opposite-angles": [
    "Cyclic Quadrilateral Opposite Angles"
@@ -589,6 +604,9 @@
   "equal-chords-arcs": [
    "Equal Chords, Arcs",
    "Equal Chords, Arcs & Distances"
+  ],
+  "equiangular-hexagon-area": [
+   "Area of an Equiangular Hexagon"
   ],
   "erdos-ginzburg-ziv": [
    "Erdős–Ginzburg–Ziv Theorem"
@@ -989,6 +1007,9 @@
   "jacobi-symbol": [
    "Jacobi Symbol"
   ],
+  "japanese-theorem": [
+   "The Japanese Theorem"
+  ],
   "jensens-inequality": [
    "Jensen",
    "Jensen's",
@@ -1048,6 +1069,9 @@
   ],
   "law-of-cosines": [
    "Law of Cosines"
+  ],
+  "law-of-cosines-special-triangles": [
+   "Special Triangles from the Law of Cosines"
   ],
   "law-of-sines": [
    "Extended Law of Sines"
@@ -1140,6 +1164,9 @@
   ],
   "medial-triangle": [
    "Medial Triangle"
+  ],
+  "median-doubling": [
+   "Doubling a Median"
   ],
   "median-minimizes-abs": [
    "Median Trick"
@@ -1302,9 +1329,19 @@
    "Pappuss",
    "Pappus’s"
   ],
+  "pappus-hexagon": [
+   "Pappus",
+   "Pappus's",
+   "Pappus's Hexagon Theorem",
+   "Pappuss",
+   "Pappus’s"
+  ],
   "parabola-focus-directrix": [
    "Parabola Focus",
    "Parabola Focus & Directrix"
+  ],
+  "parallel-line-similarity": [
+   "Drawing a Parallel Line"
   ],
   "partitions": [
    "Partitions and Compositions"
@@ -1354,13 +1391,42 @@
   "perp-to-angle-bisector": [
    "Perpendicular to an Angle Bisector"
   ],
+  "perpendicular-bisector-locus": [
+   "Perpendicular Bisector as a Locus"
+  ],
   "phantom-point": [
    "Phantom Point Method"
+  ],
+  "picks-hexagonal-grid": [
+   "Hexagonal Grids",
+   "Hexagonal Grids and Pick's Theorem",
+   "Pick's Theorem"
   ],
   "picks-theorem": [
    "Pick",
    "Pick's",
    "Pick's Theorem",
+   "Picks",
+   "Pick’s"
+  ],
+  "picks-theorem-general": [
+   "Pick",
+   "Pick's",
+   "Pick's Theorem on Any Lattice",
+   "Picks",
+   "Pick’s"
+  ],
+  "picks-triangular-lattice": [
+   "Pick",
+   "Pick's",
+   "Pick's Theorem on a Triangular Grid",
+   "Picks",
+   "Pick’s"
+  ],
+  "picks-with-holes": [
+   "Pick",
+   "Pick's",
+   "Pick's Theorem with Holes",
    "Picks",
    "Pick’s"
   ],
@@ -1411,6 +1477,11 @@
   "polygon-angle-sums": [
    "Polygon Angle Sums"
   ],
+  "poncelet-closure": [
+   "Bicentric Polygons",
+   "Bicentric Polygons & Poncelet Closure",
+   "Poncelet Closure"
+  ],
   "power-mean-inequality": [
    "Power Mean Inequality"
   ],
@@ -1456,6 +1527,13 @@
   ],
   "ptolemy-equilateral": [
    "Ptolemy on an Equilateral Triangle"
+  ],
+  "ptolemy-second-theorem": [
+   "Ptolemy",
+   "Ptolemy's",
+   "Ptolemy's Second Theorem",
+   "Ptolemys",
+   "Ptolemy’s"
   ],
   "ptolemys-inequality": [
    "Ptolemy",
@@ -1580,6 +1658,9 @@
   "rotation-90": [
    "Rotating a Point"
   ],
+  "rotation-center": [
+   "Finding the Center of a Rotation"
+  ],
   "rotation-reflection-matrices": [
    "Reflection Matrices",
    "Rotation & Reflection Matrices"
@@ -1597,6 +1678,9 @@
   "same-base-area-ratio": [
    "Diagonal Split",
    "Same-Base Area Ratio"
+  ],
+  "sawayama-thebault": [
+   "The Sawayama–Thébault Lemma"
   ],
   "schurs-inequality": [
    "Schur",
@@ -1713,6 +1797,9 @@
    "First-Step Analysis",
    "Probability States, Markov Chains",
    "Probability States, Markov Chains & First-Step Analysis"
+  ],
+  "steiner-line": [
+   "The Steiner Line"
   ],
   "stewarts-theorem": [
    "Stewart",
@@ -1991,6 +2078,10 @@
    "Zeckendorfs",
    "Zeckendorf’s"
   ],
+  "zonogon-minkowski": [
+   "Regions Swept by Independent Parameters",
+   "Zonogons"
+  ],
   "zsygmondy": [
    "Zsygmondy",
    "Zsygmondy's",
@@ -2052,7 +2143,24 @@
    "SOS"
   ]
  },
- "ambiguous": {},
+ "ambiguous": {
+  "pappus": [
+   "pappus-centroid",
+   "pappus-hexagon"
+  ],
+  "pappus's": [
+   "pappus-centroid",
+   "pappus-hexagon"
+  ],
+  "pappuss": [
+   "pappus-centroid",
+   "pappus-hexagon"
+  ],
+  "pappus’s": [
+   "pappus-centroid",
+   "pappus-hexagon"
+  ]
+ },
  "caseSensitive": [
   "EGF",
   "LTE",
@@ -2169,6 +2277,7 @@
   "newton's": "newtons-sums",
   "newtons": "newtons-sums",
   "newton’s": "newtons-sums",
+  "pick's theorem": "picks-theorem",
   "ptolemy": "ptolemys-theorem",
   "ptolemy's": "ptolemys-theorem",
   "ptolemys": "ptolemys-theorem",
