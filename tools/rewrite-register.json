@@ -878,7 +878,7 @@
   },
   {
    "id": "perp-to-angle-bisector",
-   "date": "2026-09-26",
+   "date": "2026-09-27",
    "batch": "new cards"
   },
   {
@@ -922,11 +922,6 @@
    "batch": "22"
   },
   {
-   "id": "angle-bisector-reflection",
-   "date": "2026-09-26",
-   "batch": "new cards"
-  },
-  {
    "id": "trig-substitution",
    "date": "2026-09-26",
    "batch": "23"
@@ -965,6 +960,46 @@
    "id": "partitions",
    "date": "2026-09-26",
    "batch": "23"
+  },
+  {
+   "id": "roots-unity-distance-product",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "cevian-area-ratio",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "regular-hexagon-area",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "tangent-chord-angle",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "coefficient-extraction",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "vertex-form",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "first-order-recurrence",
+   "date": "2026-09-27",
+   "batch": "24"
+  },
+  {
+   "id": "trivial-inequality",
+   "date": "2026-09-27",
+   "batch": "24"
   }
  ]
 }

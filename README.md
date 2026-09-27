@@ -1,6 +1,6 @@
 # Competition Math Reference
 
-A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 557 cards
+A searchable reference for MATHCOUNTS, AMC 10/12, AIME and olympiad training. 555 cards
 covering formulas, general techniques, and recurring problem formats, plus a database of
 1367 past contest problems cross-linked to the cards their solutions run through.
 
@@ -113,6 +113,8 @@ tools/search-eval.html         search relevance harness
 tools/validate-problem-db.js   checks every problem's card and topic ids resolve
 tools/scan-conventions.py      the census behind CONVENTIONS.md; fails on a broken rule
 tools/check-diagrams.py        every figure fits its canvas and no two labels collide
+tools/check-labels.py          as rendered in Chrome: no label sits on a dot, a line or another label
+tools/label-audit.html         the page check-labels drives; #show draws every offending figure
 tools/check-lists.py           list ids resolve, and every route is complete
 tools/check-topics.py          every card carries a topic chip, and no subsection title awards a wrong one
 tools/check-lab.sh             parse-checks the inline script of each lab page

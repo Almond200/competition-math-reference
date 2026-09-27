@@ -119,16 +119,20 @@ The monic case also proves irrationality. The only candidates for $x^2 - 2$ are 
 ## On contests
 Three problems here, all AIME, none solved by it alone: it usually factors a cubic that another method has produced, such as the equation a [[sp-substitution|symmetric substitution]] reduces a system to, or the equation for the ratio of a geometric series. Try the candidates with small denominators first, since contest cubics are built to have a rational root.`,
 
-"coefficient-extraction": String.raw`## Why it works
-A polynomial evaluated at a specific point is a weighted sum of its coefficients, with the weights being powers of that point. Choosing the point well makes the weights collapse to something you want: at $x=1$ every weight is $1$, at $x=-1$ they alternate, and at a root of unity they cycle. So evaluation reads coefficient information straight off a polynomial you may have no hope of expanding.
+"coefficient-extraction": String.raw`
+## Why it works
+Evaluating a polynomial at a number weights each coefficient by a power of that number, so a well-chosen point makes the weights collapse: $$P(1) = a_0 + a_1 + a_2 + \cdots, \qquad P(-1) = a_0 - a_1 + a_2 - \cdots.$$
+
+Adding and subtracting those cancels one parity at a time: $$\frac{P(1) + P(-1)}{2} = a_0 + a_2 + a_4 + \cdots, \qquad \frac{P(1) - P(-1)}{2} = a_1 + a_3 + a_5 + \cdots.$$ At $x = 0$ every weight but the first vanishes, leaving $a_0$.
 
 ## How to use it
-The three cheap evaluations are $P(1)=\sum a_i$ for the coefficient sum, $P(-1)=\sum(-1)^ia_i$ for its alternating version, and $P(0)=a_0$ for the constant term. Combining the first two separates by parity: $\frac{P(1)+P(-1)}{2}$ is the even-index coefficient sum and $\frac{P(1)-P(-1)}{2}$ the odd-index one. The general version is the roots-of-unity filter, $\frac1n\sum_{j}\omega^{-jr}P(\omega^j)$ with $\omega=e^{2\pi i/n}$, which picks out every $n$th coefficient.
+Evaluate the polynomial in whatever form the problem gives it, a product, a power or a composition, and never expand it. For $(1 + 2x)^{10}(1 - x)^4$ the coefficient sum is $3^{10} \cdot 0^4 = 0$, and the constant term is $1$.
 
-This works on any polynomial you can evaluate but not expand: products like $(1 + 2x)^{10}(1 - x)^4$, compositions, and [[generating-function-method|generating functions]]. For a two-variable polynomial, "sum of coefficients of even powers of $x$" means fixing the other variable first, then filtering.
+For every third or every fourth coefficient, replace $\pm 1$ by the cube or fourth roots of unity, which is the [[roots-of-unity-filter|roots of unity filter]]. In a polynomial of two variables, fix the other variable first. A [[generating-function-method|generating function]] read this way counts all its objects at once, since $G(1)$ adds up every coefficient.
 
 ## On contests
-A standard AMC and AIME opener whenever a question asks for a sum of coefficients of an unexpanded product. The parity split is the common follow-up, and anything asking for every third or every fourth coefficient is a roots-of-unity filter in disguise.`,
+Two problems here, one AIME and one AMC 10, one solved by it alone. The AMC version combines it with the [[binomial-theorem|binomial theorem]], and the AIME version asks for the sum of the absolute values of the coefficients, which one evaluation at $x = -1$ produces once the sign of every coefficient is known.
+`,
 
 
 "newtons-sums": String.raw`
@@ -188,17 +192,27 @@ Even degree $2m$: divide by $x^m$, substitute, halve the degree. Odd degree: $x 
 ## On contests
 Quartic equations on AMC 12/AIME with symmetric coefficients are begging for this — it converts them to quadratics. The substitution powers $x + \frac{1}{x} = 2\cos\theta$ connections too (roots on the unit circle).`,
 
-"vertex-form": String.raw`## Why it works
-Complete the square: $y = a\left(x + \frac{b}{2a}\right)^2 + c - \frac{b^2}{4a}$. The squared term is minimized (or maximized, $a\lt 0$) exactly at $x = -\frac{b}{2a}$, and symmetry about that vertical line is manifest.
+"vertex-form": String.raw`
+## Why it works
+Completing the square separates the part that varies from the part that does not: $$ax^2 + bx + c = a\left(x + \frac{b}{2a}\right)^2 + c - \frac{b^2}{4a}.$$
+
+The square is never negative and is zero only at $x = -\frac{b}{2a}$. So when $a \gt 0$ the expression is smallest there, with value $c - \frac{b^2}{4a}$, and when $a \lt 0$ it is largest there. The square also takes the same value at $-\frac{b}{2a} + t$ and at $-\frac{b}{2a} - t$, which is the symmetry the figure at the top shows.
 
 ## How to use it
-Optimization without calculus, and the reason [[max-product-fixed-sum|a fixed sum maximizes its product in the middle]]. The symmetry fact is used more than the extremum: [[vietas-quadratic|roots average]] to $-\frac{b}{2a}$; equal function values occur at points equidistant from the axis; "the parabola passes through $(p, k)$ and $(q, k)$" pins the axis at $x = \frac{p+q}{2}$.
+For an optimization, write the quantity as a quadratic in one variable and read off the vertex. That is why [[max-product-fixed-sum|a fixed sum has its largest product in the middle]]: $x(s - x)$ is a downward parabola with its vertex at $x = \frac s2$. If the variable is restricted to a range that misses the vertex, the extreme value is at the endpoint nearer to it, as in the example.
+
+The symmetry is used even more than the extremum. Two points at the same height put the axis halfway between them, and the roots are such a pair, so they average to $-\frac{b}{2a}$, as [[vietas-quadratic|Vieta's formulas]] also say.
+
+{{figure:symmetry}}
+
+So a parabola known to pass through $(p, k)$ and $(q, k)$ has its axis at $x = \frac{p + q}{2}$ before any coefficient is found, which often turns a system of conditions into one equation.
 
 ## On contests
-Max-area/max-product problems on AMC 10 are quadratic vertices in disguise. Symmetric-point pairs give the axis instantly, often collapsing a system of conditions to one equation.`,
+Two problems here, both AIME, one solved by it alone; the other adds [[casework-method|casework]] on where the vertex falls relative to the allowed range. On the AMC 10 it drives maximum-area and maximum-revenue questions, which are quadratics in disguise.
+`,
 
 "lagrange-interpolation": String.raw`## Key forms
-- $P(x)=\sum_i y_i\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}$ — each basis term is built to equal $1$ at its own node and $0$ at every other, so the sum passes through all the data by construction
+- $P(x)=\alt{\sum_i y_i\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}}{y_1\frac{(x-x_2)\cdots(x-x_n)}{(x_1-x_2)\cdots(x_1-x_n)}+\cdots+y_n\frac{(x-x_1)\cdots(x-x_{n-1})}{(x_n-x_1)\cdots(x_n-x_{n-1})}}$ — each basis term is built to equal $1$ at its own node and $0$ at every other, so the sum passes through all the data by construction
 - $n$ points determine a unique polynomial of degree at most $n-1$, since two such interpolants would differ by a polynomial with $n$ roots — which is also what makes "a cubic through these five points" a contradiction
 
 ## Why it works
@@ -424,12 +438,12 @@ Eight problems here, six AIME and two AMC 12, none by it alone and each with a d
 
 "telescoping": String.raw`
 ## Key forms
-- $\sum_{k=m}^{n}\left(f(k) - f(k+1)\right) = f(m) - f(n+1)$ — only the two ends survive
+- $\alt{\sum_{k=m}^{n}\left(f(k) - f(k+1)\right)}{\big(f(m) - f(m+1)\big) + \big(f(m+1) - f(m+2)\big) + \cdots + \big(f(n) - f(n+1)\big)} = f(m) - f(n+1)$ — only the two ends survive
 - $\frac{1}{(x+a)(x+b)} = \frac{1}{b-a}\left(\frac{1}{x+a} - \frac{1}{x+b}\right)$ — the two-factor partial fraction split
 - cover-up — the weight on $\frac{1}{x - r}$ is what remains after deleting that factor, evaluated at $x = r$
 - $\frac{1}{k(k+d)} = \frac1d\left(\frac1k - \frac1{k+d}\right)$ — a gap of $d$ leaves $d$ surviving terms at each end
 - $\frac{k}{(k+1)!} = \frac{1}{k!} - \frac{1}{(k+1)!}$ and $\frac{1}{\sqrt k + \sqrt{k+1}} = \sqrt{k+1} - \sqrt k$ — two differences in disguise
-- $\prod_{k=m}^{n}\frac{f(k)}{f(k+1)} = \frac{f(m)}{f(n+1)}$ — products telescope with division in place of subtraction
+- $\alt{\prod_{k=m}^{n}\frac{f(k)}{f(k+1)}}{\frac{f(m)}{f(m+1)}\cdot\frac{f(m+1)}{f(m+2)}\cdots\frac{f(n)}{f(n+1)}} = \frac{f(m)}{f(n+1)}$ — products telescope with division in place of subtraction
 
 ## Why it works
 When each term is a difference of consecutive values of one function, adding the terms makes every intermediate value appear once with a plus sign and once with a minus sign, and those cancel.
@@ -557,8 +571,8 @@ AMC comparison problems and AIME bounding steps. HM's appearance: [[average-spee
 
 "cauchy-schwarz": String.raw`
 ## Key forms
-- $\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)$ — the plain form, with equality exactly when the two sequences are proportional
-- $\sum \dfrac{x_i^2}{y_i} \ge \dfrac{\left(\sum x_i\right)^2}{\sum y_i}$ — Titu's lemma, also called the Engel form; the one to reach for whenever squares sit over positive denominators
+- $\alt{\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)}{(a_1b_1 + \cdots + a_nb_n)^2 \le (a_1^2 + \cdots + a_n^2)(b_1^2 + \cdots + b_n^2)}$ — the plain form, with equality exactly when the two sequences are proportional
+- $\alt{\sum \dfrac{x_i^2}{y_i} \ge \dfrac{\left(\sum x_i\right)^2}{\sum y_i}}{\dfrac{x_1^2}{y_1} + \cdots + \dfrac{x_n^2}{y_n} \ge \dfrac{(x_1 + \cdots + x_n)^2}{y_1 + \cdots + y_n}}$ — Titu's lemma, also called the Engel form; the one to reach for whenever squares sit over positive denominators
 - $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$ — the vector reading, which makes it obvious: the dot product carries a $\cos\theta$ that never exceeds $1$
 - $a_i = \sqrt{w_i}\cdot\dfrac{a_i}{\sqrt{w_i}}$ — the weighting trick: split each term this way before applying it to get a weighted version for free
 
@@ -588,14 +602,24 @@ It makes "pair large with large" rigorous, and it is the honest engine behind se
 ## On contests
 Mostly olympiad, but AMC/AIME "assign these values to maximize (or minimize) $\sum a_i b_i$" problems are direct: sort both lists and pair them in the same order for the maximum, opposite order for the minimum.`,
 
-"trivial-inequality": String.raw`## Why it works
-A real square is nonnegative; sums of squares are nonnegative. That is the whole content — and the ancestor of AM-GM, Cauchy-Schwarz, and QM-AM.
+"trivial-inequality": String.raw`
+## Why it works
+A real number and its negative have the same square, and the square of a positive number is positive, so $x^2 \ge 0$ for every real $x$, with equality exactly at $x = 0$. A sum of squares is therefore nonnegative too, and it is zero only when every square is.
+
+Applied to a difference, it gives the two-variable form $$(a - b)^2 \ge 0 \iff a^2 + b^2 \ge 2ab,$$ with equality exactly when $a = b$. Adding the three such inequalities for the pairs from $a$, $b$, $c$ and halving gives $$a^2 + b^2 + c^2 - ab - bc - ca = \tfrac12\left[(a - b)^2 + (b - c)^2 + (c - a)^2\right] \ge 0.$$
+
+The two-variable form with $a = \sqrt x$ and $b = \sqrt y$ is already [[am-gm|AM-GM]] for two numbers, and [[cauchy-schwarz|Cauchy–Schwarz]] and [[mean-chain|the mean inequalities]] are sums of such squares.
 
 ## How to use it
-[[completing-the-square|Completing the square]] is its applied form: any quadratic expression's extremum, two-variable minimizations ($x^2 + y^2 \ge 2xy$ and its weighted versions), and [[sos-method|SOS]] ("sum of squares") decompositions for symmetric inequalities. When a minimum is asked and calculus is unavailable, complete squares first.
+For an expression in several variables, [[completing-the-square|complete the square]] in each variable and read off the constant left over: $$x^2 - 6x + y^2 + 4y + 20 = (x - 3)^2 + (y + 2)^2 + 7 \ge 7,$$ with equality at $(3, -2)$.
+
+When a product or a cross term is in the way, look for a hidden square. $a^2 + b^2 \ge 2ab$ bounds a product by a sum of squares, and $\frac{x}{y} + \frac{y}{x} \ge 2$ for positive $x$ and $y$ is $\left(\sqrt{x/y} - \sqrt{y/x}\right)^2 \ge 0$. Writing a symmetric expression as a sum of squares is the [[sos-method|SOS method]].
+
+The equality case matters as much as the bound: every square must vanish at once, which finds the point where the minimum occurs and confirms that it is actually reached.
 
 ## On contests
-"Find the minimum of $x^2 - 6x + y^2 + 4y + 20$" — complete both squares, read the answer. Also the fastest path to $a^2 + b^2 + c^2 \ge ab + bc + ca$ (sum the three squared differences).`,
+Two problems here, both AIME, one solved by it alone; the other completes the square first. Minimization questions in two or three free variables usually end as a sum of squares plus a constant, and the equality case gives the point where the minimum occurs.
+`,
 
 "abs-triangle-inequality": String.raw`## Why it works
 Square both sides for the real/complex case, or read it geometrically: the path through the origin detour cannot be shorter than the direct one. Equality iff the terms share direction (same sign / same argument).
@@ -758,8 +782,8 @@ An AIME staple, with 17 problems tagged here and only 1 solved by the roots alon
 
 "roots-of-unity-filter": String.raw`
 ## Key forms
-- $\frac1n\sum_{j=0}^{n-1} f(\omega^j)$ — averaging a [[generating-function-method|generating function]] over the $n$th [[roots-of-unity|roots of unity]] keeps exactly the coefficients whose index is divisible by $n$
-- $\sum_{k\equiv r\,(n)}[x^k]f(x)=\frac1n\sum_{j=0}^{n-1}\omega^{-jr}f(\omega^j)$ — the phase factor $\omega^{-jr}$ selects any residue class, the form to write when the problem names a specific remainder
+- $\frac1n\alt{\sum_{j=0}^{n-1} f(\omega^j)}{\left(f(1) + f(\omega) + \cdots + f(\omega^{n-1})\right)}$ — averaging a [[generating-function-method|generating function]] over the $n$th [[roots-of-unity|roots of unity]] keeps exactly the coefficients whose index is divisible by $n$
+- $\alt{\sum_{k\equiv r\,(n)}[x^k]f(x)=\frac1n\sum_{j=0}^{n-1}\omega^{-jr}f(\omega^j)}{[x^r]f + [x^{r+n}]f + [x^{r+2n}]f + \cdots = \frac1n\left(f(1) + \omega^{-r}f(\omega) + \cdots + \omega^{-(n-1)r}f(\omega^{n-1})\right)}$ — the phase factor $\omega^{-jr}$ selects any residue class, the form to write when the problem names a specific remainder
 - $\frac{f(1) + f(-1)}{2}$ and $\frac{f(1) + f(\omega) + f(\omega^2)}{3}$ — the cases $n = 2$ and $n = 3$, which cover almost every contest use
 
 ## Why it works
@@ -779,14 +803,28 @@ The case $n = 2$ needs only $f(1)$ and $f(-1)$, as in the example, and $n = 4$ u
 ## On contests
 Four problems here, two AIME, one AMC 12 and one AMC 10, one solved by it alone. The typical question counts subsets whose sum is divisible by $3$, filtering $\prod(1 + x^k)$ at the cube roots of unity; harder ones read a multisection as a reduction modulo $x^n - 1$ and finish with [[fermats-little-theorem|Fermat's little theorem]]. The simplest case, $n = 2$, is a count by parity.`,
 
-"roots-unity-distance-product": String.raw`## Why it works
-$\frac{x^n - 1}{x - 1} = \prod_{k=1}^{n-1}(x - \omega^k)$; letting $x \to 1$ on both sides gives $n$ on the left. Taking absolute values converts to distances; the sine form uses $|1 - e^{i\phi}| = 2\sin\frac{\phi}{2}$.
+"roots-unity-distance-product": String.raw`
+## Why it works
+Dividing $x^n - 1$ by $x - 1$ leaves a polynomial whose roots are exactly the other $n - 1$ roots of unity, so it factors over them: $$\frac{x^n - 1}{x - 1} = 1 + x + \cdots + x^{n-1} = (x - \omega)(x - \omega^2)\cdots(x - \omega^{n-1}).$$
+
+At $x = 1$ the middle expression is a sum of $n$ ones, so $(1 - \omega)(1 - \omega^2)\cdots(1 - \omega^{n-1}) = n$. The division happens before the substitution, so no limit is needed, and taking absolute values turns each factor into a distance.
+
+Each factor is a chord of the unit circle. The points $1$ and $\omega^k$ are separated by the central angle $\frac{2k\pi}{n}$, and the radius bisecting that angle cuts the chord into two halves of length $\sin\frac{k\pi}{n}$, so $$|1 - \omega^k| = 2\sin\frac{k\pi}{n}.$$
+
+{{figure:chord}}
+
+Multiplying the $n - 1$ chords gives $2^{n-1}\sin\frac{\pi}{n}\sin\frac{2\pi}{n}\cdots\sin\frac{(n-1)\pi}{n} = n$, which is the sine product.
 
 ## How to use it
-Any "product of distances from one vertex of a regular polygon" or "product of chord lengths" question: scale to the unit circle, apply, rescale (distances scale by $R$, so the product gains $R^{n-1}$). The sine-product corollary evaluates otherwise-hard products like $\sin 20^\circ \sin 40^\circ \sin 60^\circ \sin 80^\circ$.
+Scale to the unit circle first. On a circle of radius $R$ every chord is $R$ times as long, so the product of the distances from one vertex of a regular $n$-gon to the other $n - 1$ vertices is $nR^{n-1}$, as in the example.
+
+For products of sines at equally spaced angles, pair $\sin\frac{k\pi}{n}$ with $\sin\frac{(n-k)\pi}{n}$, which is equal to it, and take a square root. With $n = 9$ every factor appears twice, so $$\sin 20^\circ \sin 40^\circ \sin 60^\circ \sin 80^\circ = \sqrt{\frac{9}{2^8}} = \frac{3}{16}.$$
+
+When the point is on the circle but not at a vertex, the product depends on where it is, which is [[ngon-vertex-distance-product|the product from a general point]]; other spacings of sines and cosines are on [[evenly-spaced-angle-products|evenly spaced angle products]].
 
 ## On contests
-A named AIME classic ("product of the lengths of all chords from one vertex...") and the backbone of several $\prod \sin$ evaluations. Remember both the clean statement and the $2\sin\frac{\phi}{2}$ conversion.`,
+Three problems here, all AIME, none solved by it alone. The factors $1 - \omega^k$ come from a polynomial whose roots are roots of unity, or appear as chord lengths in a regular polygon, and the product is finished with [[de-moivre|De Moivre's theorem]] or a [[double-angle|double-angle]] identity that simplifies what it leaves.
+`,
 
 "pythagorean-identities": String.raw`
 ## Why it works
@@ -1060,7 +1098,7 @@ Four problems here, all AIME, none by it alone; two lean on the [[difference-of-
 
 "fx-pairing": String.raw`
 ## Key forms
-- if $f(x)+f(1-x)=c$ for every $x$, then $\sum_{k=1}^{n-1}f\!\left(\frac kn\right)=\frac{n-1}{2}\,c$ — pair the term at $k$ with the term at $n-k$, and no single value is ever computed
+- if $f(x)+f(1-x)=c$ for every $x$, then $\alt{\sum_{k=1}^{n-1}f\!\left(\frac kn\right)}{f\!\left(\frac1n\right)+f\!\left(\frac2n\right)+\cdots+f\!\left(\frac{n-1}n\right)}=\frac{n-1}{2}\,c$ — pair the term at $k$ with the term at $n-k$, and no single value is ever computed
 - a self-paired middle term, at $x=\frac12$, contributes $\frac c2$ — the count above already includes it
 
 ## Why it works
@@ -1146,7 +1184,7 @@ AMC 12 uses it to eliminate cases in "how many real solutions" problems; on AIME
 ## Key forms
 - the difference operator $\Delta a_n=a_{n+1}-a_n$ lowers the degree of a polynomial by exactly one, so a degree-$k$ polynomial has constant $k$-th differences, and that constant is $k!$ times the leading coefficient — the degree drop is what makes the table terminate, and where it terminates is the degree
 - this runs both ways: constant $k$-th differences force the sequence to be a degree-$k$ polynomial, so building the difference table and extending the constant row evaluates the polynomial anywhere without ever finding its coefficients — the converse is the useful half, since it identifies a polynomial from data alone
-- the table's leading diagonal gives Newton's forward form $P(n)=\sum_j\Delta^jP(0)\binom nj$, which is why the binomial basis is the natural one for polynomials constrained at consecutive integers — worth knowing because it interpolates without solving any linear system
+- the table's leading diagonal gives Newton's forward form $P(n)=\alt{\sum_j\Delta^jP(0)\binom nj}{P(0)+\Delta P(0)\binom n1+\Delta^2P(0)\binom n2+\cdots}$, which is why the binomial basis is the natural one for polynomials constrained at consecutive integers — worth knowing because it interpolates without solving any linear system
 
 ## Why it works
 Each difference lowers the degree by exactly one, so after $k$ differences only a constant is left.
@@ -1600,9 +1638,9 @@ Five problems here, mostly AMC, two solved by it alone; two others move on to [[
 `,
 
 "median-minimizes-abs": String.raw`## Key forms
-- $\sum_i|x-a_i|$ is minimized when $x$ is a median of the $a_i$ — and when $n$ is even, every point of the whole interval between the two middle values achieves the same minimum
+- $\alt{\sum_i|x-a_i|}{|x-a_1|+\cdots+|x-a_n|}$ is minimized when $x$ is a median of the $a_i$ — and when $n$ is even, every point of the whole interval between the two middle values achieves the same minimum
 - the reason is a slope count: moving $x$ rightwards changes the sum at rate $\#\{a_i\lt x\}-\#\{a_i>x\}$, which is negative below the median and positive above it, so the minimum is exactly where the counts balance — the slope argument also shows why an even count ties across the whole middle interval
-- the contrast worth remembering is that $\sum_i(x-a_i)^2$ is minimized at the mean instead, so "which average" depends entirely on whether the penalty is absolute or squared — which average you want is decided entirely by whether the penalty is absolute or squared
+- the contrast worth remembering is that $\alt{\sum_i(x-a_i)^2}{(x-a_1)^2+\cdots+(x-a_n)^2}$ is minimized at the mean instead — which average you want depends entirely on whether the penalty is absolute or squared
 
 ## Why it works
 Sweep $x$ from left to right: the slope of $f(x) = \sum w_i|x - a_i|$ is (total weight of the $a_i$ below $x$) minus (total weight above). It starts at $-\sum w_i$ and jumps up by $2w_i$ as $x$ passes each $a_i$, so $f$ is convex and piecewise-linear. Its minimum is where the slope turns from negative to nonnegative — exactly where the weight below first matches the weight above, i.e. the (weighted) median. In the unweighted even-count case the slope is $0$ across the whole middle interval, so every point there ties.
@@ -1630,7 +1668,7 @@ A niche but decisive olympiad tool for trig equations and for proving rational-p
 
 "tangent-line-trick": String.raw`## Key forms
 - a convex function lies above each of its tangent lines, so $f(x)\ge f(a)+f'(a)(x-a)$ — summing this linear lower bound is far easier than handling $f$ directly
-- take the tangent at the equality point $a=\frac sn$: the constraint $\sum x_i=s$ makes the linear terms cancel, leaving exactly $\sum f(x_i)\ge n f\!\left(\frac sn\right)$ — it only works for convex $f$, so verify convexity on the actual range before trusting the bound
+- take the tangent at the equality point $a=\frac sn$: the constraint $\alt{\sum x_i}{x_1+\cdots+x_n}=s$ makes the linear terms cancel, leaving exactly $\alt{\sum f(x_i)}{f(x_1)+\cdots+f(x_n)}\ge n f\!\left(\frac sn\right)$ — it only works for convex $f$, so verify convexity on the actual range before trusting the bound
 - the one obligation is verifying $f(x)\ge L(x)$ across the whole allowed range, and the difference almost always factors as a square over something positive, as in $\frac1x-(6-9x)=\frac{(3x-1)^2}{x}$ — if it fails anywhere, fall back to [[sos-method|SOS]] or [[jensens-inequality|Jensen]]
 
 ## Why it works
@@ -1825,22 +1863,28 @@ For "how many solutions does $||x|-a|=b$ have" questions, do not solve. Draw the
 ## On contests
 A recurring AMC and AIME setup, usually phrased as a count of solutions or as the area enclosed by an absolute-value equation. The count questions are decided entirely by how many times a horizontal line meets a folded graph. The area questions need the shapes a bar cuts out of the plane instead; the two together cover the topic, and the same problem often wants one of each.`,
 
-"first-order-recurrence": String.raw`## Why it works
-Solve $L = rL + d$ for the fixed point $L = \frac{d}{1-r}$, the one value the recurrence leaves alone. Now measure everything from there by setting $b_n = a_n - L$. Substituting gives $b_n = a_n - L = (ra_{n-1} + d) - (rL + d) = r(a_{n-1} - L) = r\,b_{n-1}$, so the shifted sequence is purely geometric. Hence $a_n - L = r^n(a_0 - L)$, and the constant $d$ has vanished into the change of origin.
+"first-order-recurrence": String.raw`
+## Why it works
+The fixed point is the one value the recurrence leaves alone: solving $L = rL + d$ gives $L = \frac{d}{1 - r}$. Subtracting $L = rL + d$ from $a_n = ra_{n-1} + d$ removes the constant, $$a_n - L = r(a_{n-1} - L), \qquad \text{so} \qquad a_n - L = r^n(a_0 - L).$$
 
-That single substitution is the whole content: an affine recurrence is a geometric one seen from the wrong origin. It also explains the behavior without any computation, since $a_n$ approaches $L$ exactly when $|r| \lt  1$, runs away when $|r| > 1$, and alternates around $L$ when $r$ is negative.
+That subtraction is the whole content: $d$ disappears into the change of origin, and what is left is a [[geometric-series|geometric sequence]] of gaps from $L$. It also predicts the behaviour without any computation.
 
-The excluded case is $r = 1$, where $L = \frac{d}{1-r}$ is undefined because the map $x \mapsto x + d$ has no fixed point at all. There the recurrence is just an [[arithmetic-series|arithmetic sequence]], $a_n = a_0 + nd$.
+{{figure:gaps}}
+
+So $a_n$ approaches $L$ when $|r| \lt 1$, runs away when $|r| \gt 1$, and alternates around $L$ when $r$ is negative.
+
+The excluded case is $r = 1$, where $x \mapsto x + d$ has no fixed point at all; there the recurrence is an [[arithmetic-series|arithmetic sequence]], $a_n = a_0 + nd$.
 
 ## How to use it
-Three steps, in order. Find $L$ by solving $L = rL + d$. Write $a_n = r^n(a_0 - L) + L$. Then read off whatever the question wants: a specific term, the limit $L$ when $|r| \lt  1$, or the $n$ at which some threshold is crossed, which is a logarithm away.
+Three steps, in order: solve $L = rL + d$, write $a_n = r^n(a_0 - L) + L$, and read off what the question wants, a specific term, the limit $L$, or the step at which a threshold is crossed, which is a logarithm away.
 
-Recognize the shape in words, because it is rarely written as a recurrence. "Each year the population grows by $8\%$ and $500$ more arrive" is $r = 1.08$, $d = 500$. "Half the liquid is removed and replaced with $3$ litres of water" is $r = \frac12$, $d = 3$. Compound interest with a fixed annual deposit, drug dosage with a constant elimination fraction, and repeated dilution are all the same recurrence.
+Recognize the shape in words, since it is rarely written as a recurrence. "Each year the population grows by $8\%$ and $500$ more arrive" is $r = 1.08$ and $d = 500$. "Half the liquid in a $6$-litre tank is removed and replaced with $3$ litres of water", tracking the water, is $r = \frac12$ and $d = 3$. Interest with a fixed deposit and repeated dilution are the same recurrence.
 
-Two habits prevent the usual errors. Check $r = 1$ before dividing, since that case is arithmetic rather than geometric. And confirm whether the problem indexes from $a_0$ or $a_1$, because the exponent in $r^n$ shifts with it and an off-by-one here changes every answer.
+Two checks prevent the usual errors: rule out $r = 1$ before dividing by $1 - r$, and confirm whether the sequence starts at $a_0$ or $a_1$, since the exponent in $r^n$ shifts with it.
 
 ## On contests
-A MATHCOUNTS and AMC staple in disguised form, usually as a mixture, dilution, interest, or population question, and the fixed point is almost always the number the problem is really asking for. On AIME it shows up inside larger problems, where recognizing that a messy iteration is affine collapses several steps into one closed form. The limit question is the giveaway: any time a process is described as repeating forever and asked to settle, solve $L = rL + d$ first.`
+Two problems here, one AIME and one AMC 12, neither solved by it alone: one pairs it with a [[states-recursion-prob|recursion on states]] for a probability, the other with [[periodicity-mod-m|periodicity]] modulo $m$. At MATHCOUNTS and on the AMC it appears in disguise as a mixture, interest or population question, and the fixed point is usually the number being asked for. Any process described as repeating forever and asked to settle calls for solving $L = rL + d$ first.
+`
 
 });
 
@@ -1912,10 +1956,10 @@ An AMC/AIME favorite for the golden-ratio radical and a classic olympiad curiosi
 
 "symmetric-polynomial-strategies": String.raw`
 ## Key forms
-- $\prod_i(a-r_i)=\frac{P(a)}{a_n}$ — any product over the roots collapses to a single evaluation of $P$, which is the highest-leverage move available
-- $\prod_i(r_i^2+c^2)=\frac{P(ci)\,P(-ci)}{a_n^{2}}$ — the same identity read at complex points, since $r^2+c^2=(r-ci)(r+ci)$; the answer comes out real, which is a useful check
-- $\sum_i\frac{1}{a-r_i}=\frac{P'(a)}{P(a)}$ — the logarithmic derivative, which evaluates sums of reciprocals in one step
-- [[newtons-sums|Newton's sums]] turn the $e_k$ into power sums $\sum r_i^k$ — the bridge whenever the target is a sum of powers rather than a product
+- $\alt{\prod_i(a-r_i)}{(a-r_1)\cdots(a-r_n)}=\frac{P(a)}{a_n}$ — any product over the roots collapses to a single evaluation of $P$, which is the highest-leverage move available
+- $\alt{\prod_i(r_i^2+c^2)}{(r_1^2+c^2)\cdots(r_n^2+c^2)}=\frac{P(ci)\,P(-ci)}{a_n^{2}}$ — the same identity read at complex points, since $r^2+c^2=(r-ci)(r+ci)$; the answer comes out real, which is a useful check
+- $\alt{\sum_i\frac{1}{a-r_i}}{\frac{1}{a-r_1}+\cdots+\frac{1}{a-r_n}}=\frac{P'(a)}{P(a)}$ — the logarithmic derivative, which evaluates sums of reciprocals in one step
+- [[newtons-sums|Newton's sums]] turn the $e_k$ into power sums $\alt{\sum r_i^k}{r_1^k+\cdots+r_n^k}$ — the bridge whenever the target is a sum of powers rather than a product
 
 ## Why it works
 Permuting the roots does not change the polynomial, so anything built from its coefficients is symmetric in the roots. The theorem is the converse: every symmetric polynomial in $r_1, \ldots, r_n$ is a polynomial in the elementary symmetric sums $e_1, \ldots, e_n$, which [[vietas-general|Vieta's formulas]] identify with the coefficients.
@@ -1967,8 +2011,8 @@ Standard AIME fare whenever a problem asks for a closed form of $\sum\csc^2$ or 
 
 "shifted-polynomial-construction": String.raw`
 ## Key forms
-- $f(a_i) = k$ for $i = 1, \ldots, m$ — then $f(x) = \left(\prod_i (x - a_i)\right)Q(x) + k$, since $f - k$ has the $a_i$ as roots
-- $f(a_i) = g(a_i)$ for a simpler polynomial $g$ — then $f(x) = \left(\prod_i (x - a_i)\right)Q(x) + g(x)$; $g$ linear is the remainder on division by a quadratic
+- $f(a_i) = k$ for $i = 1, \ldots, m$ — then $f(x) = \alt{\left(\prod_i (x - a_i)\right)}{(x - a_1)\cdots(x - a_m)}Q(x) + k$, since $f - k$ has the $a_i$ as roots
+- $f(a_i) = g(a_i)$ for a simpler polynomial $g$ — then $f(x) = \alt{\left(\prod_i (x - a_i)\right)}{(x - a_1)\cdots(x - a_m)}Q(x) + g(x)$; $g$ linear is the remainder on division by a quadratic
 - $\deg Q = \deg f - m$ — when $m$ equals the degree, only the leading coefficient is left to find
 
 ## Why it works
@@ -2124,7 +2168,7 @@ Four problems here, split between AMC and AIME, one solved by it alone; two comb
 
 "multi-leg-rates": String.raw`
 ## Key forms
-- $\sum_i d_i = D, \quad \sum_i \frac{d_i}{v_i} = T$ — distances add and times add; speeds never do
+- $\alt{\sum_i d_i}{d_1 + \cdots + d_k} = D, \quad \alt{\sum_i \frac{d_i}{v_i}}{\frac{d_1}{v_1} + \cdots + \frac{d_k}{v_k}} = T$ — distances add and times add; speeds never do
 - $\frac{x}{v_1} + \frac{D-x}{v_2} = T$ — one trip of length $D$ with a single unknown leg $x$
 - $T_A = T_B$ — two travelers over one route, subtracted so the shared length cancels
 - $v_1 t + v_2 t = D$ — a meeting, written as two distances closing a gap in a common time
@@ -2200,8 +2244,8 @@ Olympiad-adjacent only, and it appears in this library as the machinery two card
 
 "symmetric-linear-system": String.raw`
 ## Key forms
-- $x_i + S = c_i$ for each $i$ — add all $n$ to get $(n+1)S = \sum c_i$, then $x_i = c_i - S$
-- $2x_i - S = c_i$ for each $i$ — the same move with a different multiple: adding gives $(2 - n)S = \sum c_i$
+- $x_i + S = c_i$ for each $i$ — add all $n$ to get $(n+1)S = \alt{\sum c_i}{c_1 + \cdots + c_n}$, then $x_i = c_i - S$
+- $2x_i - S = c_i$ for each $i$ — the same move with a different multiple: adding gives $(2 - n)S = \alt{\sum c_i}{c_1 + \cdots + c_n}$
 - $x_{i+1} = f(x_i)$ cyclically — compose $f$ around the loop and solve $f^{(n)}(x_1) = x_1$
 - the total is all that is asked — stop at $S$ and never find the individual variables
 

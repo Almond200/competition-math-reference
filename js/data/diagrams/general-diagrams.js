@@ -166,9 +166,9 @@
       seg([40, 268], [415, 268], FNT, 1.2), seg([60, 30], [60, 290], FNT, 1.2),
       `<path d="${d}" fill="none" stroke="${ACC}" stroke-width="2.2"/>`,
       seg([h, 42], [h, 268], GLD, 1.4, "5 4"),
-      dot([h, k], GLD, 5), txt([h + 6, k + 22], "(h, k) = (−b/2a, c − b²/4a)", GLD, 12, "middle"),
+      dot([h, k], GLD, 5), txt([h + 25, k + 47], "(h, k) = (−b/2a, c − b²/4a)", GLD, 12, "middle"),
       txt([h, 34], "x = −b/2a", GLD, 11.5),
-      cap(440, 320, "the parabola is symmetric about x = −b/2a; the vertex is the max/min and sits at the average of the roots")
+      cap(440, 320, "The vertex (h, k) = (−b/2a, c − b²/4a) is the lowest point when a > 0, and the parabola is symmetric about the dashed line x = −b/2a through it.")
     ]);
   })()];
 
@@ -191,7 +191,7 @@
       dot(Mchord, ACC, 4.5), dot(Mcurve, GLD, 4.5),
       txt([x1, 318], "x₁", DIM, 12.5), txt([x2, 318], "x₂", DIM, 12.5), txt([xm, 318], "(x₁+x₂)/2", DIM, 11.5),
       txt(add(Mchord, [-4, -12]), "½(f(x₁)+f(x₂))", ACC, 11.5),
-      txt(add(Mcurve, [0, 20]), "f(½(x₁+x₂))", GLD, 11.5),
+      txt(add(Mcurve, [-31, 22]), "f(½(x₁+x₂))", GLD, 11.5),
       txt([120, 132], "f convex", DIM, 12.5),
       cap(440, 340, "convex: the chord sits above the curve, so f(mean) ≤ mean of f")
     ]);
@@ -300,10 +300,11 @@
       poly(band, "none", 0, ACCS),
       poly(triA, "none", 0, GLDS), poly(triB, "none", 0, GLDS),
       rect(X0, Y0, S, S, DIM, 2),
-      seg([px(0), py(0)], [px(60), py(60)], FNT, 1.4, "4 4"),
+      // the equal-arrival diagonal, broken where "they meet" is printed across it
+      seg([px(0), py(0)], [px(27), py(27)], FNT, 1.4, "4 4"), seg([px(33), py(33)], [px(60), py(60)], FNT, 1.4, "4 4"),
       seg([px(0), py(W)], [px(60 - W), py(60)], ACC, 2),
       seg([px(W), py(0)], [px(60), py(60 - W)], ACC, 2),
-      txt([px(30), py(30) + 5], "they meet", ACC, 13),
+      txt([px(30), py(30) + 4.5], "they meet", ACC, 13),
       txt([px(12), py(50)], "B late", GLD, 11),
       txt([px(48), py(10)], "A late", GLD, 11),
       txt([X0 - 8, Y0 + S + 5], "5:00", DIM, 11, "end"),
@@ -357,7 +358,7 @@
     for (let k = 1; k < g; k++) {
       const p = [x0 + (a / g) * k * cell, y0 - (b / g) * k * cell];
       parts.push(dot(p, GRN, 5));
-      parts.push(txt([p[0] + 4, p[1] - 10], "(" + (a / g) * k + "," + (b / g) * k + ")", GRN, 11.5));
+      parts.push(txt([p[0] + 14, p[1] - 21], "(" + (a / g) * k + "," + (b / g) * k + ")", GRN, 11.5));
     }
     parts.push(dot([x0, y0], GLD, 5), dot([x0 + a * cell, y0 - b * cell], GLD, 5));
     parts.push(txt([x0 - 6, y0 + 18], "(0,0)", DIM, 11.5));
@@ -426,7 +427,7 @@
       seg(m.pt(-1, f(-1)), m.pt(2, f(2)), GLD, 3.2),
       ...A.map(a => dot(m.pt(a, 0), DIM, 3)),
       ...A.map((a, i) => txt([m.sx(a), m.sy(0) + 15], ["a₁", "a₂", "a₃", "a₄"][i], DIM, 11)),
-      txt([m.sx(0.5), m.sy(f(0)) - 12], "flat minimum", GLD, 11.5),
+      txt([m.sx(0.5) + 22, m.sy(f(0)) - 12], "flat minimum", GLD, 11.5),
       cap(440, 292, "Σ|x − aᵢ| bends at each aᵢ; with an even count every point between the two middle ones ties for the minimum")
     ]);
   })()];
@@ -483,8 +484,8 @@
       plot(X => Math.abs(X), m, -4.4, 4.4, 120, ACC, 2.4),
       plot(X => Math.abs(X - 2), m, -2.4, 4.6, 120, GLD, 2),
       plot(X => -Math.abs(X) + 3, m, -4.4, 4.4, 120, GRN, 2),
-      txt(add(m.pt(-3.1, 3.1), [-4, -6]), "y = |x|", ACC, 12),
-      txt(add(m.pt(4.2, 2.2), [-6, -8]), "y = |x − 2|", GLD, 12),
+      txt(add(m.pt(-3.1, 3.1), [-5, 22]), "y = |x|", ACC, 12),
+      txt(m.pt(4.0, 0.9), "y = |x − 2|", GLD, 12),
       txt(add(m.pt(-3.3, -0.3), [10, 16]), "y = 3 − |x|", GRN, 12),
       dot(m.pt(0, 0), ACC, 3.5), dot(m.pt(2, 0), GLD, 3.5), dot(m.pt(0, 3), GRN, 3.5),
       cap(440, 292, "the corner sits where the inside vanishes")
@@ -547,7 +548,7 @@
       ...web,
       plot(g, m, 0, 3.1, 160, ACC, 2.4),
       dot(m.pt(2, 2), ACC, 5),
-      txt(add(m.pt(2, 2), [12, -8]), "x = 2", ACC, 12.5, "start"),
+      txt(add(m.pt(2, 2), [9, 11]), "x = 2", ACC, 12.5, "start"),
       txt(add(m.pt(2.55, g(2.55)), [6, -8]), "y = √(2 + x)", ACC, 12, "start"),
       txt(add(m.pt(2.7, 2.7), [4, 14]), "y = x", DIM, 12, "start"),
       cap(440, 304, "the nest converges to the fixed point, so setting x = √(2 + x) and solving x² = x + 2 gives x = 2")
@@ -564,10 +565,10 @@
       plot(f, m, -1.2, 6.2, 2, ACC, 2.4),
       seg(m.pt(x1, 0), m.pt(x1, y1), FNT, 1.2, "4 3"),
       dot(m.pt(0, 3), GLD, 4.5), dot(m.pt(4, 0), GLD, 4.5), dot(m.pt(x1, y1), ACC, 4.5),
-      txt(add(m.pt(0, 3), [-16, -8]), "b = 3", GLD, 11.5),
+      txt(add(m.pt(0, 3), [-23, 11]), "b = 3", GLD, 11.5),
       txt(add(m.pt(4, 0), [16, 16]), "a = 4", GLD, 11.5),
       txt(add(m.pt(x1, y1), [30, -8]), "(x₁, y₁)", ACC, 11.5),
-      txt(add(m.pt(5.1, f(5.1)), [8, 14]), "slope m = −3/4", DIM, 11.5),
+      txt(add(m.pt(5.1, f(5.1)), [46, -3]), "slope m = −3/4", DIM, 11.5),
       cap(440, 300, "y = −¾x + 3 · y − y₁ = m(x − x₁) · 3x + 4y = 12 · x/4 + y/3 = 1, all the same line")
     ]);
   })()];
@@ -585,7 +586,7 @@
       plot(X => a * Math.sin(X), m, 0, 2 * Math.PI, 160, FNT, 1.6),
       plot(X => b * Math.cos(X), m, 0, 2 * Math.PI, 160, FNT, 1.6),
       plot(X => R * Math.sin(X + phi), m, 0, 2 * Math.PI, 200, ACC, 2.6),
-      txt(m.pt(2 * Math.PI, R), "R = 5", GLD, 12, "end"),
+      txt(add(m.pt(2 * Math.PI, R), [0, -6]), "R = 5", GLD, 12, "end"),
       txt(add(m.pt(Math.PI / 2 - phi, R), [0, -9]), "peak", ACC, 11.5),
       dot(m.pt(Math.PI / 2 - phi, R), ACC, 3.5),
       txt(add(m.pt(1.05, a * Math.sin(1.05)), [-16, -6]), "3 sin θ", FNT, 11.5),
@@ -671,7 +672,8 @@
           here ? ACC : (x === 0 || y === 0) ? FNT : DIM, here ? 15 : 13));
       }
     }
-    parts.push(txt(add(P(2, 2), [0, -24]), "5 + 5 + 3 = 13", ACC, 12));
+    // In the open cell up and to the right of the 13, clear of every grid line.
+    parts.push(txt(add(P(2.5, 2.5), [0, 4]), "5 + 5 + 3 = 13", ACC, 11));
     parts.push(txt(add(P(0, 0), [-4, 26]), "start", FNT, 11.5, "end"));
     parts.push(cap(430, 330, "allow a diagonal step and each cell adds three sources, not two — on a clear grid that is the Delannoy numbers, 1, 3, 13, 63 down the main diagonal"));
     return wrap(430, 330, parts);
@@ -1116,7 +1118,7 @@
       const c1 = X0 + w / 2, c4 = X0 + 3 * 44 + w / 2;
       parts.push(`<path d="M ${c4} ${y - 22} C ${c4 - 20} ${y - 62}, ${c1 + 20} ${y - 62}, ${c1} ${y - 22}" fill="none" stroke="${DIM}" stroke-width="1.5"/>`);
       parts.push(`<polygon points="${c1},${y - 20} ${c1 - 4},${y - 29} ${c1 + 5},${y - 27}" fill="${DIM}"/>`);
-      parts.push(txt([(c1 + c4) / 2, y - 56], "x₄ = x₁, so the block repeats", DIM, 12));
+      parts.push(txt([(c1 + c4) / 2, y - 60], "x₄ = x₁, so the block repeats", DIM, 12));
       parts.push(txt([80, 164], "n ≡ 1: 2", ACC, 12.5), txt([215, 164], "n ≡ 2: −1", GLD, 12.5), txt([350, 164], "n ≡ 0: ½", GRN, 12.5));
       parts.push(cap(430, 186, "x₁ = 2 and xₙ₊₁ = 1/(1 − xₙ). The value 2 comes back at x₄, and each term depends only on the one before, so the block 2, −1, ½ repeats forever and xₙ depends only on n mod 3. For x₂₀₂₄, 2024 ≡ 2, so it is −1." + (vals.every((v, i) => show(v) !== "?") ? "" : " MISMATCH")));
       return wrap(430, 186, parts);
@@ -1169,8 +1171,8 @@
         total += b * b - a * a;
         parts.push(poly([P(a, 0), P(b, 0), P(b, b), P(0, b), P(0, a), P(a, a)], c, 2, f));
         parts.push(txt(add(P((a + b) / 2, 0), [0, -8]), String(k), DIM, 12.5));
-        const lab = k === 1 ? "1" : `${k}³ = ${k * k * k}`;
-        parts.push(txt(add(P((a + b) / 2, k === 1 ? 0.5 : a / 2 + b / 4), [0, 5]), lab, c, k === 1 ? 11 : 13));
+        // Beside the band's left end, outside the square: inside it every label crossed grid lines.
+        parts.push(txt(add(P(0, (a + b) / 2), [-8, 4.5]), `${k}³ = ${k * k * k}`, c, 12.5, "end"));
       }
       parts.push(txt(add(P(10, 5), [12, 5]), "10", DIM, 13, "start"));
       parts.push(cap(430, 290, `A square of side 1 + 2 + 3 + 4 = 10, cut into L-shaped bands. The kth band has area k³, so 1 + 8 + 27 + 64 = ${total} = 10²: the cubes add up to the square of the sum.` + (total === 100 ? "" : " MISMATCH")));
@@ -1342,7 +1344,7 @@
         dot(P, ACC, 4.5), dot(T, GLD, 4.5),
         txt(add(mid(O, F), [0, 18]), "cos θ", ACC, 12.5), txt(add(mid(F, P), [-6, 4]), "sin θ", ACC, 12.5, "end"),
         txt(add(mid(O, P), [-8, -8]), "1", ACC, 13, "end"),
-        txt(add(mid(X, T), [8, 4]), "tan θ", GLD, 12.5, "start"), txt(add(mid(P, T), [-10, -8]), "sec θ", GLD, 12.5, "end"),
+        txt(add(mid(X, T), [8, 4]), "tan θ", GLD, 12.5, "start"), txt(add(mid(P, T), [-9, -24]), "sec θ", GLD, 12.5, "end"),
         txt(add(X, [8, 18]), "1", GLD, 12.5, "start"),
         cap(430, 262, "The point at angle θ on the unit circle is (cos θ, sin θ), so the small right triangle gives cos²θ + sin²θ = 1. Extending the radius to the tangent line x = 1 makes a similar triangle with legs 1 and tan θ and hypotenuse sec θ, which gives 1 + tan²θ = sec²θ.")
       ]);
@@ -1427,7 +1429,8 @@
         dot(A, DIM, 4.5), dot(B, DIM, 4.5), dot(M, ACC, 5),
         txt(add(A, [0, -11]), "angle a", DIM, 12.5), txt(add(B, [10, 2]), "angle b", DIM, 12.5, "start"),
         txt(add(M, [10, -4]), "M", ACC, 13, "start"),
-        txt(add(mid(O, M), [8, 16]), "cos ½(a − b)", ACC, 12, "start"),
+        // A length, so it is named as one: beyond the arc, where the radius through M ends.
+        txt(add(T, [12, -4]), "OM = cos ½(a − b)", ACC, 12, "start"),
         cap(430, 290, "The midpoint M of the chord between the points at angles a and b lies on the bisecting radius, at angle ½(a + b), and at distance cos ½(a − b) from the center. Its coordinates are ½(cos a + cos b) and ½(sin a + sin b), so cos a + cos b = 2 cos ½(a + b) cos ½(a − b) and sin a + sin b = 2 sin ½(a + b) cos ½(a − b)." + (bad ? " MISMATCH" : ""))
       ]);
     })()
@@ -1444,7 +1447,7 @@
         x += 22;
         if (g < 5) { parts.push(rect(x, y1, s, s, DIM, 1.6, "rgba(150,150,150,0.18)")); x += s + 4; }
       }
-      parts.push(txt([215, y1 - 26], "5 unchosen chairs leave 6 gaps; the 3 chosen go into different gaps", DIM, 12));
+      parts.push(txt([215, y1 - 26], "5 unchosen chairs leave 6 gaps for the 3 chosen", DIM, 12));
       let row = [], k = 0;
       for (let g = 0; g <= 5; g++) { if (pick.indexOf(g) >= 0) row.push(1); if (g < 5) row.push(0); }
       row.forEach((v, i) => parts.push(rect(62 + i * 40, y2, s, s, v ? ACC : DIM, 1.6, v ? ACCS : "rgba(150,150,150,0.18)")));
@@ -1571,14 +1574,88 @@
         }
       });
       const t = 1 / (1 / 4 + 1 / 6);
-      parts.push(rect(X0, 196, 14, 14, ACC, 1.6, ACCS), txt([X0 + 20, 207], "pipe A, 3 twelfths an hour", DIM, 12, "start"));
-      parts.push(rect(X0, 216, 14, 14, GLD, 1.6, GLDS), txt([X0 + 20, 227], "pipe B, 2 twelfths an hour", DIM, 12, "start"));
-      parts.push(rect(X0, 236, 14, 14, GRN, 1.6, "rgba(40,167,90,0.12)"), txt([X0 + 20, 247], "both pipes, in the last 2/5 of an hour", DIM, 12, "start"));
+      parts.push(rect(X0, 202, 14, 14, ACC, 1.6, ACCS), txt([X0 + 20, 213], "pipe A, 3 twelfths an hour", DIM, 12, "start"));
+      parts.push(rect(X0, 222, 14, 14, GLD, 1.6, GLDS), txt([X0 + 20, 233], "pipe B, 2 twelfths an hour", DIM, 12, "start"));
+      parts.push(rect(X0, 242, 14, 14, GRN, 1.6, "rgba(40,167,90,0.12)"), txt([X0 + 20, 253], "both pipes, in the last 2/5 of an hour", DIM, 12, "start"));
       parts.push(cap(430, 262, "Measure the pool in twelfths. Pipe A fills 3 of them each hour and pipe B fills 2, so together they fill 5 an hour. Two hours fill 10 of the 12, and the last 2 take 2/5 of an hour, so the pool is full after 12/5 hours." + (Math.abs(t - 2.4) < 1e-12 ? "" : " MISMATCH")));
       return wrap(430, 262, parts);
     })()
   };
 
+
+  BODY["vertex-form"] = {
+    // y = (x - 2)^2 - 1: any two points at one height are mirror images across x = 2, and the roots 1 and 3
+    // are the pair at height 0.
+    symmetry: (() => {
+      const f = X => (X - 2) ** 2 - 1, m = frame(-1.2, 5.2, -1.8, 5.2, 40, 18, 360, 232);
+      const p = 0.3, q = 3.7, k = f(p);
+      const ok = Math.abs(f(q) - k) < 1e-12 && Math.abs((p + q) / 2 - 2) < 1e-12 && f(1) === 0 && f(3) === 0;
+      return wrap(430, 282, [
+        axes(m), plot(f, m, -0.55, 4.55, 160, ACC, 2.2),
+        seg(m.pt(2, -1.8), m.pt(2, 5.2), GLD, 1.4, "5 4"),
+        seg(m.pt(p, k), m.pt(q, k), DIM, 1.6), seg(m.pt(1, 0), m.pt(3, 0), GRN, 3),
+        dot(m.pt(p, k), DIM, 4), dot(m.pt(q, k), DIM, 4), dot(m.pt(1, 0), GRN, 4), dot(m.pt(3, 0), GRN, 4), dot(m.pt(2, -1), GLD, 4.5),
+        txt(add(m.pt(p, k), [-8, -6]), "(p, k)", DIM, 12, "end"), txt(add(m.pt(q, k), [8, -6]), "(q, k)", DIM, 12, "start"),
+        txt(add(m.pt(1, 0), [-6, -8]), "r₁", GRN, 12.5, "end"), txt(add(m.pt(3, 0), [6, -8]), "r₂", GRN, 12.5, "start"),
+        txt(add(m.pt(2, 5.2), [8, 12]), "x = (p + q)/2 = (r₁ + r₂)/2", GLD, 12, "start"),
+        cap(430, 282, "Points at the same height are mirror images across the axis, so any pair of them, (p, k) and (q, k), puts the axis at x = (p + q)/2. The roots are the pair at height 0, which is why they average to −b/2a, and the vertex sits on the axis between them." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["first-order-recurrence"] = {
+    // a_n = a_{n-1}/2 + 3 and b_n = -b_{n-1}/2 + 9, both from 10, both with fixed point 6: measured from 6 the
+    // gaps are 4, 2, 1, 1/2 (r = 1/2) and 4, -2, 1, -1/2 (r = -1/2).
+    gaps: (() => {
+      const m = frame(-0.4, 6.6, 3.4, 10.6, 44, 16, 356, 214), L = 6;
+      const a = [10], b = [10];
+      for (let i = 1; i <= 6; i++) { a.push(a[i - 1] / 2 + 3); b.push(-b[i - 1] / 2 + 9); }
+      const ok = a.every((v, i) => Math.abs(v - L - 4 * 0.5 ** i) < 1e-12) && b.every((v, i) => Math.abs(v - L - 4 * (-0.5) ** i) < 1e-12);
+      const parts = [
+        seg(m.pt(-0.4, 3.4), m.pt(6.6, 3.4), FNT, 1.2),
+        seg(m.pt(-0.4, L), m.pt(6.6, L), DIM, 1.4, "6 4"), txt(add(m.pt(6.6, L), [0, -7]), "L = 6", DIM, 12, "end")
+      ];
+      for (let i = 0; i <= 6; i++) parts.push(txt(add(m.pt(i, 3.4), [0, 16]), "n = " + i, FNT, 10.5));
+      for (let i = 0; i < 3; i++) {
+        parts.push(seg(m.pt(i - 0.1, L), m.pt(i - 0.1, a[i]), ACC, 2.4));
+        parts.push(txt(add(m.pt(i - 0.1, (L + a[i]) / 2), [-6, 4]), ["4", "2", "1"][i], ACC, 12, "end"));
+      }
+      for (let i = 0; i < 6; i++) { parts.push(seg(m.pt(i, a[i]), m.pt(i + 1, a[i + 1]), ACC, 1.2)); parts.push(seg(m.pt(i, b[i]), m.pt(i + 1, b[i + 1]), GLD, 1.2, "3 3")); }
+      for (let i = 0; i <= 6; i++) { parts.push(dot(m.pt(i, b[i]), GLD, 3.8)); parts.push(dot(m.pt(i, a[i]), ACC, 4)); }
+      parts.push(txt(add(m.pt(2, a[2]), [10, -8]), "r = ½", ACC, 12, "start"), txt(add(m.pt(1, b[1]), [10, 6]), "r = −½", GLD, 12, "start"));
+      parts.push(cap(430, 262, "aₙ = ½aₙ₋₁ + 3 (blue) and bₙ = −½bₙ₋₁ + 9 (gold) both start at 10 and have fixed point L = 6. Measured from L the blue gaps are 4, 2, 1, ½, a geometric sequence with ratio ½; with ratio −½ the gap also flips sign each step, so the gold terms alternate around L while closing in." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 262, parts);
+    })()
+  };
+
+  BODY["divisibility-rules"] = {
+    // 123456 read in blocks of 1, 2 and 3 digits from the right with alternating signs. Since 10, 100
+    // and 1000 are each -1 modulo 11, 101 and 1001, the signed sums are the remainders; each is checked
+    // against the true remainder, and 333 against 123456 mod 7 and mod 13.
+    blocks: (() => {
+      const Nn = 123456, digits = String(Nn).split(""), cw = 30, gap = 8, XR = 338, parts = [];
+      let ok = true;
+      [[1, 11], [2, 101], [3, 1001]].forEach(([k, mod], r) => {
+        const cy = 50 + r * 64, groups = [];
+        for (let e = digits.length; e > 0; e -= k) groups.unshift(digits.slice(Math.max(0, e - k), e));
+        let x = XR - digits.length * cw - (groups.length - 1) * gap, val = 0;
+        groups.forEach((g, i) => {
+          const sign = (groups.length - 1 - i) % 2 === 0 ? 1 : -1, col = sign > 0 ? ACC : GLD, w = g.length * cw;
+          parts.push(rect(x - 3, cy - 17, w + 6, 34, col, 1.6, sign > 0 ? ACCS : GLDS));
+          g.forEach((d, j) => parts.push(txt([x + j * cw + cw / 2, cy + 5.5], d, "var(--text)", 16)));
+          parts.push(txt([x + w / 2, cy - 25], sign > 0 ? "+" : "−", col, 15));
+          val += sign * Number(g.join(""));
+          x += w + gap;
+        });
+        const rem = ((val % mod) + mod) % mod;
+        ok = ok && rem === Nn % mod && (k < 3 || (rem % 7 === Nn % 7 && rem % 13 === Nn % 13));
+        parts.push(txt([XR - 6 * cw - 5 * gap - 14, cy + 4.5], "mod " + mod, DIM, 12.5, "end"));
+        parts.push(txt([XR + 16, cy + 5], "≡ " + rem, GRN, 15, "start"));
+      });
+      parts.push(cap(430, 206, "The same number, 123456, read in blocks of one, two and three digits from the right, with the signs alternating from the right (blue plus, gold minus). Because 10, 100 and 1000 are each −1 modulo 11, 101 and 1001, the signed sums 3, 34 and 333 are the remainders. The last one also gives the remainders mod 7 and 13, since 1001 = 7 · 11 · 13: 333 leaves 4 and 8." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 206, parts);
+    })()
+  };
 
   BODY["repeating-decimals"] = {
     // Long division of 1 by 7: remainders and digits are computed, not typed.
@@ -1754,7 +1831,7 @@
         parts.push(rect(250, y - 18, 110, 28, DIM, 1.3), txt([305, y + 1], r, DIM, 15));
         parts.push(seg([200, 130], [244, y - 4], FNT, 1.1));
       });
-      parts.push(txt([305, 30], "the same circle, read from each seat", FNT, 12));
+      parts.push(txt([300, 30], "the same circle, read from each seat", FNT, 11.5));
       parts.push(cap(430, 250, "The four rows A B C D, B C D A, C D A B and D A B C all describe the same seating, read starting from a different seat. Every circle comes from exactly 4 of the 4! rows, so there are 4!/4 = 3! = 6 circular arrangements of four people."));
       return wrap(430, 250, parts);
     })()

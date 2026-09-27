@@ -53,9 +53,6 @@
   "angle-bisector-length": [
    "Length of an Angle Bisector"
   ],
-  "angle-bisector-reflection": [
-   "Reflecting Across an Angle Bisector"
-  ],
   "angle-bisector-theorem": [
    "Angle Bisector Theorem"
   ],
@@ -544,10 +541,6 @@
    "Digit Sums",
    "Digit Sums and Carries"
   ],
-  "digit-sum-mod-9": [
-   "Digit Sums mod 9",
-   "Digit Sums mod 9 and 11"
-  ],
   "dilworths-theorem": [
    "Dilworth",
    "Dilworth's",
@@ -569,7 +562,9 @@
    "Distance, Midpoint, Slope"
   ],
   "divisibility-rules": [
-   "Divisibility Rules"
+   "Divisibility Rules",
+   "Digit Sums mod 9",
+   "Digit Sums mod 9 and 11"
   ],
   "double-angle": [
    "Double Angle Formulas"
@@ -1389,7 +1384,8 @@
    "Permutations & Combinations"
   ],
   "perp-to-angle-bisector": [
-   "Perpendicular to an Angle Bisector"
+   "Perpendicular to an Angle Bisector",
+   "Reflecting Across an Angle Bisector"
   ],
   "perpendicular-bisector-locus": [
    "Perpendicular Bisector as a Locus"

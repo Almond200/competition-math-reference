@@ -64,19 +64,29 @@ Word problems ("stamps of 5¢ and 8¢..."), constructing modular inverses (solve
 ## Why it works
 A number is a sum of its digits times powers of $10$, so its remainder depends only on the remainders of those powers, and for small moduli those remainders are very simple.
 
-The two most useful facts are $$10 \equiv 1 \pmod 9, \qquad 10 \equiv -1 \pmod{11}.$$ The first makes every power of $10$ equal to $1$ mod $9$, so a number and its [[digit-sum-mod-9|digit sum]] leave the same remainder mod $9$, and therefore mod $3$. The second makes the powers of $10$ alternate between $1$ and $-1$ mod $11$, which gives the alternating sum of the digits from the right.
+The two most useful facts are $$10 \equiv 1 \pmod 9, \qquad 10 \equiv -1 \pmod{11}.$$ The first makes every power of $10$ equal to $1$ mod $9$, so a number and its digit sum leave the same remainder mod $9$, and therefore mod $3$. The second makes the powers of $10$ alternate between $1$ and $-1$ mod $11$, so a number leaves the same remainder mod $11$ as the alternating sum of its digits, taken from the right.
 
-Since $100$ is divisible by $4$ and $1000$ by $8$, everything but the last two or three digits is a multiple of $4$ or $8$. And since $1000 \equiv -1 \pmod{1001}$, the three-digit blocks alternate in sign modulo $1001 = 7 \cdot 11 \cdot 13$, which gives the rule for $7$ and $13$.
+Since $100$ is divisible by $4$ and $1000$ by $8$, everything but the last two or three digits is a multiple of $4$ or $8$.
 
 For example, $8712 = 8 \cdot 1000 + 7 \cdot 100 + 1 \cdot 10 + 2$. Its digit sum is $18$, a multiple of $9$, and its alternating sum from the right is $2 - 1 + 7 - 8 = 0$, a multiple of $11$, so $8712$ is divisible by both.
+
+The rule for $11$ is the first of a family. Reading the digits in blocks of $k$ from the right writes the number in base $10^k$, and $$10^k \equiv -1 \pmod{10^k + 1},$$ so the blocks alternate in sign: two-digit blocks for $101$, three-digit blocks for $1001 = 7 \cdot 11 \cdot 13$, four-digit blocks for $10001 = 73 \cdot 137$.
+
+{{figure:blocks}}
+
+Plain block sums do the same for $10^k - 1$, where $10^k \equiv 1$: two-digit blocks give the remainder mod $99$, and three-digit blocks the remainder mod $999 = 27 \cdot 37$, which is the quick test for $37$. Every factor of the modulus inherits its rule, which is how $1001$ tests for $7$ and $13$.
 
 ## How to use it
 For a composite modulus, [[crt|split it into coprime pieces]] and test each: divisible by $72$ means divisible by $8$, checked on the last three digits, and by $9$, checked on the digit sum. In a missing-digit puzzle each rule becomes a linear condition on the unknown digits, which usually leaves one or two possibilities.
 
+The digit sum gives the remainder itself, which makes it a check on arithmetic, called casting out nines. Since $n \equiv s(n) \pmod 9$ for every $n$, a product must satisfy $s(ab) \equiv s(a)\,s(b) \pmod 9$, and a computed product that fails this is wrong.
+
+Summing the digits again and again ends at a single digit, the digital root, $$1 + \big((n - 1) \bmod 9\big) \quad \text{for } n \ge 1,$$ so any question about repeated digit sums is a question about $n \bmod 9$. How the digit sum drops when numbers are added is counted by [[digit-sum-carries|carries]].
+
 The $1001$ factorization explains a classic: a six-digit number of the form $\overline{abcabc}$ equals $\overline{abc} \cdot 1001$, so it is always divisible by $7$, $11$ and $13$.
 
 ## On contests
-Six problems here, five of them AIME, three solved by it alone; the others split into [[casework-method|cases]] on the possible digits. MATHCOUNTS and AMC 10 use the rules for missing-digit puzzles, and AIME for conditions on numbers built from digit patterns.
+Seven problems here, six of them AIME, four solved by it alone; two others split into [[casework-method|cases]] on the possible digits, and one counts multiples in a range. MATHCOUNTS and AMC 10 use the rules for missing-digit puzzles, AIME for conditions on numbers built from digit patterns, and the remainder mod $9$ can cut a search down to one candidate in nine.
 `,
 
 "gcd-power-minus-one": String.raw`## Why it works
@@ -326,14 +336,6 @@ Small moduli: hunt by inspection or add the modulus to the numerator until divis
 ## On contests
 Ubiquitous supporting skill: binomial coefficients mod $p$, linear congruence solving, and AIME answers defined as $m n^{-1}$ mod a prime. Fast small-case fluency matters more than the theory.`,
 
-"digit-sum-mod-9": String.raw`## Why it works
-$10 \equiv 1 \pmod 9$ makes every power of 10 congruent to 1, so a number is congruent to its digit sum; $10 \equiv -1 \pmod{11}$ alternates the signs.
-
-## How to use it
-Casting out nines: verify arithmetic, find missing digits, and reduce enormous numbers (digit-sum repeatedly = value mod 9, with 9 written for 0 when the number is nonzero). The "digital root" of $n$ is $1 + (n-1 \bmod 9)$.
-
-## On contests
-"Sum the digits, then sum again..." iterated-digit-sum problems are pure mod 9. Also quick sanity checks that eliminate answer choices on AMC — a habit worth building.`,
 
 "squares-mod-small": String.raw`## Why it works
 Square all residues: mod 4 the squares of $0,1,2,3$ are $0,1,0,1$; mod 8 odd squares are $(2k+1)^2 = 4k(k+1) + 1 \equiv 1$ (since $k(k+1)$ is even); mod 9 and 16 by the same enumeration.
@@ -833,6 +835,8 @@ To factor a three-digit number, test $7$, $11$, $13$, $17$ and $19$ after the ob
 
 The family built on repeated digit patterns cracks numbers like $111111 = 111 \cdot 1001$: $111 = 3 \cdot 37$, $999 = 3^3 \cdot 37$, $10101 = 3 \cdot 7 \cdot 13 \cdot 37$, and $101 \cdot 9901 = 1000001$.
 
+One power is worth knowing for last digits: $$7^4 = 2401 \equiv 1 \pmod{100},$$ so the last two digits of $7, 7^2, 7^3, 7^4, \ldots$ run $07, 49, 43, 01$ and repeat every four. [[eulers-theorem|Euler's theorem]] only promises a repeat every $40$ steps; $7$ has [[multiplicative-order|order]] $4$ modulo $100$. So $7^{2025}$ ends in $07$, because $2025$ is one more than a multiple of $4$.
+
 For estimates, $\log_{10} 2 \approx 0.301$ and $\log_{10} 3 \approx 0.477$ settle digit counts and size comparisons, and the square-root values settle which answer choice a messy expression is closest to.
 
 ## On contests
@@ -941,7 +945,7 @@ An olympiad and hard-AIME tool for "last digit of $F_{2024}$" or "for which $n$ 
 ## Key forms
 - $\gcd \to \min$, $\operatorname{lcm} \to \max$, product $\to$ sum — the operations, applied to the exponent of each prime separately
 - $a \mid b \iff e_p(a) \le e_p(b)$ at every prime $p$ — divisibility is an inequality between exponents
-- $k$th power $\iff k \mid e_p$ at every prime, and $d(n) = \prod_p (e_p + 1)$ — powers and divisor counts are exponent bookkeeping too
+- $k$th power $\iff k \mid e_p$ at every prime, and $d(n) = \alt{\prod_p (e_p + 1)}{(e_2 + 1)(e_3 + 1)(e_5 + 1)\cdots}$ — powers and divisor counts are exponent bookkeeping too
 
 ## Why it works
 A positive integer is completely described by its prime exponents, and the common operations act on each prime's exponent separately.
@@ -1302,7 +1306,7 @@ The invisible step in a large share of AIME number theory, rarely mentioned in a
 ## Why it works
 Adding two digits in a column either stays below ten or does not. When it does not, the column keeps the sum minus ten and hands one unit to the next column, so the digit sum loses $10$ and gains $1$, a net drop of $9$. Each carry contributes that independently: $$s(a + b) = s(a) + s(b) - 9c.$$
 
-In base $b$ the same accounting gives a drop of $b - 1$. It is also why $n \equiv s(n) \pmod 9$: every correction is a multiple of $9$, which is the content of [[digit-sum-mod-9|digit sums mod 9]].
+In base $b$ the same accounting gives a drop of $b - 1$. It is also why $n \equiv s(n) \pmod 9$: every correction is a multiple of $9$, which is why [[divisibility-rules|digit sums work mod 9]].
 
 ## How to use it
 Use it in whichever direction is short. Forwards it predicts a digit sum without doing the addition; backwards it counts the carries, $$c = \frac{s(a) + s(b) - s(a + b)}{9},$$ which is often the real question in disguise.

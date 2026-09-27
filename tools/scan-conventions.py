@@ -390,7 +390,59 @@ print("  card text naming a specific problem: %d  (must stay 0)" % len(_probref_
 for _h in _probref_hits[:10]:
     print("    %s: %s" % _h)
 
+# ---- Expanded notation (Stanley, 2026-09-27) ----
+# The "Expanded" setting promises terms written out in every formula box and Key-forms list.
+# A formula box does that through latexPlain; a Key-forms bullet writes each sum as
+# \alt{sigma form}{expanded form}, resolved by notate() in js/app.js. The explanations may
+# keep sigma notation. Before this gate, 80 cards and 50 bullets showed a sigma either way.
+def _pick_alt(t, pick):
+    out, i = [], 0
+    while True:
+        j = t.find("\\alt{", i)
+        if j < 0:
+            return "".join(out) + t[i:], True
+        out.append(t[i:j])
+        k, groups = j + 4, []
+        while len(groups) < 2 and k < len(t) and t[k] == "{":
+            depth, st = 0, k
+            while k < len(t):
+                if t[k - 1] != "\\":
+                    if t[k] == "{":
+                        depth += 1
+                    elif t[k] == "}":
+                        depth -= 1
+                        if depth == 0:
+                            break
+                k += 1
+            groups.append(t[st + 1:k])
+            k += 1
+        if len(groups) < 2:
+            return t, False
+        out.append(groups[pick])
+        i = k
+_SIG = re.compile(r"\\(?:sum|prod)(?![A-Za-z])")   # not \b: "\sum_" has no word boundary
+_no_plain = [c["id"] for c in CARDS if _SIG.search(c["latex"] or "") and
+             (not field(c["blk"], "latexPlain") or _SIG.search(field(c["blk"], "latexPlain")))]
+_kf_sigma, _bad_alt = [], []
+for _id, _body in DETAILS.items():
+    _exp, _ok = _pick_alt(_body, 1)
+    if not _ok:
+        _bad_alt.append(_id)
+        continue
+    _kfm = re.search(r"## Key forms\n(.*?)(?=\n## |\Z)", _exp, re.S)
+    if _kfm:
+        _kf_sigma += [(_id, l) for l in _kfm.group(1).split("\n") if l.startswith("- ") and _SIG.search(l)]
+print("\n-- expanded notation --")
+print("  formula boxes with a sigma and no written-out latexPlain: %d  (must stay 0)" % len(_no_plain))
+for _i in _no_plain[:10]:
+    print("    " + _i)
+print("  Key-forms bullets still showing a sigma in Expanded: %d  (must stay 0)" % len(_kf_sigma))
+for _i, _l in _kf_sigma[:10]:
+    print("    %s: %s" % (_i, _l[:90]))
+print("  malformed \\alt{..}{..}: %d  (must stay 0)" % len(_bad_alt))
+
 bad = bool(missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples
-           or _lt or fig_bad or _odd_heads or _unknown or _long_paras or _probref_hits)
+           or _lt or fig_bad or _odd_heads or _unknown or _long_paras or _probref_hits
+           or _no_plain or _kf_sigma or _bad_alt)
 print("\n%s" % ("FAILURES ABOVE" if bad else "no convention violations found"))
 sys.exit(1 if bad else 0)

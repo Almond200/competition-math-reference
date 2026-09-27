@@ -1567,19 +1567,27 @@
   }
 
   // Levenshtein distance with an early-exit cap (returns cap+1 once exceeded).
+  // Edit distance where swapping two adjacent letters counts as ONE edit (optimal string
+  // alignment), since that is the commonest typing slip there is. Plain Levenshtein charged
+  // it two, so "descrate" sat as far from "descarte" as from "describe", the tie went to the
+  // commoner word, and the search for Descartes' theorem found nothing about Descartes.
   function levBounded(a, b, cap) {
     const m = a.length, n = b.length;
     if (Math.abs(m - n) > cap) return cap + 1;
-    let prev = []; for (let j = 0; j <= n; j++) prev[j] = j;
+    let pp = null, prev = [], prevBest = 0; for (let j = 0; j <= n; j++) prev[j] = j;
     for (let i = 1; i <= m; i++) {
       const cur = [i]; let best = i;
       for (let j = 1; j <= n; j++) {
         const c = a.charCodeAt(i - 1) === b.charCodeAt(j - 1) ? 0 : 1;
         cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + c);
+        if (pp && j > 1 && a.charCodeAt(i - 1) === b.charCodeAt(j - 2) && a.charCodeAt(i - 2) === b.charCodeAt(j - 1))
+          cur[j] = Math.min(cur[j], pp[j - 2] + 1);
         if (cur[j] < best) best = cur[j];
       }
-      if (best > cap) return cap + 1;
-      prev = cur;
+      // A transposition reaches back two rows, so give up only once two rows in a row
+      // are past the cap.
+      if (best > cap && prevBest > cap) return cap + 1;
+      pp = prev; prev = cur; prevBest = best;
     }
     return prev[n];
   }
@@ -2016,21 +2024,57 @@
     // edge (<polygon>), a circle, or an arc and nothing would move it. Curved and polygonal
     // outlines are flattened into short segments so the same push-off maths applies.
     const segs = [];
+    // Paint order, so a stroke can be recognised as hidden: a grid line drawn under an opaque
+    // node circle does not cross the number printed in that node, however close the two are.
+    // Treating it as visible shoved every node number in the grid-path figures off-centre.
+    const order = new Map([...svg.querySelectorAll("*")].map((el, i) => [el, i]));
+    const opaque = el => {
+      const f = (el.getAttribute("fill") || "").trim().toLowerCase();
+      if (!f || f === "none" || f === "transparent" || /rgba|hsla/.test(f)) return false;
+      const fo = el.getAttribute("fill-opacity"), op = el.getAttribute("opacity");
+      return !(fo && +fo < 0.95) && !(op && +op < 0.95);
+    };
+    const covers = [];
+    svg.querySelectorAll("circle, rect").forEach(el => {
+      if (!opaque(el)) return;
+      const ord = order.get(el);
+      if (el.tagName.toLowerCase() === "circle") {
+        const r = parseFloat(el.getAttribute("r") || "0");
+        if (r > 7) covers.push({ ord, inside: (x, y) => Math.hypot(x - +el.getAttribute("cx"), y - +el.getAttribute("cy")) <= r - 1 });
+      } else {
+        const x = +el.getAttribute("x"), y = +el.getAttribute("y"), w = +el.getAttribute("width"), h = +el.getAttribute("height");
+        covers.push({ ord, inside: (px, py) => px >= x - 1 && px <= x + w + 1 && py >= y - 1 && py <= y + h + 1 });
+      }
+    });
+    // Is this stroke painted over by an opaque shape wherever it could meet box b?
+    const hiddenIn = (sg, b) => covers.some(c => c.ord > sg.ord &&
+      c.inside(b[0], b[1]) && c.inside(b[2], b[1]) && c.inside(b[0], b[3]) && c.inside(b[2], b[3]));
     // `vertex` marks a real endpoint of a drawn segment. A label sitting near one is
     // usually labelling that very point, so the push-off below leaves it alone. Samples taken
     // along a flattened curve have no such meaning: every one of their endpoints is near the
     // label, which silently exempted whole circles from the pass.
-    const addSeg = (p, q, vertex) => {
+    // A stroke at 10% opacity or less (the barely-there coordinate grids) cannot cut a glyph.
+    const invisible = el => { const m = (el.getAttribute("stroke") || "").match(/rgba\([^)]*,\s*([\d.]+)\)/); return !!m && +m[1] <= 0.1; };
+    const addSeg = (p, q, vertex, el) => {
+      if (invisible(el)) return;
       if (isFinite(p[0]) && isFinite(p[1]) && isFinite(q[0]) && isFinite(q[1]) &&
-          (p[0] !== q[0] || p[1] !== q[1])) segs.push({ p, q, vertex: !!vertex });
+          (p[0] !== q[0] || p[1] !== q[1])) segs.push({ p, q, vertex: !!vertex, el, ord: order.get(el) });
     };
     svg.querySelectorAll("line").forEach(l =>
-      addSeg([+l.getAttribute("x1"), +l.getAttribute("y1")], [+l.getAttribute("x2"), +l.getAttribute("y2")], true));
+      addSeg([+l.getAttribute("x1"), +l.getAttribute("y1")], [+l.getAttribute("x2"), +l.getAttribute("y2")], true, l));
     svg.querySelectorAll("polygon, polyline").forEach(el => {
+      if ((el.getAttribute("stroke") || "").toLowerCase() === "none") return;
       const pts = (el.getAttribute("points") || "").trim().split(/\s+/)
         .map(t => t.split(",").map(Number)).filter(p => p.length === 2 && p.every(isFinite));
-      for (let k = 0; k + 1 < pts.length; k++) addSeg(pts[k], pts[k + 1], true);
-      if (el.tagName.toLowerCase() === "polygon" && pts.length > 2) addSeg(pts[pts.length - 1], pts[0], true);
+      for (let k = 0; k + 1 < pts.length; k++) addSeg(pts[k], pts[k + 1], true, el);
+      if (el.tagName.toLowerCase() === "polygon" && pts.length > 2) addSeg(pts[pts.length - 1], pts[0], true, el);
+    });
+    svg.querySelectorAll("rect").forEach(el => {
+      const st = (el.getAttribute("stroke") || "none").toLowerCase();
+      if (st === "none") return;
+      const x = +el.getAttribute("x"), y = +el.getAttribute("y"), w = +el.getAttribute("width"), h = +el.getAttribute("height");
+      const c = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+      for (let k = 0; k < 4; k++) addSeg(c[k], c[(k + 1) % 4], true, el);
     });
     // Curves and circle outlines: sample the path into a polyline. Filled shapes are skipped,
     // since a label sitting on a shaded region is fine; it is the stroke that cuts glyphs.
@@ -2048,42 +2092,52 @@
         let pt;
         try { pt = el.getPointAtLength(len * k / n); } catch (e) { return; }
         const cur = [pt.x, pt.y];
-        if (prev) addSeg(prev, cur);
+        if (prev) addSeg(prev, cur, false, el);
         prev = cur;
       }
     });
+    // Smallest move that takes box b off segment pq, or null when they do not touch. Separating
+    // axes: x, y and the segment's normal. The old test compared the distance to the nearest
+    // point of the segment against the box's reach in that direction, which is only right for
+    // points straight above or beside the label; a wide label with a line off to one side
+    // diagonally "hit" a line nowhere near its glyphs and was thrown 50 to 100px across the
+    // figure (the periodic-sequence arc, the vertex-form parabola, the product-to-sum rays).
+    function satPush(b, p, q) {
+      const ox1 = Math.max(p[0], q[0]) - b[0], ox2 = b[2] - Math.min(p[0], q[0]);
+      const oy1 = Math.max(p[1], q[1]) - b[1], oy2 = b[3] - Math.min(p[1], q[1]);
+      if (ox1 <= 0 || ox2 <= 0 || oy1 <= 0 || oy2 <= 0) return null;
+      let vx = q[1] - p[1], vy = p[0] - q[0];
+      const n = Math.hypot(vx, vy); if (!n) return null; vx /= n; vy /= n;
+      const hw = (b[2] - b[0]) / 2, hh = (b[3] - b[1]) / 2, cx = b[0] + hw, cy = b[1] + hh;
+      const dn = (cx - p[0]) * vx + (cy - p[1]) * vy, on = Math.abs(vx) * hw + Math.abs(vy) * hh - Math.abs(dn);
+      if (on <= 0) return null;
+      const sg = dn >= 0 ? 1 : -1;
+      return [[1, 0, ox1], [-1, 0, ox2], [0, 1, oy1], [0, -1, oy2], [sg * vx, sg * vy, on]]
+        .reduce((m, c) => (c[2] < m[2] ? c : m));
+    }
     function clearLines() {
       if (!segs.length) return;
       for (const o of L) {
         if (o.fixed) continue;
         for (let it = 0; it < 4; it++) {
           const cx = o.x + o.dx, cy = o.y + o.dy;
-          const hw = o.w / 2 + 1.5, hh = o.h / 2 + 1.5;
+          // The glyphs plus a small margin, not the em box: the em box carries empty ascent and
+          // descent bands, and a line through those is not touching the label at all.
+          const hw = o.w / 2 + 1, hh = o.h * 0.3 + 2;
+          const box = [cx - hw, cy - hh, cx + hw, cy + hh];
           let best = null;
           for (const sg of segs) {
+            if (hiddenIn(sg, box)) continue;
             if (sg.vertex) {
               const near = Math.min(Math.hypot(sg.p[0] - cx, sg.p[1] - cy),
                                     Math.hypot(sg.q[0] - cx, sg.q[1] - cy));
               if (near < Math.max(20, o.h * 1.6)) continue;   // it is labelling that endpoint
             }
-            const vx = sg.q[0] - sg.p[0], vy = sg.q[1] - sg.p[1];
-            const len2 = vx * vx + vy * vy; if (!len2) continue;
-            let t = ((cx - sg.p[0]) * vx + (cy - sg.p[1]) * vy) / len2;
-            t = Math.max(0, Math.min(1, t));
-            const fx = sg.p[0] + vx * t, fy = sg.p[1] + vy * t;
-            let nx = cx - fx, ny = cy - fy;
-            const d = Math.hypot(nx, ny);
-            const reach = (Math.abs(nx) * hw + Math.abs(ny) * hh) / (d || 1);
-            const need = reach - d + 1.5;
-            if (need <= 0) continue;
-            if (!best || need > best.need) {
-              if (d < 0.01) { nx = -vy; ny = vx; }
-              const n = Math.hypot(nx, ny) || 1;
-              best = { need, ux: nx / n, uy: ny / n };
-            }
+            const push = satPush(box, sg.p, sg.q);
+            if (push && (!best || push[2] > best[2])) best = push;
           }
           if (!best) break;
-          o.dx += best.ux * best.need; o.dy += best.uy * best.need;
+          o.dx += best[0] * (best[2] + 0.5); o.dy += best[1] * (best[2] + 0.5);
         }
       }
     }
@@ -2103,6 +2157,77 @@
     }
     for (let round = 0; round < 4; round++) { clearLines(); capMoves(); separateLabels(); }
     capMoves(); separateLabels();
+
+    // (5) Anything still printed on a stroke, a marker dot or another label is re-placed
+    // around the point it labels. The passes above only nudge, and they deliberately ignore
+    // the segments that end at a label's own vertex, so a vertex letter could sit squarely on
+    // one of its own sides, and a label could sit on its own dot (the "1"s on the circle
+    // centres in the Soddy figure, O1 on its centre in Monge). Candidate spots ring the
+    // anchor, and the nearest one in angle that is clear wins; a label with no nearby point
+    // searches outward from where it was drawn instead. Nothing is moved unless the new spot
+    // is strictly cleaner, so every label that was already legible stays exactly where its
+    // figure put it.
+    const dots = [...svg.querySelectorAll("circle")].map(c => ({
+      x: +c.getAttribute("cx"), y: +c.getAttribute("cy"), r: parseFloat(c.getAttribute("r") || "0"),
+      fill: (c.getAttribute("fill") || "none").toLowerCase()
+    })).filter(d => d.r > 0 && d.r <= 7 && d.fill !== "none" && !/rgba\(255,\s*255,\s*255/.test(d.fill));
+    const ends = segs.filter(sg => sg.vertex).flatMap(sg => [sg.p, sg.q]);
+    const glyph = (o, cx, cy, pad) => {
+      const hw = o.w / 2 - 0.8 + pad, hh = o.h * 0.3 + pad;
+      return [cx - hw, cy - hh, cx + hw, cy + hh];
+    };
+    const segHits = (b, p, q) => {
+      let t0 = 0, t1 = 1; const dx = q[0] - p[0], dy = q[1] - p[1];
+      for (const [pp, qq] of [[-dx, p[0] - b[0]], [dx, b[2] - p[0]], [-dy, p[1] - b[1]], [dy, b[3] - p[1]]]) {
+        if (pp === 0) { if (qq < 0) return false; continue; }
+        const r = qq / pp;
+        if (pp < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+      }
+      return true;
+    };
+    const boxGap = (b, x, y) => Math.hypot(Math.max(b[0] - x, 0, x - b[2]), Math.max(b[1] - y, 0, y - b[3]));
+    const vbx = (svg.getAttribute("viewBox") || "0 0 400 300").split(/\s+/).map(Number);
+    function clutter(o, cx, cy, pad) {
+      const b = glyph(o, cx, cy, pad);
+      let n = 0;
+      const crossed = new Set();
+      for (const sg of segs) if (!crossed.has(sg.el) && segHits(b, sg.p, sg.q) && !hiddenIn(sg, b)) crossed.add(sg.el);
+      n += crossed.size;
+      for (const d of dots) if (boxGap(b, d.x, d.y) < d.r) n++;
+      for (const q of L) if (q !== o) {
+        const c = glyph(q, q.x + q.dx, q.y + q.dy, 0);
+        if (b[0] < c[2] && c[0] < b[2] && b[1] < c[3] && c[1] < b[3]) n += 1.5;
+      }
+      if (b[0] < vbx[0] || b[2] > vbx[0] + vbx[2] || b[1] < vbx[1] || b[3] > vbx[1] + vbx[3]) n += 3;
+      return n;
+    }
+    for (const o of L) {
+      if (o.fixed) continue;
+      const cx = o.x + o.dx, cy = o.y + o.dy;
+      if (clutter(o, cx, cy, -1) === 0) continue;
+      const now = clutter(o, cx, cy, 1);
+      const hw = o.w / 2, hh = o.h * 0.3, reach = Math.max(hw, hh) + 16;
+      let anchor = null, ar = 0, best = null;
+      for (const d of dots) { const g = Math.hypot(d.x - cx, d.y - cy); if (g < reach && (!anchor || g < anchor.g)) { anchor = { x: d.x, y: d.y, g }; ar = d.r; } }
+      if (!anchor) for (const p of ends) { const g = Math.hypot(p[0] - cx, p[1] - cy); if (g < reach && (!anchor || g < anchor.g)) { anchor = { x: p[0], y: p[1], g }; ar = 0; } }
+      const consider = (x, y, pen) => {
+        const sc = clutter(o, x, y, 1);
+        if (!best || sc + pen < best.sc + best.pen) best = { x, y, sc, pen };
+      };
+      if (anchor) {
+        const a0 = Math.atan2(cy - anchor.y, cx - anchor.x);
+        for (let k = 0; k < 24; k++) {
+          const a = k * Math.PI / 12, ux = Math.cos(a), uy = Math.sin(a);
+          let dev = Math.abs(a - a0) % (2 * Math.PI); if (dev > Math.PI) dev = 2 * Math.PI - dev;
+          const d0 = Math.abs(ux) * (hw + 1.5) + Math.abs(uy) * (hh + 1.5) + ar + 2.5;
+          for (const extra of [0, 5, 10]) consider(anchor.x + ux * (d0 + extra), anchor.y + uy * (d0 + extra), dev * 0.17 + extra * 0.01);
+        }
+      } else {
+        for (let rr = 3; rr <= o.h * 2.6; rr += 3)
+          for (let k = 0; k < 16; k++) consider(cx + rr * Math.cos(k * Math.PI / 8), cy + rr * Math.sin(k * Math.PI / 8), rr * 0.02);
+      }
+      if (best && best.sc < now) { o.dx = best.x - o.x; o.dy = best.y - o.y; }
+    }
 
     const vb = (svg.getAttribute("viewBox") || "0 0 400 300").split(/\s+/).map(Number);
     const ctr = [(vb[2] || 400) / 2, (vb[3] || 300) / 2];
@@ -2809,7 +2934,7 @@
     const f = entry.formula;
     state.activeSectionId = entry.section.id;
     state.openGroup = null;
-    const body = (window.MATH_DETAILS || {})[f.id];
+    const body = notate((window.MATH_DETAILS || {})[f.id]);
     // Any card that actually carries a "## Key forms" block renders it. This began as a
     // method-only feature on the reasoning that a formula card already lists its formulas in
     // the big box, but that is only true when the card has ONE formula: results with named
@@ -3060,7 +3185,7 @@
           ${opt("Notation",
             settingsChoice("notation", "sigma", state.notation, "Sigma", "Sums written with \u2211.") +
             settingsChoice("notation", "expanded", state.notation, "Expanded",
-              "Terms written out where a card offers that form."))}
+              "Terms written out in formula boxes and key forms."))}
           ${opt("Figures on cards",
             settingsChoice("diagrams", "curated", state.diagrams, "Curated",
               "A figure only on the cards whose idea is hard to read without one.") +
@@ -3068,9 +3193,9 @@
               "Every card that has a figure shows it while browsing.") +
             settingsChoice("diagrams", "none", state.diagrams, "None",
               "Text only. Figures still appear on a card's own page."))}
-          <p class="settings-hint">Expanded notation shows the first few terms instead of the
-            sigma, on the cards where writing them out makes the identity clearer. Cards without
-            an expanded form are unchanged.</p>
+          <p class="settings-hint">Expanded notation writes out the first few terms instead of
+            \u2211 or \u220f in every card's formula box and key forms. The explanations keep sigma
+            notation, where the index is usually the point.</p>
         </div>
 
         <div class="settings-group">
@@ -4513,6 +4638,38 @@
   // instead of in sigma notation; only some do, and the rest simply keep their own form.
   function latexFor(f) {
     return (state.notation === "expanded" && f.latexPlain) ? f.latexPlain : f.latex;
+  }
+
+  // The same choice inside a write-up. Key forms write a sum both ways as
+  // \alt{sigma form}{expanded form}, and this keeps the branch the reader asked for before
+  // KaTeX ever sees the text, so the page holds one form, not a visible one and a hidden one,
+  // and a copied formula is the one on screen. Braces escaped as \{ \} (set braces) are
+  // not grouping braces and are skipped when matching.
+  function notate(text) {
+    if (!text || text.indexOf("\\alt{") < 0) return text;
+    const pick = state.notation === "expanded" ? 1 : 0;
+    let out = "", i = 0;
+    for (;;) {
+      const j = text.indexOf("\\alt{", i);
+      if (j < 0) return out + text.slice(i);
+      out += text.slice(i, j);
+      const groups = [];
+      let k = j + 4;
+      while (groups.length < 2 && text[k] === "{") {
+        let depth = 0;
+        const st = k;
+        for (; k < text.length; k++) {
+          if (text[k - 1] === "\\") continue;
+          if (text[k] === "{") depth++;
+          else if (text[k] === "}" && --depth === 0) break;
+        }
+        groups.push(text.slice(st + 1, k));
+        k++;
+      }
+      if (groups.length < 2) { out += "\\alt"; i = j + 4; continue; }
+      out += groups[pick];
+      i = k;
+    }
   }
   applyLayout();
 

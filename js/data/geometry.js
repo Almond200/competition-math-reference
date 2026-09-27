@@ -115,7 +115,7 @@ window.MATH_SECTIONS.push({
           id: "cevian-area-ratio",
           name: "Area Ratios from a Cevian",
           latex: String.raw`\frac{[ABD]}{[ACD]} = \frac{BD}{DC}`,
-          description: String.raw`Triangles sharing an apex and having bases on the same line have areas proportional to their bases. The workhorse behind mass points and area-chasing.`,
+          description: String.raw`Area ratios from a cevian compare the two triangles a cevian cuts off: if $D$ lies on side $BC$ of triangle $ABC$, then $[ABD] : [ACD] = BD : DC$, because both triangles have the same height from $A$. It converts a ratio along a side into a ratio of areas and back, which is the first step of nearly every area-chasing problem. The bases need not be adjacent: any triangles with a common apex and bases on one line have areas in the ratio of their bases.`,
           keywords: ["cevian", "same height", "area chasing", "base ratio", "mass points"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -165,7 +165,7 @@ window.MATH_SECTIONS.push({
           id: "regular-hexagon-area",
           name: "Regular Hexagon of Side $s$",
           latex: String.raw`A = \frac{3s^2\sqrt{3}}{2}`,
-          description: String.raw`Exactly six equilateral triangles, so the area is six times $\frac{s^2\sqrt3}{4}$ and the apothem is $\frac{s\sqrt3}{2}$, which is also the short diagonal halved.`,
+          description: String.raw`A regular hexagon of side $s$ has area $\frac{3\sqrt3}{2}s^2$, because the segments from its center to the six vertices cut it into six equilateral triangles of side $s$. Recasting a hexagon problem in those triangles is the fastest way through it: the long diagonal is $2s$, the apothem is $\frac{s\sqrt3}{2}$, and most regions inside it are whole numbers of small triangles. The triangle on alternate vertices, for example, is exactly half the hexagon.`,
           keywords: ["hexagon", "six equilateral triangles", "regular hexagon area", "area of a hexagon", "hexagon apothem"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -192,6 +192,7 @@ window.MATH_SECTIONS.push({
           id: "ngon-vertex-distance-product",
           name: "Product of Distances to n-gon Vertices",
           latex: String.raw`\prod_{k=1}^{n} PV_k = 2R^n\left|\sin\tfrac{n\theta}{2}\right| \;\le\; 2R^n`,
+          latexPlain: String.raw`PV_1 \cdot PV_2 \cdots PV_n = 2R^n\left|\sin\tfrac{n\theta}{2}\right| \;\le\; 2R^n`,
           description: String.raw`Let $P$ lie on the circumcircle (radius $R$) of a regular $n$-gon, at angular position $\theta$ measured from one vertex. Putting the vertices at $R\zeta^k$ with $\zeta = e^{2\pi i/n}$ and using $\prod_k (z - \zeta^k) = z^n - 1$, the product of the distances from $P$ to all $n$ vertices is $R^n\,|z^n - 1| = 2R^n\left|\sin\tfrac{n\theta}{2}\right|$. It therefore reaches its maximum $2R^n$ exactly when $P$ is the midpoint of an arc between two adjacent vertices (there $\tfrac{n\theta}{2}$ is an odd multiple of $\tfrac{\pi}{2}$), and it is $0$ when $P$ is a vertex. This is a different statement from the product of distances between one fixed vertex and the other $n-1$ vertices, which is always $nR^{n-1}$.`,
           keywords: ["product of distances", "regular polygon", "n-gon vertices", "circumcircle", "arc midpoint", "roots of unity", "maximize product", "point on circle", "chord products"],
           importance: "lower",
@@ -991,7 +992,7 @@ window.MATH_SECTIONS.push({
           id: "tangent-chord-angle",
           name: "Tangent–Chord Angle (Alternate Segment)",
           latex: String.raw`\angle(\ell, TA) = \tfrac{1}{2}\,\overset{\frown}{TA} = \angle TBA`,
-          description: String.raw`The angle between a tangent $\ell$ at $T$ and a chord $TA$ equals half the intercepted arc — hence equals the inscribed angle $\angle TBA$ in the alternate segment (the arc on the far side). Key corollary: the tangent to a triangle's circumcircle at a vertex makes an angle with each side equal to the triangle's opposite angle — equivalently, that tangent is antiparallel to the opposite side (a fast concyclicity and angle-chasing tool).`,
+          description: String.raw`The tangent–chord angle is the angle between the tangent to a circle at a point $T$ and a chord $TA$, and it equals half the arc $TA$ that it cuts off. So it equals every inscribed angle standing on that arc from the other side, such as $\angle TBA$ for $B$ on the far arc, which is why the result is also called the alternate segment theorem. Its most used case is the tangent at a vertex of a triangle's circumcircle, which makes angles with the two sides equal to the triangle's angles at the other two vertices.`,
           keywords: ["tangent chord angle", "alternate segment theorem", "tangent to circumcircle", "inscribed angle", "intercepted arc", "tangent antiparallel to opposite side", "tangent at a vertex"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -1312,6 +1313,7 @@ window.MATH_SECTIONS.push({
           id: "shoelace-formula",
           name: "Shoelace Formula",
           latex: String.raw`A = \frac{1}{2} \left| \sum_{i=1}^{n} (x_i y_{i+1} - y_i x_{i+1}) \right|`,
+          latexPlain: String.raw`A = \frac{1}{2} \left| (x_1 y_2 - y_1 x_2) + (x_2 y_3 - y_2 x_3) + \cdots + (x_n y_1 - y_n x_1) \right|`,
           description: String.raw`The shoelace formula gives the area of a polygon from the coordinates of its vertices, listed in order around the boundary: $A = \frac12\left|\sum (x_iy_{i+1} - y_ix_{i+1})\right|$, where the last vertex is followed by the first. It is the standard area tool once a figure has coordinates, and it needs no heights, angles or cutting into pieces. Write the vertices in a column, repeat the first one at the bottom, add the products down to the right, subtract the products down to the left, and halve. The vertices can go either way around, since the absolute value fixes the sign, but they must go around in order.`,
           keywords: ["polygon area", "vertices", "coordinates", "shoelace", "surveyor"],
           importance: "high",

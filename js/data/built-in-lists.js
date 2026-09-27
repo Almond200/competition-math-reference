@@ -68,7 +68,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["work-rates", "average-speed", "relative-motion", "weighted-average", "proportion-properties", "sqrt-approximation", "multi-leg-rates"] }
     ] },
   { id: "route-mathcounts-number", name: "MATHCOUNTS Number Theory", kind: "route", tier: "MATHCOUNTS", subject: "Number Theory",
-    blurb: "Everything MATHCOUNTS asks of number theory, in the order you would reach for it. 21 cards across 7 sections.",
+    blurb: "Everything MATHCOUNTS asks of number theory, in the order you would reach for it. 20 cards across 7 sections.",
     sections: [
       { title: "Divisibility & GCD",
         note: "The foundation. Most number theory problems are a gcd statement wearing a disguise.",
@@ -78,7 +78,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["number-of-divisors"] },
       { title: "Modular Arithmetic",
         note: "Congruence rules and the theorems that collapse a huge exponent to a small one.",
-        ids: ["modular-basics", "digit-sum-mod-9", "last-digit-patterns", "recognition-numbers"] },
+        ids: ["modular-basics", "last-digit-patterns", "recognition-numbers"] },
       { title: "Primes, Factorials & Valuations",
         note: "Counting how many times a prime divides something, which is most factorial questions.",
         ids: ["vp-factorial", "trailing-zeros", "consecutive-product-factorial"] },
@@ -149,7 +149,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["eulers-polyhedron-formula", "prism-pyramid-volumes", "sphere-formulas", "cone-formulas", "frustum-volume", "regular-tetrahedron", "regular-octahedron", "tetrahedron-centroid", "distance-3d", "space-diagonal", "cross-product-area", "plane-intercept-form", "vector-dot-product", "vector-projection"] },
       { title: "Angle & Configuration Chasing",
         note: "The default opening move: name the angles and see what the configuration forces.",
-        ids: ["angle-chasing", "auxiliary-lines", "median-doubling", "parallel-line-similarity", "angle-bisector-reflection"] },
+        ids: ["angle-chasing", "auxiliary-lines", "median-doubling", "parallel-line-similarity", "perp-to-angle-bisector"] },
       { title: "Ratios, Masses & Areas",
         note: "Turning a ratio question into an area question, or into a weighing.",
         ids: ["mass-points", "area-method"] },
@@ -201,7 +201,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["infinite-nest", "palindromic-polynomials", "periodic-sequences", "piecewise-graph-counting"] }
     ] },
   { id: "route-amc-number", name: "AMC 10/12 Number Theory", kind: "route", tier: "AMC", subject: "Number Theory",
-    blurb: "Everything the AMC 10 and 12 ask of number theory, in the order you would reach for it. 51 cards across 9 sections.",
+    blurb: "Everything the AMC 10 and 12 ask of number theory, in the order you would reach for it. 50 cards across 9 sections.",
     sections: [
       { title: "Divisibility & GCD",
         note: "The foundation. Most number theory problems are a gcd statement wearing a disguise.",
@@ -211,7 +211,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["number-of-divisors", "sum-of-divisors", "sigma-parity", "product-of-divisors", "eulers-totient", "multiplicative-functions", "perfect-square-divisors"] },
       { title: "Modular Arithmetic",
         note: "Congruence rules and the theorems that collapse a huge exponent to a small one.",
-        ids: ["modular-basics", "fermats-little-theorem", "eulers-theorem", "wilsons-theorem", "crt", "modular-inverse", "digit-sum-mod-9", "last-digit-patterns", "power-minus-self", "recognition-numbers", "choose-modulus", "exponent-tracking"] },
+        ids: ["modular-basics", "fermats-little-theorem", "eulers-theorem", "wilsons-theorem", "crt", "modular-inverse", "last-digit-patterns", "power-minus-self", "recognition-numbers", "choose-modulus", "exponent-tracking"] },
       { title: "Quadratic Residues",
         note: "Deciding whether something is a square modulo p, and the reciprocity that makes it quick.",
         ids: ["squares-mod-small"] },
@@ -269,7 +269,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["indicator-variables", "generating-function-method"] }
     ] },
   { id: "route-aime-geometry", name: "AIME Geometry", kind: "route", tier: "AIME", subject: "Geometry",
-    blurb: "Everything the AIME asks of geometry, in the order you would reach for it. 141 cards across 14 sections.",
+    blurb: "Everything the AIME asks of geometry, in the order you would reach for it. 140 cards across 14 sections.",
     sections: [
       { title: "The Fundamentals",
         note: "The facts every other tool here is built on. When a geometry problem stalls, it is usually one of these you have not used yet.",
@@ -300,7 +300,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["harmonic-quadrilateral"] },
       { title: "Angle & Configuration Chasing",
         note: "The default opening move: name the angles and see what the configuration forces.",
-        ids: ["angle-bisector-reflection", "perp-to-angle-bisector", "angle-chasing", "auxiliary-lines", "median-doubling", "parallel-line-similarity"] },
+        ids: ["perp-to-angle-bisector", "angle-chasing", "auxiliary-lines", "median-doubling", "parallel-line-similarity"] },
       { title: "Ratios, Masses & Areas",
         note: "Turning a ratio question into an area question, or into a weighing.",
         ids: ["mass-points", "ravi-substitution", "area-method"] },
@@ -355,11 +355,11 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["infinite-nest", "palindromic-polynomials", "periodic-sequences", "piecewise-graph-counting"] }
     ] },
   { id: "route-aime-number", name: "AIME Number Theory", kind: "route", tier: "AIME", subject: "Number Theory",
-    blurb: "Everything the AIME asks of number theory, in the order you would reach for it. 62 cards across 9 sections.",
+    blurb: "Everything the AIME asks of number theory, in the order you would reach for it. 63 cards across 9 sections.",
     sections: [
       { title: "Divisibility & GCD",
         note: "The foundation. Most number theory problems are a gcd statement wearing a disguise.",
-        ids: ["euclids-lemma", "bezouts-identity", "gcd-power-minus-one", "extended-euclidean-algorithm", "gcd-substitution"] },
+        ids: ["divisibility-rules", "euclids-lemma", "bezouts-identity", "gcd-power-minus-one", "extended-euclidean-algorithm", "gcd-substitution"] },
       { title: "Divisors & the Totient",
         note: "Counting and summing divisors, and the multiplicative functions built on them.",
         ids: ["sum-of-divisors", "sigma-parity", "product-of-divisors", "eulers-totient", "totient-divisor-sum", "mobius-inversion", "multiplicative-functions", "coprime-residue-sum", "perfect-square-divisors", "lcm-pair-counting"] },
@@ -424,7 +424,7 @@ window.MATH_BUILTIN_LISTS = [
     ] },
 
   { id: "route-olympiad-geometry", name: "Olympiad Geometry", kind: "route", tier: "Olympiad", subject: "Geometry",
-    blurb: "Every geometry card the library marks as olympiad level, grouped by what you are doing with it. 81 cards across 13 sections.",
+    blurb: "Every geometry card the library marks as olympiad level, grouped by what you are doing with it. 80 cards across 13 sections.",
     sections: [
       { title: "The Named Centers",
         note: "Past the famous four. Most appear because a problem names them, so recognition is the whole first step.",
@@ -455,7 +455,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["inversion-properties", "spiral-similarity", "homothety-monge", "affine-transformations"] },
       { title: "Angle & Configuration Chasing",
         note: "Keeping a chase honest across a configuration, and the constructions that unlock one.",
-        ids: ["directed-angles", "phantom-point", "angle-bisector-reflection", "perp-to-angle-bisector", "pole-polar"] },
+        ids: ["directed-angles", "phantom-point", "perp-to-angle-bisector", "pole-polar"] },
       { title: "Coordinate & Algebraic Bashes",
         note: "When the configuration resists synthetic treatment, compute. Pick the system that matches the symmetry.",
         ids: ["barycentric-coordinates", "complex-bash", "area-method", "ravi-substitution", "incenter-coordinates", "picks-theorem-general", "picks-triangular-lattice", "picks-hexagonal-grid"] },
@@ -606,7 +606,7 @@ window.MATH_BUILTIN_LISTS = [
         ids: ["isogonal-conjugate", "isotomic-conjugate", "spiral-similarity", "inversion-properties", "pappus-hexagon"] },
       { title: "Cevians & Ratios",
         note: "The heavier cevian machinery, plus the inequalities that live on the same picture.",
-        ids: ["trig-ceva", "rouths-theorem", "vivianis-theorem", "angle-bisector-reflection", "perp-to-angle-bisector", "erdos-mordell"] },
+        ids: ["trig-ceva", "rouths-theorem", "vivianis-theorem", "perp-to-angle-bisector", "erdos-mordell"] },
       { title: "Quadrilateral Configurations",
         note: "Build on the sides of a quadrilateral and something unexpectedly regular appears.",
         ids: ["van-aubel", "newtons-line", "napoleons-theorem", "ptolemy-second-theorem", "japanese-theorem"] },

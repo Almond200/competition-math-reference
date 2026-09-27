@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 557
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 555
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -16,7 +16,7 @@ reference rather than people editing it.
 `## On contests`, and optionally `## Key forms` and `## Full proof` (collapsed behind a button;
 see CONVENTIONS §2 for when one belongs). Do not invent another one; `scan-conventions.py` fails on
 any other heading. A card may gain or lose an optional block as its content changes. Census
-across 557 write-ups: Why it works 557, On contests 557, How to use it 557, Key forms 51.
+across 555 write-ups: Why it works 555, On contests 555, How to use it 555, Key forms 113.
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
   of related statements, which in practice means methods and patterns: 93 of the 100 cards in

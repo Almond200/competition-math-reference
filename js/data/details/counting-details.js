@@ -64,7 +64,7 @@ Four problems here, all AIME, none by it alone; two use [[complementary-counting
 ## Key forms
 - $\#(\text{good})=\#(\text{total})-\#(\text{bad})$ — the counting form, used when the bad side has more structure
 - $P(\text{at least one})=1-P(\text{none})$ — the probability form, and the phrase that triggers it
-- $P(\text{none})=\prod_i(1-p_i)$ — why flipping pays: independent complements multiply
+- $P(\text{none})=\alt{\prod_i(1-p_i)}{(1-p_1)(1-p_2)\cdots(1-p_n)}$ — why flipping pays: independent complements multiply
 
 ## Why it works
 Every object either has the property or does not, so the two counts add up to the total, and whichever is easier to count gives the other by subtraction.
@@ -201,7 +201,7 @@ Eight problems here, seven of them AIME, and none by it alone. Four pair it with
 
 "nested-subset-pairs": String.raw`## Key forms
 - $\#\{(A,B):A\subseteq B\subseteq S\}=3^n$ — three destinations per element
-- $\sum_{k=0}^{n}\binom nk 2^k=3^n$ — the same count organized by $|B|$
+- $\alt{\sum_{k=0}^{n}\binom nk 2^k}{\binom n0 2^0+\binom n1 2^1+\cdots+\binom nn 2^n}=3^n$ — the same count organized by $|B|$
 - chains $A_1\subseteq\cdots\subseteq A_m\subseteq S$ give $(m+1)^n$
 
 ## Why it works
@@ -232,7 +232,7 @@ AIME sum evaluations and stars-and-bars cumulative counts ("solutions with $x_1 
 
 "vandermonde": String.raw`
 ## Key forms
-- $\sum_{k}\binom{n}{k}^2 = \binom{2n}{n}$ — the $m = n = r$ case, by far the one that appears; choosing $k$ from the first $n$ and $n-k$ from the second is choosing $n$ from all $2n$
+- $\alt{\sum_{k}\binom{n}{k}^2}{\binom n0^2+\binom n1^2+\cdots+\binom nn^2} = \binom{2n}{n}$ — the $m = n = r$ case, by far the one that appears; choosing $k$ from the first $n$ and $n-k$ from the second is choosing $n$ from all $2n$
 - $\binom{n}{k} = \binom{n}{n-k}$ — the symmetry the squared form leans on, since it turns $\binom{n}{k}\binom{n}{n-k}$ into $\binom{n}{k}^2$
 
 ## Why it works
@@ -353,9 +353,9 @@ Run the two-question checklist first. AMC and AIME sample every cell of the tabl
 "pie": String.raw`
 ## Key forms
 - $|A\cup B|=|A|+|B|-|A\cap B|$ — subtract the overlap that both terms counted twice
-- $|A\cup B\cup C|=\sum|A_i|-\sum|A_i\cap A_j|+|A\cap B\cap C|$ — add singles, subtract pairs, add the triple
-- $\left|\bigcup A_i\right|=\sum_{\emptyset\ne S}(-1)^{|S|+1}\left|\bigcap_{i\in S}A_i\right|$ — an element in exactly $t$ sets is counted $\binom t1-\binom t2+\cdots=1$ time
-- $\sum_{j}(-1)^{j+1}\binom kj N_j$ — the symmetric case, when every $j$-fold intersection has the same size $N_j$
+- $|A\cup B\cup C|=\alt{\sum|A_i|-\sum|A_i\cap A_j|}{|A|+|B|+|C|-|A\cap B|-|B\cap C|-|C\cap A|}+|A\cap B\cap C|$ — add singles, subtract pairs, add the triple
+- $\alt{\left|\bigcup A_i\right|=\sum_{\emptyset\ne S}(-1)^{|S|+1}\left|\bigcap_{i\in S}A_i\right|}{|A_1\cup\cdots\cup A_n|=\big(|A_1|+\cdots\big)-\big(|A_1\cap A_2|+\cdots\big)+\cdots\pm|A_1\cap\cdots\cap A_n|}$ — an element in exactly $t$ sets is counted $\binom t1-\binom t2+\cdots=1$ time
+- $\alt{\sum_{j}(-1)^{j+1}\binom kj N_j}{\binom k1N_1-\binom k2N_2+\binom k3N_3-\cdots}$ — the symmetric case, when every $j$-fold intersection has the same size $N_j$
 
 ## Why it works
 Adding the sizes of overlapping sets counts each shared element more than once, and the alternating terms are exactly the corrections that bring every element back to a count of one.
@@ -520,8 +520,8 @@ The Stirling form is often faster when $k$ is small, since $k!\,S(n,k)$ separate
 "permutation-cycle-structure": String.raw`
 ## Key forms
 - $\operatorname{ord}(f) = \operatorname{lcm}$ of the cycle lengths — so $f^{\,k} = \mathrm{id}$ exactly when every cycle length divides $k$, which turns a condition on the function into a condition on a partition of $n$
-- $\dfrac{n!}{\prod_c c^{m_c} m_c!}$ functions have $m_c$ cycles of each length $c$ — divide by $c$ per cycle, since a cycle can be written starting anywhere, and by $m_c!$ because equal-length cycles are interchangeable
-- $f = f^{-1}$ means every cycle has length $1$ or $2$ — an involution, the $k = 2$ case, counted by $\sum_j \binom{n}{2j}(2j-1)!!$
+- $\alt{\dfrac{n!}{\prod_c c^{m_c} m_c!}}{\dfrac{n!}{1^{m_1}m_1!\cdot 2^{m_2}m_2!\cdots}}$ functions have $m_c$ cycles of each length $c$ — divide by $c$ per cycle, since a cycle can be written starting anywhere, and by $m_c!$ because equal-length cycles are interchangeable
+- $f = f^{-1}$ means every cycle has length $1$ or $2$ — an involution, the $k = 2$ case, counted by $\alt{\sum_j \binom{n}{2j}(2j-1)!!}{1+\binom n2\cdot 1+\binom n4\cdot 3+\binom n6\cdot 15+\cdots}$
 - a single $c$-cycle on a chosen set of $c$ elements can be written $(c-1)!$ ways — the [[circular-permutations|circular arrangement]] count, which is where the $c^{m_c}$ comes from
 
 ## Why it works
@@ -723,8 +723,8 @@ The standing shapes are two people arriving at random times and waiting for each
 
 "states-recursion-prob": String.raw`
 ## Key forms
-- $p_S=\sum_{\text{moves}}P(\text{move})\,p_{S'}$ — one equation per state, conditioning on the first step
-- $E_S=1+\sum_{\text{moves}}P(\text{move})\,E_{S'}$ — the same for expected number of steps
+- $p_S=\alt{\sum_{\text{moves}}P(\text{move})\,p_{S'}}{P(\text{move}_1)\,p_{S_1}+P(\text{move}_2)\,p_{S_2}+\cdots}$ — one equation per state, conditioning on the first step
+- $E_S=1+\alt{\sum_{\text{moves}}P(\text{move})\,E_{S'}}{P(\text{move}_1)\,E_{S_1}+P(\text{move}_2)\,E_{S_2}+\cdots}$ — the same for expected number of steps
 - $p_{\text{absorb}}=1$, $p_{\text{fail}}=0$, $E_{\text{absorb}}=0$ — the anchors that close the system
 - $P=\frac{a}{a+b}$, $E=ab$ — gambler's ruin from $a$ with target $a+b$ on a fair walk
 
@@ -874,9 +874,9 @@ Three problems here, two AIME and one AMC 10, one solved by it alone. Typical us
 
 "double-counting": String.raw`
 ## Key forms
-- $\sum_v\deg v=2E$ — count edge-endpoints once per vertex and once per edge
+- $\alt{\sum_v\deg v}{\deg v_1+\cdots+\deg v_n}=2E$ — count edge-endpoints once per vertex and once per edge
 - $k\binom nk=n\binom{n-1}{k-1}$ — count (committee, chair) pairs by committee first or by chair first
-- $\sum_i\binom{w_i}{2}$ against $\binom n3$ — count dominated pairs in a tournament to extract the cyclic triangles
+- $\alt{\sum_i\binom{w_i}{2}}{\binom{w_1}{2}+\cdots+\binom{w_n}{2}}$ against $\binom n3$ — count dominated pairs in a tournament to extract the cyclic triangles
 - rows against columns of a $0/1$ incidence matrix — the picture underneath all of them
 
 ## Why it works
@@ -1041,7 +1041,7 @@ The tell is the answer. If a strange-looking count comes out as a clean binomial
 `,
 
 "grid-path-fill": String.raw`## Key forms
-- $N(\text{cell})=\sum N(\text{cells that step into it})$, with $N(\text{start})=1$ — the whole method
+- $N(\text{cell})=\alt{\sum N(\text{cells that step into it})}{N(\text{left})+N(\text{below})+\cdots}$, with $N(\text{start})=1$ — the whole method
 - a blocked cell is $N=0$, not a special case — the sweep does not change shape
 - right/up on a clear grid rebuilds Pascal's triangle, so the answer is $\binom{m+n}{m}$
 - right/up/diagonal gives the Delannoy numbers, $1,3,13,63,321,\dots$ along the main diagonal
@@ -1061,7 +1061,7 @@ The standard MATHCOUNTS and AMC phrasing is a street map: shortest routes from o
 
 "recursive-counting": String.raw`
 ## Key forms
-- $a_n=\sum(\text{ways to finish})\times a_{\text{smaller}}$ — classify by the last step or the last block
+- $a_n=\alt{\sum(\text{ways to finish})\times a_{\text{smaller}}}{c_1\,a_{n-1}+c_2\,a_{n-2}+\cdots}$ — classify by the last step or the last block
 - one sequence per state, updated together — the move when several constraints interact
 - disjoint, exhaustive cases and hand-checked base cases — the two places these arguments go wrong
 
@@ -1141,7 +1141,7 @@ The classic trap is the interaction between a leading digit and a last digit, as
 
 "indicator-variables": String.raw`
 ## Key forms
-- $X=\sum_iX_i$ with $E[X]=\sum_iP(\text{occurrence }i)$ — the whole method in one line
+- $X=\alt{\sum_iX_i}{X_1+\cdots+X_n}$ with $E[X]=\alt{\sum_iP(\text{occurrence }i)}{P(\text{occurrence }1)+\cdots+P(\text{occurrence }n)}$ — the whole method in one line
 - one indicator per pair, per position or per adjacency — choosing the atomic occurrence is the only real decision
 
 ## Why it works
@@ -1210,11 +1210,11 @@ Three problems here, all AIME, none solved by it alone, and each pairs it with [
 
 "generating-function-method": String.raw`
 ## Key forms
-- $\frac{1}{1-x}=\sum_{n\ge0}x^n$ — an unlimited supply of one item
+- $\frac{1}{1-x}=\alt{\sum_{n\ge0}x^n}{1+x+x^2+\cdots}$ — an unlimited supply of one item
 - $1+x+\cdots+x^m$ — an item usable at most $m$ times; $(1+x)$ for at most once, and $(1+x)^n$ for take-or-leave over $n$ items
-- $\frac{1}{(1-x)^k}=\sum_n\binom{n+k-1}{k-1}x^n$ — [[stars-and-bars|stars and bars]], read off as a coefficient
+- $\frac{1}{(1-x)^k}=\alt{\sum_n\binom{n+k-1}{k-1}x^n}{1+kx+\binom{k+1}{k-1}x^2+\cdots}$ — [[stars-and-bars|stars and bars]], read off as a coefficient
 - $\frac{x(1-x^6)}{1-x}=x+x^2+\cdots+x^6$ — one standard die
-- $[x^N]\prod_i f_i(x)$ — multiply the factors and read the coefficient; the product handles every interaction
+- $[x^N]\alt{\prod_i f_i(x)}{f_1(x)f_2(x)\cdots f_m(x)}$ — multiply the factors and read the coefficient; the product handles every interaction
 
 ## Why it works
 Multiplying two sums of powers of $x$ produces one term for every pair of choices, and the exponents add, so the coefficient of $x^N$ counts exactly the pairs of choices with total $N$.
@@ -1354,10 +1354,10 @@ The LYM inequality is the more flexible form, since it weights subsets by size a
 Olympiad extremal set theory. Carry two things: the answer $\binom{n}{\lfloor n/2\rfloor}$ and the LYM inequality as the lever.`,
 
 "polya-enumeration": String.raw`## Key forms
-- $Z_G=\frac{1}{|G|}\sum_g\prod_i x_i^{c_i(g)}$ — the cycle index, recording how each symmetry splits the positions into cycles
+- $Z_G=\frac{1}{|G|}\alt{\sum_g\prod_i x_i^{c_i(g)}}{\left(x_1^{c_1(g_1)}x_2^{c_2(g_1)}\cdots+x_1^{c_1(g_2)}x_2^{c_2(g_2)}\cdots+\cdots\right)}$ — the cycle index, recording how each symmetry splits the positions into cycles
 - $x_i=k$ — substituting this recovers [[burnsides-lemma|Burnside's]] plain count of $k$-colorings
-- $x_i=\sum_j y_j^{\,i}$ — substituting this instead breaks the count down by how many of each color, which Burnside alone cannot do
-- $Z_{C_n}=\frac1n\sum_{d\mid n}\varphi(d)\,x_d^{\,n/d}$ — the cycle index for necklaces
+- $x_i=\alt{\sum_j y_j^{\,i}}{y_1^{\,i}+y_2^{\,i}+\cdots+y_m^{\,i}}$ — substituting this instead breaks the count down by how many of each color, which Burnside alone cannot do
+- $Z_{C_n}=\frac1n\alt{\sum_{d\mid n}\varphi(d)\,x_d^{\,n/d}}{\left(x_1^{\,n}+\cdots+\varphi(d)\,x_d^{\,n/d}+\cdots+\varphi(n)\,x_n\right)}$ — the cycle index for necklaces
 
 ## Why it works
 Burnside counts orbits by averaging fixed points; Pólya refines "fixed" into a generating function via each symmetry's cycle structure. A coloring is fixed by $g$ iff it is constant on every cycle of $g$, so weighting by colors gives $\prod_k(\sum \text{colors}^k)^{c_k(g)}$, and averaging over $G$ is the cycle index $Z_G$.
@@ -1418,7 +1418,7 @@ Scheduling, map, and conflict problems on AMC/AIME, plus olympiad [[invariants-c
 
 "probabilistic-method": String.raw`## Key forms
 - $E[X]\ge c\Rightarrow$ some outcome has $X\ge c$ — an average is always attained, so a bound on the mean proves existence
-- $\sum_iP(\text{bad}_i)\lt 1\Rightarrow$ some outcome avoids every bad event — the union bound
+- $\alt{\sum_iP(\text{bad}_i)}{P(\text{bad}_1)+\cdots+P(\text{bad}_m)}\lt 1\Rightarrow$ some outcome avoids every bad event — the union bound
 - $E[X]\lt 1$ for an integer count $\Rightarrow P(X=0)>0$ — the first-moment form used for "no bad events" arguments
 
 ## Why it works
@@ -1550,7 +1550,7 @@ The standard applications are families of lattice paths forbidden to touch, and 
 Olympiad / Putnam level; recognizing "non-intersecting lattice paths" as a determinant is the key move behind many exact product-formula counts.`,
 
 "squared-binomial-sum": String.raw`## Key forms
-- $\sum_{k=0}^{n}\binom nk^2=\binom{2n}{n}$ — the squares of one row of Pascal's triangle
+- $\alt{\sum_{k=0}^{n}\binom nk^2}{\binom n0^2+\binom n1^2+\cdots+\binom nn^2}=\binom{2n}{n}$ — the squares of one row of Pascal's triangle
 - $\binom{2n}{n}/4^n$ — the chance two people flipping $n$ coins each tie
 
 ## Why it works
@@ -1603,8 +1603,8 @@ Rare on AMC and AIME as a named result, but the reasoning appears constantly in 
 
 "casework-method": String.raw`
 ## Key forms
-- $\#(\text{total})=\sum_i\#(\text{case}_i)$ — valid only if the cases are disjoint and exhaustive, the two things to check first
-- $P(A)=\sum_i P(A\mid B_i)P(B_i)$ — the weighted version, the law of total probability
+- $\#(\text{total})=\alt{\sum_i\#(\text{case}_i)}{\#(\text{case}_1)+\#(\text{case}_2)+\cdots}$ — valid only if the cases are disjoint and exhaustive, the two things to check first
+- $P(A)=\alt{\sum_i P(A\mid B_i)P(B_i)}{P(A\mid B_1)P(B_1)+P(A\mid B_2)P(B_2)+\cdots}$ — the weighted version, the law of total probability
 
 ## Why it works
 If every object lands in exactly one case, adding up the cases counts every object exactly once.

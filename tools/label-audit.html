@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Label audit</title>
+<link rel="stylesheet" href="../css/styles.css">
+<style>
+  body { padding: 16px; }
+  #stage { width: 400px; }
+  #out { white-space: pre-wrap; font: 12px/1.45 ui-monospace, monospace; }
+  #gallery { display: grid; grid-template-columns: repeat(4, 400px); gap: 18px; }
+  #gallery h4 { font: 12px ui-monospace, monospace; margin: 0 0 4px; color: var(--text); }
+</style>
+</head>
+<body>
+<!--
+  Label legibility audit for every figure: card panels, example figures and in-text figures.
+
+  check-diagrams.py reads the SVG source, before the app's tidyDiagram() has moved anything, and
+  it can only compare label against label. The collisions readers actually see are different:
+  a label printed on top of a marker dot (the "1"s sitting on the circle centres in the Soddy
+  figure), or a stroke running through the glyphs. Those depend on real glyph widths and on
+  where tidyDiagram() leaves each label, so this page renders every panel exactly as the app
+  does, runs the app's own tidyDiagram() on it (extracted from js/app.js, so it cannot drift),
+  and then measures in the browser.
+
+  Open:  http://127.0.0.1:8642/tools/label-audit.html   (window.__audit holds the findings)
+-->
+<div id="stage"></div>
+<pre id="out">running...</pre>
+<div id="gallery"></div>
+<script src="../js/data/diagrams/geometry-diagrams.js"></script>
+<script src="../js/data/diagrams/general-diagrams.js"></script>
+<script>
+(async function () {
+  const out = document.getElementById("out"), stage = document.getElementById("stage");
+  const src = await (await fetch(new URLSearchParams(location.search).get("app") || "../js/app.js", { cache: "no-store" })).text();
+  const start = src.indexOf("function tidyDiagram(svg)");
+  let i = src.indexOf("{", start), depth = 0;
+  for (; i < src.length; i++) { if (src[i] === "{") depth++; else if (src[i] === "}" && --depth === 0) break; }
+  const tidyDiagram = new Function(src.slice(start, i + 1) + "; return tidyDiagram;")();
+
+  const panels = [];
+  const D = window.MATH_DIAGRAMS || {}, X = window.MATH_EXAMPLE_DIAGRAMS || {}, B = window.MATH_BODY_DIAGRAMS || {};
+  Object.keys(D).forEach(k => [].concat(D[k]).forEach((p, j) => typeof p === "string" && panels.push([k + "#" + j, p])));
+  Object.keys(X).forEach(k => ["q", "s"].forEach(w => X[k][w] && panels.push(["example:" + k + "#" + w, X[k][w]])));
+  Object.keys(B).forEach(k => Object.keys(B[k]).forEach(n => panels.push(["body:" + k + "/" + n, B[k][n]])));
+
+  const findings = [];
+  // A glyph box, not the em box getBBox() reports: cap height above the baseline and a little
+  // below it. The em box includes the empty ascent and descent bands, and testing with it would
+  // flag every label that merely sits close to a line.
+  function glyphBox(t) {
+    const b = t.getBBox(), fs = parseFloat(t.getAttribute("font-size") || "13"), y = parseFloat(t.getAttribute("y"));
+    const s = t.textContent || "";
+    const low = /[gjpqy,₀-₉ₐ-ₜ]/.test(s) ? 0.2 : 0.06;
+    return { x0: b.x + 0.8, x1: b.x + b.width - 0.8, y0: y - 0.7 * fs, y1: y + low * fs, s, fs };
+  }
+  const boxDist = (g, x, y) => Math.hypot(Math.max(g.x0 - x, 0, x - g.x1), Math.max(g.y0 - y, 0, y - g.y1));
+  // Liang-Barsky clip: does segment pq pass through box g shrunk by m?
+  function hits(g, p, q, m) {
+    const x0 = g.x0 + m, x1 = g.x1 - m, y0 = g.y0 + m, y1 = g.y1 - m;
+    if (x0 >= x1 || y0 >= y1) return false;
+    let t0 = 0, t1 = 1; const dx = q[0] - p[0], dy = q[1] - p[1];
+    for (const [pp, qq] of [[-dx, p[0] - x0], [dx, x1 - p[0]], [-dy, p[1] - y0], [dy, y1 - p[1]]]) {
+      if (pp === 0) { if (qq < 0) return false; continue; }
+      const r = qq / pp;
+      if (pp < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+    }
+    return true;
+  }
+  const strokeOf = el => (el.getAttribute("stroke") || "none").toLowerCase();
+  const faint = el => /text-faint|rgba|opacity/.test(strokeOf(el) + (el.getAttribute("opacity") || "") + (el.getAttribute("stroke-opacity") || ""));
+
+  const flagged = [];   // [name, html-after-tidy with the offending labels boxed] for #show
+  const only = new URLSearchParams(location.search).get("only");
+  for (const [name, html] of panels) {
+    if (only && !name.includes(only)) continue;
+    const before = findings.length;
+    stage.innerHTML = `<div class="diagram">${html}</div>`;
+    const svg = stage.querySelector("svg");
+    if (!svg) continue;
+    const src = [...svg.querySelectorAll("text")].map(t => [+t.getAttribute("x"), +t.getAttribute("y")]);
+    try { tidyDiagram(svg); } catch (e) { findings.push({ name, kind: "tidy-error", msg: String(e) }); continue; }
+    const vb = svg.getAttribute("viewBox").split(/\s+/).map(Number);
+    // A label the tidy pass had to carry far from where its figure put it is reported too: it is
+    // legible, but it may now read as belonging to a different point, so the figure itself
+    // should place it. (tidyDiagram re-appends every <text>, keeping their relative order.)
+    [...svg.querySelectorAll("text")].forEach((t, k) => {
+      const d = Math.hypot(+t.getAttribute("x") - src[k][0], +t.getAttribute("y") - src[k][1]);
+      if (d > 14 && (t.textContent || "").trim()) findings.push({ name, kind: "far-move", label: t.textContent,
+        el: Math.round(d) + "px by [" + Math.round(+t.getAttribute("x") - src[k][0]) + ", " + Math.round(+t.getAttribute("y") - src[k][1]) + "]" });
+    });
+    const texts = [...svg.querySelectorAll("text")].filter(t => (t.textContent || "").trim());
+    (window.__pos = window.__pos || {})[name] = texts.map(t => [t.textContent, +t.getAttribute("x"), +t.getAttribute("y")]);
+    const G = texts.map(glyphBox);
+    // strokes flattened to segments, each remembering its element
+    const segs = [];
+    // Strokes at 10% opacity or less (the barely-there coordinate grids) cannot cut a glyph.
+    const invisible = el => { const m = strokeOf(el).match(/rgba\([^)]*,\s*([\d.]+)\)/); return m && +m[1] <= 0.1; };
+    const push = (p, q, el) => invisible(el) || segs.push({ p, q, el });
+    svg.querySelectorAll("line").forEach(l => strokeOf(l) !== "none" &&
+      push([+l.getAttribute("x1"), +l.getAttribute("y1")], [+l.getAttribute("x2"), +l.getAttribute("y2")], l));
+    svg.querySelectorAll("polygon, polyline").forEach(el => {
+      if (strokeOf(el) === "none") return;
+      const pts = (el.getAttribute("points") || "").trim().split(/\s+/).map(t => t.split(",").map(Number)).filter(p => p.length === 2);
+      for (let k = 0; k + 1 < pts.length; k++) push(pts[k], pts[k + 1], el);
+      if (el.tagName === "polygon" && pts.length > 2) push(pts[pts.length - 1], pts[0], el);
+    });
+    svg.querySelectorAll("rect").forEach(el => {
+      if (strokeOf(el) === "none") return;
+      const x = +el.getAttribute("x"), y = +el.getAttribute("y"), w = +el.getAttribute("width"), h = +el.getAttribute("height");
+      const c = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+      for (let k = 0; k < 4; k++) push(c[k], c[(k + 1) % 4], el);
+    });
+    svg.querySelectorAll("path, circle, ellipse").forEach(el => {
+      if (strokeOf(el) === "none") return;
+      let len = 0; try { len = el.getTotalLength(); } catch (e) { return; }
+      if (!len || !isFinite(len)) return;
+      const n = Math.max(12, Math.min(400, Math.round(len / 3)));
+      let prev = null;
+      for (let k = 0; k <= n; k++) { const pt = el.getPointAtLength(len * k / n), cur = [pt.x, pt.y]; if (prev) push(prev, cur, el); prev = cur; }
+    });
+    // Opaque shapes hide whatever was painted before them: a grid line under a node circle
+    // does not cross the number in that node. Same rule as tidyDiagram().
+    const order = new Map([...svg.querySelectorAll("*")].map((el, k) => [el, k]));
+    const covers = [...svg.querySelectorAll("circle, rect")].filter(el => {
+      const f = (el.getAttribute("fill") || "").trim().toLowerCase();
+      if (!f || f === "none" || f === "transparent" || /rgba|hsla/.test(f)) return false;
+      const fo = el.getAttribute("fill-opacity"), op = el.getAttribute("opacity");
+      return !(fo && +fo < 0.95) && !(op && +op < 0.95) && (el.tagName !== "circle" || +el.getAttribute("r") > 7);
+    }).map(el => el.tagName === "circle"
+      ? { ord: order.get(el), inside: (x, y) => Math.hypot(x - +el.getAttribute("cx"), y - +el.getAttribute("cy")) <= +el.getAttribute("r") - 1 }
+      : { ord: order.get(el), inside: (x, y) => x >= +el.getAttribute("x") - 1 && x <= +el.getAttribute("x") + +el.getAttribute("width") + 1 &&
+                                                y >= +el.getAttribute("y") - 1 && y <= +el.getAttribute("y") + +el.getAttribute("height") + 1 });
+    const hidden = (el, g) => covers.some(c => c.ord > order.get(el) &&
+      c.inside(g.x0, g.y0) && c.inside(g.x1, g.y0) && c.inside(g.x0, g.y1) && c.inside(g.x1, g.y1));
+    const dots = [...svg.querySelectorAll("circle")].filter(c => {
+      const r = parseFloat(c.getAttribute("r") || "0"), f = (c.getAttribute("fill") || "none").toLowerCase();
+      return r > 0 && r <= 7 && f !== "none" && !/rgba\(255,255,255/.test(f);
+    }).map(c => ({ x: +c.getAttribute("cx"), y: +c.getAttribute("cy"), r: parseFloat(c.getAttribute("r")) }));
+
+    G.forEach((g, a) => {
+      if (g.x0 < vb[0] - 1 || g.x1 > vb[0] + vb[2] + 1 || g.y0 < vb[1] - 1 || g.y1 > vb[1] + vb[3] + 1)
+        findings.push({ name, kind: "off-canvas", label: g.s });
+      for (const d of dots) if (boxDist(g, d.x, d.y) < d.r - 0.4)
+        { findings.push({ name, kind: "on-dot", label: g.s, at: [Math.round(d.x), Math.round(d.y)] }); break; }
+      const crossed = new Set();
+      for (const sg of segs) if (!crossed.has(sg.el) && hits(g, sg.p, sg.q, 1.2) && !hidden(sg.el, g)) crossed.add(sg.el);
+      crossed.forEach(el => findings.push({ name, kind: faint(el) ? "on-faint-stroke" : "on-stroke", label: g.s,
+        el: el.tagName + (el.getAttribute("stroke-dasharray") ? " dashed" : "") + " " + strokeOf(el).replace(/var\(--|\)/g, "") }));
+      for (let b = a + 1; b < G.length; b++) {
+        const h = G[b];
+        if (g.x0 < h.x1 - 0.5 && h.x0 < g.x1 - 0.5 && g.y0 < h.y1 - 0.5 && h.y0 < g.y1 - 0.5)
+          findings.push({ name, kind: "on-label", label: g.s, other: h.s });
+      }
+    });
+    const forced = (new URLSearchParams(location.search).get("names") || "").split(",").includes(name);
+    if ((findings.length > before || forced) && location.hash === "#show") {
+      const bad = new Set(findings.slice(before).map(f => f.label));
+      G.forEach(g => { if (bad.has(g.s)) svg.insertAdjacentHTML("beforeend",
+        `<rect x="${g.x0}" y="${g.y0}" width="${g.x1 - g.x0}" height="${g.y1 - g.y0}" fill="none" stroke="red" stroke-width="0.8"/>`); });
+      flagged.push([name, svg.outerHTML]);
+    }
+  }
+  stage.innerHTML = "";
+  if (location.hash === "#show") {
+    out.style.display = "none";
+    document.getElementById("gallery").innerHTML = flagged.map(([n, h]) =>
+      `<div><h4>${n}</h4><div class="diagram">${h}</div></div>`).join("");
+  }
+  window.__audit = { panels: panels.length, findings };
+  if (location.hash === "#pos") { out.textContent = JSON.stringify(window.__pos); document.title = "done"; return; }
+  const byKind = {};
+  findings.forEach(f => byKind[f.kind] = (byKind[f.kind] || 0) + 1);
+  out.textContent = "panels " + panels.length + " | " + JSON.stringify(byKind) + "\n" +
+    findings.map(f => f.kind + "  " + f.name + "  " + JSON.stringify(f.label) +
+      (f.at ? " dot@" + f.at : "") + (f.el ? " " + f.el : "") + (f.other ? " vs " + JSON.stringify(f.other) : "")).join("\n");
+  document.title = "done";
+})();
+</script>
+</body>
+</html>

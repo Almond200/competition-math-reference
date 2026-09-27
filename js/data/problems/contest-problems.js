@@ -186,7 +186,6 @@
   add("multinomial-theorem", "2006 AMC 12A, Problem 24", "2010 AIME I, Problem 4");
   add("de-moivre", "1984 AIME, Problem 8", "2012 AIME I, Problem 6");
   add("geometric-series", "2005 AIME II, Problem 3", "2002 AIME II, Problem 11");
-  add("digit-sum-mod-9", "2017 AIME I, Problem 9", "2025 AIME I, Problem 5");
 
   // ---------- Verified batch 5: more theorems, series & geometry (AoPS-documented) ----------
   add("chicken-mcnugget", "1994 AIME, Problem 11", "2019 AIME II, Problem 14");

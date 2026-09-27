@@ -96,8 +96,39 @@ def load_cards():
     for path in sorted(glob.glob(os.path.join(ROOT, "js/data/details/*.js"))):
         for cid, body in _entry_bodies(io.open(path, encoding="utf-8").read()).items():
             if cid in cards:
-                cards[cid]["body"] = body
+                cards[cid]["body"] = sigma_form(body)
     return cards
+
+
+def sigma_form(text):
+    """Resolve every \\alt{sigma}{expanded} in a write-up to its sigma branch, as js/app.js
+    notate() does in the default setting, so the index sees one canonical text."""
+    out, i = [], 0
+    while True:
+        j = text.find("\\alt{", i)
+        if j < 0:
+            return "".join(out) + text[i:]
+        out.append(text[i:j])
+        k, groups = j + 4, []
+        while len(groups) < 2 and k < len(text) and text[k] == "{":
+            depth, st = 0, k
+            while k < len(text):
+                if text[k - 1] != "\\":
+                    if text[k] == "{":
+                        depth += 1
+                    elif text[k] == "}":
+                        depth -= 1
+                        if depth == 0:
+                            break
+                k += 1
+            groups.append(text[st + 1:k])
+            k += 1
+        if len(groups) < 2:
+            out.append("\\alt")
+            i = j + 4
+            continue
+        out.append(groups[0])
+        i = k
 
 
 # Mirrors js/app.js normWord closely enough for the vocabularies to line up.

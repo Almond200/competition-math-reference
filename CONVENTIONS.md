@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 557 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 555 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -35,7 +35,7 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 - `type` and `subject` appear on **105/105** `patterns.js` cards and on **0/434** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **557/557** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **555/555** cards. Use it even when there is no backslash.
 - **never write a raw `<` followed by a letter inside `$...$`** — write `\lt`. Every one of these
   strings reaches the page through `innerHTML`, so the HTML parser sees `<j` as the start of a tag
   and eats everything up to the next `>` before KaTeX is ever called. This shipped once as
@@ -46,7 +46,7 @@ Exactly two field orders exist, and nothing else. Copy one of these.
   intentional `<br>` in examples.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
   `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
-  all 557 cards use one of the four canonical orders, the extra two being the same pair with an
+  all 555 cards use one of the four canonical orders, the extra two being the same pair with an
   optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
   something to show).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
@@ -97,14 +97,14 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**557 write-ups for 557 cards. One each, no orphans, no card without one.**
+**555 write-ups for 555 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      557/557
-## How to use it     557/557
-## On contests       557/557
+## Why it works      555/555
+## How to use it     555/555
+## On contests       555/555
 ```
 
 Two optional headings, and no others (the scan fails on any other): `## Key forms`, on 109, and
@@ -132,7 +132,7 @@ Two optional headings, and no others (the scan fails on any other): `## Key form
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 557** write-ups contain `**`. This rule is unbroken — do not be the first.
+  asterisks. **0 of 555** write-ups contain `**`. This rule is unbroken — do not be the first.
 - **Em dashes: median 2 per write-up, 90th percentile 5, and 87 write-ups use none.** Prefer commas.
   (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
@@ -177,7 +177,7 @@ positives and should be rejected every time they reappear:
   *algorithm*, not the lemma.
 - the phrase "digit sums" offered a link to `digit-sum-carries`. In `divisibility-rules` and
   `repeating-decimals` it means $10 \equiv 1 \pmod 9$ or the digits of a repeating block, neither of
-  which involves a carry; `digit-sum-mod-9` is the card those mean.
+  which involves a carry; `divisibility-rules` is the card those mean (it absorbed `digit-sum-mod-9`).
 - **a mathematician's name is not a card match.** "Brahmagupta's" in `cyclic-perpendicular-diagonals`
   means Brahmagupta's *theorem* (the perpendicular from the diagonal intersection bisects the opposite
   side), not `brahmaguptas-formula`, which is his area formula. Likewise "Pappus' chain" in `arbelos`
@@ -192,7 +192,7 @@ positives and should be rejected every time they reappear:
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**557 example keys for 557 cards. Zero cards lack one.**
+**555 example keys for 555 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -263,6 +263,18 @@ Elsewhere it is the exception, reserved for configuration-heavy figures: `patter
 - **Nothing overlaps, and nothing falls off the canvas.** Run `python3 tools/check-diagrams.py`; it
   exits non-zero on any label outside its viewBox, any marker dot outside it, and any two labels
   whose boxes intersect. Then confirm on the rendered page that every panel has its caption.
+- **No label touches a dot, a stroke or another label as rendered, and none relies on the tidy pass
+  to rescue it.** Run `python3 tools/check-labels.py`. It renders every figure in headless Chrome
+  through the app's own `tidyDiagram()` and measures real glyphs, which `check-diagrams.py` cannot:
+  that gate reads the source with estimated widths and never saw the "1"s printed on the circle
+  centres of the Soddy figure, or a vertex letter sitting on one of its own sides. It also fails a
+  label the tidy pass had to carry more than 14px, since a label moved that far can end up naming
+  the wrong point (a "Brianchon point" label once landed beside a tangency point); place it in the
+  figure instead. `tools/label-audit.html#show` draws every offending figure with the label boxed.
+  Two tools for crowded spots: `gapLabel(p, neighbours, ...)` puts a point's label in the widest
+  gap between the lines leaving it, and in an in-text figure drawn on a grid, `plate(...)` prints
+  an opaque patch in the page colour under a coordinate label so grid lines stop at its edge.
+  (Plates only in `BODY` figures: card panels also sit on the white card, where the patch would show.)
 - **Derive positions; do not hardcode one where the construction gives it.** This is the rule that
   the other checks could not enforce, and every instance of the bug below is the same mistake:
   a coordinate chosen by eye, or a derived point never checked against the frame.
@@ -381,6 +393,7 @@ fails with `Unexpected string literal`. Add the comma.
 jsc js/data/<file>.js                    # a `window` ReferenceError means the parse SUCCEEDED
 jsc tools/validate-problem-db.js         # 0 violations, and check the card count moved as intended
 python3 tools/check-diagrams.py          # every panel fits its canvas, no labels collide
+python3 tools/check-labels.py            # as rendered: no label on a dot, stroke or label, none moved far
 python3 tools/scan-conventions.py        # the census above; fails on any rule marked "must stay 0"
 python3 tools/check-lists.py             # list ids resolve, and every route is complete
 python3 tools/check-topics.py            # every card carries a topic chip, and no title awards a wrong one

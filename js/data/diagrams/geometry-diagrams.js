@@ -121,6 +121,21 @@
     `<polygon points="${pts.map(pf).join(" ")}" fill="${fill}" stroke="${c}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
   const txt = (p, s, c = DIM, size = 13, anchor = "middle") =>
     `<text x="${r1(p[0])}" y="${r1(p[1])}" fill="${c}" font-size="${size}" text-anchor="${anchor}">${s}</text>`;
+  // An opaque patch behind a label, for in-text figures drawn on a grid: a coordinate label
+  // cannot dodge every grid line, so the line is hidden where the label sits instead, the way a
+  // map prints a town name over its roads. In-text figures sit on the page background, var(--bg);
+  // a card panel sits on var(--bg-card) as well, so plates belong in BODY figures only.
+  const plate = (p, s, size = 13, anchor = "middle") => {
+    const w = [...s].length * size * 0.6 + 6, x = anchor === "middle" ? p[0] - w / 2 : anchor === "end" ? p[0] - w + 3 : p[0] - 3;
+    return `<rect x="${r1(x)}" y="${r1(p[1] - size * 0.92)}" width="${r1(w)}" height="${r1(size * 1.2)}" rx="3" fill="var(--bg)"/>`;
+  };
+  // Put a point's label in the widest gap between the lines leaving it, so it never sits on one.
+  const gapLabel = (p, others, s, c = DIM, size = 13, d = 14) => {
+    const a = others.map(q => Math.atan2(q[1] - p[1], q[0] - p[0])).sort((x, y) => x - y);
+    let best = 0, at = 0;
+    a.forEach((x, i) => { const y = i + 1 < a.length ? a[i + 1] : a[0] + 2 * Math.PI; if (y - x > best) { best = y - x; at = (x + y) / 2; } });
+    return txt(add(p, [d * Math.cos(at), d * Math.sin(at) + size * 0.35]), s, c, size);
+  };
   function angleArc(P, Q, R, ra, c = ACC, double = false) {
     const a1 = Math.atan2(Q[1] - P[1], Q[0] - P[0]);
     let da = Math.atan2(R[1] - P[1], R[0] - P[0]) - a1;
@@ -230,7 +245,7 @@
       ABC(), seg(M, N, ACC, 2.5), dot(M, ACC), dot(N, ACC),
       txt(add(M, [-16, 0]), "M", ACC), txt(add(N, [16, 0]), "N", ACC),
       txt(add(mid(M, N), [0, -8]), "½ BC", ACC, 12.5),
-      cap(430, 320, "MN ∥ BC")
+      cap(430, 320, "MN is parallel to BC")
     ]);
   })()];
 
@@ -252,7 +267,7 @@
       poly([A, B, D], "none", 0, ACCS), poly([A, D, C], "none", 0, GLDS),
       ABC(), seg(A, D, DIM, 2), dot(D, DIM, 3.5), txt(add(D, [0, 20]), "D"),
       txt(add(mid(B, D), [0, 18]), "m", ACC), txt(add(mid(D, C), [0, 18]), "n", GLD),
-      cap(430, 320, "[ABD] : [ACD] = m : n")
+      cap(430, 320, "D splits BC into BD = m and DC = n. Triangles ABD (blue) and ACD (gold) share the height from A, so [ABD] : [ACD] = m : n.")
     ]);
   })()];
 
@@ -800,7 +815,7 @@
       txt(add(T, [0, 25]), "T", DIM, 12.5),
       txt(away(A, cen, 16), "A", ACC, 12.5), txt(away(B, cen, 16), "B", ACC, 12.5),
       txt(add(tanL, [30, -10]), "ℓ", DIM, 12.5),
-      cap(430, 340, "both angles stand on the highlighted arc TA, so the tangent–chord angle at T equals the inscribed angle at B")
+      cap(430, 340, "The tangent–chord angle θ at T and the inscribed angle at B both stand on the highlighted arc TA, so they are equal.")
     ]);
   })(), (() => {
     const cen = [215, 176], R = 118;
@@ -820,7 +835,7 @@
       txt(add(T, [-36, -12]), "θ", ACC, 13.5),
       txt(add(T, [0, 25]), "T", DIM, 12.5), txt(add(cen, [15, -7]), "O", ORG, 12.5),
       txt(away(A, cen, 16), "A", ACC, 12.5),
-      cap(430, 340, "OT ⊥ ℓ and triangle OTA is isosceles, so θ is half the central angle ∠AOT = 2θ, which is the arc TA")
+      cap(430, 340, "The tangent ℓ is perpendicular to the radius OT, and triangle OTA is isosceles, so the central angle ∠AOT is 2θ: the tangent–chord angle is half the arc TA.")
     ]);
   })()];
 
@@ -888,7 +903,7 @@
       seg(c1, T1, GLD, 1.6), seg(c2, T2, GLD, 1.6),
       txt(add(mid(c1, T1), [-12, 0]), "r₁", GLD, 12), txt(add(mid(c2, T2), [14, 0]), "r₂", GLD, 12),
       seg(T1, T2, ACC, 2.2), dot(T1, ACC, 3.5), dot(T2, ACC, 3.5),
-      txt(add(mid(T1, T2), [0, -10]), "2√(r₁r₂)", ACC, 12),
+      txt(add(mid(T1, T2), [12, 17]), "2√(r₁r₂)", ACC, 12),
       cap(430, 330, "circles tangent at the green point (d = r₁ + r₂): the external tangent segment collapses to t = 2√(r₁r₂) — the workhorse for chains of tangent circles")
     ]);
   })()];
@@ -900,7 +915,7 @@
       circ([160, g - 60], 60, ACC, 1.8), circ([280, g - 60], 60, ACC, 1.8),
       circ([220, g - 15], 15, GLD, 1.8),
       txt([160, g - 60], "k₁ = 1", ACC, 12), txt([280, g - 60], "k₂ = 1", ACC, 12),
-      txt([220, g - 42], "k₄ = 4", GLD, 11), txt([90, g + 18], "k₃ = 0 (line)", DIM, 11.5),
+      txt([220, g + 18], "k₄ = 4", GLD, 11), txt([90, g + 18], "k₃ = 0 (line)", DIM, 11.5),
       cap(430, 300, "curvatures kᵢ = 1/rᵢ, line = 0: Descartes gives k₄ = 4, radius ¼")
     ]);
   })()];
@@ -953,7 +968,7 @@
       angleArc(QB, QC2, F, 21, GRN, true),          // exterior angle at B
       angleArc(QD, QC2, QA, 21, GRN, true),         // interior angle at D
       dot(F, DIM, 3.2), txt(add(F, [11, 5]), "E", DIM, 12),
-      txt(add(QB, [26, 22]), "exterior", GRN, 11),
+      txt(add(QB, [46, -1]), "exterior", GRN, 11),
       cap(430, 340, "produce AB to E: the exterior angle ∠CBE is 180° − ∠B, and so is ∠D — the ticked angles are equal, which is the supplementary rule said the other way round")
     ]);
   })()];
@@ -1104,7 +1119,7 @@
       dot(A, ACC, 4), dot(G, ACC, 4), dot(B, GLD, 4), dot(H, GLD, 4),
       dot(C, DIM, 3), dot(D, DIM, 3), dot(E, DIM, 3), dot(F, DIM, 3),
       dot(Q, GRN, 4.5), txt(add(Q, [0, -11]), "P", GRN, 12.5),
-      L(A, "A", ACC), L(G, "G", ACC), L(B, "B", GLD), L(H, "H", GLD),
+      gapLabel(A, [B, D, E, Q], "A", ACC, 12, 14), L(G, "G", ACC), L(B, "B", GLD), L(H, "H", GLD),
       L(C, "C", FNT), L(D, "D", FNT), L(E, "E", FNT), L(F, "F", FNT),
       cap(430, 320, "in a box the same thing happens twice over: PA² + PG² = PB² + PH² = PC² + PE² = PD² + PF², each pair being the ends of a space diagonal")
     ]);
@@ -1138,7 +1153,7 @@
       seg([t[0] - trx, t[1]], [b[0] - brx, b[1]], DIM, 2),
       seg([t[0] + trx, t[1]], [b[0] + brx, b[1]], DIM, 2),
       seg(t, b, ACC, 1.6, "5 4"), txt([222, 185], "h", ACC),
-      txt([210, 112], "A₂", GLD, 12.5), txt([210, 254], "A₁", GLD, 12.5),
+      txt([194, 112], "A₂", GLD, 12.5), txt([210, 254], "A₁", GLD, 12.5),
       cap(430, 310, "V = ⅓ h (A₁ + A₂ + √(A₁A₂))")
     ]);
   })()];
@@ -1158,11 +1173,11 @@
       rightAngle(base, P1, P2, 13),
       dot(P1, DIM, 4.5), dot(P2, DIM, 4.5),
       txt(add(P1, [-16, -8]), "P\u2081", DIM, 13, "end"),
-      txt(add(P2, [12, -6]), "P\u2082", DIM, 13, "start"),
+      txt(add(P2, [-2, -10]), "P\u2082", DIM, 13, "start"),
       txt(add(mid(B.pts[0], B.pts[1]), [-12, 14]), "\u0394x", FNT, 12.5),
       txt(add(mid(B.pts[1], B.pts[2]), [16, 12]), "\u0394y", FNT, 12.5),
       txt(add(mid(B.pts[2], B.pts[6]), [18, 4]), "\u0394z", FNT, 12.5),
-      txt(add(mid(P1, base), [6, 16]), "\u221a(\u0394x\u00b2+\u0394y\u00b2)", GLD, 11.5),
+      txt(add(mid(P1, base), [45, 4]), "\u221a(\u0394x\u00b2+\u0394y\u00b2)", GLD, 11.5),
       txt(add(mid(P1, P2), [-16, -8]), "d", ACC, 14),
       cap(430, 330, "the base leg, then the rise: d\u00b2 = \u0394x\u00b2 + \u0394y\u00b2 + \u0394z\u00b2")
     ]);
@@ -1243,7 +1258,7 @@
       dot(cen, DIM, 3),
       txt(add(mid(v[0], v[1]), [16, 0]), "s", GLD),
       seg(v[0], v[3], GLD, 1.6, "6 4"), txt(add(mid(v[0], v[3]), [24, -8]), "2s", GLD, 12),
-      cap(430, 340, "six equilateral triangles of side s; the long diagonal is 2s")
+      cap(430, 340, "The segments from the center cut the hexagon into six equilateral triangles of side s, so its area is six times √3s²/4, and the long diagonal (dashed) is 2s.")
     ]);
   })()];
 
@@ -1667,7 +1682,7 @@
       txt(add(mid(A, D), [-13, 0]), "b", GLD),
       txt(add(mid(B, D), [13, -2]), "c", GLD),
       txt(add(mid(D, C), [11, 2]), "d", ACC),
-      txt(add(mid(B, C), [12, 6]), "e", ACC),
+      txt(add(mid(B, C), [-5, -7]), "e", ACC),
       txt(add(mid(A, C), [-8, -4]), "f", ACC),
       cap(430, 320, "volume from all six edge lengths — the 3D Heron's formula")
     ]);
@@ -1937,7 +1952,7 @@
       seg(F, M, GLD, 1.8, "5 4"),
       dot(F, GLD, 3.5), dot(M, GLD, 4), dot(P, GLD, 4.5),
       txt(add(P, [9, 13]), "P", GLD, 12),
-      txt(add(M, [10, 5]), "M", GLD, 12),
+      txt(add(away(M, P, 15), [0, 4]), "M", GLD, 12),
       dot(A, ACC, 4), dot(B, ACC, 4), dot(C, ACC, 4), dot(D, ACC, 4),
       vlab(A, "A"), vlab(B, "B"), vlab(C, "C"), vlab(D, "D"),
       cap(430, 330, "a² + c² = b² + d² = 4R², and the perpendicular from P to AB bisects CD at M")
@@ -2257,7 +2272,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg(X12, lerp(X12, t1b, 1.22), FNT, 1.2, "5 4"),
       circ(c1, r1c, DIM, 1.8), circ(c2, r2c, DIM, 1.8), circ(c3, r3c, DIM, 1.8),
       dot(c1, DIM, 3.5), dot(c2, DIM, 3.5), dot(c3, DIM, 3.5),
-      txt(add(c1, [0, 5]), "O₁", DIM, 12), txt(add(c2, [0, 5]), "O₂", DIM, 12), txt(add(c3, [0, 4]), "O₃", DIM, 11),
+      txt(add(c1, [0, 5]), "O₁", DIM, 12), txt(add(c2, [0, 5]), "O₂", DIM, 12), txt(add(c3, [0, -17]), "O₃", DIM, 11),
       seg(c1, onC(c1, r1c, 210), ACC, 1.5), txt(add(mid(c1, onC(c1, r1c, 210)), [-10, -4]), "r₁", ACC, 11.5),
       seg(c2, onC(c2, r2c, 230), ACC, 1.5), txt(add(mid(c2, onC(c2, r2c, 230)), [-9, -4]), "r₂", ACC, 11.5),
       seg(lerp(X12, X23, -0.1), lerp(X12, X23, 1.14), GLD, 2),
@@ -2388,9 +2403,9 @@ DIAGRAMS["trig-ceva"] = [(() => {
     const F = lineInt(A, Ebc, B, Eca);
     return wrap(430, 330, [
       ABC(), seg(F, A, ACC, 2), seg(F, B, ACC, 2), seg(F, C, ACC, 2),
-      dot(F, GLD, 5), txt(add(F, [14, -6]), "X", GLD),
+      dot(F, GLD, 5), gapLabel(F, [A, B, C], "X", GLD, 13, 31),
       angleArc(F, A, B, 20, GRN), angleArc(F, B, C, 20, GRN), angleArc(F, C, A, 20, GRN),
-      cap(430, 330, "the three 120° angles at F minimize FA + FB + FC")
+      cap(430, 330, "the three 120° angles at X minimize XA + XB + XC")
     ]);
   })()];
 
@@ -2468,7 +2483,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
     for (let y = 0; y <= 3; y++) grid.push(seg(map(-0.3, y), map(5.4, y), "rgba(255,255,255,0.05)", 1));
     return wrap(430, 340, [
       ...grid, poly([Aa, Bb, Cc], DIM, 2), circ(I, sc, ACC, 1.6),
-      dot(I, ACC, 4.5), txt(add(I, [26, -6]), "I = (1, 1)", ACC, 12.5),
+      dot(I, ACC, 4.5), txt(add(I, [0, 24]), "I = (1, 1)", ACC, 12.5),
       txt(add(Aa, [-16, 0]), "(0,3)", DIM, 11.5), txt(add(Bb, [8, 18]), "(4,0)", DIM, 11.5),
       txt(add(Cc, [-14, 18]), "(0,0)", DIM, 11.5),
       cap(430, 340, "I = (aA + bB + cC)/(a + b + c) — here (4A + 3B + 5C)/12 = (1, 1)")
@@ -2556,7 +2571,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
     return wrap(430, 320, [
       ABC(), seg(D, E, ACC, 2.2), dot(D, ACC, 3.8), dot(E, ACC, 3.8),
       txt(add(D, [-16, 0]), "D", ACC), txt(add(E, [16, 0]), "E", ACC),
-      cap(430, 320, "DE ∥ BC  ⟺  AD/DB = AE/EC")
+      cap(430, 320, "DE is parallel to BC exactly when AD/DB = AE/EC")
     ]);
   })()];
 
@@ -2606,7 +2621,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
     const q1 = add(P, [280, -140]), q2 = add(P, [270, -90]);
     return wrap(430, 300, [
       seg(P, q1, ACC, 2), seg(P, q2, GLD, 2),
-      angleArc(P, q1, q2, 60, GRN), txt(add(P, [80, -28]), "θ", GRN, 13),
+      angleArc(P, q1, q2, 60, GRN), txt(add(P, [90, -17]), "θ", GRN, 13),
       txt(add(q1, [-30, -8]), "slope m₁", ACC, 11.5), txt(add(q2, [-25, 26]), "slope m₂", GLD, 11.5),
       cap(430, 300, "tan θ = |(m₁ − m₂) / (1 + m₁m₂)|")
     ]);
@@ -2796,7 +2811,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg([48, 250], [422, 250], FNT, 1.2), seg([80, 276], [80, 58], FNT, 1.2),
       poly([A, B, C], DIM, 2, ACCS),
       dot(B, GLD, 4.5), dot(C, GLD, 4.5), dot(A, GLD, 4.5),
-      txt([64, 268], "B (0, 0)", DIM, 12, "start"),
+      txt([84, 270], "B (0, 0)", DIM, 12, "start"),
       txt(add(C, [8, 18]), "C (a, 0)", DIM, 12, "start"),
       txt(add(A, [0, -12]), "A (x, y)", DIM, 12),
       cap(440, 300, "put a vertex at the origin and a side on the x-axis: B = (0,0), C = (a,0), A = (x,y), then distance / shoelace / slopes finish it")
@@ -2897,10 +2912,10 @@ DIAGRAMS["trig-ceva"] = [(() => {
       angleArc(A2, B2, C2, 20, GLD), txt(add(A2, [4, 26]), "A", GLD, 12),
       seg(H, B2, PUR, 1.6), seg(H, C2, PUR, 1.6), dot(H, PUR, 4.5),
       txt(add(H, [12, -8]), "H", PUR, 12.5),
-      angleArc(H, B2, C2, 20, PUR), txt(add(H, [30, 24]), "180°−A", PUR, 11),
+      angleArc(H, B2, C2, 20, PUR), txt(add(H, [26, 39]), "180°−A", PUR, 11),
       seg(IA, B2, ORG, 1.5, "5 4"), seg(IA, C2, ORG, 1.5, "5 4"), dot(IA, ORG, 4.5),
       txt(add(IA, [14, 6]), "I_A", ORG, 12.5),
-      angleArc(IA, C2, B2, 24, ORG), txt(add(IA, [-6, -34]), "90°−A/2", ORG, 11),
+      angleArc(IA, C2, B2, 24, ORG), txt(add(IA, [-9, -56]), "90°−A/2", ORG, 11),
       cap(460, 400, "the orthocenter H subtends 180° − A, and the A-excenter I_A subtends 90° − A/2, the incenter's supplement")
     ]);
   })()];
@@ -2991,20 +3006,29 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg(O1, O2, FNT, 1.2, "4 4"),
       dot(K, DIM, 3.5), dot(X, ACC, 5),
       txt(add(K, [0, -10]), "K", DIM, 12.5),
-      txt(add(X, [14, 18]), "X = X′", ACC, 13),
+      txt(add(X, [14, 33]), "X = X′", ACC, 13),
       cap(430, 330, "X and X′ are both the second intersection of the two circles ⇒ X = X′")
     ]);
   })()];
 
   DIAGRAMS["area-method"] = [(() => {
-    const D = lerp(B, C, 0.62);
+    // The method's own move, not the single-cevian picture (that one belongs to cevian-area-ratio):
+    // two cevians, the pieces as unknowns, one linear equation per base ratio. Area 24,
+    // BD : DC = 1 : 2, E the midpoint of CA; the pieces come out 6, 2, 6 and 10.
+    const D = lerp(B, C, 1 / 3), E = mid(C, A), P = lineInt(A, D, B, E);
+    const ar = pts => Math.abs(pts.reduce((s, p, i) => { const q = pts[(i + 1) % pts.length]; return s + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2;
+    const T = ar([A, B, C]), u = x => 24 * x / T;
+    const pieces = [u(ar([A, P, B])), u(ar([B, P, D])), u(ar([A, P, E])), u(ar([P, D, C, E]))];
+    const ok = [6, 2, 6, 10].every((v, i) => Math.abs(pieces[i] - v) < 1e-9);
     return wrap(430, 330, [
-      poly([A, B, D], ACC, 1.4, ACCS), poly([A, C, D], GLD, 1.4, GLDS),
-      ABC(), seg(A, D, DIM, 2), dot(D, DIM, 3.5),
-      txt(add(D, [12, -2]), "D", DIM, 12),
-      txt(centroidOf(A, B, D), "[ABD]", ACC, 11), txt(centroidOf(A, C, D), "[ACD]", GLD, 11),
-      txt(add(mid(B, D), [0, 19]), "BD", DIM, 11.5), txt(add(mid(D, C), [0, 19]), "DC", DIM, 11.5),
-      cap(430, 330, "[ABD] / [ACD] = BD / DC  (shared apex A)")
+      poly([A, P, B], ACC, 1, ACCS), poly([B, P, D], GLD, 1, GLDS), poly([A, P, E], GRN, 1, "rgba(76,195,138,0.13)"),
+      poly([P, D, C, E], PUR, 1, "rgba(160,120,255,0.12)"),
+      ABC(), seg(A, D, DIM, 2), seg(B, E, DIM, 2), seg(P, C, FNT, 1.3, "4 4"),
+      dot(D, DIM, 3.5), dot(E, DIM, 3.5), dot(P, DIM, 3.5),
+      txt(add(D, [0, 19]), "D", DIM, 12.5), txt(add(E, [12, 0]), "E", DIM, 12.5, "start"), txt(add(P, [-12, -6]), "P", DIM, 12.5, "end"),
+      txt(add(centroidOf(A, P, B), [0, 5]), "6", ACC, 15), txt(add(centroidOf(B, P, D), [0, 5]), "2", GLD, 15),
+      txt(add(centroidOf(A, P, E), [0, 5]), "6", GRN, 15), txt(add(centroidOf(P, D, C), [8, 12]), "10", PUR, 15),
+      cap(430, 330, "Two cevians cut a triangle of area 24, with BD : DC = 1 : 2 and E the midpoint of CA. Each base ratio is a linear equation in the pieces: [ABD] = 8 and [ABE] = 12, and cutting the quadrilateral along PC gives [PDC] = 2[PBD] and [PEC] = [PEA]. Solving gives 6, 2, 6 and 10." + (ok ? "" : " MISMATCH"))
     ]);
   })()];
 
@@ -3133,11 +3157,11 @@ DIAGRAMS["trig-ceva"] = [(() => {
   })()];
 
   DIAGRAMS["hellys-theorem"] = [(() => {
-    const c1 = [165, 150], c2 = [262, 150], c3 = [212, 234], r = 94, cp = [212, 178];
+    const c1 = [165, 150], c2 = [262, 150], c3 = [212, 234], r = 94, cp = [212, 165];
     return wrap(430, 336, [
       circ(c1, r, ACC, 1.8, ACCS), circ(c2, r, GLD, 1.8, GLDS),
       circ(c3, r, GRN, 1.8, "rgba(76,195,138,0.13)"),
-      dot(cp, DIM, 5), txt(add(cp, [12, 4]), "common point", DIM, 10.5),
+      dot(cp, DIM, 5), txt(add(cp, [0, 21]), "common point", DIM, 10),
       cap(430, 336, "every 3 convex sets meet ⇒ all meet (Helly, in the plane)")
     ]);
   })()];
@@ -3211,7 +3235,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(Ap, [-12, -4]), "A", DIM, 13), txt(add(Cp, [10, -2]), "C", DIM, 13),
       txt(add(Bp, [-12, 8]), "B", DIM, 13), txt(add(Dp, [10, 10]), "D", DIM, 13),
       txt(add(P, [4, -10]), "P", GLD, 13), txt(add(Q, [4, 16]), "Q", GLD, 13),
-      cap(440, 360, "Two circles meet at P, Q. A line through P gives A, C and a line through Q gives B, D — then AB ∥ CD (Reim's theorem).")
+      cap(440, 360, "Two circles meet at P, Q. A line through P gives A, C and a line through Q gives B, D. Then AB is parallel to CD (Reim's theorem).")
     ]);
   })()];
 
@@ -3292,8 +3316,8 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg(P, M, GRN, 2, "5 4"),              // midline PM ∥ AC
       dot(P, ACC, 4), dot(Bp, GLD, 4.5), dot(M, GRN, 4), dot(B, DIM, 3.5),
       vlab(A, "A"), vlab(B, "B"), vlab(C, "C"),
-      txt(add(Bp, [8, 4]), "B'", GLD, 12.5), txt(add(P, [-6, -8]), "P", ACC, 12.5), txt(add(M, [2, 18]), "M", GRN, 12.5),
-      cap(430, 340, "Drop a perpendicular from B to the A-bisector and double it: B reflects to B′ on AC (AB′ = AB). The foot P and the midpoint M give PM ∥ AC with PM = |b − c|/2.")
+      txt(add(Bp, [8, 4]), "B′", GLD, 12.5), txt(add(P, [-6, -8]), "F", ACC, 12.5), txt(add(M, [2, 18]), "M", GRN, 12.5),
+      cap(430, 340, "Drop a perpendicular from B to the A-bisector and double it: B reflects to B′ on AC (AB′ = AB). The foot F and the midpoint M give FM parallel to AC with FM = |b − c|/2.")
     ]);
   })()];
 
@@ -3397,8 +3421,8 @@ DIAGRAMS["trig-ceva"] = [(() => {
       ...T.map(t => dot(t, GLD, 3)),
       ...V.map(v => dot(v, DIM, 3.5)),
       dot(Pt, "var(--text)", 5),
-      txt(add(Pt, [56, 5]), "Brianchon point", "var(--text)", 11),
-      cap(460, 390, "hexagon circumscribed about a conic (each side tangent): the three main diagonals meet in one point")
+      gapLabel(Pt, V, "P", "var(--text)", 13, 15),
+      cap(460, 390, "hexagon circumscribed about a conic (each side tangent): the three main diagonals meet in one point, the Brianchon point P")
     ]);
   })()];
 
@@ -3549,10 +3573,10 @@ DIAGRAMS["trig-ceva"] = [(() => {
       order.map(i => sph(P3(...C[i]), R, col[i], "var(--bg-card)")).join(""),
       sph(Cin, rin, GLD, GLD),
       txt(add(P3(...C[0]), [R + 14, 4]), "k\u2081", ACC, 12),
-      txt(add(P3(...C[1]), [-R - 14, 4]), "k\u2082", GRN, 12),
+      txt(add(P3(...C[1]), [R + 14, 4]), "k\u2082", GRN, 12),
       txt(add(P3(...C[2]), [-4, R + 17]), "k\u2083", ACC, 12),
       txt(add(P3(...C[3]), [0, -R - 10]), "k\u2084", GLD, 12),
-      txt(add(Cin, [rin + 17, 4]), "k\u2085", GLD, 12),
+      txt(add(Cin, [0, 3.5]), "k\u2085", "rgba(0,0,0,0.8)", 10),
       cap(450, 340, "four equal spheres centered at a regular tetrahedron are mutually tangent, and the small sphere filling the central gap touches all four, so all five are mutually tangent. With R = 1 the gap sphere has radius \u221a6/2 \u2212 1, and those five curvatures satisfy the relation exactly")
     ]);
   })(), (() => {
@@ -3922,8 +3946,8 @@ DIAGRAMS["trig-ceva"] = [(() => {
       seg(I, foot(I, B, C), ORG, 1.6), seg(I, foot(I, C, A), ORG, 1.6), seg(I, foot(I, A, B), ORG, 1.6),
       rightAngle(foot(I, B, C), I, B, 8, ORG),
       dot(I, ORG, 4.5), txt(add(I, [10, -8]), "I", ORG, 12.5),
-      txt(add(mid(I, foot(I, B, C)), [9, 2]), "r", ORG, 12),
-      txt(add(mid(mid(B, C), I), [0, 16]), "[BIC] = ½·a·r", ACC, 11),
+      txt(add(mid(I, foot(I, B, C)), [-9, -10]), "r", ORG, 12),
+      txt(add(mid(mid(B, C), I), [28, 4]), "[BIC] = ½·a·r", ACC, 11),
       cap(430, 330, "every piece has height r on its own side, so [BIC] : [CIA] : [AIB] = a : b : c")
     ]);
   })()];
@@ -4063,7 +4087,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(P(170, 0, 0), [-8, 14]), "x", FNT, 12),
       txt(add(P(0, 250, 0), [12, 6]), "y", FNT, 12),
       txt(add(P(0, 0, 235), [9, -2]), "z", FNT, 12),   // centered above the tip would clip the top edge
-      txt(add(Xa, [-16, 12]), "(a,0,0)", ACC, 11.5),
+      txt(add(Xa, [-26, -3]), "(a,0,0)", ACC, 11.5),
       txt(add(Yb, [22, 10]), "(0,b,0)", ACC, 11.5),
       txt(add(Zc, [6, -10]), "(0,0,c)", ACC, 11.5),
       txt(add(O, [-14, 12]), "O", DIM, 12),
@@ -4090,8 +4114,8 @@ DIAGRAMS["trig-ceva"] = [(() => {
       circ(c2, r2c, GLD, 2), circ(c2i, r2i, GLD, 2, "none", "5 4"),
       dot(O, DIM, 3.5), dot(far, ACC, 3.5), dot(img1, ACC, 3.5),
       txt(add(O, [-13, -7]), "O", DIM, 12),
-      txt(add(c1, [0, 4]), "circle through O", ACC, 10.5),
-      txt(add(img1, [104, -16]), "becomes a line", ACC, 11),
+      txt(add(c1, [0, 34]), "circle through O", ACC, 10.5),
+      txt(add(img1, [136, -20]), "becomes a line", ACC, 11),
       txt(add(c2, [4, -42]), "circle missing O", GLD, 10.5),
       txt(add(c2i, [-4, 34]), "stays a circle", GLD, 11),
       cap(430, 340, "lines and circles are one family here: a circle through the center flattens to a line, one missing it stays a circle")
@@ -4451,7 +4475,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt([82 + 2 * k, 282 - 6 * k - 6], "c = 15", DIM, 12, "end"),
       txt([82 + 10 * k + 10, 282 - 6 * k - 6], "b = 14", DIM, 12, "start"),
       txt([82 + 7 * k, 305], "a = 13", DIM, 12),
-      txt(add(A, [11, 30]), "\u2220A", ORG, 12, "start"),
+      txt(add(A, [2, 41]), "\u2220A", ORG, 12, "start"),
       cap(430, 340, "cot A = (b² + c² − a²) / 4K: the law of cosines over the sine area formula, with the bc cancelling")
     ]);
   })()];
@@ -4730,7 +4754,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       ...[X, Y, Z].map(q => dot(q, ACC, 5)),
       txt(add(Aa, [-2, -11]), "A", DIM, 12), txt(add(Bb, [-2, -11]), "B", DIM, 12), txt(add(Cc, [-2, -11]), "C", DIM, 12),
       txt(add(Dd, [-2, 18]), "D", DIM, 12), txt(add(Ee, [-2, 18]), "E", DIM, 12), txt(add(Ff, [-2, 18]), "F", DIM, 12),
-      txt(add(pR, [-6, -10]), "Pappus line", ACC, 11, "end"),
+      txt(add(pR, [47, -10]), "Pappus line", ACC, 11, "end"),
       cap(430, 360, "three points on each of two lines, joined crosswise: the three crossing points are collinear — Pascal's theorem with the conic split into two lines")
     ]);
   })()];
@@ -4859,7 +4883,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
     // figure: centered on the centroid they sat on top of the edges and the dot they describe.
     const apexU = up.reduce((a2, p2) => (p2[1] < a2[1] ? p2 : a2));
     const apexD = dn.reduce((a2, p2) => (p2[1] > a2[1] ? p2 : a2));
-    parts.push(txt(add(apexU, [0, -13]), "I = " + (has(cu) ? 1 : 0), ACC, 12.5));
+    parts.push(txt(add(apexU, [15, -10]), "I = " + (has(cu) ? 1 : 0), ACC, 12.5));
     parts.push(txt(add(apexD, [0, 22]), "I = " + (has(cd) ? 1 : 0), GLD, 12.5));
     parts.push(cap(430, 330, "both triangles are equilateral of side √3 with B = 3 and the same area, " +
       "yet I differs — so no formula in I and B can give the area on a honeycomb"));
@@ -5724,8 +5748,9 @@ DIAGRAMS["trig-ceva"] = [(() => {
         seg(C, A, DIM, 1.6, "5 4"), seg(C, A2, DIM, 1.6, "5 4"),
         rightAngle(C, A, A2, 11, DIM),
         dot(C, DIM, 4.5), dot(A, ACC, 5), dot(A2, GLD, 5),
-        txt(add(C, [-8, 18]), "C = (1, 1)", DIM, 12.5, "end"),
-        txt(add(A, [8, 0]), "A = (3, 4)", ACC, 12.5, "start"), txt(add(A2, [-8, -8]), "A′ = (−2, 3)", GLD, 12.5, "end"),
+        plate(add(C, [-8, 18]), "C = (1, 1)", 12.5, "end"), txt(add(C, [-8, 18]), "C = (1, 1)", DIM, 12.5, "end"),
+        plate(add(A, [8, 4]), "A = (3, 4)", 12.5, "start"), txt(add(A, [8, 4]), "A = (3, 4)", ACC, 12.5, "start"),
+        plate(add(A2, [-8, -8]), "A′ = (−2, 3)", 12.5, "end"), txt(add(A2, [-8, -8]), "A′ = (−2, 3)", GLD, 12.5, "end"),
         txt(add(mid(C, M(3, 1)), [0, 17]), "2", ACC, 13), txt(add(mid(M(3, 1), A), [9, 5]), "3", GLD, 13, "start"),
         txt(add(mid(C, M(1, 3)), [9, 5]), "2", ACC, 13, "start"), txt(add(mid(M(1, 3), A2), [0, -8]), "3", GLD, 13),
         cap(430, 290, "Turning A = (3, 4) a quarter turn about C = (1, 1). Measured from C, A is 2 across and 3 up; the turn makes that 2 up and 3 to the left, (2, 3) → (−3, 2), so A′ = (1 − 3, 1 + 2) = (−2, 3).")
@@ -5785,7 +5810,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
         })(),
         seg(S(...P), S(...T1), ACC, 3), seg(S(...P), S(...T2), GLD, 3),
         ...[F1, F2, T1, T2].map(p => dot(S(...p), DIM, 3.2)), dot(S(...P), DIM, 4),
-        txt(add(S(...P), [-10, 4]), "P", DIM, 13, "end"),
+        txt(add(S(...P), [-9, -7]), "P", DIM, 13, "end"),
         txt(add(S(...F1), [4, -9]), "F₁", ACC, 12.5), txt(add(S(...F2), [2, 18]), "F₂", GLD, 12.5),
         txt(add(S(...T1), [-9, -2]), "T₁", ACC, 12.5, "end"), txt(add(S(...T2), [-9, 4]), "T₂", GLD, 12.5, "end"),
         txt(add(S(...L1), [6, 4]), "cutting plane", FNT, 11.5, "start"),
@@ -6284,6 +6309,39 @@ DIAGRAMS["trig-ceva"] = [(() => {
         txt(add(mid(A, H), [-7, 4]), "h", DIM, 13, "end"),
         cap(430, 262, "Triangles ABD (blue) and ACD (gold) share the height h from A, so their areas are in the ratio BD : DC. They also share the side AD and have equal angles A/2 at A, so by the sine area formula their areas are in the ratio AB : AC. The two ratios must agree." + (ok ? "" : " MISMATCH"))
       ]);
+    })(),
+    // The proof with no trigonometry. B = (0,0), A = (2,6), C = (11,0) in units. B' is B reflected
+    // across AD, so it lies on AC with AB' = AB; M, the midpoint of BB', lies on AD. The parallel to
+    // BC through B' meets AD at E, and the half-turn about M carries D to E, so B'E = BD.
+    reflect: (() => {
+      const k = 32, P = (x, y) => [40 + x * k, 230 - y * k];
+      const B = P(0, 0), C = P(11, 0), A = P(2, 6);
+      const c = dist(A, B), b = dist(A, C), D = lerp(B, C, c / (b + c));
+      const Bp = lerp(A, C, c / b), M = mid(B, Bp);
+      const E = lineInt(Bp, add(Bp, sub(C, B)), A, D);
+      const onAD = p => Math.abs((D[0] - A[0]) * (p[1] - A[1]) - (D[1] - A[1]) * (p[0] - A[0])) < 1e-6;
+      const perpAD = Math.abs((Bp[0] - B[0]) * (D[0] - A[0]) + (Bp[1] - B[1]) * (D[1] - A[1])) < 1e-6;
+      const ok = onAD(M) && onAD(E) && perpAD && Math.abs(dist(A, Bp) - c) < 1e-9 && Math.abs(dist(Bp, E) - dist(B, D)) < 1e-9 &&
+        Math.abs(dist(M, E) - dist(M, D)) < 1e-9 && Math.abs(dist(Bp, E) / dist(D, C) - c / b) < 1e-9;
+      // n short strokes across the middle of UV: equal counts mark equal lengths
+      const ticks = (U, V, n, col) => {
+        const u = norm(sub(V, U)), w = mul(perp(u), 5.5), m = mid(U, V), out = [];
+        for (let i = 0; i < n; i++) { const c = add(m, mul(u, (i - (n - 1) / 2) * 4.5)); out.push(seg(add(c, w), sub(c, w), col, 1.6)); }
+        return out.join("");
+      };
+      return wrap(430, 262, [
+        poly([M, B, D], GLD, 1, GLDS), poly([M, Bp, E], GLD, 1, GLDS),
+        poly([A, B, C], DIM, 2), seg(A, D, GRN, 2.2),
+        seg(B, Bp, DIM, 1.5, "5 4"), rightAngle(M, A, Bp, 9, DIM),
+        seg(B, D, GLD, 3), seg(Bp, E, GLD, 3),
+        ticks(A, B, 1, ACC), ticks(A, Bp, 1, ACC), ticks(B, M, 2, DIM), ticks(M, Bp, 2, DIM), ticks(B, D, 3, GLD), ticks(Bp, E, 3, GLD),
+        angleArc(A, B, D, 28, GRN), angleArc(A, D, C, 34, GRN),
+        dot(A, DIM, 3.5), dot(B, DIM, 3.5), dot(C, DIM, 3.5), dot(D, GRN, 4), dot(Bp, ACC, 4.5), dot(M, DIM, 3.5), dot(E, GRN, 4),
+        txt(add(A, [0, -11]), "A", DIM, 13), txt(add(B, [-10, 5]), "B", DIM, 13, "end"), txt(add(C, [10, 5]), "C", DIM, 13, "start"),
+        txt(add(D, [0, 19]), "D", GRN, 13), txt(add(Bp, [11, -3]), "B′", ACC, 13, "start"), txt(add(E, [-10, 3]), "E", GRN, 13, "end"),
+        gapLabel(M, [A, D, B, Bp], "M", DIM, 12.5, 15),
+        cap(430, 262, "Reflect B across the bisector to B′, which lands on AC with AB′ = AB (one tick). The midpoint M of BB′ lies on AD, and the half-turn about M swaps B and B′, keeps line AD and turns BC into the parallel through B′, so it carries D to E: the gold triangles are congruent, with BM = MB′ (two ticks) and B′E = BD (three ticks). Since B′E is parallel to DC, B′E : DC = AB′ : AC = AB : AC." + (ok ? "" : " MISMATCH"))
+      ]);
     })()
   };
 
@@ -6331,9 +6389,9 @@ DIAGRAMS["trig-ceva"] = [(() => {
         txt(add(B, [-10, 5]), "B", DIM, 13, "end"), txt(add(C, [6, 20]), "C", DIM, 13), txt(add(A, [0, -10]), "A", ACC, 13),
         txt(add(mid(C, A), [10, 0]), "b = 3", DIM, 12, "start"), txt(add(mid(B, A), [-8, -8]), "c", ACC, 14, "end"),
         txt([B[0] + 88, 140], "a = 5", DIM, 12), seg(C, Afar, GRN, 1.2, "3 3"),
-        seg([B[0], 214], [Anear[0], 214], GLD, 4), seg([B[0], 234], [Afar[0], 234], GRN, 4),
-        txt([Anear[0] + 10, 218], "c = 2, with A folded back onto BC", GLD, 12, "start"),
-        txt([Afar[0] + 10, 238], "c = 8", GRN, 12, "start"),
+        seg([B[0], 206], [Anear[0], 206], GLD, 4), seg([B[0], 232], [Afar[0], 232], GRN, 4),
+        txt([Anear[0] + 10, 210], "c = 2: A folded back onto BC", GLD, 12, "start"),
+        txt([Afar[0] + 10, 236], "c = 8", GRN, 12, "start"),
         cap(430, 250, "Keep BC = 5 and CA = 3, and swing A around C. The third side c = BA is shortest when A folds back onto BC, c = 5 − 3 = 2 (gold), and longest when A lines up beyond C, c = 5 + 3 = 8 (green). Every position in between is a real triangle, so 2 < c < 8." + (ok ? "" : " MISMATCH"))
       ]);
     })()
@@ -6587,7 +6645,10 @@ DIAGRAMS["trig-ceva"] = [(() => {
   })()];
 
 
-  BODY["angle-bisector-reflection"] = {
+
+
+
+  BODY["perp-to-angle-bisector"] = {
     // Angles B = 64 and C = 32, so A = 84. With the bisector AD, AB + BD = AC; reflecting B in AD gives
     // B' on AC with B'D = BD = B'C, so triangle B'DC is isosceles and its exterior angle at B' is 2C.
     twice: (() => {
@@ -6606,11 +6667,9 @@ DIAGRAMS["trig-ceva"] = [(() => {
         txt(add(D, [0, 20]), "D", ACC, 13), txt(add(Bp, [10, -6]), "B′", DIM, 13, "start"),
         cap(430, 276, "With the bisector AD and AB + BD = AC, reflect B in AD. Then AB′ = AB and B′D = BD, so B′C = AC − AB = BD = B′D, and the gold triangle B′DC is isosceles with base angles ∠C. Its exterior angle at B′ is 2∠C, and that angle is the reflected copy of ∠B (blue), so ∠B = 2∠C." + (ok ? "" : " MISMATCH"))
       ]);
-    })()
-  };
-
-
-  DIAGRAMS["angle-bisector-reflection"] = [(() => {
+    })(),
+    // B reflected in the bisector AD lands at B' on AC with AB' = AB; D is fixed, so B'D = BD.
+    copy: (() => {
     // B reflected in the bisector AD lands at B' on AC with AB' = AB; D is fixed, so B'D = BD.
     const B = [70, 250], C = [370, 250], A = [160, 60];
     const c = dist(A, B), b = dist(A, C), D = lerp(B, C, c / (b + c)), Bp = add(A, mul(norm(sub(C, A)), c));
@@ -6628,9 +6687,7 @@ DIAGRAMS["trig-ceva"] = [(() => {
       txt(add(D, [0, 20]), "D", ACC, 13), txt(add(Bp, [10, -6]), "B′", DIM, 13, "start"),
       cap(430, 290, "reflect B in the bisector AD: B′ lands on AC with AB′ = AB, and D stays where it is, so B′D = BD and triangle AB′D (blue) is a copy of ABD; triangles ABB′ and DBB′ are isosceles" + (ok ? "" : " MISMATCH"))
     ]);
-  })()];
-
-  BODY["perp-to-angle-bisector"] = {
+    })(),
     // External bisector at A: the perpendicular from B, doubled, lands at B' on CA extended beyond A
     // with AB' = c, so B'C = b + c and the midline FM of triangle BB'C is (b + c)/2, parallel to AC.
     external: (() => {
@@ -6681,10 +6738,91 @@ DIAGRAMS["trig-ceva"] = [(() => {
       const ok = Math.abs(kin - (3 + 2 * Math.sqrt(3))) < 1e-9 && Math.abs(kout - (3 - 2 * Math.sqrt(3))) < 1e-9 && Math.abs(desc(kin)) < 1e-9 && Math.abs(desc(kout)) < 1e-9;
       return wrap(430, 262, [
         circ(G, rout * u, GLD, 2), ...C.map(c => circ(c, u, DIM, 1.8)), circ(G, rin * u, ACC, 2),
-        ...C.map(c => dot(c, DIM, 2.5)),
         txt([G[0] + rout * u * 0.74 + 8, G[1] - rout * u * 0.74], "k = 3 − 2√3 < 0", GLD, 12, "start"),
-        txt(add(C[0], [0, 5]), "1", DIM, 12), txt(add(C[1], [0, 5]), "1", DIM, 12), txt(add(C[2], [0, 5]), "1", DIM, 12),
+        ...C.map(c => txt(add(c, [0, 4]), "k = 1", DIM, 12)),
         cap(430, 262, "Three mutually tangent circles of curvature 1 have two circles tangent to all three: a small one in the gap (blue), with curvature 3 + 2√3, and a large one around them (gold), whose curvature 3 − 2√3 is negative because it encloses the others. They are the two roots of Descartes' quadratic." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["roots-unity-distance-product"] = {
+    // n = 7, k = 2 on the unit circle: the chord from 1 to w^k, bisected by the radius at angle k*pi/n,
+    // has half-length sin(k*pi/n), so |1 - w^k| = 2 sin(k*pi/n).
+    chord: (() => {
+      const n = 7, k = 2, u = 112, O = [215, 150];
+      const W = j => onC(O, u, -360 * j / n);
+      const P1 = W(0), Pk = W(k), half = -180 * k / n, M = onC(O, u * Math.cos(Math.PI * k / n), half), Q = onC(O, u, half);
+      const ok = Math.abs(dist(P1, Pk) - 2 * u * Math.sin(Math.PI * k / n)) < 1e-9 && Math.abs(dist(M, P1) - u * Math.sin(Math.PI * k / n)) < 1e-9;
+      return wrap(430, 300, [
+        circ(O, u, FNT, 1.4),
+        seg(O, P1, DIM, 1.6), seg(O, Pk, DIM, 1.6), seg(O, Q, FNT, 1.3, "5 4"),
+        seg(P1, Pk, ACC, 2.6), seg(M, P1, GLD, 3),
+        rightAngle(M, O, P1, 9, DIM), angleArc(O, M, Pk, 30, GLD),
+        ...Array.from({ length: n }, (_, j) => dot(W(j), j === 0 || j === k ? ACC : DIM, j === 0 || j === k ? 4.5 : 3)),
+        dot(O, DIM, 3.5), txt(add(O, [-12, 5]), "O", DIM, 13, "end"),
+        txt(add(P1, [12, 5]), "1", ACC, 13.5, "start"), txt(add(Pk, [-4, -12]), "ω²", ACC, 13.5),
+        txt(add(O, [25, -41]), "kπ/n", GLD, 12, "end"),
+        txt(add(O, [60, -3]), "sin(kπ/n)", GLD, 12),
+        cap(430, 300, "On the unit circle the points 1 and ω^k are separated by the central angle 2kπ/n (here n = 7 and k = 2). The radius that bisects that angle meets the chord at a right angle, so each half of the chord is sin(kπ/n), and |1 − ω^k| = 2 sin(kπ/n)." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["cevian-area-ratio"] = {
+    // One apex, bases 2 : 3 : 1 on one line: every triangle has the same height h, so the areas are 2 : 3 : 1.
+    fan: (() => {
+      const y = 210, unit = 55, A = [150, 52], B = [60, y], D = [60 + 2 * unit, y], E = [60 + 5 * unit, y], C = [60 + 6 * unit, y], H = [A[0], y];
+      const area = (p, q, r) => Math.abs((q[0] - p[0]) * (r[1] - p[1]) - (r[0] - p[0]) * (q[1] - p[1])) / 2;
+      const ok = Math.abs(area(A, B, D) / area(A, E, C) - 2) < 1e-9 && Math.abs(area(A, D, E) / area(A, E, C) - 3) < 1e-9;
+      return wrap(430, 262, [
+        poly([A, B, D], ACC, 1.2, ACCS), poly([A, D, E], GLD, 1.2, GLDS), poly([A, E, C], GRN, 1.2, "rgba(76,195,138,0.13)"),
+        seg([30, y], [410, y], DIM, 2), seg(A, H, DIM, 1.4, "5 4"), rightAngle(H, A, D, 9, DIM),
+        ...[A, B, D, E, C].map(p => dot(p, DIM, 3.5)),
+        txt(add(A, [0, -11]), "A", DIM, 13), txt(add(B, [-4, 19]), "B", DIM, 13), txt(add(D, [0, 19]), "D", DIM, 13),
+        txt(add(E, [0, 19]), "E", DIM, 13), txt(add(C, [4, 19]), "C", DIM, 13),
+        txt(add(mid(A, H), [-8, 4]), "h", DIM, 13, "end"),
+        txt(add(mid(B, D), [18, 36]), "BD = 2", ACC, 12), txt(add(mid(D, E), [0, 36]), "DE = 3", GLD, 12), txt(add(mid(E, C), [6, 36]), "EC = 1", GRN, 12),
+        cap(430, 262, "Every triangle with apex A and its base on line BC has the same height h, so its area is ½ · base · h. The three triangles have areas in the ratio 2 : 3 : 1, the ratio of their bases, and nothing requires the bases to touch B or C." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["regular-hexagon-area"] = {
+    // Flat-topped hexagon ABCDEF around O. ACE is three half-rhombi AOC, COE, EOA, so it is half the
+    // hexagon; each corner triangle such as ABC is the other half of a rhombus, one sixth.
+    alternate: (() => {
+      const O = [215, 150], R = 112;
+      const V = [-120, -60, 0, 60, 120, 180].map(a => onC(O, R, a));
+      const [A_, B_, C_, D_, E_, F_] = V;
+      const area = pts => Math.abs(pts.reduce((s, p, i) => { const q = pts[(i + 1) % pts.length]; return s + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2;
+      const hex = area(V), ok = Math.abs(area([A_, C_, E_]) / hex - 0.5) < 1e-9 && Math.abs(area([A_, B_, C_]) / hex - 1 / 6) < 1e-9;
+      const lab = (p, s, c) => txt(add(away(p, O, 15), [0, 4.5]), s, c, 13.5);
+      return wrap(430, 300, [
+        poly([A_, C_, E_], GLD, 1.6, GLDS), poly([A_, B_, C_], ACC, 1, ACCS), poly([C_, D_, E_], ACC, 1, ACCS), poly([E_, F_, A_], ACC, 1, ACCS),
+        seg(A_, D_, FNT, 1.1, "4 4"), seg(B_, E_, FNT, 1.1, "4 4"), seg(C_, F_, FNT, 1.1, "4 4"),
+        seg(O, A_, GLD, 1.2), seg(O, C_, GLD, 1.2), seg(O, E_, GLD, 1.2),
+        poly(V, DIM, 2), dot(O, DIM, 3), txt(add(O, [10, 16]), "O", DIM, 12),
+        lab(A_, "A", DIM), lab(B_, "B", DIM), lab(C_, "C", DIM), lab(D_, "D", DIM), lab(E_, "E", DIM), lab(F_, "F", DIM),
+        cap(430, 300, "The long diagonals (dashed) cut the hexagon into six equilateral triangles, and each pair of neighbours forms a rhombus. Triangle ACE (gold) is made of the halves AOC, COE and EOA of three such rhombi, so it is half the hexagon; each corner triangle such as ABC (blue) is the other half of a rhombus, one sixth of the hexagon." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["tangent-chord-angle"] = {
+    // Tangent at A to the circumcircle of ABC: its angle with AB equals angle C, its angle with AC equals angle B.
+    circumtangent: (() => {
+      const O = [215, 168], R = 112, A = onC(O, R, -90), B = onC(O, R, 158), C = onC(O, R, 28);
+      const T1 = add(A, [-150, 0]), T2 = add(A, [150, 0]);
+      const ang = (P, Q, S) => { const a = Math.atan2(Q[1] - P[1], Q[0] - P[0]), b = Math.atan2(S[1] - P[1], S[0] - P[0]); let d = Math.abs(a - b); return d > Math.PI ? 2 * Math.PI - d : d; };
+      const ok = Math.abs(ang(A, T1, B) - ang(C, A, B)) < 1e-9 && Math.abs(ang(A, T2, C) - ang(B, A, C)) < 1e-9;
+      return wrap(430, 300, [
+        circ(O, R, FNT, 1.4), seg(T1, T2, DIM, 1.8), poly([A, B, C], DIM, 2),
+        angleArc(A, T1, B, 30, GLD), angleArc(C, A, B, 30, GLD),
+        angleArc(A, C, T2, 24, ACC, true), angleArc(B, C, A, 26, ACC, true),
+        ...[A, B, C].map(p => dot(p, DIM, 3.5)),
+        txt(add(A, [0, -10]), "A", DIM, 13), txt(add(B, [-10, 6]), "B", DIM, 13, "end"), txt(add(C, [10, 6]), "C", DIM, 13, "start"),
+        txt(add(T2, [-4, -8]), "tangent at A", FNT, 11.5, "end"),
+        cap(430, 300, "The tangent at A to the circumcircle makes the same angle with AB as the triangle has at C (gold), and the same angle with AC as it has at B (blue). Each is a tangent–chord angle, equal to the inscribed angle on the far side of its chord." + (ok ? "" : " MISMATCH"))
       ]);
     })()
   };

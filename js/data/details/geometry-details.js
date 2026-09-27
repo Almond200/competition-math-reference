@@ -180,14 +180,24 @@ On AIME the vector form $\vec{GA} + \vec{GB} + \vec{GC} = \vec 0$ gives slicker 
 Five problems here, all AIME, none by it alone, and each with a different partner: [[coordinate-bash|coordinates]], [[power-of-a-point|power of a point]], [[stewarts-theorem|Stewart's theorem]] or the [[area-method|area method]]. AMC problems place a point at the centroid and ask for areas, which come out in thirds and sixths.
 `,
 
-"cevian-area-ratio": String.raw`## Why it works
-Triangles with the same apex and collinear bases share the same height, so their areas are proportional to their bases. That is the entire proof — but chained cleverly it computes almost any area ratio in a dissected triangle.
+"cevian-area-ratio": String.raw`
+## Why it works
+A triangle's area is half its base times its height, so two triangles with the same height have areas in the ratio of their bases.
+
+For $D$ on $BC$, the triangles $ABD$ and $ACD$ both have apex $A$ and bases on line $BC$. Their height is the distance $h$ from $A$ to that line, the same for both, so $$\frac{[ABD]}{[ACD]} = \frac{\frac12 \cdot BD \cdot h}{\frac12 \cdot DC \cdot h} = \frac{BD}{DC}.$$
+
+Nothing in that used the fact that the two bases meet at $D$ or lie inside side $BC$, only that the apex is shared and the bases lie on one line.
+
+{{figure:fan}}
 
 ## How to use it
-Mark every segment ratio the problem gives; each cevian converts a segment ratio into an area ratio. Work outside-in: express sub-triangle areas as fractions of the whole, one cevian at a time. When two cevians intersect, apply the principle twice (once in each direction) or switch to [[mass-points|mass points]]. Chaining these ratios around a figure is exactly [[area-method|the area method]].
+Mark every ratio the problem gives along a side, and turn each into an area ratio using the vertex opposite that side as the apex. Working from the outside in, write each small triangle as a fraction of the whole, one cevian at a time: in the example, a $1 : 4$ split of $BC$ gives $[ABD] = \frac15[ABC]$.
+
+The same step runs in reverse, turning known areas into a ratio along a line. Two cevians meeting inside the triangle need it once along each, which is [[area-method|the area method]] in full; [[mass-points|mass points]] reach the resulting length ratios faster when only lengths are asked.
 
 ## On contests
-The engine behind "find the area of the middle region" problems on AMC 10/12. Combined with mass points or [[rouths-theorem|Routh's theorem]] it handles the harder AIME versions. If a problem gives ratios along the sides and asks for an area, this is the intended path.`,
+Two problems here, both AIME, neither solved by it alone: each finds areas in a triangle cut by several cevians and finishes with the area method or mass points. On the AMC 10 and 12 it drives shaded-region problems where ratios along the sides are given, and [[rouths-theorem|Routh's theorem]] packages the three-cevian case.
+`,
 
 "trapezoid-parallelogram-areas": String.raw`
 ## Why it works
@@ -498,6 +508,14 @@ With bases on line $BC$, the two triangles share the height from $A$, so their a
 {{figure:areas}}
 
 The external bisector works the same way. Its two triangles $ABD'$ and $ACD'$ still share the height from $A$, and their angles at $A$ are supplementary, which have the same sine, so again $\frac{BD'}{D'C} = \frac{AB}{AC}$.
+
+A second proof needs no trigonometry. Reflect $B$ across line $AD$ to $B'$. The bisector makes equal angles with $AB$ and $AC$, so the reflection carries ray $AB$ onto ray $AC$: $B'$ lies on $AC$ with $AB' = AB$, and $AD$ is the perpendicular bisector of $BB'$, through its midpoint $M$. It is the same reflection that [[perp-to-angle-bisector|the perpendicular to an angle bisector]] is built on.
+
+{{figure:reflect}}
+
+Now draw the line through $B'$ parallel to $BC$, meeting $AD$ at $E$. A half-turn about $M$ swaps $B$ and $B'$, maps line $AD$ to itself and turns line $BC$ into the parallel through $B'$, so it carries $D$ to $E$, and $B'E = BD$. Since $B'E \parallel DC$, triangles $AB'E$ and $ACD$ are similar, and $$\frac{BD}{DC} = \frac{B'E}{DC} = \frac{AB'}{AC} = \frac{AB}{AC}.$$
+
+If $AB > AC$, the point $B'$ lands beyond $C$ instead, $E$ lies beyond $D$, and every step still holds.
 
 ## How to use it
 It converts "bisector" into lengths at once. With $BD : DC = c : b$ and $BD + DC = a$, the pieces are $$BD = \frac{ac}{b + c}, \qquad DC = \frac{ab}{b + c}$$ in standard notation.
@@ -819,14 +837,26 @@ Drawing the radius to the tangent point is the first line of a remarkable share 
 Common setups are a circle inscribed in a right angle, whose center lies on the bisector at distance $r$ from both sides, and belts or pulleys around two circles, where a common tangent has length $\sqrt{d^2 - (r_1 \pm r_2)^2}$.
 `,
 
-"tangent-chord-angle": String.raw`## Why it works
-Slide one endpoint of an inscribed angle along the circle until it reaches the vertex $T$: its chord becomes the tangent and the inscribed-angle theorem passes to the limit, so the tangent–chord angle equals half its intercepted arc — exactly like an inscribed angle. The equal inscribed angle standing on that same arc from the far side is the "alternate segment" statement.
+"tangent-chord-angle": String.raw`
+## Why it works
+The tangent at $T$ is perpendicular to the radius $OT$, and that right angle is enough to compare the tangent–chord angle with the angle at the center.
+
+Let $\theta$ be the angle between the tangent and the chord $TA$. Then $\angle OTA = 90^\circ - \theta$, and triangle $OTA$ is isosceles with $OT = OA$, so its angle at $O$ is $$\angle TOA = 180^\circ - 2(90^\circ - \theta) = 2\theta.$$ The central angle is twice $\theta$, so $\theta$ is half the arc $TA$, as the second figure at the top shows.
+
+An [[inscribed-angle-theorem|inscribed angle]] on the same arc is also half of it, so $\theta = \angle TBA$ for every $B$ on the far arc. The tangent–chord angle behaves exactly like an inscribed angle whose second chord has shrunk to the tangent line.
 
 ## How to use it
-Whenever a tangent meets a chord, immediately re-mark that angle as the inscribed angle in the far segment — this turns an awkward tangent angle into an ordinary triangle angle. The workhorse case: the tangent to a triangle's circumcircle at $A$ makes an angle with $AB$ equal to $\angle ACB$ (and with $AC$ equal to $\angle ABC$), which seeds most "tangent to the circumcircle" arguments.
+Whenever a tangent meets a chord, re-mark the angle between them as the inscribed angle on the far side of the chord. That turns an awkward angle at the tangent into an ordinary angle of a triangle, ready for an [[angle-chasing|angle chase]].
+
+The workhorse case is a tangent to a triangle's circumcircle at a vertex. The tangent at $A$ makes an angle equal to $\angle C$ with side $AB$, and an angle equal to $\angle B$ with side $AC$.
+
+{{figure:circumtangent}}
+
+So the tangent at $A$ is antiparallel to $BC$: it runs in the same direction as any line meeting $AB$ and $AC$ at two points concyclic with $B$ and $C$. That is how tangent lines enter concyclicity arguments.
 
 ## On contests
-A staple of AMC/AIME circle geometry and the engine behind many olympiad circumcircle-tangent configurations. Paired with the inscribed-angle theorem and "arcs sum to $360^\circ$," it reduces tangent diagrams to linear angle-chases.`,
+Two problems here, both AIME, neither solved by it alone; both finish with the [[law-of-cosines|law of cosines]] after the equal angles have produced a similar triangle. On the AMC it usually appears as a single step in an angle chase, trading an angle at a tangent for an inscribed one.
+`,
 
 "two-tangents-angle": String.raw`## Why it works
 Each radius is perpendicular to its tangent, so quadrilateral $PAOB$ has right angles at $A$ and $B$; since its four angles sum to $360^\circ$, $\angle APB + \angle AOB = 180^\circ$. Equivalently the exterior-vertex rule gives $\angle P = \tfrac{1}{2}(\text{far arc} - \text{near arc})$, and because the two arcs sum to $360^\circ$ that is $180^\circ - \angle AOB$.
@@ -1303,14 +1333,24 @@ Read the ratio off rather than re-deriving it: side, short diagonal and long dia
 ## On contests
 A staple of MATHCOUNTS and early AMC geometry, usually as "the distance between two vertices" where the only question is which diagonal is meant. It also supplies the lengths in hexagonal-lattice and tiling problems, where the short diagonal is the spacing between next-nearest centers. When a problem gives a hexagon and a length, decide first whether that length is a side, a short diagonal or a long one, since the three differ only by the factor $\sqrt3$ or $2$.`,
 
-"regular-hexagon-area": String.raw`## Why it works
-Center-to-vertex segments cut it into 6 [[equilateral-triangle-facts|equilateral triangles]] of side $s$, so the area is $6 \times \frac{s^2\sqrt3}{4}$.
+"regular-hexagon-area": String.raw`
+## Why it works
+Each center-to-vertex segment has length $s$, and each of the six angles at the center is $60^\circ$, so each triangle around the center is isosceles with a $60^\circ$ apex angle, which makes it equilateral. Six [[equilateral-triangle-facts|equilateral triangles]] of side $s$ give $$A = 6 \cdot \frac{\sqrt3}{4}s^2 = \frac{3\sqrt3}{2}s^2.$$
+
+The same triangles give the lengths. The long diagonal crosses two of them, so it is $2s$, and the apothem is the height of one, $\frac{s\sqrt3}{2}$; the short diagonal, $s\sqrt3$, is on [[hexagon-diagonals|hexagon diagonals]].
 
 ## How to use it
-The hexagon is six equilateral triangles — nearly every hexagon problem (diagonals, sub-regions, midpoint figures) should be recast in that lattice. [[hexagon-diagonals|The two diagonal lengths]]: long $2s$, short $s\sqrt3$; apothem $\frac{s\sqrt3}{2}$.
+Measure regions in units of the small equilateral triangle, cutting further into halves or into smaller equilateral triangles when a region needs it. Neighbouring triangles pair into rhombi, and a diagonal of a rhombus cuts it in half, which settles most shaded regions.
+
+{{figure:alternate}}
+
+So the triangle $ACE$ on alternate vertices is half the hexagon, and each corner triangle it cuts off is a sixth. Midpoint hexagons and other inscribed figures work the same way once the small triangles are drawn in.
+
+An equiangular hexagon with unequal sides is a large equilateral triangle with three equilateral corners cut off; extending three alternate sides until they meet shows it.
 
 ## On contests
-Shaded sub-region problems in hexagons: count equilateral sub-triangles (or [[special-right-triangles|30-60-90]] halves). Hexagonal tilings and "hexagon with alternating sides" (equiangular hexagons embed in equilateral triangles — clip three corners) are the advanced variants.`,
+Two problems here, one AIME and one AMC 10, one solved by it alone. The AMC version finds an area inside a hexagon by counting small triangles, and the AIME version counts the small equilateral triangles cut out by lines in three directions. Shaded regions, hexagonal tilings and equiangular hexagons with given sides are the usual shapes.
+`,
 
 "15-75-90-triangle": String.raw`## Why it works
 From $\sin 15^\circ = \frac{\sqrt6 - \sqrt2}{4}$ and $\cos 15^\circ = \frac{\sqrt6 + \sqrt2}{4}$ (angle subtraction $45^\circ - 30^\circ$), scale the hypotenuse to 4.
@@ -2210,7 +2250,7 @@ Against [[mass-points|mass points]], its lightweight relative: for two cevians a
 ## Key forms
 - $d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$ and $M = \left(\frac{x_1 + x_2}{2}, \frac{y_1 + y_2}{2}\right)$ — distance and midpoint; the point dividing $P_1P_2$ in ratio $k : 1$ is $\frac{P_1 + kP_2}{1 + k}$
 - $\vec u \cdot \vec v = 0$ — perpendicular directions, the safer test than $m_1m_2 = -1$, which silently fails when one line is vertical
-- $\frac12\left|\sum_i (x_iy_{i+1} - x_{i+1}y_i)\right|$ — the [[shoelace-formula|shoelace]] area, with the vertices taken in order around the polygon
+- $\frac12\left|\alt{\sum_i (x_iy_{i+1} - x_{i+1}y_i)}{(x_1y_2 - x_2y_1) + (x_2y_3 - x_3y_2) + \cdots + (x_ny_1 - x_1y_n)}\right|$ — the [[shoelace-formula|shoelace]] area, with the vertices taken in order around the polygon
 - $\frac{|ax_0 + by_0 + c|}{\sqrt{a^2 + b^2}}$ — the distance from a point to the line $ax + by + c = 0$; without the absolute value, the sign says which side of the line the point is on
 - $(x - h)^2 + (y - k)^2 = r^2$ — the circle; comparing the two sides says whether a point is inside, on or outside it
 - $(x_0, y_0) - \frac{2(ax_0 + by_0 + c)}{a^2 + b^2}(a, b)$ — the reflection of $(x_0, y_0)$ across $ax + by + c = 0$
@@ -2256,7 +2296,7 @@ The facts a problem needs are often already in the figure but spread across piec
 
 Each standard line is chosen for what it creates. A perpendicular creates a right triangle for the Pythagorean theorem, the radius to a point of tangency creates a right angle, a parallel line creates similar triangles, a doubled segment creates a parallelogram, and a reflection or rotation creates a congruent copy in a better position.
 
-The constructions that come up most have their own cards: [[parallel-line-similarity|drawing a parallel line]], [[median-doubling|doubling a median]], [[angle-bisector-reflection|reflecting across an angle bisector]], [[perp-to-angle-bisector|a perpendicular to an angle bisector]] and [[reflection-shortest-path|the reflection trick]] for shortest paths. This card is the catalogue, organized by what in the problem calls for each one.
+The constructions that come up most have their own cards: [[parallel-line-similarity|drawing a parallel line]], [[median-doubling|doubling a median]], [[perp-to-angle-bisector|reflecting a vertex across an angle bisector]] and [[reflection-shortest-path|the reflection trick]] for shortest paths. This card is the catalogue, organized by what in the problem calls for each one.
 
 ## How to use it
 Know the repertoire by what triggers it.
@@ -2377,7 +2417,7 @@ An olympiad technique for concurrency, collinearity, and "prove this circle pass
 ## Why it works
 The area of a triangle is half a base times a height, so when two triangles share one of those, their areas compare like the other.
 
-Triangles $ABD$ and $ACD$ with $D$ on $BC$ have the same apex $A$, so they have the same height, and their areas are in the ratio $\frac{BD}{DC}$. Triangles $PBC$ and $ABC$ share the base $BC$, so their areas are in the ratio of their heights, and for $P$ on the cevian $AD$ those heights are in the ratio $\frac{PD}{AD}$, by similar right triangles.
+Triangles $ABD$ and $ACD$ with $D$ on $BC$ have the same apex $A$, so they have the same height, and their areas are in the ratio $\frac{BD}{DC}$, the [[cevian-area-ratio|cevian area ratio]]. Triangles $PBC$ and $ABC$ share the base $BC$, so their areas are in the ratio of their heights, and for $P$ on the cevian $AD$ those heights are in the ratio $\frac{PD}{AD}$, by similar right triangles.
 
 {{figure:heights}}
 
@@ -2771,28 +2811,41 @@ A recurring AMC/AIME solid: the equatorial-square and face-parallel hexagonal cr
 Object.assign(window.MATH_DETAILS, {
 
 "perp-to-angle-bisector": String.raw`## Key forms
-- extend the perpendicular from $B$ to the bisector of angle $A$ to twice its length — the far end $B'$ lies on line $AC$ with $AB' = AB$, so the foot $F$ is the midpoint of $BB'$
+- reflect $B$ across the bisector of angle $A$ — the image $B'$ lies on line $AC$ with $AB' = AB$, and the perpendicular from $B$ meets the bisector at $F$, the midpoint of $BB'$
+- $\triangle AB'D \cong \triangle ABD$, with $D$ where the bisector meets $BC$ — $D$ is fixed, so $B'D = BD$ and $\angle AB'D = \angle ABD$, and the leftover piece of $AC$ is $B'C = |b - c|$
 - $BF = c\sin\frac A2$ — read off the right triangle $ABF$, so $BB' = 2c\sin\frac A2$
 - $FM = \frac{|b-c|}{2}$ with $FM \parallel AC$ — the midline of triangle $BB'C$, where $M$ is the midpoint of $BC$
 
 ## Why it works
-In triangle $ABB'$ the line from $A$ is both the bisector and the altitude to $BB'$, and that makes the triangle isosceles: the right triangles $ABF$ and $AB'F$ share $AF$ and have equal angles at $A$, so they are congruent. So $AB' = AB$ and $BF = FB'$, and the doubled perpendicular is the reflection of $B$ across the bisector.
+Reflecting across a line swaps the two sides of any angle that the line bisects. The bisector of angle $A$ makes equal angles with $AB$ and $AC$, so it reflects ray $AB$ onto ray $AC$, and $B$ lands at the point $B'$ of $AC$ with $AB' = AB$. The segment $BB'$ is perpendicular to the mirror and cut in half by it, so the foot $F$ of the perpendicular from $B$ is the midpoint of $BB'$.
 
 In the right triangle $ABF$ the angle at $A$ is $\frac A2$, so $$BF = c\sin\tfrac A2.$$
+
+Everything on the mirror stays put, in particular the point $D$ where the bisector meets $BC$, so the reflection carries triangle $ABD$ onto triangle $AB'D$: $$AB' = AB, \qquad B'D = BD, \qquad \angle AB'D = \angle ABD.$$ Two isosceles triangles come with it, $ABB'$ and $DBB'$, both with the bisector as their axis.
+
+{{figure:copy}}
 
 $B'$ lies on line $AC$ at distance $c$ from $A$, so $B'C = |b - c|$. $F$ is the midpoint of $BB'$ and $M$ is the midpoint of $BC$, so $FM$ joins two midpoints of triangle $BB'C$: $$FM \parallel AC, \qquad FM = \frac{|b - c|}{2}.$$ The figure at the top shows the midline.
 
 ## How to use it
-Whenever a perpendicular is dropped from a vertex to a bisector, extend it to twice its length at once: the far end sits on the other side line, at the same distance from the vertex. The midline $FM$ then locates the foot, and it gives a length that depends only on the difference of the two sides.
+When a perpendicular is dropped from a vertex to a bisector, or a bisector comes with a condition on lengths, reflect the vertex across it: extend the perpendicular to twice its length, and the far end sits on the other side line, at the same distance from the vertex. The angle condition becomes equal lengths, and the rest of the problem usually lives in the leftover triangle near $C$.
+
+The classic example: if $AB + BD = AC$, then $\angle B = 2\angle C$. The reflection gives $$B'C = AC - AB = BD = B'D,$$ so triangle $B'DC$ is isosceles, with base angles equal to $\angle C$. Its exterior angle at $B'$ is $2\angle C$, and that angle is the reflected copy of $\angle B$.
+
+{{figure:twice}}
+
+When the question is about the foot $F$, the midline $FM$ locates it, with a length that depends only on the difference of the two sides. Any point of the bisector works in place of $D$, which is why the move also handles two bisectors meeting at a point: reflecting across each one copies the distances from their common point.
 
 The external bisector works the same way, except that the reflected point lands on $AC$ extended beyond $A$. Then $B'C = b + c$, and the midline is $\frac{b + c}{2}$.
 
 {{figure:external}}
 
-The reflection hidden in this construction has its own card, [[angle-bisector-reflection|reflecting across an angle bisector]], and the midline is a [[parallel-line-similarity|parallel line]] that the construction draws for free.
+The midline is a [[parallel-line-similarity|parallel line]] that the construction draws for free, and the same reflection gives a proof of the [[angle-bisector-theorem|angle bisector theorem]] with no trigonometry.
 
 ## On contests
-One problem here, from the AIME, not solved by it alone. On the AIME the construction usually appears in trapezoids, where the bisectors of the two angles on one leg meet at a right angle and their meeting point lies on the midline, since a bisector crossed by a parallel line cuts off an isosceles triangle. At olympiad level, the length $\frac{|b - c|}{2}$ turns up in many bisector configurations.
+Two problems here, both AIME, neither solved by it alone. In trapezoids, the bisectors of the two angles on one leg meet at a right angle and their meeting point lies on the midline, since a bisector crossed by a parallel line cuts off an isosceles triangle. Where two angle bisectors meet at a point, reflecting across each copies the distances from that point and leaves an isosceles triangle for an [[angle-chasing|angle chase]].
+
+In olympiad geometry, a bisector together with a sum of lengths almost always means reflect.
 `,
 
 "isotomic-conjugate": String.raw`## Why it works
@@ -3263,8 +3316,8 @@ Degenerate cases are worth a glance. Two parallel generators merge into one long
 
 ## Key forms
 - $n$ generators — a convex $2n$-gon with sides in opposite parallel pairs
-- perimeter — $2\sum \lvert \vec v_i \rvert$, independent of the directions
-- area — $\sum_{i \lt j} \lvert \vec v_i \times \vec v_j \rvert$, which does depend on them
+- perimeter — $2\alt{\sum \lvert \vec v_i \rvert}{\big(\lvert \vec v_1 \rvert + \cdots + \lvert \vec v_k \rvert\big)}$, independent of the directions
+- area — $\alt{\sum_{i \lt j} \lvert \vec v_i \times \vec v_j \rvert}{\lvert \vec v_1 \times \vec v_2 \rvert + \lvert \vec v_1 \times \vec v_3 \rvert + \cdots + \lvert \vec v_{k-1} \times \vec v_k \rvert}$, which does depend on them
 - two parallel generators — they merge, and the polygon has fewer than $2n$ sides
 
 ## On contests
@@ -3517,29 +3570,5 @@ To prove four points concyclic, find one such pair of equal angles on the same s
 Equal angles over a common side are the most common way a contest problem hides a cyclic quadrilateral, and spotting the pair is often the key step of an AIME geometry problem. The other angle facts about cyclic quadrilaterals, supplementary opposite angles and the exterior angle, are on [[cyclic-opposite-angles|their own card]], and [[ptolemys-theorem|Ptolemy's theorem]] is the length relation that goes with them.
 `,
 
-"angle-bisector-reflection": String.raw`## Key forms
-- $AB' = AB$ with $B'$ on $AC$ — the bisector swaps the sides of the angle, so triangle $ABB'$ is isosceles with the bisector as its axis
-- $B'D = BD$ and $\angle AB'D = \angle ABD$ — every point of the bisector is fixed, so triangle $AB'D$ is a congruent copy of $ABD$
-- $B'C = |AC - AB|$ — the leftover piece of $AC$, where the length conditions usually live
-
-## Why it works
-Reflecting across a line swaps the two sides of any angle that the line bisects. The bisector $AD$ makes equal angles with $AB$ and $AC$, so it reflects ray $AB$ onto ray $AC$, and $B$ lands at the point $B'$ of $AC$ with $AB' = AB$.
-
-Everything on the mirror stays put, in particular $D$, so the reflection carries triangle $ABD$ onto triangle $AB'D$: $$AB' = AB, \qquad B'D = BD, \qquad \angle AB'D = \angle ABD.$$ The same congruence follows from SAS, since $AB' = AB$, $AD$ is shared, and the angles at $A$ are equal.
-
-The figure at the top shows the copy. Two isosceles triangles come with it: $ABB'$, with $AB = AB'$, and $DBB'$, with $DB = DB'$, and both have the bisector as their axis.
-
-## How to use it
-When a problem has an angle bisector together with a condition on lengths, reflect a vertex across it. The angle condition becomes equal lengths, and the rest of the problem usually lives in the leftover triangle near $C$.
-
-The classic example: if $AB + BD = AC$, then $\angle B = 2\angle C$. The reflection gives $$B'C = AC - AB = BD = B'D,$$ so triangle $B'DC$ is isosceles, with base angles equal to $\angle C$. Its exterior angle at $B'$ is $2\angle C$, and that angle is the reflected copy of $\angle B$.
-
-{{figure:twice}}
-
-Any point of the bisector works in place of $D$. That is why the move also handles two bisectors meeting at a point: reflecting across each one copies the distances from their common point.
-
-## On contests
-One problem here, from the AIME, not solved by it alone. Its typical AIME use has two angle bisectors meeting at a point, where reflecting across each copies the distances from that point and leaves an isosceles triangle for an [[angle-chasing|angle chase]]. In olympiad geometry, a bisector together with a sum of lengths almost always means reflect. For the perpendicular dropped to a bisector and the midline it creates, see [[perp-to-angle-bisector|perpendicular to an angle bisector]].
-`,
 
 });
