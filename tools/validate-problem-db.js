@@ -9,8 +9,8 @@ window.MATH_SECTIONS = SECTIONS;
 load('js/data/geometry.js'); load('js/data/algebra.js');
 load('js/data/number-theory.js'); load('js/data/counting.js');
 load('js/data/patterns.js');
-var CARDS = {};
-SECTIONS.forEach(function (s) { (s.subsections || []).forEach(function (sub) { (sub.formulas || []).forEach(function (f) { CARDS[f.id] = 1; }); }); });
+var CARDS = {}, DESCS = {};
+SECTIONS.forEach(function (s) { (s.subsections || []).forEach(function (sub) { (sub.formulas || []).forEach(function (f) { CARDS[f.id] = 1; DESCS[f.id] = f.description || ""; }); }); });
 
 // Topic ids: pull from app.js (TOPIC_RULES entries look like `id: "x", label: "y"`).
 var TOPICS = {};
@@ -48,9 +48,11 @@ var DETAILS = {};
 });
 DETAILS = window.MATH_DETAILS || {};
 var linkErrors = [], linkCount = 0;
-Object.keys(DETAILS).forEach(function (cid) {
+// Descriptions carry links too (a card is linked at its first mention on the page).
+Object.keys(DETAILS).concat(Object.keys(DESCS).map(function (k) { return "desc:" + k; })).forEach(function (cid) {
+  var text = cid.indexOf("desc:") === 0 ? DESCS[cid.slice(5)] : DETAILS[cid];
   var re2 = /\[\[([\w-]+)(?:\|[^\]]*)?\]\]/g, mm;
-  while ((mm = re2.exec(DETAILS[cid]))) {
+  while ((mm = re2.exec(text))) {
     linkCount++;
     if (!CARDS[mm[1]]) linkErrors.push(cid + " -> [[" + mm[1] + "]]");
   }

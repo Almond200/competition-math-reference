@@ -23,7 +23,7 @@ window.MATH_SECTIONS.push({
           id: "quadratic-formula",
           name: "Quadratic Formula & Discriminant",
           latex: String.raw`x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}, \qquad \Delta = b^2 - 4ac`,
-          description: String.raw`The quadratic formula gives the solutions of any quadratic equation $ax^2 + bx + c = 0$ with $a \ne 0$: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$. The number under the square root, the discriminant $\Delta = b^2 - 4ac$, decides what kind of roots there are without finding them: two real roots if $\Delta \gt 0$, one repeated root if $\Delta = 0$, and two complex conjugate roots if $\Delta \lt 0$. For a quadratic with integer coefficients the roots are rational exactly when $\Delta$ is a perfect square. Before using the formula, check whether the quadratic factors, or whether Vieta's formulas already answer the question.`,
+          description: String.raw`The quadratic formula gives the solutions of any quadratic equation $ax^2 + bx + c = 0$ with $a \ne 0$: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$. The number under the square root, the discriminant $\Delta = b^2 - 4ac$, decides what kind of roots there are without finding them: two real roots if $\Delta \gt 0$, one repeated root if $\Delta = 0$, and two complex conjugate roots if $\Delta \lt 0$. For a quadratic with integer coefficients the roots are rational exactly when $\Delta$ is a perfect square. Before using the formula, check whether the quadratic factors, or whether [[vietas-quadratic|Vieta's Formulas]] already answer the question.`,
           keywords: ["roots", "discriminant", "real solutions", "perfect square"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -32,7 +32,7 @@ window.MATH_SECTIONS.push({
           id: "vietas-quadratic",
           name: "Vieta's Formulas (Quadratic)",
           latex: String.raw`r + s = -\frac{b}{a}, \qquad rs = \frac{c}{a}, \qquad r^2 + s^2 = (r+s)^2 - 2rs, \qquad \frac{1}{r} + \frac{1}{s} = \frac{r+s}{rs}, \qquad |r - s| = \frac{\sqrt{\Delta}}{|a|}`,
-          description: String.raw`Vieta's formulas for a quadratic give the sum and product of its roots straight from the coefficients: the roots $r$ and $s$ of $ax^2 + bx + c = 0$ satisfy $r + s = -\frac ba$ and $rs = \frac ca$. Any symmetric expression in the two roots then follows without solving, such as $r^2 + s^2 = (r + s)^2 - 2rs$ and $\frac1r + \frac1s = \frac{r + s}{rs}$. They also run in reverse: two numbers with sum $p$ and product $q$ are the roots of $x^2 - px + q = 0$, which solves a system like $x + y = 7$, $xy = 12$ at once.`,
+          description: String.raw`Vieta's Formulas for a quadratic give the sum and product of its roots straight from the coefficients: the roots $r$ and $s$ of $ax^2 + bx + c = 0$ satisfy $r + s = -\frac ba$ and $rs = \frac ca$. Any symmetric expression in the two roots then follows without solving, such as $r^2 + s^2 = (r + s)^2 - 2rs$ and $\frac1r + \frac1s = \frac{r + s}{rs}$. They also run in reverse: two numbers with sum $p$ and product $q$ are the roots of $x^2 - px + q = 0$, which solves a system like $x + y = 7$, $xy = 12$ at once.`,
           keywords: ["sum of roots", "product of roots", "vieta", "vietas formulas", "roots sum and product", "quadratic root relations"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -41,7 +41,7 @@ window.MATH_SECTIONS.push({
           id: "vietas-general",
           name: "Vieta's Formulas (General Degree)",
           latex: String.raw`e_k(r_1, \dots, r_n) = (-1)^k \frac{a_{n-k}}{a_n}, \qquad x^3 + bx^2 + cx + d: \;\; r+s+t = -b, \quad rs+rt+st = c, \quad rst = -d`,
-          description: String.raw`Vieta's formulas express the sum of a polynomial's roots, the sum of their products two at a time, and so on up to their product, in terms of its coefficients. Reach for them whenever a question is about the roots but never asks for one, which describes most AIME polynomial problems: the roots are usually impossible to find and never needed. For $a_nx^n + a_{n-1}x^{n-1} + \cdots + a_0$ the sum of the roots is $-\frac{a_{n-1}}{a_n}$, the sum of products two at a time is $\frac{a_{n-2}}{a_n}$, and the product of all $n$ roots is $(-1)^n\frac{a_0}{a_n}$, the signs alternating as the products get longer. Roots are counted with multiplicity, and complex roots count too.`,
+          description: String.raw`Vieta's Formulas express the sum of a polynomial's roots, the sum of their products two at a time, and so on up to their product, in terms of its coefficients. Reach for them whenever a question is about the roots but never asks for one, which describes most AIME polynomial problems: the roots are usually impossible to find and never needed. For $a_nx^n + a_{n-1}x^{n-1} + \cdots + a_0$ the sum of the roots is $-\frac{a_{n-1}}{a_n}$, the sum of products two at a time is $\frac{a_{n-2}}{a_n}$, and the product of all $n$ roots is $(-1)^n\frac{a_0}{a_n}$, the signs alternating as the products get longer. Roots are counted with multiplicity, and complex roots count too.`,
           keywords: ["symmetric functions", "cubic", "sum of roots", "product of roots", "coefficients"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -60,7 +60,7 @@ window.MATH_SECTIONS.push({
           id: "factor-remainder-theorem",
           name: "Remainder & Factor Theorems",
           latex: String.raw`P(x) = (x - a)Q(x) + P(a), \qquad a, b \in \mathbb{Z} \implies (a - b) \mid P(a) - P(b)`,
-          description: String.raw`The remainder theorem says that dividing a polynomial $P(x)$ by $x - a$ leaves the remainder $P(a)$, and the factor theorem is the special case: $x - a$ divides $P(x)$ exactly when $P(a) = 0$. So remainders come from evaluating rather than dividing, and more generally the remainder on division by $(x - a)(x - b)$ is the line through $(a, P(a))$ and $(b, P(b))$. For polynomials with integer coefficients the same idea gives $(a - b) \mid P(a) - P(b)$ for all integers $a$ and $b$, the standard tool for proving that no such polynomial exists.`,
+          description: String.raw`The Remainder Theorem says that dividing a polynomial $P(x)$ by $x - a$ leaves the remainder $P(a)$, and the Factor Theorem is the special case: $x - a$ divides $P(x)$ exactly when $P(a) = 0$. So remainders come from evaluating rather than dividing, and more generally the remainder on division by $(x - a)(x - b)$ is the line through $(a, P(a))$ and $(b, P(b))$. For polynomials with integer coefficients the same idea gives $(a - b) \mid P(a) - P(b)$ for all integers $a$ and $b$, the standard tool for proving that no such polynomial exists.`,
           keywords: ["remainder", "polynomial division", "root", "factor", "remainder theorem", "factor theorem", "integer polynomial", "divides difference", "impossible polynomial", "P(a) P(b)", "integer polynomial divisibility"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -69,7 +69,7 @@ window.MATH_SECTIONS.push({
           id: "rational-root-theorem",
           name: "Rational Root Theorem",
           latex: String.raw`x = \frac{p}{q} \implies p \mid a_0, \; q \mid a_n`,
-          description: String.raw`The rational root theorem says that if a polynomial with integer coefficients has a rational root $\frac pq$ in lowest terms, then $p$ divides the constant term and $q$ divides the leading coefficient. It turns the search for rational roots into a finite list of candidates, which is the standard first step in factoring a cubic or a quartic. For a monic polynomial $q$ must be $1$, so every rational root is an integer that divides the constant term.`,
+          description: String.raw`The Rational Root Theorem says that if a polynomial with integer coefficients has a rational root $\frac pq$ in lowest terms, then $p$ divides the constant term and $q$ divides the leading coefficient. It turns the search for rational roots into a finite list of candidates, which is the standard first step in factoring a cubic or a quartic. For a monic polynomial $q$ must be $1$, so every rational root is an integer that divides the constant term.`,
           keywords: ["rational roots", "integer polynomial", "candidates", "rational root test", "possible rational roots", "p over q roots"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -88,7 +88,7 @@ window.MATH_SECTIONS.push({
           id: "conjugate-root-theorems",
           name: "Conjugate Root Theorems",
           latex: String.raw`a + bi \text{ a root} \implies a - bi \text{ a root}; \qquad a + b\sqrt{d} \implies a - b\sqrt{d}`,
-          description: String.raw`The conjugate root theorems say that the non-real roots of a polynomial with real coefficients come in conjugate pairs, $a + bi$ and $a - bi$, and that for a polynomial with rational coefficients, a root $a + b\sqrt d$, with $\sqrt d$ irrational, comes paired with $a - b\sqrt d$. Each pair multiplies to a quadratic factor with the same kind of coefficients as the polynomial. So one given root is really two, which is often exactly the missing information in a problem about a polynomial.`,
+          description: String.raw`The Conjugate Root Theorems say that the non-real roots of a polynomial with real coefficients come in conjugate pairs, $a + bi$ and $a - bi$, and that for a polynomial with rational coefficients, a root $a + b\sqrt d$, with $\sqrt d$ irrational, comes paired with $a - b\sqrt d$. Each pair multiplies to a quadratic factor with the same kind of coefficients as the polynomial. So one given root is really two, which is often exactly the missing information in a problem about a polynomial.`,
           keywords: ["complex conjugate", "radical conjugate", "pairs of roots", "conjugate roots", "irrational roots in pairs", "imaginary roots in pairs"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -115,7 +115,7 @@ window.MATH_SECTIONS.push({
           id: "cardano-cubic",
           name: "Cardano's Cubic Formula",
           latex: String.raw`t^3 + pt + q = 0 \;\Rightarrow\; t = \sqrt[3]{-\tfrac{q}{2} + \sqrt{\tfrac{q^2}{4} + \tfrac{p^3}{27}}} + \sqrt[3]{-\tfrac{q}{2} - \sqrt{\tfrac{q^2}{4} + \tfrac{p^3}{27}}}, \qquad \Delta = -4p^3 - 27q^2`,
-          description: String.raw`Solve any cubic by first depressing it: $ax^3 + bx^2 + cx + d = 0$ becomes $t^3 + pt + q = 0$ under $x = t - \frac{b}{3a}$. Cardano's formula then gives a real root as a sum of two cube roots. The discriminant $\Delta$ decides the shape: $\Delta > 0$ gives three distinct real roots (the "casus irreducibilis," where the cube roots are complex), $\Delta = 0$ a repeated root, $\Delta \lt  0$ one real and two complex. On contests you almost always factor via the rational root theorem instead — this is the fallback when no nice root exists.`,
+          description: String.raw`Solve any cubic by first depressing it: $ax^3 + bx^2 + cx + d = 0$ becomes $t^3 + pt + q = 0$ under $x = t - \frac{b}{3a}$. Cardano's formula then gives a real root as a sum of two cube roots. The discriminant $\Delta$ decides the shape: $\Delta > 0$ gives three distinct real roots (the "casus irreducibilis," where the cube roots are complex), $\Delta = 0$ a repeated root, $\Delta \lt  0$ one real and two complex. On contests you almost always factor via the [[rational-root-theorem|Rational Root Theorem]] instead — this is the fallback when no nice root exists.`,
           keywords: ["cardano formula", "cubic formula", "depressed cubic", "solve cubic", "discriminant cubic", "cube roots"],
           importance: "lower",
           level: ["Olympiad"]
@@ -125,7 +125,7 @@ window.MATH_SECTIONS.push({
           name: "Eisenstein's Irreducibility Criterion",
           latex: String.raw`p \mid a_0, a_1, \ldots, a_{n-1}, \quad p \nmid a_n, \quad p^2 \nmid a_0 \;\Rightarrow\; \textstyle\sum a_i x^i \text{ is irreducible over } \mathbb{Q}`,
           latexPlain: String.raw`p \mid a_0, a_1, \ldots, a_{n-1}, \quad p \nmid a_n, \quad p^2 \nmid a_0 \;\Rightarrow\; a_nx^n + \cdots + a_1x + a_0 \text{ is irreducible over } \mathbb{Q}`,
-          description: String.raw`If some prime $p$ divides every coefficient except the leading one, and $p^2$ does not divide the constant term, the integer polynomial cannot factor into lower-degree rational polynomials. It's the standard certificate of irreducibility beyond the rational root theorem (which only rules out linear factors). Often applied after a substitution $x \mapsto x+1$ that exposes an Eisenstein prime — the classic proof that $1 + x + \cdots + x^{p-1}$ (the $p$-th cyclotomic polynomial) is irreducible.`,
+          description: String.raw`If some prime $p$ divides every coefficient except the leading one, and $p^2$ does not divide the constant term, the integer polynomial cannot factor into lower-degree rational polynomials. It's the standard certificate of irreducibility beyond the Rational Root Theorem (which only rules out linear factors). Often applied after a substitution $x \mapsto x+1$ that exposes an Eisenstein prime — the classic proof that $1 + x + \cdots + x^{p-1}$ (the $p$-th cyclotomic polynomial) is irreducible.`,
           keywords: ["eisenstein criterion", "irreducibility", "irreducible polynomial", "prime divides coefficients", "cyclotomic irreducible", "shift substitution"],
           importance: "low",
           level: ["Olympiad"]
@@ -196,7 +196,7 @@ window.MATH_SECTIONS.push({
           name: "Eigenvalues & the Characteristic Polynomial",
           latex: String.raw`A\mathbf{v} = \lambda \mathbf{v} \iff \det(A - \lambda I) = 0, \qquad \sum_i \lambda_i = \operatorname{tr} A, \qquad \prod_i \lambda_i = \det A`,
           latexPlain: String.raw`A\mathbf{v} = \lambda \mathbf{v} \iff \det(A - \lambda I) = 0, \qquad \lambda_1 + \lambda_2 + \cdots + \lambda_n = \operatorname{tr} A, \qquad \lambda_1\lambda_2\cdots\lambda_n = \det A`,
-          description: String.raw`An eigenvector is a direction the matrix only stretches, and $\lambda$ is the stretch factor; they exist exactly where $A - \lambda I$ is singular, which is the characteristic polynomial. Its coefficients are visible without solving it: the roots sum to the trace and multiply to the determinant. Since $A^n$ has eigenvalues $\lambda_i^n$ on the same eigenvectors, this is how a matrix power turns into a closed form and how a transfer matrix produces its linear recurrence.`,
+          description: String.raw`An eigenvector is a direction the matrix only stretches, and $\lambda$ is the stretch factor; they exist exactly where $A - \lambda I$ is singular, which is the characteristic polynomial. Its coefficients are visible without solving it: the roots sum to the trace and multiply to the determinant. Since $A^n$ has eigenvalues $\lambda_i^n$ on the same eigenvectors, this is how a matrix power turns into a closed form and how a [[transfer-matrix-method|transfer matrix]] produces its [[linear-recurrence|linear recurrence]].`,
           keywords: ["eigenvalue", "eigenvector", "characteristic polynomial", "det A minus lambda I", "trace equals sum of eigenvalues", "diagonalization", "matrix power closed form", "spectrum"],
           importance: "lower",
           level: ["Olympiad"]
@@ -210,7 +210,7 @@ window.MATH_SECTIONS.push({
           id: "difference-of-squares",
           name: "Difference of Squares & Cubes",
           latex: String.raw`a^2 - b^2 = (a-b)(a+b), \qquad a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)`,
-          description: String.raw`A difference of squares is an expression of the form $a^2 - b^2$, and it always factors as $(a - b)(a + b)$; a sum or difference of two cubes factors too, as $a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)$. These are the most-used factorizations in competition math because they turn a subtraction into a product, and a product can be counted, cancelled or bounded: $x^2 - y^2 = n$ becomes a question about the factor pairs of $n$. They also clear square roots from denominators and turn $99 \cdot 101$ into $100^2 - 1$. A sum of two squares, $a^2 + b^2$, does not factor over the real numbers.`,
+          description: String.raw`A difference of squares is an expression of the form $a^2 - b^2$, and it always factors as $(a - b)(a + b)$; a sum or difference of two cubes factors too, as $a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)$. These are the most-used factorizations in competition math because they turn a subtraction into a product, and a product can be counted, cancelled or bounded: $x^2 - y^2 = n$ becomes a question about the [[factor-pair-counting|factor pairs]] of $n$. They also clear square roots from denominators and turn $99 \cdot 101$ into $100^2 - 1$. A sum of two squares, $a^2 + b^2$, does not factor over the real numbers.`,
           keywords: ["factoring", "sum of cubes", "difference of cubes", "difference of two squares", "factor a^2-b^2", "sum and difference of cubes"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -256,7 +256,7 @@ window.MATH_SECTIONS.push({
           name: "Binomial Theorem",
           latex: String.raw`(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k, \qquad (x+y)^n = x^n + \binom{n}{1}x^{n-1}y + \binom{n}{2}x^{n-2}y^2 + \cdots + y^n`,
           latexPlain: String.raw`(a+b)^n = a^n + \binom{n}{1}a^{n-1}b + \binom{n}{2}a^{n-2}b^2 + \cdots + \binom{n}{n-1}ab^{n-1} + b^n`,
-          description: String.raw`The binomial theorem expands a power of a sum: $(x + y)^n = \sum_{k=0}^{n}\binom nk x^{n-k}y^k$, so the coefficient of $x^{n-k}y^k$ is the binomial coefficient $\binom nk$, and the coefficients form row $n$ of Pascal's triangle. It turns a power into a sum you can read coefficients from, and in reverse it turns a sum of binomial coefficients into a power. Substituting values collapses whole rows: $x = y = 1$ gives $\sum_k\binom nk = 2^n$, and $x = 1$, $y = -1$ gives an alternating sum of $0$. It is also the quick route to remainders of powers such as $9^{100} = (10 - 1)^{100}$.`,
+          description: String.raw`The Binomial Theorem expands a power of a sum: $(x + y)^n = \sum_{k=0}^{n}\binom nk x^{n-k}y^k$, so the coefficient of $x^{n-k}y^k$ is the binomial coefficient $\binom nk$, and the coefficients form row $n$ of Pascal's triangle. It turns a power into a sum you can read coefficients from, and in reverse it turns a sum of binomial coefficients into a power. Substituting values collapses whole rows: $x = y = 1$ gives $\sum_k\binom nk = 2^n$, and $x = 1$, $y = -1$ gives an alternating sum of $0$. It is also the quick route to remainders of powers such as $9^{100} = (10 - 1)^{100}$.`,
           keywords: ["expansion", "pascal", "binomial coefficients", "powers"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -275,7 +275,7 @@ window.MATH_SECTIONS.push({
           name: "Lagrange's Identity",
           latex: String.raw`\left(\sum a_i^2\right)\!\left(\sum b_i^2\right) - \left(\sum a_i b_i\right)^2 = \sum_{i \lt j} (a_i b_j - a_j b_i)^2, \qquad (a^2+b^2)(c^2+d^2) = (ac-bd)^2 + (ad+bc)^2`,
           latexPlain: String.raw`(a_1^2 + \cdots + a_n^2)(b_1^2 + \cdots + b_n^2) - (a_1b_1 + \cdots + a_nb_n)^2 = (a_1b_2 - a_2b_1)^2 + (a_1b_3 - a_3b_1)^2 + \cdots + (a_{n-1}b_n - a_nb_{n-1})^2, \qquad (a^2+b^2)(c^2+d^2) = (ac-bd)^2 + (ad+bc)^2`,
-          description: String.raw`The exact amount by which Cauchy–Schwarz falls short: the product of the sums of squares minus the squared dot product equals a sum of squared $2\times 2$ minors. Since the right side is a sum of squares it is $\ge 0$, which is Cauchy–Schwarz; equality forces every $a_i b_j - a_j b_i = 0$, i.e. proportional sequences. The two-term case is the Brahmagupta–Fibonacci identity.`,
+          description: String.raw`The exact amount by which [[cauchy-schwarz|Cauchy–Schwarz]] falls short: the product of the sums of squares minus the squared [[vector-dot-product|dot product]] equals a sum of squared $2\times 2$ minors. Since the right side is a sum of squares it is $\ge 0$, which is Cauchy–Schwarz; equality forces every $a_i b_j - a_j b_i = 0$, i.e. proportional sequences. The two-term case is the [[brahmagupta-fibonacci|Brahmagupta–Fibonacci Identity]].`,
           keywords: ["lagrange identity", "cauchy schwarz gap", "sum of squares", "cross terms", "minors", "cross product", "brahmagupta generalization"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
@@ -293,7 +293,7 @@ window.MATH_SECTIONS.push({
           id: "useful-factorizations",
           name: "More Factorizations Worth Knowing",
           latex: String.raw`a^4 + a^2b^2 + b^4 = (a^2+ab+b^2)(a^2-ab+b^2), \qquad (a+b+c)^3 - a^3 - b^3 - c^3 = 3(a+b)(b+c)(c+a)`,
-          description: String.raw`Two "won't factor... wait, yes it does" identities. The first is a disguised difference of squares: $(a^2+b^2)^2 - (ab)^2$ — the $x^4+x^2+1$ family. The second pairs with $(a+b)(b+c)(c+a) = (a+b+c)(ab+bc+ca) - abc$, converting between products and symmetric sums.`,
+          description: String.raw`Two "won't factor... wait, yes it does" identities. The first is a disguised [[difference-of-squares|difference of squares]]: $(a^2+b^2)^2 - (ab)^2$ — the $x^4+x^2+1$ family. The second pairs with $(a+b)(b+c)(c+a) = (a+b+c)(ab+bc+ca) - abc$, converting between products and symmetric sums.`,
           keywords: ["x4 x2 1", "hidden difference of squares", "cube of sum minus cubes", "product of pairwise sums", "weird factorizations"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -381,7 +381,7 @@ window.MATH_SECTIONS.push({
           name: "Arithmetico-Geometric Sum",
           latex: String.raw`\sum_{k=1}^{\infty} k x^k = \frac{x}{(1-x)^2}, \qquad \sum_{k=1}^{\infty} k^2 x^k = \frac{x(1+x)}{(1-x)^3} \quad (|x| < 1)`,
           latexPlain: String.raw`x + 2x^2 + 3x^3 + \cdots = \frac{x}{(1-x)^2}, \qquad x + 4x^2 + 9x^3 + \cdots = \frac{x(1+x)}{(1-x)^3} \quad (|x| < 1)`,
-          description: String.raw`Derived by differentiating the geometric series, or by the shift trick $S - xS$. Finite version handles sums like $\sum k \cdot 2^k$.`,
+          description: String.raw`Derived by differentiating the [[geometric-series|geometric series]], or by the shift trick $S - xS$. Finite version handles sums like $\sum k \cdot 2^k$.`,
           keywords: ["k times x to k", "weighted geometric", "expected value sums", "derivative trick"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -391,7 +391,7 @@ window.MATH_SECTIONS.push({
           name: "Binet's Formula",
           latex: String.raw`F_n = \frac{\varphi^n - \psi^n}{\sqrt{5}}, \quad \varphi = \frac{1+\sqrt5}{2},\ \psi = \frac{1-\sqrt5}{2}, \qquad F_{n-1}F_{n+1} - F_n^2 = (-1)^n, \qquad \gcd(F_m, F_n) = F_{\gcd(m,n)}, \qquad F_{m+n} = F_mF_{n+1} + F_{m-1}F_n, \qquad \sum_{i=1}^{n} F_i^2 = F_nF_{n+1}`,
           latexPlain: String.raw`F_n = \frac{\varphi^n - \psi^n}{\sqrt{5}}, \quad \varphi = \frac{1+\sqrt5}{2},\ \psi = \frac{1-\sqrt5}{2}, \qquad F_{n-1}F_{n+1} - F_n^2 = (-1)^n, \qquad \gcd(F_m, F_n) = F_{\gcd(m,n)}, \qquad F_{m+n} = F_mF_{n+1} + F_{m-1}F_n, \qquad F_1^2 + F_2^2 + \cdots + F_n^2 = F_nF_{n+1}`,
-          description: String.raw`Binet's formula writes the $n$th Fibonacci number in closed form: $F_n = \frac{\varphi^n - \psi^n}{\sqrt5}$, with $\varphi = \frac{1 + \sqrt5}{2}$ and $\psi = \frac{1 - \sqrt5}{2}$. Since $|\psi| \lt 1$, $F_n$ is simply the nearest integer to $\frac{\varphi^n}{\sqrt5}$, which gives its growth rate and digit count at once. The card also collects the Fibonacci identities that do most of the contest work: $F_1 + \cdots + F_n = F_{n+2} - 1$, Cassini's $F_{n-1}F_{n+1} - F_n^2 = (-1)^n$, and $\gcd(F_m, F_n) = F_{\gcd(m, n)}$.`,
+          description: String.raw`Binet's Formula writes the $n$th Fibonacci number in closed form: $F_n = \frac{\varphi^n - \psi^n}{\sqrt5}$, with $\varphi = \frac{1 + \sqrt5}{2}$ and $\psi = \frac{1 - \sqrt5}{2}$. Since $|\psi| \lt 1$, $F_n$ is simply the nearest integer to $\frac{\varphi^n}{\sqrt5}$, which gives its growth rate and digit count at once. The card also collects the Fibonacci identities that do most of the contest work: $F_1 + \cdots + F_n = F_{n+2} - 1$, Cassini's $F_{n-1}F_{n+1} - F_n^2 = (-1)^n$, and $\gcd(F_m, F_n) = F_{\gcd(m, n)}$.`,
           keywords: ["fibonacci", "binet", "cassini", "golden ratio", "gcd", "lucas numbers"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -430,7 +430,7 @@ window.MATH_SECTIONS.push({
           name: "Generalized Binomial Series",
           latex: String.raw`(1 + x)^{\alpha} = \sum_{n \ge 0} \binom{\alpha}{n} x^n, \quad \binom{\alpha}{n} = \frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}, \qquad \frac{1}{(1 - x)^{k}} = \sum_{n \ge 0} \binom{n + k - 1}{k - 1} x^n`,
           latexPlain: String.raw`(1 + x)^{\alpha} = 1 + \alpha x + \binom{\alpha}{2} x^2 + \binom{\alpha}{3} x^3 + \cdots, \quad \binom{\alpha}{n} = \frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}, \qquad \frac{1}{(1 - x)^{k}} = 1 + kx + \binom{k+1}{k-1} x^2 + \binom{k+2}{k-1} x^3 + \cdots`,
-          description: String.raw`Newton's binomial theorem for any real exponent $\alpha$ (valid for $|x| \lt  1$). The special case $\alpha = -k$ is what makes generating functions usable: $\frac{1}{(1-x)^k}$ expands with the stars-and-bars coefficients $\binom{n+k-1}{k-1}$, so a product of such factors reads off a convolution count. Sets $k = 1$ ($\frac{1}{1-x} = \sum x^n$) and $k = 2$ ($\frac{1}{(1-x)^2} = \sum (n+1) x^n$) are the ones to know cold.`,
+          description: String.raw`Newton's Binomial Theorem for any real exponent $\alpha$ (valid for $|x| \lt  1$). The special case $\alpha = -k$ is what makes [[generating-function-method|generating functions]] usable: $\frac{1}{(1-x)^k}$ expands with the stars-and-bars coefficients $\binom{n+k-1}{k-1}$, so a product of such factors reads off a convolution count. Sets $k = 1$ ($\frac{1}{1-x} = \sum x^n$) and $k = 2$ ($\frac{1}{(1-x)^2} = \sum (n+1) x^n$) are the ones to know cold.`,
           keywords: ["generalized binomial", "negative binomial series", "newton binomial", "generating function expansion", "stars and bars coefficients", "1/(1-x)^k", "power series"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -440,7 +440,7 @@ window.MATH_SECTIONS.push({
           name: "Abel Summation (Summation by Parts)",
           latex: String.raw`\sum_{k=1}^{n} a_k b_k = A_n b_n - \sum_{k=1}^{n-1} A_k (b_{k+1} - b_k), \qquad A_k = a_1 + \cdots + a_k`,
           latexPlain: String.raw`a_1b_1 + a_2b_2 + \cdots + a_nb_n = A_n b_n - \big[A_1(b_2 - b_1) + A_2(b_3 - b_2) + \cdots + A_{n-1}(b_n - b_{n-1})\big], \qquad A_k = a_1 + \cdots + a_k`,
-          description: String.raw`The discrete analogue of integration by parts: replace a sum of products by the partial sums $A_k$ of one factor against the differences of the other. It's the tool for sums like $\sum k x^k$ or $\sum k \binom{n}{k}$ where one factor telescopes or has a known partial sum, and it's the backbone of the proofs of Chebyshev's and Karamata's inequalities. Especially powerful when $b_k$ is monotone (the differences keep one sign).`,
+          description: String.raw`The discrete analogue of integration by parts: replace a sum of products by the partial sums $A_k$ of one factor against the differences of the other. It's the tool for sums like $\sum k x^k$ or $\sum k \binom{n}{k}$ where one factor telescopes or has a known partial sum, and it's the backbone of the proofs of [[chebyshev-sum-inequality|Chebyshev's]] and [[karamata-inequality|Karamata's]] inequalities. Especially powerful when $b_k$ is monotone (the differences keep one sign).`,
           keywords: ["abel summation", "summation by parts", "partial summation", "discrete integration by parts", "partial sums", "telescoping products"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
@@ -484,7 +484,7 @@ window.MATH_SECTIONS.push({
           name: "Cauchy–Schwarz Inequality",
           latex: String.raw`\left(\sum a_i b_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right), \qquad \sum \frac{x_i^2}{y_i} \ge \frac{\left(\sum x_i\right)^2}{\sum y_i}`,
           latexPlain: String.raw`(a_1b_1 + a_2b_2 + \cdots + a_nb_n)^2 \le (a_1^2 + a_2^2 + \cdots + a_n^2)(b_1^2 + b_2^2 + \cdots + b_n^2), \qquad \frac{x_1^2}{y_1} + \frac{x_2^2}{y_2} + \cdots + \frac{x_n^2}{y_n} \ge \frac{(x_1 + x_2 + \cdots + x_n)^2}{y_1 + y_2 + \cdots + y_n}`,
-          description: String.raw`The Cauchy–Schwarz inequality says that $\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)$ for real numbers, with equality exactly when the two sequences are proportional. It is the default tool for bounding a sum of products, or a linear sum under a constraint on squares, and in vector language it is the bound $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$. Its Engel form, Titu's lemma, handles squares over positive denominators: $\sum \frac{x_i^2}{y_i} \ge \frac{\left(\sum x_i\right)^2}{\sum y_i}$.`,
+          description: String.raw`The Cauchy–Schwarz Inequality says that $\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)$ for real numbers, with equality exactly when the two sequences are proportional. It is the default tool for bounding a sum of products, or a linear sum under a constraint on squares, and in vector language it is the bound $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$. Its Engel form, Titu's lemma, handles squares over positive denominators: $\sum \frac{x_i^2}{y_i} \ge \frac{\left(\sum x_i\right)^2}{\sum y_i}$.`,
           keywords: ["cauchy", "titu", "engel form", "dot product", "vectors"],
           importance: "high",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -494,7 +494,7 @@ window.MATH_SECTIONS.push({
           name: "Rearrangement Inequality",
           latex: String.raw`\sum a_i b_i \;\text{(sorted same)} \;\ge\; \sum a_i b_{\sigma(i)} \;\ge\; \sum a_i b_i \;\text{(sorted opposite)}`,
           latexPlain: String.raw`a_1 \le \cdots \le a_n,\ \ b_1 \le \cdots \le b_n:\quad a_1b_1 + \cdots + a_nb_n \;\ge\; a_1b_{\sigma(1)} + \cdots + a_nb_{\sigma(n)} \;\ge\; a_1b_n + a_2b_{n-1} + \cdots + a_nb_1`,
-          description: String.raw`Pairing two sorted sequences in the same order maximizes the sum of products; opposite order minimizes it. Chebyshev's sum inequality follows.`,
+          description: String.raw`Pairing two sorted sequences in the same order maximizes the sum of products; opposite order minimizes it. [[chebyshev-sum-inequality|Chebyshev's Sum Inequality]] follows.`,
           keywords: ["sorted", "pairing", "maximize product sum", "chebyshev"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -539,7 +539,7 @@ window.MATH_SECTIONS.push({
           id: "schurs-inequality",
           name: "Schur's Inequality",
           latex: String.raw`x, y, z \ge 0,\; t > 0: \quad x^t(x-y)(x-z) + y^t(y-x)(y-z) + z^t(z-x)(z-y) \ge 0, \qquad t = 1: \;\; x^3 + y^3 + z^3 + 3xyz \ge xy(x+y) + yz(y+z) + zx(z+x)`,
-          description: String.raw`The $t = 1$ case expands to $x^3 + y^3 + z^3 + 3xyz \ge xy(x+y) + yz(y+z) + zx(z+x)$ — the classic degree-3 symmetric inequality that AM–GM and Muirhead cannot reach. Equality when $x = y = z$, or when two are equal and the third is $0$.`,
+          description: String.raw`The $t = 1$ case expands to $x^3 + y^3 + z^3 + 3xyz \ge xy(x+y) + yz(y+z) + zx(z+x)$ — the classic degree-3 symmetric inequality that AM–GM and [[muirheads-inequality|Muirhead]] cannot reach. Equality when $x = y = z$, or when two are equal and the third is $0$.`,
           keywords: ["schur", "symmetric inequality", "three variables", "t equals 1", "degree 3"],
           importance: "low",
           level: ["Olympiad"]
@@ -549,7 +549,7 @@ window.MATH_SECTIONS.push({
           name: "Muirhead's Inequality",
           latex: String.raw`(a_1, a_2, a_3) \succ (b_1, b_2, b_3) \implies \sum_{\text{sym}} x^{a_1} y^{a_2} z^{a_3} \;\ge\; \sum_{\text{sym}} x^{b_1} y^{b_2} z^{b_3}`,
           latexPlain: String.raw`(a_1, a_2, a_3) \succ (b_1, b_2, b_3) \implies x^{a_1}y^{a_2}z^{a_3} + x^{a_1}y^{a_3}z^{a_2} + \cdots \;(\text{all 6 orders}) \;\ge\; x^{b_1}y^{b_2}z^{b_3} + x^{b_1}y^{b_3}z^{b_2} + \cdots \;(\text{all 6 orders})`,
-          description: String.raw`For positive reals, where $\succ$ is majorization: $a_1 \ge b_1$, $a_1 + a_2 \ge b_1 + b_2$, equal total sums, both sorted decreasing. "More spread-out exponents win" — the rigorous version of bunching. E.g. $(2,0,0) \succ (1,1,0)$ gives $\sum_{\text{sym}} x^2 \ge \sum_{\text{sym}} xy$. Only valid for full symmetric sums (all $3! = 6$ permutation terms).`,
+          description: String.raw`For positive reals, where $\succ$ is [[karamata-inequality|majorization]]: $a_1 \ge b_1$, $a_1 + a_2 \ge b_1 + b_2$, equal total sums, both sorted decreasing. "More spread-out exponents win" — the rigorous version of bunching. E.g. $(2,0,0) \succ (1,1,0)$ gives $\sum_{\text{sym}} x^2 \ge \sum_{\text{sym}} xy$. Only valid for full symmetric sums (all $3! = 6$ permutation terms).`,
           keywords: ["muirhead", "majorization", "bunching", "symmetric sum", "exponents"],
           importance: "low",
           level: ["Olympiad"]
@@ -608,7 +608,7 @@ window.MATH_SECTIONS.push({
           name: "Power Mean Inequality",
           latex: String.raw`M_p = \left(\frac{1}{n}\sum_{i=1}^n a_i^{\,p}\right)^{1/p} \text{ is nondecreasing in } p, \qquad M_{-1} \le M_0 \le M_1 \le M_2 \quad (\text{HM} \le \text{GM} \le \text{AM} \le \text{QM})`,
           latexPlain: String.raw`M_p = \left(\frac{a_1^{\,p} + a_2^{\,p} + \cdots + a_n^{\,p}}{n}\right)^{1/p} \text{ is nondecreasing in } p, \qquad M_{-1} \le M_0 \le M_1 \le M_2 \quad (\text{HM} \le \text{GM} \le \text{AM} \le \text{QM})`,
-          description: String.raw`The general statement behind the QM–AM–GM–HM chain: for positive reals, the power mean $M_p$ increases with the exponent $p$, with $M_0$ (the $p\to0$ limit) equal to the geometric mean. This one inequality delivers every mean comparison at once and, for any two exponents $p \lt  q$, gives $\left(\frac1n\sum a_i^p\right)^{1/p} \le \left(\frac1n\sum a_i^q\right)^{1/q}$. Equality throughout iff all $a_i$ are equal.`,
+          description: String.raw`The general statement behind the [[mean-chain|QM–AM–GM–HM chain]]: for positive reals, the power mean $M_p$ increases with the exponent $p$, with $M_0$ (the $p\to0$ limit) equal to the geometric mean. This one inequality delivers every mean comparison at once and, for any two exponents $p \lt  q$, gives $\left(\frac1n\sum a_i^p\right)^{1/p} \le \left(\frac1n\sum a_i^q\right)^{1/q}$. Equality throughout iff all $a_i$ are equal.`,
           keywords: ["power mean inequality", "generalized mean", "qm am gm hm", "M_p nondecreasing", "mean inequality chain", "exponent mean"],
           importance: "medium",
           level: ["AMC12", "AIME", "Olympiad"]
@@ -618,7 +618,7 @@ window.MATH_SECTIONS.push({
           name: "Weighted AM–GM",
           latex: String.raw`\sum_{i=1}^n w_i a_i \ge \prod_{i=1}^n a_i^{\,w_i}, \qquad \sum w_i = 1, \; w_i > 0, \; a_i > 0`,
           latexPlain: String.raw`w_1a_1 + w_2a_2 + \cdots + w_na_n \ge a_1^{\,w_1}a_2^{\,w_2}\cdots a_n^{\,w_n}, \qquad w_1 + \cdots + w_n = 1, \; w_i > 0, \; a_i > 0`,
-          description: String.raw`AM–GM with arbitrary positive weights summing to $1$: the weighted arithmetic mean dominates the weighted geometric mean. Choosing rational weights recovers plain AM–GM (repeat each term); choosing weights to cancel exponents is the standard way to prove tailored bounds like $a^3 + a^3 + b^3 \ge 3a^2 b$. It is the engine behind Hölder and Young's inequality, and equality holds iff all $a_i$ are equal.`,
+          description: String.raw`AM–GM with arbitrary positive weights summing to $1$: the weighted arithmetic mean dominates the weighted geometric mean. Choosing rational weights recovers plain AM–GM (repeat each term); choosing weights to cancel exponents is the standard way to prove tailored bounds like $a^3 + a^3 + b^3 \ge 3a^2 b$. It is the engine behind [[holders-inequality|Hölder]] and Young's inequality, and equality holds iff all $a_i$ are equal.`,
           keywords: ["weighted am gm", "weighted arithmetic geometric mean", "weights sum to one", "young inequality", "tangent weights", "engine of holder"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -691,7 +691,7 @@ window.MATH_SECTIONS.push({
           id: "de-moivre",
           name: "De Moivre's Theorem",
           latex: String.raw`(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta`,
-          description: String.raw`De Moivre's theorem says that raising $\cos\theta + i\sin\theta$ to the $n$th power multiplies the angle by $n$: $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$. More generally, a complex number of modulus $r$ and angle $\theta$ has an $n$th power of modulus $r^n$ and angle $n\theta$, which makes large powers such as $(1 + i)^{20}$ immediate. Run backwards, expanding the left side with the binomial theorem and comparing real and imaginary parts produces the multiple-angle formulas, such as $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$.`,
+          description: String.raw`De Moivre's Theorem says that raising $\cos\theta + i\sin\theta$ to the $n$th power multiplies the angle by $n$: $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$. More generally, a complex number of modulus $r$ and angle $\theta$ has an $n$th power of modulus $r^n$ and angle $n\theta$, which makes large powers such as $(1 + i)^{20}$ immediate. Run backwards, expanding the left side with the [[binomial-theorem|Binomial Theorem]] and comparing real and imaginary parts produces the multiple-angle formulas, such as $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$.`,
           keywords: ["de moivre", "powers", "multiple angle", "de moivre's theorem", "cis form power", "polar form powers"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -701,7 +701,7 @@ window.MATH_SECTIONS.push({
           name: "Roots of Unity",
           latex: String.raw`z^n = 1 \iff z = e^{2\pi i k / n}, \quad k = 0, 1, \dots, n-1, \qquad z^n - 1 = \prod_{k=0}^{n-1}\left(z - \omega^k\right)`,
           latexPlain: String.raw`z^n = 1 \iff z = e^{2\pi i k / n}, \quad k = 0, 1, \dots, n-1, \qquad z^n - 1 = (z - 1)(z - \omega)(z - \omega^2)\cdots(z - \omega^{n-1})`,
-          description: String.raw`The $n$th roots of unity are the $n$ complex numbers $z$ with $z^n = 1$: $\omega^k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$ for $k = 0, 1, \ldots, n - 1$, the vertices of a regular $n$-gon on the unit circle with one vertex at $1$. They are exactly the roots of $x^n - 1$, so $x^n - 1 = \prod_{k=0}^{n-1}(x - \omega^k)$, and reading that factorization with Vieta's formulas gives their sum, $0$ for $n \gt 1$, and their product, $(-1)^{n+1}$. Powers of a root repeat with period $n$, so exponents can be reduced modulo $n$, and summing a power over all the roots kills every term except those whose exponent is a multiple of $n$.`,
+          description: String.raw`The $n$th roots of unity are the $n$ complex numbers $z$ with $z^n = 1$: $\omega^k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$ for $k = 0, 1, \ldots, n - 1$, the vertices of a regular $n$-gon on the unit circle with one vertex at $1$. They are exactly the roots of $x^n - 1$, so $x^n - 1 = \prod_{k=0}^{n-1}(x - \omega^k)$, and reading that factorization with [[vietas-general|Vieta's Formulas]] gives their sum, $0$ for $n \gt 1$, and their product, $(-1)^{n+1}$. Powers of a root repeat with period $n$, so exponents can be reduced modulo $n$, and summing a power over all the roots kills every term except those whose exponent is a multiple of $n$.`,
           keywords: ["unit circle", "regular polygon", "sum zero", "omega", "nth roots"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -725,7 +725,7 @@ window.MATH_SECTIONS.push({
           id: "pythagorean-identities",
           name: "Pythagorean Identities",
           latex: String.raw`\sin^2\theta + \cos^2\theta = 1, \quad 1 + \tan^2\theta = \sec^2\theta, \quad 1 + \cot^2\theta = \csc^2\theta`,
-          description: String.raw`The Pythagorean identities are $\sin^2\theta + \cos^2\theta = 1$ and the two forms derived from it, $1 + \tan^2\theta = \sec^2\theta$ and $1 + \cot^2\theta = \csc^2\theta$. The first is the Pythagorean theorem for the point $(\cos\theta, \sin\theta)$ on the unit circle, and the other two come from dividing it by $\cos^2\theta$ or by $\sin^2\theta$. They convert one trigonometric function into another: given one value they give the rest up to sign, and they turn an equation in several functions into a polynomial in one.`,
+          description: String.raw`The Pythagorean identities are $\sin^2\theta + \cos^2\theta = 1$ and the two forms derived from it, $1 + \tan^2\theta = \sec^2\theta$ and $1 + \cot^2\theta = \csc^2\theta$. The first is the [[pythagorean-theorem|Pythagorean Theorem]] for the point $(\cos\theta, \sin\theta)$ on the unit circle, and the other two come from dividing it by $\cos^2\theta$ or by $\sin^2\theta$. They convert one trigonometric function into another: given one value they give the rest up to sign, and they turn an equation in several functions into a polynomial in one.`,
           keywords: ["sin squared", "identity", "sec", "csc"],
           importance: "high",
           level: ["AMC10", "AMC12"]
@@ -734,7 +734,7 @@ window.MATH_SECTIONS.push({
           id: "common-angle-values",
           name: "Common Angle Values",
           latex: String.raw`\begin{array}{c|ccccc} & 0^\circ & 30^\circ & 45^\circ & 60^\circ & 90^\circ \\ \hline \sin & 0 & \tfrac{1}{2} & \tfrac{\sqrt2}{2} & \tfrac{\sqrt3}{2} & 1 \\ \cos & 1 & \tfrac{\sqrt3}{2} & \tfrac{\sqrt2}{2} & \tfrac{1}{2} & 0 \\ \tan & 0 & \tfrac{\sqrt3}{3} & 1 & \sqrt3 & \text{—} \end{array}`,
-          description: String.raw`The first-quadrant staples. Radians: $30^\circ = \frac{\pi}{6},\ 45^\circ = \frac{\pi}{4},\ 60^\circ = \frac{\pi}{3},\ 90^\circ = \frac{\pi}{2}$; $\tan 90^\circ$ is undefined. For any other angle, use its reference angle and fix the sign by quadrant (ASTC — All, Sine, Tangent, Cosine positive in quadrants I–IV).`,
+          description: String.raw`The common angle values are the exact sines, cosines and tangents of $0^\circ$, $30^\circ$, $45^\circ$, $60^\circ$ and $90^\circ$, such as $\sin 30^\circ = \frac12$, $\cos 45^\circ = \frac{\sqrt2}{2}$ and $\tan 60^\circ = \sqrt3$, with $\tan 90^\circ$ undefined. Knowing them on sight turns most trigonometry on the AMC into arithmetic. Every other multiple of $30^\circ$ or $45^\circ$ reduces to one of them through its reference angle, with the sign fixed by the quadrant.`,
           keywords: ["special angles", "sin cos tan table", "30 45 60 90", "unit circle values", "reference angle", "exact values", "astc"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -752,7 +752,7 @@ window.MATH_SECTIONS.push({
           id: "angle-addition",
           name: "Angle Addition & Subtraction",
           latex: String.raw`\sin(a \pm b) = \sin a \cos b \pm \cos a \sin b, \qquad \cos(a \pm b) = \cos a \cos b \mp \sin a \sin b, \qquad \tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a \tan b}, \qquad \cot(a \pm b) = \frac{\cot a \cot b \mp 1}{\cot b \pm \cot a}`,
-          description: String.raw`The angle-addition formulas expand the sine and cosine of a sum of two angles, or of their difference, in terms of the sines and cosines of the two angles: $\sin(a \pm b) = \sin a\cos b \pm \cos a\sin b$ and $\cos(a \pm b) = \cos a\cos b \mp \sin a\sin b$, with $\tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a\tan b}$ following from them. Almost every other trigonometric identity comes from these: setting $a = b$ gives the double-angle formulas, and the half-angle and product-to-sum formulas follow. They give exact values at angles like $15^\circ$ and $75^\circ$, and read backwards they combine $a\sin\theta + b\cos\theta$ into a single wave, $\sqrt{a^2 + b^2}\sin(\theta + \varphi)$ with $\tan\varphi = \frac ba$.`,
+          description: String.raw`The angle-addition formulas expand the sine and cosine of a sum of two angles, or of their difference, in terms of the sines and cosines of the two angles: $\sin(a \pm b) = \sin a\cos b \pm \cos a\sin b$ and $\cos(a \pm b) = \cos a\cos b \mp \sin a\sin b$, with $\tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a\tan b}$ following from them. Almost every other trigonometric identity comes from these: setting $a = b$ gives the [[double-angle|double-angle formula]]s, and the half-angle and product-to-sum formulas follow. They give exact values at angles like $15^\circ$ and $75^\circ$, and read backwards they combine $a\sin\theta + b\cos\theta$ into a single wave, $\sqrt{a^2 + b^2}\sin(\theta + \varphi)$ with $\tan\varphi = \frac ba$.`,
           keywords: ["sum formula", "sin a plus b", "cos a plus b", "tan a plus b", "cot a plus b", "tan a minus b", "tangent of a sum", "tan sum formula", "sine addition", "cosine addition", "tangent addition"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -770,7 +770,7 @@ window.MATH_SECTIONS.push({
           id: "double-angle",
           name: "Double Angle Formulas",
           latex: String.raw`\sin 2\theta = 2\sin\theta\cos\theta, \quad \cos 2\theta = \cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta, \quad \tan 2\theta = \frac{2\tan\theta}{1-\tan^2\theta}`,
-          description: String.raw`The double angle formulas give the sine, cosine and tangent of $2\theta$ in terms of those of $\theta$: $\sin 2\theta = 2\sin\theta\cos\theta$, $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}$. They are the angle addition formulas with both angles equal, and they are the tool whenever a problem has an angle and its double, as an inscribed and a central angle do. The cosine formula has three forms, $\cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta$, so you can keep whichever function you want. Read backwards they are the power-reduction formulas $\cos^2\theta = \frac{1 + \cos 2\theta}{2}$ and $\sin^2\theta = \frac{1 - \cos 2\theta}{2}$.`,
+          description: String.raw`The double angle formulas give the sine, cosine and tangent of $2\theta$ in terms of those of $\theta$: $\sin 2\theta = 2\sin\theta\cos\theta$, $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}$. They are the [[angle-addition|angle addition formulas]] with both angles equal, and they are the tool whenever a problem has an angle and its double, as an inscribed and a central angle do. The cosine formula has three forms, $\cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta$, so you can keep whichever function you want. Read backwards they are the power-reduction formulas $\cos^2\theta = \frac{1 + \cos 2\theta}{2}$ and $\sin^2\theta = \frac{1 - \cos 2\theta}{2}$.`,
           keywords: ["double angle", "sin 2x", "cos 2x", "double angle formula", "sin 2 theta", "tan 2x", "power reduction"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -797,7 +797,7 @@ window.MATH_SECTIONS.push({
           id: "special-trig-values",
           name: "Special Values Worth Memorizing",
           latex: String.raw`\sin 15^\circ = \frac{\sqrt{6} - \sqrt{2}}{4}, \qquad \cos 36^\circ = \frac{1 + \sqrt{5}}{4}, \qquad \sin 18^\circ = \frac{\sqrt{5} - 1}{4}, \qquad \tan 15^\circ = 2 - \sqrt{3}, \qquad \tan 75^\circ = 2 + \sqrt{3}`,
-          description: String.raw`Note $\cos 36^\circ = \frac{\varphi}{2}$ and $\sin 18^\circ = \frac{\varphi - 1}{2}$ where $\varphi$ is the golden ratio. Also $\tan 15^\circ = 2 - \sqrt{3}$ and $\tan 75^\circ = 2 + \sqrt{3}$. Pentagon and 15-75-90 problems reduce to these.`,
+          description: String.raw`Note $\cos 36^\circ = \frac{\varphi}{2}$ and $\sin 18^\circ = \frac{\varphi - 1}{2}$ where $\varphi$ is the [[golden-ratio-pentagon|golden ratio]]. Also $\tan 15^\circ = 2 - \sqrt{3}$ and $\tan 75^\circ = 2 + \sqrt{3}$. Pentagon and 15-75-90 problems reduce to these.`,
           keywords: ["15 degrees", "18 degrees", "36 degrees", "golden ratio", "exact values"],
           importance: "high",
           level: ["AMC12", "AIME"]
@@ -825,7 +825,7 @@ window.MATH_SECTIONS.push({
           name: "Finite Sums of Squared Cosecants and Cotangents",
           latex: String.raw`\sum_{k=1}^{n-1}\csc^2\!\left(\frac{k\pi}{n}\right) = \frac{n^2-1}{3}, \qquad \sum_{k=1}^{n-1}\cot^2\!\left(\frac{k\pi}{n}\right) = \frac{(n-1)(n-2)}{3}`,
           latexPlain: String.raw`\csc^2\frac{\pi}{n} + \csc^2\frac{2\pi}{n} + \cdots + \csc^2\frac{(n-1)\pi}{n} = \frac{n^2-1}{3}, \qquad \cot^2\frac{\pi}{n} + \cot^2\frac{2\pi}{n} + \cdots + \cot^2\frac{(n-1)\pi}{n} = \frac{(n-1)(n-2)}{3}`,
-          description: String.raw`Summing over the $n-1$ nontrivial $n$th roots of unity. The two differ by exactly $n-1$ because $\csc^2 = \cot^2 + 1$, so proving either one gives the other for free.`,
+          description: String.raw`Summing over the $n-1$ nontrivial $n$th [[roots-of-unity|roots of unity]]. The two differ by exactly $n-1$ because $\csc^2 = \cot^2 + 1$, so proving either one gives the other for free.`,
           keywords: ["sum of csc squared", "sum of cot squared", "roots of unity trig sum", "cosecant squared sum", "cotangent squared sum", "k pi over n", "finite trigonometric sum"],
           importance: "lower",
           level: ["AIME", "Olympiad"]

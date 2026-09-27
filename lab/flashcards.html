@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards — experimental</title>
+<link rel="stylesheet" href="../vendor/katex/katex.min.css?v=1">
+<style>
+  /* Same palette as quiz.html: figures carry inline var(--accent) and friends. */
+  :root {
+    --bg: #f6f8fc; --panel: #ffffff; --panel2: #eaeef7; --line: #d7deed; --line2: #c2cbe1;
+    --text: #1b2333; --text-dim: #55607a; --text-faint: #808aa3; --bg-card: #ffffff;
+    --accent: #2f66e0; --gold: #b7860b;
+    --level-mc: #1f9d63; --level-10: #2f66e0; --level-12: #7a4fe0;
+    --level-aime: #cf6a1e; --level-oly: #d63f6e;
+    --again: #d63f6e; --hard: #cf6a1e; --good: #1f9d63; --easy: #2f66e0;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1420; --panel: #161d2e; --panel2: #1a2338; --line: #2a3654; --line2: #354467;
+    --text: #e8ecf6; --text-dim: #9aa7c7; --text-faint: #6b7794; --bg-card: #1a2338;
+    --accent: #5b8cff; --gold: #f5c451;
+    --level-mc: #4cc38a; --level-10: #5b8cff; --level-12: #9d7bff;
+    --level-aime: #f08c4e; --level-oly: #ef5f8b;
+    --again: #ef5f8b; --hard: #f08c4e; --good: #4cc38a; --easy: #5b8cff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh;
+         font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
+  header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  h1 { font-size: 21px; margin: 0; }
+  .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint);
+         border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+  .sub { color: var(--text-dim); margin: 0 0 22px; font-size: 13.5px; }
+  a { color: var(--accent); }
+  label.f { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .05em; color: var(--text-faint); margin: 16px 0 7px; }
+  select, input[type=number] { font: inherit; font-size: 14px; padding: 8px 11px; width: 100%;
+            border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+  button { font: inherit; cursor: pointer; border-radius: 9px; border: 1px solid var(--line);
+           background: var(--panel); color: var(--text); padding: 9px 16px; }
+  button:hover:not(:disabled) { border-color: var(--line2); }
+  .primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .row { display: flex; gap: 10px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+  .counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+  .count { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; }
+  .count b { display: block; font-size: 22px; line-height: 1.2; }
+  .count span { font-size: 12px; color: var(--text-faint); }
+  .meta { display: flex; justify-content: space-between; align-items: baseline;
+          font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; }
+  .bar { height: 4px; background: var(--panel2); border-radius: 999px; overflow: hidden; margin-bottom: 18px; }
+  .bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 20px; min-height: 180px; }
+  .crumb { font-size: 12px; color: var(--text-faint); text-align: center; }
+  .front { text-align: center; }
+  .front .nm { font-size: 21px; font-weight: 650; margin: 10px 0 4px; }
+  .fx { overflow-x: auto; overflow-y: hidden; padding: 4px 0; text-align: center; }
+  .back { border-top: 1px dashed var(--line2); margin-top: 18px; padding-top: 16px; }
+  .back .nm { font-size: 17px; font-weight: 650; text-align: center; margin-bottom: 6px; }
+  .desc { font-size: 14px; color: var(--text-dim); margin-top: 12px; }
+  .fig { margin-top: 14px; text-align: center; }
+  .fig svg { max-width: 100%; height: auto; max-height: 240px; }
+  .diagram-cap { font-size: 12px; color: var(--text-faint); margin-top: 7px; line-height: 1.45; }
+  .open { display: inline-block; margin-top: 12px; font-size: 13px; }
+  .show { width: 100%; margin-top: 16px; padding: 12px; font-weight: 600; }
+  .rate { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+  .rate button { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 9px 6px; font-weight: 600; }
+  .rate button small { font-weight: 400; font-size: 11.5px; color: var(--text-faint); }
+  .rate .again { color: var(--again); } .rate .hard { color: var(--hard); }
+  .rate .good { color: var(--good); } .rate .easy { color: var(--easy); }
+  .kbd { font-size: 12px; color: var(--text-faint); margin-top: 12px; text-align: center; }
+  .kbd b { font-weight: 600; color: var(--text-dim); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; font-size: 11.5px; }
+  .note { font-size: 12.5px; color: var(--text-faint); margin-top: 18px; }
+  .done { text-align: center; }
+  .done .big { font-size: 40px; font-weight: 700; margin: 8px 0 2px; }
+  @media (max-width: 560px) { .counts { grid-template-columns: repeat(2, 1fr); } .rate { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Flashcards</h1><span class="tag">experimental</span></header>
+  <p class="sub">Spaced-repetition review of the cards: see one side, recall the other, and say how
+     well you knew it. Cards you know come back less and less often; cards you miss come back soon.
+     Progress is kept in this browser.</p>
+  <div id="app">loading…</div>
+</div>
+
+<script src="../vendor/katex/katex.min.js?v=1"></script>
+<script src="../vendor/katex/auto-render.min.js?v=1"></script>
+<script src="../js/data/geometry.js"></script>
+<script src="../js/data/algebra.js"></script>
+<script src="../js/data/number-theory.js"></script>
+<script src="../js/data/counting.js"></script>
+<script src="../js/data/patterns.js"></script>
+<script src="../js/data/details/geometry-details.js"></script>
+<script src="../js/data/details/algebra-details.js"></script>
+<script src="../js/data/details/number-theory-details.js"></script>
+<script src="../js/data/details/counting-details.js"></script>
+<script src="../js/data/built-in-lists.js"></script>
+<script src="../js/data/diagrams/geometry-diagrams.js"></script>
+<script src="../js/data/diagrams/general-diagrams.js"></script>
+<script src="lab-common.js?v=2"></script>
+<script>
+(function () {
+  "use strict";
+  LabData.applyTheme();
+  var D = LabData.build(), byId = D.byId, cards = D.cards;
+  var app = document.getElementById("app");
+
+  // Respect the app's Sigma / Expanded notation setting on the back of the card.
+  var expanded = false;
+  // The app saves it as mq-settings.prefs.notation (saveSettings in js/app.js).
+  try { expanded = ((JSON.parse(localStorage.getItem("mq-settings") || "{}") || {}).prefs || {}).notation === "expanded"; } catch (e) {}
+  function latexOf(c) { return expanded && c.latexPlain ? c.latexPlain : c.latex; }
+
+  // Formula -> name only makes sense when the formula box is a real statement, the same test
+  // quiz.html uses: not a method card, and not mostly \text{}.
+  function textShare(tex) {
+    var t = (tex.match(/\\text\{[^}]*\}/g) || []).join("").length;
+    return tex.length ? t / tex.length : 1;
+  }
+  function hasStatement(c) { return c.type !== "method" && c.latex.length > 8 && textShare(c.latex) <= 0.30; }
+
+  // ---- scheduling ------------------------------------------------------------------------
+  // A small SM-2: each (card, direction) keeps an interval in days and an ease factor. Good
+  // multiplies the interval by the ease, Easy by a little more, Hard by 1.2 and lowers the
+  // ease, and Again sends the card back into the current session and restarts its interval.
+  var KEY = "mq-flashcards";
+  var DAY = 86400000;
+  function today() { return Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / DAY); }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var store = load();
+  function stateOf(k) { return store[k] || null; }
+  function next(st, grade) {
+    var s = st ? { ivl: st.ivl, ease: st.ease, reps: st.reps, lapses: st.lapses } : { ivl: 0, ease: 2.5, reps: 0, lapses: 0 };
+    if (grade === 0) { s.ivl = 0; s.ease = Math.max(1.3, s.ease - 0.2); s.lapses++; s.reps = 0; }
+    else if (grade === 1) { s.ivl = Math.max(1, Math.round((s.ivl || 1) * 1.2)); s.ease = Math.max(1.3, s.ease - 0.15); s.reps++; }
+    else if (grade === 2) { s.ivl = s.reps === 0 ? 1 : s.reps === 1 ? 3 : Math.round(s.ivl * s.ease); s.reps++; }
+    else { s.ivl = s.reps === 0 ? 4 : Math.round(Math.max(s.ivl, 1) * s.ease * 1.3); s.ease += 0.15; s.reps++; }
+    s.due = today() + s.ivl;
+    return s;
+  }
+  function ivlText(d) { return d <= 0 ? "now" : d === 1 ? "1 day" : d < 30 ? d + " days" : d < 365 ? Math.round(d / 30) + " mo" : (d / 365).toFixed(1) + " yr"; }
+
+  // ---- decks -----------------------------------------------------------------------------
+  var decks = [{ id: "all", name: "Every card", ids: cards.map(function (c) { return c.id; }) }];
+  var seenSec = {};
+  cards.forEach(function (c) { if (!seenSec[c.sectionId]) { seenSec[c.sectionId] = { id: "sec-" + c.sectionId, name: c.sectionTitle, ids: [] }; decks.push(seenSec[c.sectionId]); } seenSec[c.sectionId].ids.push(c.id); });
+  LabData.lists(byId).forEach(function (l) { decks.push({ id: "list-" + l.id, name: l.name + (l.kind === "yours" ? " (your list)" : ""), ids: l.ids }); });
+  function deckById(id) { return decks.filter(function (d) { return d.id === id; })[0] || decks[0]; }
+
+  var PREF = "mq-flashcards-prefs";
+  var prefs = { deck: "all", dir: "name", fresh: 10 };
+  try { var p = JSON.parse(localStorage.getItem(PREF) || "null"); if (p) prefs = Object.assign(prefs, p); } catch (e) {}
+  function savePrefs() { try { localStorage.setItem(PREF, JSON.stringify(prefs)); } catch (e) {} }
+
+  // Keys: one schedule per card and direction, since knowing a name does not mean knowing its formula.
+  function itemsFor(deck, dir) {
+    var out = [];
+    deck.ids.forEach(function (id) {
+      var c = byId[id];
+      if (!c) return;
+      if (dir !== "fx" ) out.push({ c: c, dir: "name" });
+      if (dir !== "name" && hasStatement(c)) out.push({ c: c, dir: "fx" });
+    });
+    return out;
+  }
+  function keyOf(it) { return it.c.id + ":" + it.dir; }
+  function tally(items) {
+    var t = today(), due = 0, fresh = 0, learning = 0, mature = 0;
+    items.forEach(function (it) {
+      var s = stateOf(keyOf(it));
+      if (!s) { fresh++; return; }
+      if (s.due <= t) due++;
+      if (s.ivl >= 21) mature++; else learning++;
+    });
+    return { due: due, fresh: fresh, learning: learning, mature: mature };
+  }
+
+  // ---- screens ---------------------------------------------------------------------------
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]; }); }
+  function math(el) {
+    if (window.renderMathInElement) renderMathInElement(el, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+  }
+  function fx(tex) {
+    var d = document.createElement("div");
+    try { katex.render(tex, d, { throwOnError: false, displayMode: true }); } catch (e) { d.textContent = tex; }
+    return d.innerHTML;
+  }
+  // The first two sentences of the card's intro: the part that defines the thing.
+  function lead(desc) {
+    var parts = desc.match(/[^.!?]+(?:[.!?](?=\s|$))/g) || [desc];
+    return parts.slice(0, 2).join(" ").trim();
+  }
+
+  function setup() {
+    var deck = deckById(prefs.deck), items = itemsFor(deck, prefs.dir), t = tally(items);
+    app.innerHTML =
+      '<label class="f">Deck</label><select id="deck">' + decks.map(function (d) {
+        return '<option value="' + d.id + '"' + (d.id === deck.id ? " selected" : "") + ">" + esc(d.name) + " (" + d.ids.length + ")</option>"; }).join("") + "</select>" +
+      '<label class="f">Direction</label><select id="dir">' +
+        '<option value="name"' + (prefs.dir === "name" ? " selected" : "") + ">Name → recall the formula and idea</option>" +
+        '<option value="fx"' + (prefs.dir === "fx" ? " selected" : "") + ">Formula → recall the name</option>" +
+        '<option value="both"' + (prefs.dir === "both" ? " selected" : "") + ">Both directions</option></select>" +
+      '<label class="f">New cards per session</label><input id="fresh" type="number" min="0" max="100" value="' + prefs.fresh + '">' +
+      '<div class="counts"><div class="count"><b>' + t.due + '</b><span>due now</span></div>' +
+        '<div class="count"><b>' + t.fresh + '</b><span>never seen</span></div>' +
+        '<div class="count"><b>' + t.learning + '</b><span>learning</span></div>' +
+        '<div class="count"><b>' + t.mature + '</b><span>known (3+ weeks)</span></div></div>' +
+      '<div class="row"><button class="primary" id="go">Start review</button>' +
+        '<button id="reset">Forget this deck</button></div>' +
+      '<p class="note">A session shows everything due in the deck, then up to the number of new cards you chose. ' +
+        'Keyboard: <b>Space</b> to flip, <b>1</b>–<b>4</b> to answer.</p>';
+    document.getElementById("deck").onchange = function (e) { prefs.deck = e.target.value; savePrefs(); setup(); };
+    document.getElementById("dir").onchange = function (e) { prefs.dir = e.target.value; savePrefs(); setup(); };
+    document.getElementById("fresh").onchange = function (e) { prefs.fresh = Math.max(0, Math.min(100, +e.target.value || 0)); savePrefs(); };
+    document.getElementById("go").onclick = function () { start(deck, items); };
+    document.getElementById("reset").onclick = function () {
+      if (!confirm("Forget your progress on every card in this deck?")) return;
+      items.forEach(function (it) { delete store[keyOf(it)]; });
+      save(store); setup();
+    };
+  }
+
+  var queue = [], shown = 0, total = 0, again = 0, flipped = false, cur = null;
+  function start(deck, items) {
+    var t = today();
+    var due = items.filter(function (it) { var s = stateOf(keyOf(it)); return s && s.due <= t; })
+      .sort(function (a, b) { return stateOf(keyOf(a)).due - stateOf(keyOf(b)).due; });
+    var fresh = items.filter(function (it) { return !stateOf(keyOf(it)); }).slice(0, prefs.fresh);
+    queue = due.concat(fresh);
+    shown = 0; again = 0; total = queue.length;
+    if (!queue.length) { finish(true); return; }
+    show();
+  }
+  function show() {
+    cur = queue.shift(); flipped = false;
+    var c = cur.c, front = cur.dir === "name"
+      ? '<div class="nm">' + c.name + "</div>"
+      : '<div class="fx">' + fx(latexOf(c)) + "</div>";
+    app.innerHTML =
+      '<div class="meta"><span>' + esc(c.sectionTitle + " › " + c.subsection) + "</span><span>" + (queue.length + 1) + " left</span></div>" +
+      '<div class="bar"><i style="width:' + Math.round(100 * shown / Math.max(1, total)) + '%"></i></div>' +
+      '<div class="card"><div class="crumb">' + (cur.dir === "name" ? "What does it say?" : "What is this called?") + "</div>" +
+      '<div class="front">' + front + '</div><div class="back" id="back" hidden></div></div>' +
+      '<button class="show" id="flip">Show answer</button><div id="rate"></div>' +
+      '<div class="kbd"><b>Space</b> flip · <b>1</b> again · <b>2</b> hard · <b>3</b> good · <b>4</b> easy</div>';
+    math(app);
+    document.getElementById("flip").onclick = flip;
+  }
+  function flip() {
+    if (flipped || !cur) return;
+    flipped = true;
+    var c = cur.c, back = document.getElementById("back");
+    back.hidden = false;
+    back.innerHTML =
+      (cur.dir === "fx" ? '<div class="nm">' + c.name + "</div>" : '<div class="fx">' + fx(latexOf(c)) + "</div>") +
+      '<div class="desc">' + lead(c.description) + "</div>" +
+      (c.diagram ? '<div class="fig">' + c.diagram + "</div>" : "") +
+      '<a class="open" href="../index.html#/f/' + c.id + '" target="_blank" rel="noopener">Open the full card ↗</a>';
+    math(back);
+    document.getElementById("flip").remove();
+    var s = stateOf(keyOf(cur));
+    var labels = [["again", "Again"], ["hard", "Hard"], ["good", "Good"], ["easy", "Easy"]];
+    document.getElementById("rate").innerHTML = '<div class="rate">' + labels.map(function (l, g) {
+      var n = next(s, g);
+      return '<button class="' + l[0] + '" data-g="' + g + '">' + l[1] + "<small>" + (g === 0 ? "this session" : ivlText(n.ivl)) + "</small></button>";
+    }).join("") + "</div>";
+    document.querySelectorAll(".rate button").forEach(function (b) { b.onclick = function () { rate(+b.dataset.g); }; });
+  }
+  function rate(g) {
+    if (!flipped || !cur) return;
+    var k = keyOf(cur);
+    store[k] = next(stateOf(k), g);
+    save(store);
+    if (g === 0) { again++; queue.splice(Math.min(3, queue.length), 0, cur); } else shown++;
+    if (queue.length) show(); else finish(false);
+  }
+  function finish(empty) {
+    cur = null;
+    var t = today(), soon = Infinity;
+    Object.keys(store).forEach(function (k) { if (store[k].due > t) soon = Math.min(soon, store[k].due); });
+    app.innerHTML = '<div class="done">' + (empty
+      ? '<div class="big">Nothing due</div><p class="sub">Every card in this deck is scheduled for later. Add new cards, or pick another deck.</p>'
+      : '<div class="big">Done</div><p class="sub">' + shown + " cards reviewed" + (again ? ", " + again + " sent back once or more" : "") + ".</p>") +
+      (soon < Infinity ? '<p class="note">Next card due in ' + ivlText(soon - t) + ".</p>" : "") +
+      '<div class="row" style="justify-content:center"><button class="primary" id="back">Back to decks</button></div></div>';
+    document.getElementById("back").onclick = setup;
+  }
+  document.addEventListener("keydown", function (e) {
+    if (!cur || /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); }
+    else if (/^[1-4]$/.test(e.key)) rate(+e.key - 1);
+  });
+  setup();
+})();
+</script>
+</body>
+</html>

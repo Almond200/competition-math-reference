@@ -1102,6 +1102,25 @@
     })()
   };
 
+  BODY["gcd-substitution"] = {
+    // a = 12 and b = 18 as lengths, each cut into blocks of d = gcd(a, b) = 6 (drawn to scale).
+    blocks: (() => {
+      const a = 12, b = 18, u = 18, X0 = 30, h = 32, parts = [];
+      const g = (m, n) => n ? g(n, m % n) : m, d = g(a, b), x = a / d, y = b / d;
+      [[a, x, 64, ACC, ACCS, "a", "x"], [b, y, 128, GLD, GLDS, "b", "y"]].forEach(([len, n, top, c, f, name, q]) => {
+        parts.push(txt([X0, top - 9], `${name} = ${len}`, c, 13, "start"));
+        for (let k = 0; k < n; k++) {
+          parts.push(rect(X0 + k * d * u, top, d * u, h, c, 1.8, k % 2 ? "none" : f));
+          parts.push(txt([X0 + (k + 0.5) * d * u, top + 21], `${d}`, DIM, 13));
+        }
+        parts.push(txt([X0 + len * u + 12, top + 21], `${q} = ${n}`, c, 13.5, "start"));
+      });
+      parts.push(txt([215, 24], `one block = gcd(${a}, ${b}) = ${d}`, DIM, 13));
+      parts.push(cap(430, 176, `The gcd is the longest block that measures both lengths exactly: ${a} is x = ${x} blocks of ${d} and ${b} is y = ${y}. Blocks of 3 also measure both, but they count 4 and 6, which share a 2, so blocks twice as long fit as well. The counts share no factor exactly when the block is the longest one, which is why gcd(x, y) = 1.` + (g(x, y) === 1 && d === 6 ? "" : " MISMATCH")));
+      return wrap(430, 176, parts);
+    })()
+  };
+
   BODY["periodic-sequences"] = {
     // x1 = 2, x_{n+1} = 1/(1 - x_n): 2, -1, 1/2, 2, ... Values are computed, then written as text.
     cycle: (() => {
@@ -1625,6 +1644,52 @@
       parts.push(txt(add(m.pt(2, a[2]), [10, -8]), "r = ½", ACC, 12, "start"), txt(add(m.pt(1, b[1]), [10, 6]), "r = −½", GLD, 12, "start"));
       parts.push(cap(430, 262, "aₙ = ½aₙ₋₁ + 3 (blue) and bₙ = −½bₙ₋₁ + 9 (gold) both start at 10 and have fixed point L = 6. Measured from L the blue gaps are 4, 2, 1, ½, a geometric sequence with ratio ½; with ratio −½ the gap also flips sign each step, so the gold terms alternate around L while closing in." + (ok ? "" : " MISMATCH")));
       return wrap(430, 262, parts);
+    })()
+  };
+
+  BODY["sum-of-divisors"] = {
+    // Divisors of 72 = 2^3 * 3^2 in a grid: rows 1, 3, 9, columns 1, 2, 4, 8. Row sums 15, 45, 135; total
+    // 15 * 13 = 195 = sigma(72).
+    grid: (() => {
+      const cols = [1, 2, 4, 8], rows = [1, 3, 9], cw = 56, rh = 44, X0 = 104, Y0 = 56, parts = [];
+      let total = 0;
+      cols.forEach((c, j) => parts.push(txt([X0 + j * cw + cw / 2, Y0 - 12], String(c), ACC, 13)));
+      rows.forEach((r, i) => {
+        parts.push(txt([X0 - 14, Y0 + i * rh + rh / 2 + 5], String(r), GLD, 13, "end"));
+        let rs = 0;
+        cols.forEach((c, j) => {
+          const v = r * c; rs += v;
+          parts.push(rect(X0 + j * cw, Y0 + i * rh, cw, rh, DIM, 1.2, v === 72 ? GLDS : "none"), txt([X0 + j * cw + cw / 2, Y0 + i * rh + rh / 2 + 5], String(v), "var(--text)", 14));
+        });
+        total += rs;
+        parts.push(txt([X0 + 4 * cw + 16, Y0 + i * rh + rh / 2 + 5], "= " + rs, DIM, 12.5, "start"));
+      });
+      const div = []; for (let d = 1; d <= 72; d++) if (72 % d === 0) div.push(d);
+      const ok = total === 195 && div.reduce((s, d) => s + d, 0) === 195 && div.length === 12;
+      parts.push(txt([X0 - 14, Y0 - 12], "×", FNT, 13, "end"),
+        txt([X0 + 2 * cw, Y0 + 3 * rh + 26], "total 15 · (1 + 3 + 9) = 15 · 13 = 195", ACC, 13),
+        cap(430, 222, "Every divisor of 72 = 2³ · 3² is a power of 2 times a power of 3, so the divisors fill a grid, each cell the product of its row and column labels. Each row sums to its label times 1 + 2 + 4 + 8 = 15, so the whole grid sums to 15 · 13 = 195 = σ(72)." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 222, parts);
+    })()
+  };
+
+  BODY["trailing-zeros"] = {
+    // Z(n) = v5(n!) for n = 100..130: 24 at 100, steps of 1 at multiples of 5, but 28 -> 31 at 125 = 5^3.
+    jumps: (() => {
+      const v5 = n => { let s = 0; for (let q = 5; q <= n; q *= 5) s += Math.floor(n / q); return s; };
+      const m = frame(99, 131, 22.5, 33, 50, 18, 350, 190);
+      const parts = [seg(m.pt(99, 22.5), m.pt(131, 22.5), FNT, 1.2), seg(m.pt(99, 22.5), m.pt(99, 33), FNT, 1.2)];
+      for (let z = 23; z <= 32; z++) parts.push(txt(add(m.pt(99, z), [-8, 4]), String(z), z === 29 || z === 30 ? GLD : FNT, 10.5, "end"));
+      for (let n = 100; n <= 130; n += 5) parts.push(txt(add(m.pt(n, 22.5), [0, 16]), String(n), FNT, 10.5));
+      let d = "";
+      for (let n = 100; n <= 130; n++) { const p = m.pt(n, v5(n)), q = m.pt(n + 1, v5(n)); d += (d ? " L " : "M ") + pf(p) + " L " + pf(q); }
+      parts.push(`<path d="${d}" fill="none" stroke="${ACC}" stroke-width="2.2"/>`);
+      parts.push(seg(m.pt(125, 28), m.pt(125, 31), GLD, 2.4), rect(m.sx(99), m.sy(30.5), m.sx(131) - m.sx(99), m.sy(28.5) - m.sy(30.5), GLD, 0, "rgba(245,196,81,0.10)"));
+      parts.push(txt(add(m.pt(125, 29.5), [-8, 4]), "29 and 30 never occur", GLD, 12, "end"),
+        txt(m.pt(117, 24.2), "+1 at each multiple of 5", ACC, 11.5));
+      const ok = v5(124) === 28 && v5(125) === 31 && v5(100) === 24;
+      parts.push(cap(430, 250, "The number of zeros at the end of n! for n from 100 to 130. It rises by one at each multiple of 5, but 125 = 5³ brings three factors of 5 at once, so the count jumps from 28 to 31 and no factorial ends in exactly 29 or 30 zeros." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 250, parts);
     })()
   };
 

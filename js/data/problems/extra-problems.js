@@ -15,6 +15,12 @@
     { q: String.raw`$P$ has integer coefficients, $P(2) = 3$ and $P(7) = 8$. Find all possible values of $P(12)$ modulo $5$.`,
       s: String.raw`From $(7-2) \mid P(7)-P(2)$ we get $5 \mid 5$, consistent. For $P(12)$: $(12-2) \mid P(12)-3$ and $(12-7) \mid P(12)-8$, so $P(12) \equiv 3 \pmod{10}$ and $P(12) \equiv 8 \equiv 3 \pmod 5$. Hence $P(12) \equiv 3 \pmod 5$ always.` });
 
+  // ---------- Kummer's theorem ----------
+  add("kummers-theorem",
+    { q: String.raw`For which $k$ does $\binom{2026}{k}$ end in the most zeros? Find the smallest such $k$.`,
+      s: String.raw`The number of trailing zeros is $\min(v_2, v_5)$, and by Kummer's theorem each is the number of carries when $k$ and $2026 - k$ are added in that base. In base $5$, $2026 = 31101_5$ has five digits, and a carry out of the leading place would make the sum longer, so there are at most four carries and at most four zeros. Four carries need one out of each of the four lowest places: allowing for the carry coming in, the units digits of $k$ and $2026 - k$ must add to $6$, the fives digits to $4$, and the next two pairs to $5$ each. The smallest such $k$ are $1102_5 = 152$, then $153$, $154$ and $1112_5 = 157$. In binary the carries number $s_2(k) + s_2(2026 - k) - s_2(2026)$, which is $1$, $2$, $1$ and $4$ for these four. So the most zeros is $4$, and the smallest $k$ reaching it is $\mathbf{157}$.` }
+  );
+
   // ---------- Linear recurrences (absorbed from the merged method card) ----------
   add("linear-recurrence",
     { q: String.raw`Solve $a_n = 5a_{n-1} - 6a_{n-2}$ with $a_0 = 3$, $a_1 = 8$.`, s: String.raw`Characteristic equation $x^2 = 5x - 6$ gives $x = 2, 3$, so $a_n = A \cdot 2^n + B \cdot 3^n$. From $A + B = 3$ and $2A + 3B = 8$: $B = 2$, $A = 1$. Thus $a_n = 2^n + 2 \cdot 3^n$ (check $a_2 = 4 + 18 = 22 = 5 \cdot 8 - 6 \cdot 3$ ✓).` },

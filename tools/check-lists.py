@@ -130,4 +130,32 @@ for r in dupes[:25]:
     print("   " + r)
 if route_bad or dupes:
     sys.exit(1)
+# ---- connected formulas (js/data/connected.js) ----------------------------------------------
+# The curated "Connected formulas" section on hub cards. app.js skips an id it cannot resolve,
+# so a typo would silently shorten the list; a hub listing itself or a card twice is a slip too.
+csrc = io.open("js/data/connected.js", encoding="utf-8").read()
+cbad, hubs, links = [], 0, 0
+for hm in re.finditer(r'^  "([a-z0-9-]+)": \[(.*?)\n  \]', csrc, re.S | re.M):
+    hub, blob = hm.group(1), hm.group(2)
+    hubs += 1
+    if hub not in cards:
+        cbad.append("hub %s is not a card" % hub)
+    seen = set()
+    for cid, note in re.findall(r'\{ id: "([a-z0-9-]+)", note: "([^"]*)" \}', blob):
+        links += 1
+        if cid not in cards:
+            cbad.append("%s -> %s does not resolve" % (hub, cid))
+        if cid == hub:
+            cbad.append("%s lists itself" % hub)
+        if cid in seen:
+            cbad.append("%s lists %s twice" % (hub, cid))
+        if not note.strip() or "\u2014" in note:
+            cbad.append("%s -> %s: note is empty or has an em dash" % (hub, cid))
+        seen.add(cid)
+print("connected formulas: %d hubs, %d links" % (hubs, links))
+if cbad or not hubs:
+    for b in cbad:
+        print("   " + b)
+    print("FAIL - connected formulas" if cbad else "FAIL - connected.js parsed to nothing")
+    sys.exit(1)
 print("OK - every list id resolves and every route is complete")

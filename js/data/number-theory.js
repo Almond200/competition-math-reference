@@ -32,7 +32,7 @@ window.MATH_SECTIONS.push({
           id: "floor-multiples",
           name: "Counting Multiples",
           latex: String.raw`\#\{k \le n : d \mid k\} = \left\lfloor \frac{n}{d} \right\rfloor`,
-          description: String.raw`The number of multiples of $d$ among $1, 2, \ldots, n$ is $\left\lfloor \frac nd \right\rfloor$, the whole-number part of $\frac nd$. It is the basic counting step behind most "how many numbers up to $N$" questions, and combined with inclusion-exclusion it counts the numbers divisible by $a$ or $b$: $\left\lfloor \frac na \right\rfloor + \left\lfloor \frac nb \right\rfloor - \left\lfloor \frac{n}{\operatorname{lcm}(a, b)} \right\rfloor$. To count within a range from $a$ to $b$, count up to $b$ and subtract the count up to $a - 1$.`,
+          description: String.raw`The number of multiples of $d$ among $1, 2, \ldots, n$ is $\left\lfloor \frac nd \right\rfloor$, the whole-number part of $\frac nd$. It is the basic counting step behind most "how many numbers up to $N$" questions, and combined with [[pie|inclusion-exclusion]] it counts the numbers divisible by $a$ or $b$: $\left\lfloor \frac na \right\rfloor + \left\lfloor \frac nb \right\rfloor - \left\lfloor \frac{n}{\operatorname{lcm}(a, b)} \right\rfloor$. To count within a range from $a$ to $b$, count up to $b$ and subtract the count up to $a - 1$.`,
           keywords: ["count multiples", "floor", "inclusion exclusion", "count multiples up to n", "how many multiples", "floor division counting"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -41,7 +41,7 @@ window.MATH_SECTIONS.push({
           id: "euclids-lemma",
           name: "Euclid's Lemma",
           latex: String.raw`p \mid ab \implies p \mid a \ \text{ or } \ p \mid b, \qquad \gcd(a,b) = 1 \ \text{ and } \ b \mid an \implies b \mid n`,
-          description: String.raw`A prime dividing a product divides one of the factors. The coprime form is what gets used: a divisor sharing nothing with $a$ must divide whatever else is there. This is the step that licenses cancelling in $\frac{an}{b}$, and the reason a fraction in lowest terms forces its denominator onto the other factor.`,
+          description: String.raw`Euclid's Lemma says that a prime dividing a product must divide one of the factors: $p \mid ab$ implies $p \mid a$ or $p \mid b$. The form used most is the coprime version, $\gcd(a, b) = 1$ and $b \mid an$ imply $b \mid n$, which is what allows cancelling a factor that shares nothing with the divisor. It is why a fraction in lowest terms forces its denominator to divide whatever multiplies it, and it is the step on which unique prime factorization rests.`,
           keywords: ["euclid lemma", "prime divides product", "coprime divisibility", "cancel a coprime factor", "relatively prime implies divides", "lowest terms forces divisibility"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -68,7 +68,7 @@ window.MATH_SECTIONS.push({
           id: "gcd-power-minus-one",
           name: "GCD of $a^m - 1$ and $a^n - 1$",
           latex: String.raw`\gcd(a^m - 1,\; a^n - 1) = a^{\gcd(m,n)} - 1`,
-          description: String.raw`A beautiful mirror of the Euclidean algorithm in the exponents.`,
+          description: String.raw`A beautiful mirror of the [[euclidean-algorithm|Euclidean algorithm]] in the exponents.`,
           keywords: ["powers minus one", "gcd exponents", "mersenne", "repunit"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -101,7 +101,7 @@ window.MATH_SECTIONS.push({
           name: "Sum of Divisors",
           latex: String.raw`\sigma(n) = \prod_{i=1}^{k} \frac{p_i^{e_i + 1} - 1}{p_i - 1} = \prod_i (1 + p_i + \cdots + p_i^{e_i})`,
           latexPlain: String.raw`\sigma(n) = \frac{p_1^{e_1 + 1} - 1}{p_1 - 1}\cdots\frac{p_k^{e_k + 1} - 1}{p_k - 1} = (1 + p_1 + \cdots + p_1^{e_1})\cdots(1 + p_k + \cdots + p_k^{e_k})`,
-          description: String.raw`Each factor is a geometric series over one prime. $n$ is perfect iff $\sigma(n) = 2n$.`,
+          description: String.raw`The sum of divisors $\sigma(n)$ adds up all the positive divisors of $n$, and it has a product formula: if $n = p_1^{e_1} \cdots p_k^{e_k}$, then $\sigma(n) = (1 + p_1 + \cdots + p_1^{e_1}) \cdots (1 + p_k + \cdots + p_k^{e_k})$. It turns a sum over possibly hundreds of divisors into a product of a few short [[geometric-series|geometric series]]. A number is perfect when $\sigma(n) = 2n$, and restricted sums, such as the sum of the even divisors, come from the same product with some terms dropped.`,
           keywords: ["sigma", "sum of factors", "perfect number", "geometric series"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -120,7 +120,7 @@ window.MATH_SECTIONS.push({
           name: "Product of Divisors",
           latex: String.raw`\prod_{d \mid n} d = n^{d(n)/2}`,
           latexPlain: String.raw`1 \cdot d_2 \cdot d_3 \cdots n = n^{d(n)/2} \qquad (\text{the product of all } d(n) \text{ divisors of } n)`,
-          description: String.raw`The product of all the positive divisors of $n$ is $n^{d(n)/2}$, where $d(n)$ is the number of divisors. The divisors pair up as $d$ and $\frac nd$, each pair multiplying to $n$, and there are $\frac{d(n)}{2}$ pairs. When $d(n)$ is odd, which happens exactly when $n$ is a perfect square, the middle divisor $\sqrt n$ is its own partner and supplies the half power.`,
+          description: String.raw`The product of all the positive divisors of $n$ is $n^{d(n)/2}$, where $d(n)$ is the [[number-of-divisors|number of divisors]]. The divisors pair up as $d$ and $\frac nd$, each pair multiplying to $n$, and there are $\frac{d(n)}{2}$ pairs. When $d(n)$ is odd, which happens exactly when $n$ is a perfect square, the middle divisor $\sqrt n$ is its own partner and supplies the half power.`,
           keywords: ["product of factors", "pairing divisors", "product of all divisors", "multiply the divisors of n", "n to the d(n)/2"],
           importance: "medium",
           level: ["AMC10", "AMC12", "AIME"]
@@ -130,7 +130,7 @@ window.MATH_SECTIONS.push({
           name: "Euler's Totient Function",
           latex: String.raw`\varphi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right)`,
           latexPlain: String.raw`\varphi(n) = n\left(1 - \frac{1}{p_1}\right)\left(1 - \frac{1}{p_2}\right)\cdots\left(1 - \frac{1}{p_k}\right) \qquad (p_1, \ldots, p_k \text{ the primes dividing } n)`,
-          description: String.raw`Euler's totient $\varphi(n)$ counts the integers from $1$ to $n$ that are coprime to $n$, and it equals $n\prod\left(1 - \frac1p\right)$ over the distinct primes $p$ dividing $n$. It counts the fractions $\frac kn$ already in lowest terms, the step sizes that trace a single star polygon, and the exponent in Euler's theorem. It is multiplicative, $\varphi(mn) = \varphi(m)\varphi(n)$ when $\gcd(m, n) = 1$, and on a prime power $\varphi(p^k) = p^k - p^{k-1}$.`,
+          description: String.raw`Euler's totient $\varphi(n)$ counts the integers from $1$ to $n$ that are coprime to $n$, and it equals $n\prod\left(1 - \frac1p\right)$ over the distinct primes $p$ dividing $n$. It counts the fractions $\frac kn$ already in lowest terms, the step sizes that trace a single star polygon, and the exponent in Euler's Theorem. It is multiplicative, $\varphi(mn) = \varphi(m)\varphi(n)$ when $\gcd(m, n) = 1$, and on a prime power $\varphi(p^k) = p^k - p^{k-1}$.`,
           keywords: ["phi", "totient", "coprime count", "multiplicative"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -199,7 +199,7 @@ window.MATH_SECTIONS.push({
           name: "Dirichlet Convolution",
           latex: String.raw`(f * g)(n) = \sum_{d \mid n} f(d)\, g\!\left(\tfrac{n}{d}\right), \qquad \mu * \mathbf{1} = \varepsilon, \qquad \varphi * \mathbf{1} = \mathrm{id}`,
           latexPlain: String.raw`(f * g)(n) = f(d_1)\, g\!\left(\tfrac{n}{d_1}\right) + \cdots + f(d_r)\, g\!\left(\tfrac{n}{d_r}\right) \;\; (d_1, \ldots, d_r \text{ the divisors of } n), \qquad \mu * \mathbf{1} = \varepsilon, \qquad \varphi * \mathbf{1} = \mathrm{id}`,
-          description: String.raw`The convolution $(f*g)(n) = \sum_{d\mid n} f(d)g(n/d)$ makes arithmetic functions into a commutative ring whose identity is $\varepsilon(n) = [n=1]$; the convolution of two multiplicative functions is multiplicative. Möbius inversion is just "$\mu$ is the inverse of the all-ones function $\mathbf{1}$": $g = f*\mathbf 1 \iff f = g*\mu$. Standard identities become one line — $\varphi * \mathbf 1 = \mathrm{id}$ (i.e. $\sum_{d\mid n}\varphi(d) = n$), $\sigma = \mathrm{id} * \mathbf 1$, $\tau = \mathbf 1 * \mathbf 1$ — so divisor-sum problems reduce to algebra in this ring.`,
+          description: String.raw`The convolution $(f*g)(n) = \sum_{d\mid n} f(d)g(n/d)$ makes arithmetic functions into a commutative ring whose identity is $\varepsilon(n) = [n=1]$; the convolution of two [[multiplicative-functions|multiplicative functions]] is multiplicative. Möbius inversion is just "$\mu$ is the inverse of the all-ones function $\mathbf{1}$": $g = f*\mathbf 1 \iff f = g*\mu$. Standard identities become one line — $\varphi * \mathbf 1 = \mathrm{id}$ (i.e. $\sum_{d\mid n}\varphi(d) = n$), $\sigma = \mathrm{id} * \mathbf 1$, $\tau = \mathbf 1 * \mathbf 1$ — so divisor-sum problems reduce to algebra in this ring.`,
           keywords: ["dirichlet convolution", "arithmetic functions", "mobius inversion", "multiplicative function", "divisor sum", "identity function", "convolution ring"],
           importance: "lowest",
           level: ["Olympiad"]
@@ -222,7 +222,7 @@ window.MATH_SECTIONS.push({
           id: "fermats-little-theorem",
           name: "Fermat's Little Theorem",
           latex: String.raw`a^{p-1} \equiv 1 \pmod{p} \quad (p \nmid a)`,
-          description: String.raw`Fermat's little theorem says that for a prime $p$ and an integer $a$ not divisible by $p$, $a^{p-1} \equiv 1 \pmod p$; equivalently, $a^p \equiv a \pmod p$ for every integer $a$. It is the tool for reducing a large exponent modulo a prime: since $a^{p-1}$ is $1$, the exponent only matters mod $p - 1$. For a composite modulus the same role is played by Euler's theorem, and the two combine with the Chinese remainder theorem for moduli like $1000$.`,
+          description: String.raw`Fermat's Little Theorem says that for a prime $p$ and an integer $a$ not divisible by $p$, $a^{p-1} \equiv 1 \pmod p$; equivalently, $a^p \equiv a \pmod p$ for every integer $a$. It is the tool for reducing a large exponent modulo a prime: since $a^{p-1}$ is $1$, the exponent only matters mod $p - 1$. For a composite modulus the same role is played by [[eulers-theorem|Euler's Theorem]], and the two combine with the [[crt|Chinese Remainder Theorem]] for moduli like $1000$.`,
           keywords: ["fermat", "prime modulus", "exponent reduction", "a to p minus 1"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -231,7 +231,7 @@ window.MATH_SECTIONS.push({
           id: "eulers-theorem",
           name: "Euler's Theorem",
           latex: String.raw`a^{\varphi(n)} \equiv 1 \pmod{n} \quad (\gcd(a, n) = 1)`,
-          description: String.raw`Euler's theorem says that if $a$ and $n$ are coprime, then $a^{\varphi(n)} \equiv 1 \pmod n$, where $\varphi(n)$ counts the numbers from $1$ to $n$ that are coprime to $n$. It extends Fermat's little theorem from prime moduli to all moduli, and it lets a huge exponent be reduced modulo $\varphi(n)$. Its main use is reducing a big exponent before computing a remainder, with $\varphi(100) = 40$ and $\varphi(1000) = 400$ for the last two and three digits.`,
+          description: String.raw`Euler's Theorem says that if $a$ and $n$ are coprime, then $a^{\varphi(n)} \equiv 1 \pmod n$, where $\varphi(n)$ counts the numbers from $1$ to $n$ that are coprime to $n$. It extends [[fermats-little-theorem|Fermat's Little Theorem]] from prime moduli to all moduli, and it lets a huge exponent be reduced modulo $\varphi(n)$. Its main use is reducing a big exponent before computing a remainder, with $\varphi(100) = 40$ and $\varphi(1000) = 400$ for the last two and three digits.`,
           keywords: ["euler", "totient exponent", "last digits", "composite modulus"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -258,7 +258,7 @@ window.MATH_SECTIONS.push({
           id: "crt",
           name: "Chinese Remainder Theorem",
           latex: String.raw`\begin{cases} x \equiv a_1 \pmod{n_1} \\ x \equiv a_2 \pmod{n_2} \\ \;\;\vdots \\ x \equiv a_k \pmod{n_k} \end{cases} \implies x \text{ unique} \pmod{n_1 n_2 \cdots n_k}`,
-          description: String.raw`The Chinese remainder theorem says that a system of congruences $x \equiv a_i \pmod{n_i}$ with pairwise coprime moduli has exactly one solution modulo the product $n_1n_2\cdots n_k$. Its main use is splitting: a question modulo a large composite number becomes separate questions modulo its prime-power factors, which are answered and then recombined. The recombination is usually done by hand, two congruences at a time. When the moduli share factors, a solution exists exactly when the congruences agree on every common factor.`,
+          description: String.raw`The Chinese Remainder Theorem says that a system of congruences $x \equiv a_i \pmod{n_i}$ with pairwise coprime moduli has exactly one solution modulo the product $n_1n_2\cdots n_k$. Its main use is splitting: a question modulo a large composite number becomes separate questions modulo its prime-power factors, which are answered and then recombined. The recombination is usually done by hand, two congruences at a time. When the moduli share factors, a solution exists exactly when the congruences agree on every common factor.`,
           keywords: ["crt", "system of congruences", "coprime moduli", "unique solution"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -285,7 +285,7 @@ window.MATH_SECTIONS.push({
           id: "last-digit-patterns",
           name: "Last Digits of Squares & Cubes mod 9",
           latex: String.raw`n^2 \bmod 10 \in \{0, 1, 4, 5, 6, 9\}, \qquad n^3 \bmod 9 \in \{0, 1, 8\}`,
-          description: String.raw`Squares never end in 2, 3, 7, 8; cubes are $0, \pm 1 \pmod 9$. Quick sanity checks for "is it a perfect square/cube" and sum-of-cubes problems.`,
+          description: String.raw`Last-digit patterns are the facts about units digits and small remainders that settle "can this be a perfect square" or "what does this power end in" at a glance: a square ends only in $0$, $1$, $4$, $5$, $6$ or $9$, a cube leaves remainder $0$, $1$ or $8$ modulo $9$, and the units digits of powers repeat with period dividing $4$. They are the fastest checks on a claimed square or cube, and they answer units-digit questions about enormous powers.`,
           keywords: ["last digit", "perfect square check", "cubes mod 9", "units digit"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10"]
@@ -312,7 +312,7 @@ window.MATH_SECTIONS.push({
           id: "freshmans-dream",
           name: "Freshman's Dream (mod p)",
           latex: String.raw`(a + b)^p \equiv a^p + b^p \pmod p, \qquad (a_1 + \cdots + a_n)^p \equiv a_1^p + \cdots + a_n^p \pmod p`,
-          description: String.raw`The "mistake" that's actually true mod a prime: every middle binomial coefficient $\binom{p}{k}$ ($0 \lt  k \lt  p$) is divisible by $p$, so all cross terms vanish and the $p$-th power distributes over a sum. Iterating gives $(a+b)^{p^m} \equiv a^{p^m} + b^{p^m}$. It is the one-line proof of Fermat's little theorem ($n^p \equiv n$ by induction) and the reason the "Frobenius map" $x \mapsto x^p$ is a ring homomorphism in characteristic $p$.`,
+          description: String.raw`The "mistake" that's actually true mod a prime: every middle binomial coefficient $\binom{p}{k}$ ($0 \lt  k \lt  p$) is divisible by $p$, so all cross terms vanish and the $p$-th power distributes over a sum. Iterating gives $(a+b)^{p^m} \equiv a^{p^m} + b^{p^m}$. It is the one-line proof of [[fermats-little-theorem|Fermat's Little Theorem]] ($n^p \equiv n$ by induction) and the reason the "Frobenius map" $x \mapsto x^p$ is a ring homomorphism in characteristic $p$.`,
           keywords: ["freshman's dream", "freshmans dream", "(a+b)^p", "binomial mod p", "frobenius endomorphism", "characteristic p", "power distributes mod p"],
           importance: "low",
           level: ["AIME", "Olympiad"]
@@ -321,7 +321,7 @@ window.MATH_SECTIONS.push({
           id: "power-minus-self",
           name: "Divisibility of nᵏ − n",
           latex: String.raw`6 \mid n^3 - n, \quad 30 \mid n^5 - n, \quad 42 \mid n^7 - n; \qquad p \mid n^k - n \ \text{for all } n \iff (p-1) \mid (k-1)`,
-          description: String.raw`For every integer $n$, $n^k - n$ is divisible by each prime $p$ with $(p-1) \mid (k-1)$ — immediate from Fermat's little theorem, $n^p \equiv n$. Multiplying those primes gives the universal divisor: $n^3 - n$ is always a multiple of $6$, $n^5 - n$ of $30$, $n^7 - n$ of $42$, and famously $n^{13} - n$ of $2730 = 2\cdot3\cdot5\cdot7\cdot13$. (The $k=3$ case is just $n^3 - n = (n-1)n(n+1)$, three consecutive integers.)`,
+          description: String.raw`For every integer $n$, $n^k - n$ is divisible by each prime $p$ with $(p-1) \mid (k-1)$ — immediate from [[fermats-little-theorem|Fermat's Little Theorem]], $n^p \equiv n$. Multiplying those primes gives the universal divisor: $n^3 - n$ is always a multiple of $6$, $n^5 - n$ of $30$, $n^7 - n$ of $42$, and famously $n^{13} - n$ of $2730 = 2\cdot3\cdot5\cdot7\cdot13$. (The $k=3$ case is just $n^3 - n = (n-1)n(n+1)$, three consecutive integers.)`,
           keywords: ["n^k - n", "n^3 - n divisible by 6", "n^5 - n divisible by 30", "fermat little consequence", "universal divisor", "2730", "consecutive integers"],
           importance: "low",
           level: ["AMC12", "AIME"]
@@ -372,7 +372,7 @@ window.MATH_SECTIONS.push({
           id: "gauss-lemma-qr",
           name: "Gauss's Lemma (Quadratic Residues)",
           latex: String.raw`\left(\frac{a}{p}\right) = (-1)^{\mu}, \qquad \mu = \#\Big\{ 1 \le k \le \tfrac{p-1}{2} : \ (ka \bmod p) > \tfrac{p}{2} \Big\}`,
-          description: String.raw`To decide whether $a$ is a quadratic residue mod an odd prime $p$, look at the least positive residues of $a, 2a, \dots, \frac{p-1}{2}a$ and count how many exceed $p/2$ (the "negative" ones); the Legendre symbol is $(-1)$ to that count $\mu$. It is the workhorse behind the proofs of quadratic reciprocity and of the supplementary law $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$.`,
+          description: String.raw`To decide whether $a$ is a quadratic residue mod an odd prime $p$, look at the least positive residues of $a, 2a, \dots, \frac{p-1}{2}a$ and count how many exceed $p/2$ (the "negative" ones); the Legendre symbol is $(-1)$ to that count $\mu$. It is the workhorse behind the proofs of [[quadratic-reciprocity|quadratic reciprocity]] and of the supplementary law $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$.`,
           keywords: ["gauss lemma", "quadratic residue", "legendre symbol", "negative least residues", "count residues", "reciprocity proof", "supplementary law"],
           importance: "lowest",
           level: ["Olympiad"]
@@ -396,19 +396,10 @@ window.MATH_SECTIONS.push({
           name: "Legendre's Formula",
           latex: String.raw`v_p(n!) = \sum_{i=1}^{\infty} \left\lfloor \frac{n}{p^i} \right\rfloor = \frac{n - s_p(n)}{p - 1}`,
           latexPlain: String.raw`v_p(n!) = \left\lfloor \frac{n}{p} \right\rfloor + \left\lfloor \frac{n}{p^2} \right\rfloor + \left\lfloor \frac{n}{p^3} \right\rfloor + \cdots = \frac{n - s_p(n)}{p - 1}`,
-          description: String.raw`Legendre's formula gives the exponent of a prime $p$ in the prime factorization of $n!$: $v_p(n!) = \left\lfloor \frac np \right\rfloor + \left\lfloor \frac n{p^2} \right\rfloor + \left\lfloor \frac n{p^3} \right\rfloor + \cdots$, a sum that stops once $p^k$ exceeds $n$. It answers "what is the largest power of $p$ dividing $n!$" and, with $p = 5$, "how many zeros does $n!$ end in". An equivalent form is $\frac{n - s_p(n)}{p - 1}$, where $s_p(n)$ is the digit sum of $n$ in base $p$.`,
-          keywords: ["factorial", "prime exponent", "trailing zeros", "valuation"],
+          description: String.raw`Legendre's Formula gives the exponent of a prime $p$ in the prime factorization of $n!$: $v_p(n!) = \left\lfloor \frac np \right\rfloor + \left\lfloor \frac n{p^2} \right\rfloor + \left\lfloor \frac n{p^3} \right\rfloor + \cdots$, a sum that stops once $p^k$ exceeds $n$. It answers "what is the largest power of $p$ dividing $n!$" and, with $p = 5$, "how many zeros does $n!$ end in". An equivalent form is $\frac{n - s_p(n)}{p - 1}$, where $s_p(n)$ is the digit sum of $n$ in base $p$.`,
+          keywords: ["factorial", "prime exponent", "trailing zeros", "valuation", "factors of prime in factorial", "how many times divides factorial", "largest power dividing factorial", "divide and floor", "exponent of a prime in n factorial"],
           importance: "high",
-          level: ["AMC10", "AMC12", "AIME"]
-        },
-        {
-          id: "vp-factorial",
-          name: "Counting a Prime's Factors in $n!$",
-          latex: String.raw`v_p(n!) = \left\lfloor \frac{n}{p} \right\rfloor + \left\lfloor \frac{n}{p^2} \right\rfloor + \left\lfloor \frac{n}{p^3} \right\rfloor + \cdots \quad \text{(stop when } p^k > n\text{)}`,
-          description: String.raw`To count how many times a prime $p$ divides $n!$, divide $n$ by $p$, then by $p^2$, then by $p^3$, and so on, rounding each quotient down, and add the results, stopping once $p^k$ exceeds $n$. Each quotient counts the multiples of one power of $p$, so each number up to $n$ is counted as many times as $p$ divides it. With $p = 5$ this gives the number of zeros at the end of $n!$, and subtracting the counts for $k!$ and $(n - k)!$ from the count for $n!$ gives the power of $p$ in $\binom nk$.`,
-          keywords: ["factors of prime in factorial", "how many times divides factorial", "trailing zeros recipe", "divide and floor", "largest power dividing factorial"],
-          importance: "medium",
-          level: ["MATHCOUNTS", "AMC10", "AMC12"]
+          level: ["MATHCOUNTS", "AMC10", "AMC12", "AIME"]
         },
         {
           id: "kummers-theorem",
@@ -442,7 +433,7 @@ window.MATH_SECTIONS.push({
           id: "prime-divides-binomial",
           name: "Prime Divides Its Binomial Coefficients",
           latex: String.raw`p \;\Big|\; \binom{p}{k} \quad \text{for } 0 < k < p`,
-          description: String.raw`The numerator $p!$ has a factor of $p$ that nothing below can cancel. Gives the Freshman's Dream $(a+b)^p \equiv a^p + b^p \pmod p$ and a slick proof of Fermat's Little Theorem.`,
+          description: String.raw`The numerator $p!$ has a factor of $p$ that nothing below can cancel. Gives the [[freshmans-dream|Freshman's Dream]] $(a+b)^p \equiv a^p + b^p \pmod p$ and a slick proof of [[fermats-little-theorem|Fermat's Little Theorem]].`,
           keywords: ["binomial prime", "freshman's dream", "frobenius endomorphism", "prime divides its binomial coefficients", "p divides C(p,k)", "freshmans dream mod p"],
           importance: "medium",
           level: ["AMC12", "AIME"]
@@ -460,7 +451,7 @@ window.MATH_SECTIONS.push({
           id: "trailing-zeros",
           name: "Trailing Zeros of $n!$",
           latex: String.raw`(\text{zeros of } n!) = v_5(n!) = \left\lfloor \tfrac{n}{5} \right\rfloor + \left\lfloor \tfrac{n}{25} \right\rfloor + \left\lfloor \tfrac{n}{125} \right\rfloor + \cdots`,
-          description: String.raw`Each trailing zero is a factor of $10 = 2 \cdot 5$, and fives are scarcer than twos in a factorial, so the count is simply $v_5(n!)$ — Legendre's formula at $p = 5$. In base $b$, count the trailing zeros as the minimum over the prime-power blocks of $b$.`,
+          description: String.raw`The number of zeros at the end of $n!$ is the exponent of $5$ in $n!$, $\left\lfloor \frac n5 \right\rfloor + \left\lfloor \frac n{25} \right\rfloor + \left\lfloor \frac n{125} \right\rfloor + \cdots$, because each zero needs a factor $2 \cdot 5$ and fives are the scarcer factor. It answers "how many zeros does $100!$ end in" in one line: $20 + 4 = 24$. The count jumps by more than one at multiples of $25$, so some counts never occur, and in another base the answer comes from the scarcest prime power of that base.`,
           keywords: ["trailing zeros", "factorial zeros", "how many zeros", "power of 5", "legendre"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -483,7 +474,7 @@ window.MATH_SECTIONS.push({
           id: "chicken-mcnugget",
           name: "Chicken McNugget (Frobenius) Theorem",
           latex: String.raw`g(a,b) = ab - a - b, \qquad \#\{\text{non-representable}\} = \frac{(a-1)(b-1)}{2}`,
-          description: String.raw`The Chicken McNugget theorem says that for coprime positive integers $a$ and $b$, the largest amount that cannot be made as $ax + by$ with nonnegative integers $x$ and $y$ is $ab - a - b$. It is the tool for coin and stamp problems that ask for the largest impossible amount. Sylvester's count goes with it: exactly $\frac{(a - 1)(b - 1)}{2}$ amounts cannot be made at all.`,
+          description: String.raw`The Chicken McNugget Theorem says that for coprime positive integers $a$ and $b$, the largest amount that cannot be made as $ax + by$ with nonnegative integers $x$ and $y$ is $ab - a - b$. It is the tool for coin and stamp problems that ask for the largest impossible amount. Sylvester's count goes with it: exactly $\frac{(a - 1)(b - 1)}{2}$ amounts cannot be made at all.`,
           keywords: ["frobenius", "sylvester", "sylvester formula", "coin problem", "postage stamp", "non-representable", "coprime"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -492,7 +483,7 @@ window.MATH_SECTIONS.push({
           id: "pythagorean-triples",
           name: "Pythagorean Triple Parametrization",
           latex: String.raw`(a, b, c) = (m^2 - n^2,\; 2mn,\; m^2 + n^2)`,
-          description: String.raw`All primitive triples come from coprime $m > n$ of opposite parity (scale for the rest). In any primitive triple, exactly one leg is divisible by 3, one by 4, and one side by 5.`,
+          description: String.raw`A Pythagorean triple is a set of positive integers $a$, $b$, $c$ with $a^2 + b^2 = c^2$, and every primitive one, with no common factor, is $(m^2 - n^2,\ 2mn,\ m^2 + n^2)$ for coprime $m \gt n$ of opposite parity. The formula generates every right triangle with integer sides, since each is a multiple of a primitive one. Useful facts come with it: exactly one leg is even, one side is divisible by $5$, and the legs include a multiple of $3$ and a multiple of $4$.`,
           keywords: ["primitive triple", "parametrize", "m and n", "generate triples"],
           importance: "high",
           level: ["AMC10", "AMC12", "AIME"]
@@ -510,7 +501,7 @@ window.MATH_SECTIONS.push({
           id: "sum-of-two-squares",
           name: "Sum of Two Squares Theorem",
           latex: String.raw`n = a^2 + b^2 \iff v_p(n) \text{ even for all } p \equiv 3 \!\!\pmod 4`,
-          description: String.raw`A positive integer is a sum of two squares iff every prime factor $\equiv 3 \pmod 4$ appears to an even power. The prime case is Fermat's two-square theorem: $p \equiv 1 \pmod 4$ is a sum of two squares in exactly one way, which is what makes the general criterion constructive.`,
+          description: String.raw`A positive integer is a sum of two squares iff every prime factor $\equiv 3 \pmod 4$ appears to an even power. The prime case is Fermat's Two-Square Theorem: $p \equiv 1 \pmod 4$ is a sum of two squares in exactly one way, which is what makes the general criterion constructive.`,
           keywords: ["fermat two square theorem", "two squares", "representable", "primes 1 mod 4", "sum of two squares theorem", "expressible as two squares", "primes 1 mod 4"],
           importance: "medium",
           level: ["AIME", "Olympiad"]
@@ -519,7 +510,7 @@ window.MATH_SECTIONS.push({
           id: "thues-lemma",
           name: "Thue's Lemma",
           latex: String.raw`\gcd(a,n)=1 \implies \exists\, x,y:\; x \equiv ay \pmod{n}, \;\; 0 < |x|, |y| \le \sqrt{n}`,
-          description: String.raw`A pigeonhole guarantee of a "small" solution to a congruence: for any modulus $n$ and $a$ coprime to it, some $x \equiv ay \pmod n$ has both $|x|, |y| \le \sqrt{n}$. Its famous payoff is Fermat's two-squares theorem — if $a^2 \equiv -1 \pmod p$ then $x \equiv ay$ forces $x^2 + y^2 \equiv 0 \pmod p$, and the size bound pins $x^2 + y^2 = p$.`,
+          description: String.raw`A [[pigeonhole|pigeonhole]] guarantee of a "small" solution to a congruence: for any modulus $n$ and $a$ coprime to it, some $x \equiv ay \pmod n$ has both $|x|, |y| \le \sqrt{n}$. Its famous payoff is [[fermat-two-squares|Fermat's two-squares theorem]] — if $a^2 \equiv -1 \pmod p$ then $x \equiv ay$ forces $x^2 + y^2 \equiv 0 \pmod p$, and the size bound pins $x^2 + y^2 = p$.`,
           keywords: ["thue lemma", "pigeonhole congruence", "small solution", "two squares proof", "sum of two squares"],
           importance: "lower",
           level: ["AIME", "Olympiad"]
@@ -546,7 +537,7 @@ window.MATH_SECTIONS.push({
           id: "cauchy-davenport",
           name: "Cauchy–Davenport Theorem",
           latex: String.raw`p \text{ prime},\ A, B \subseteq \mathbb{Z}_p \;\Rightarrow\; |A + B| \ge \min(p,\ |A| + |B| - 1)`,
-          description: String.raw`Adding two nonempty subsets of $\mathbb{Z}_p$ (all sums $a+b$) can't shrink below $|A|+|B|-1$ unless it fills all of $\mathbb{Z}_p$. The foundational result of additive combinatorics — the mod-$p$ analogue of $|A+B| \ge |A|+|B|-1$ for sets of reals — and the base case for the Erdős–Ginzburg–Ziv theorem and other sumset bounds.`,
+          description: String.raw`Adding two nonempty subsets of $\mathbb{Z}_p$ (all sums $a+b$) can't shrink below $|A|+|B|-1$ unless it fills all of $\mathbb{Z}_p$. The foundational result of additive combinatorics — the mod-$p$ analogue of $|A+B| \ge |A|+|B|-1$ for sets of reals — and the base case for the Erdős–Ginzburg–Ziv Theorem and other sumset bounds.`,
           keywords: ["cauchy davenport", "sumset", "additive combinatorics", "mod p subsets", "A plus B", "sum set bound"],
           importance: "lowest",
           level: ["Olympiad"]
@@ -589,7 +580,7 @@ window.MATH_SECTIONS.push({
           id: "repeating-decimals",
           name: "Repeating Decimals to Fractions",
           latex: String.raw`0.\overline{d_1 d_2 \cdots d_k} = \frac{d_1 d_2 \cdots d_k}{\underbrace{99\cdots9}_{k}}`,
-          description: String.raw`A repeating decimal whose block of $k$ digits repeats from the start is that block divided by $k$ nines: $0.\overline{36} = \frac{36}{99} = \frac4{11}$. A few digits before the repeat just shift the fraction by a power of $10$. Going the other way, $\frac1n$ with $n$ coprime to $10$ repeats with period equal to the multiplicative order of $10$ modulo $n$, the smallest $k$ with $n \mid 10^k - 1$; for example $\frac17 = 0.\overline{142857}$ has period $6$.`,
+          description: String.raw`A repeating decimal whose block of $k$ digits repeats from the start is that block divided by $k$ nines: $0.\overline{36} = \frac{36}{99} = \frac4{11}$. A few digits before the repeat just shift the fraction by a power of $10$. Going the other way, $\frac1n$ with $n$ coprime to $10$ repeats with period equal to the [[multiplicative-order|multiplicative order]] of $10$ modulo $n$, the smallest $k$ with $n \mid 10^k - 1$; for example $\frac17 = 0.\overline{142857}$ has period $6$.`,
           keywords: ["repeating decimal", "period", "nines", "fraction"],
           importance: "high",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -616,7 +607,7 @@ window.MATH_SECTIONS.push({
           id: "digit-count",
           name: "Number of Digits",
           latex: String.raw`\#\text{digits of } n \text{ in base } b = \lfloor \log_b n \rfloor + 1`,
-          description: String.raw`The number of digits of a positive integer $n$ is $\lfloor \log_{10} n \rfloor + 1$, and in base $b$ it is $\lfloor \log_b n \rfloor + 1$. With $\log_{10} 2 \approx 0.30103$ and $\log_{10} 3 \approx 0.47712$, it handles numbers far too large to write out: $2^{100}$ has $\lfloor 30.103 \rfloor + 1 = 31$ digits. The fractional part of the logarithm also gives the leading digits.`,
+          description: String.raw`The number of digits of a positive integer $n$ is $\lfloor \log_{10} n \rfloor + 1$, and in base $b$ it is $\lfloor \log_b n \rfloor + 1$. With $\log_{10} 2 \approx 0.30103$ and $\log_{10} 3 \approx 0.47712$, it handles numbers far too large to write out: $2^{100}$ has $\lfloor 30.103 \rfloor + 1 = 31$ digits. The [[floor-basics|fractional part]] of the logarithm also gives the leading digits.`,
           keywords: ["digits", "log", "how many digits", "leading digit"],
           importance: "medium",
           level: ["MATHCOUNTS", "AMC10", "AMC12"]
@@ -657,7 +648,7 @@ window.MATH_SECTIONS.push({
           id: "lattice-points-gcd",
           name: "Lattice Points on a Segment",
           latex: String.raw`\#\{\text{lattice points strictly between } (0,0) \text{ and } (a, b)\} = \gcd(a, b) - 1, \qquad \#\{\text{grid squares crossed}\} = m + n - \gcd(m, n)`,
-          description: String.raw`The segment from $(0, 0)$ to $(a, b)$, with $a$ and $b$ integers, passes through $\gcd(a, b) - 1$ lattice points strictly between its ends, and $\gcd(a, b) + 1$ counting the ends. The same idea counts the unit squares a diagonal crosses: the diagonal of an $m \times n$ grid of squares passes through the interiors of $m + n - \gcd(m, n)$ of them. It supplies the boundary count in Pick's theorem, one edge at a time.`,
+          description: String.raw`The segment from $(0, 0)$ to $(a, b)$, with $a$ and $b$ integers, passes through $\gcd(a, b) - 1$ lattice points strictly between its ends, and $\gcd(a, b) + 1$ counting the ends. The same idea counts the unit squares a diagonal crosses: the diagonal of an $m \times n$ grid of squares passes through the interiors of $m + n - \gcd(m, n)$ of them. It supplies the boundary count in [[picks-theorem|Pick's Theorem]], one edge at a time.`,
           keywords: ["lattice", "segment", "visible points", "gcd", "squares crossed by diagonal", "diagonal of grid"],
           importance: "medium",
           level: ["AMC12", "AIME"]

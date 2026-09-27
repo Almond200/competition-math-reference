@@ -39,7 +39,8 @@ window.LabData = (function () {
             name: f.name,
             latex: f.latex || "",
             latexPlain: f.latexPlain || "",
-            description: f.description || "",
+            // Descriptions may carry [[id|text]] links for the card page; the lab shows plain text.
+            description: String(f.description || "").replace(/\[\[([\w-]+)(?:\|([^\]]*))?\]\]/g, function (m, id, label) { return label || id; }),
             type: f.type || null,
             importance: f.importance || "medium",
             level: f.level || [],

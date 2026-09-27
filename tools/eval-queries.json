@@ -83,7 +83,7 @@
   ["polynomial takes the same value at several points", "shifted-polynomial-construction", "paraphrase"],
   ["minimize sum of absolute distances", "median-minimizes-abs", "paraphrase"],
   ["split n into parts with the largest product", "max-product-fixed-sum", "paraphrase"],
-  ["exponent of a prime in a factorial", ["legendres-formula", "vp-factorial"], "paraphrase"],
+  ["exponent of a prime in a factorial", "legendres-formula", "paraphrase"],
   ["find the last digits of a huge power", ["periodicity-mod-m", "eulers-theorem"], "paraphrase"],
   ["unique sum of non-consecutive fibonacci numbers", "zeckendorf-theorem", "paraphrase"],
   ["average number of colorings fixed by each symmetry", "burnsides-lemma", "paraphrase"],

@@ -128,6 +128,15 @@ print("\n-- write-ups --")
 print("  one per card: %s | orphaned write-ups: %d"
       % (pct(sum(1 for c in CARDS if c["id"] in DETAILS), len(CARDS)),
          len(set(DETAILS) - {c["id"] for c in CARDS})))
+# A card with no write-up used only to lower the count above, and the run still passed. Two went
+# missing that way on 2026-09-27: a merge script deleted a write-up with a regex ending in "`,\n",
+# and the write-up it targeted was the LAST entry of its Object.assign block, which has no comma.
+# The lazy match ran on through "});" into the next block and took the following card's write-up
+# with it; the file still parsed, so nothing else noticed.
+missing_wu = [c["id"] for c in CARDS if c["id"] not in DETAILS]
+print("  cards with no write-up: %d  (must stay 0)" % len(missing_wu))
+for _i in missing_wu:
+    print("    " + _i)
 heads = collections.Counter()
 for v in DETAILS.values():
     for m in re.finditer(r"^## (.+)$", v, re.M):
@@ -200,11 +209,13 @@ print("  raw '<' inside maths: %d  (must stay 0)" % len(_lt))
 for _w, _k in _lt[:8]:
     print("    %s: %s" % (_w, _k))
 
-# Every way a [[link]] can be written and silently not become a link. All three of these have
+# Every way a [[link]] can be written and silently not become a link. Both of these have
 # actually shipped: math in a label (linkifyCards splits the prose on $...$ first, so the
-# pattern never matches), a link in a card `description` (linkifyCards runs on the write-up and
-# nowhere else), and a link in a "## heading" line (headings are interpolated raw). None of them
-# trip the validator and none render .card-link-broken, because no link is ever attempted.
+# pattern never matches) and a link in a "## heading" line (headings are interpolated raw).
+# Neither trips the validator or renders .card-link-broken, because no link is ever attempted.
+# A link in a card `description` used to be a third; since 2026-09-27 the card page linkifies
+# its description (a card is linked at its first mention on the page, often the intro), and
+# everywhere else shows the plain text.
 LINK_RE = re.compile(r"\[\[([\w-]+)(?:\|([^\]]*))?\]\]")
 mislaid = []
 for _k, _v in DETAILS.items():
@@ -215,10 +226,10 @@ for _k, _v in DETAILS.items():
                 mislaid.append((_k, "math in label", _m.group(0)))
             if _head:
                 mislaid.append((_k, "link in a heading", _m.group(0)))
-for _f in sorted(glob.glob("js/data/*.js")):
-    for _m in re.finditer(r'description: String\.raw`([^`]*)`', io.open(_f, encoding="utf-8").read()):
-        if "[[" in _m.group(1):
-            mislaid.append((_f.split("/")[-1], "link in a card description", _m.group(1)[:50]))
+for c in CARDS:
+    for _m in LINK_RE.finditer(c["desc"] or ""):
+        if _m.group(2) and "$" in _m.group(2):
+            mislaid.append((c["id"], "math in a description link label", _m.group(0)))
 print("  links that would render raw: %d  (must stay 0)" % len(mislaid))
 for _x in mislaid[:8]:
     print("    %s: %s -- %s" % _x)
@@ -441,7 +452,120 @@ for _i, _l in _kf_sigma[:10]:
     print("    %s: %s" % (_i, _l[:90]))
 print("  malformed \\alt{..}{..}: %d  (must stay 0)" % len(_bad_alt))
 
-bad = bool(missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples
+# ---------------------------------------------------------------------------------------------
+# Cross-links on a card's page, read in page order (description, then the write-up), 2026-09-27.
+#  1. A card is linked at its FIRST mention on the page, and once. The reader asked for it after
+#     "Fermat's Little Theorem" sat unlinked in an intro and linked two paragraphs later.
+#  2. A named result keeps its capitals, linked or not: a theorem, lemma or "Law of ...", or a
+#     formula, identity, inequality, sums, principle or criterion named after a person, is written
+#     as its card titles it. Links used to lowercase them ("Fermat's little theorem").
+# Techniques and objects stay lowercase mid-sentence (casework, mass points, the Euler line).
+_BYID = {c["id"]: c for c in CARDS}
+_PAGE_SEP = "\n\u0001\n"
+def _variants(n):
+    v = set(); b = re.sub(r"\s*\([^)]*\)\s*$", "", n).strip()
+    for x in (n, b):
+        v.add(x)
+        if x.lower().startswith("the "): v.add(x[4:])
+    return {x for x in v if len(x) >= 4}
+def _cw(t):
+    return {re.sub(r"(’s|'s|')$", "", w.lower()) for w in re.findall(r"[\w’']+", t)} - {"the", "a", "an", "of", "and", "to", "in", "for", "on"}
+_STOPW = {"card", "cards", "that", "this", "their", "own", "here", "fact", "above", "below", "previous", "its"}
+_PROPER = set()
+for c in CARDS:
+    _PROPER |= set(re.findall(r"([A-Z][\w\u00c0-\u017f]+)(?:’s|'s|')(?!\w)", c["name"]))
+_PROPER |= {"Pythagorean", "Catalan", "Vieta", "Heron", "Brahmagupta", "Hölder", "Muirhead", "Schur", "Jensen", "Burnside",
+            "Ptolemy", "Simson", "Euler", "Fermat", "Miquel", "Pascal", "Brianchon", "Nagel", "Gergonne", "Ceva", "Hall", "Bézout"}
+# (page card, linked card) pairs where the earlier "mention" is a different sense or a plain word:
+# "the altitude" is not the altitude-to-the-hypotenuse result, "Vieta" inside "Vieta jumping", ...
+_FM_EXEMPT = {("pythagorean-theorem", "altitude-hypotenuse"), ("regular-polygon-area", "regular-hexagon-area"),
+    ("cevian-area-ratio", "area-method"), ("stewarts-theorem", "angle-bisector-theorem"), ("circle-equation", "tangency-condition"),
+    ("perpendicular-bisector-locus", "apollonius-circle"), ("vietas-quadratic", "quadratic-formula"),
+    ("completing-the-square", "quadratic-formula"), ("quadratic-formula", "tangency-condition"), ("double-angle", "trig-area"),
+    ("sum-of-divisors", "number-of-divisors"), ("absolute-value-rules", "abs-value-relations"), ("abs-value-graphing", "abs-value-relations"),
+    ("carmichael-numbers", "fermat-numbers"), ("cyclic-equal-angles", "cyclic-opposite-angles"), ("vector-projection", "point-plane-distance"),
+    ("solid-tactics", "point-plane-distance"), ("vietas-quadratic", "vietas-general"), ("gaussian-integers", "eisenstein-criterion"),
+    ("vieta-jumping", "vietas-general"), ("complete-quadrilateral-miquel", "miquels-theorem"), ("perp-to-angle-bisector", "angle-bisector-theorem"),
+    ("shared-angle-area-ratio", "area-method")}
+_ALLOW1 = {("conic-sections", "ellipse-properties"), ("conic-sections", "hyperbola-properties"), ("conic-sections", "parabola-focus-directrix"),
+           ("radical-axis", "power-of-a-point"), ("medial-triangle", "homothety-monge"), ("mixtilinear-incircle", "homothety-monge"),
+           ("linear-change-of-variables", "determinant-geometric"), ("muirheads-inequality", "karamata-inequality"),
+           ("vivianis-theorem", "barycentric-coordinates")}
+_phr = collections.defaultdict(set)
+for c in CARDS:
+    _phr[c["id"]] |= _variants(c["name"])
+for _k, _v in DETAILS.items():
+    for _m in LINK_RE.finditer(_v):
+        _t = re.sub(r"^(the|a|an) ", "", _m.group(2) or "", flags=re.I); _tg = _m.group(1)
+        if _tg in _BYID and len(_t) >= 4 and (_cw(_t) & _cw(_BYID[_tg]["name"]) or (len(_t.split()) >= 2 and not (_cw(_t) & _STOPW))):
+            _phr[_tg].add(_t)
+def _okp(p, cid, tgt):
+    if len(p.split()) > 1 or re.search(r"[-–]", p) or p.lower() in {"pigeonhole", "symmedian", "symmedians"}: return True
+    return re.sub(r"(’s|'s|')$", "", p) in _PROPER or (cid, tgt) in _ALLOW1
+def _mask(t, own):
+    out = list(t)
+    for _m in list(re.finditer(r"\$\$.*?\$\$|\$[^$]*\$", t, re.S)) + list(LINK_RE.finditer(t)) + list(re.finditer(r"^##.*$", t, re.M)):
+        out[_m.start():_m.end()] = "\0" * (_m.end() - _m.start())
+    for _o in own:
+        for _m in re.finditer(r"(?<![\w-])" + re.escape(_o) + r"(?![\w-])", t, re.I):
+            out[_m.start():_m.end()] = "\0" * (_m.end() - _m.start())
+    return "".join(out)
+_late, _twice = [], []
+for c in CARDS:
+    if c["id"] not in DETAILS: continue
+    _page = (c["desc"] or "") + _PAGE_SEP + DETAILS[c["id"]]
+    _M = _mask(_page, _variants(c["name"])); _seen = set()
+    for _m in LINK_RE.finditer(_page):
+        _tg, _lab = _m.group(1), _m.group(2) or ""
+        if _tg == c["id"] or _tg not in _BYID: continue
+        if _tg in _seen:
+            if not re.search(r"\bcard\b", _lab, re.I): _twice.append((c["id"], _tg))
+            continue
+        _seen.add(_tg)
+        if (c["id"], _tg) in _FM_EXEMPT: continue
+        for _p in _phr[_tg]:
+            if _okp(_p, c["id"], _tg) and re.search(r"(?<![\w-])" + re.escape(_p) + r"(?![\w-])", _M[:_m.start()], re.I):
+                _late.append((c["id"], _tg, _p)); break
+# named results, from card names (see 2. above)
+def _person(n):
+    return bool(re.search(r"[A-Z][\w\u00c0-\u017f]+(?:’s|'s|')(?!\w)", n)) or bool(re.search(r"[A-Z]\w+–[A-Z]", n)) or \
+        any(p in n for p in ("Cauchy", "Sophie Germain", "Brahmagupta", "Erdős", "Newton", "Pythagorean", "Euler", "Fermat"))
+_CANON = {}
+for c in CARDS:
+    _b = re.sub(r"^The ", "", re.sub(r"\s*\([^)]*\)\s*$", "", c["name"]).strip())
+    if re.search(r"\b(Theorem|Theorems|Lemma)\b", _b) or re.match(r"(Extended )?Law of ", _b) or \
+       (_person(_b) and re.search(r"\b(Formula|Formulas|Identity|Inequality|Sums|Principle|Criterion)\b", _b)):
+        if len(_b.split()) >= 2: _CANON[_b.lower()] = _b
+        if _b.startswith("Extended "): _CANON[_b[9:].lower()] = _b[9:]
+for _x in ["Law of Sines", "Law of Tangents", "Pascal's Identity", "Monge's Theorem", "Euler's Formula",
+           "Sprague–Grundy Theorem", "Chicken McNugget Theorem", "Remainder Theorem", "Factor Theorem"]:
+    _CANON[_x.lower()] = _x
+for _x in ["am–gm inequality", "committee–chair identity"]:
+    _CANON.pop(_x, None)
+_cap_re = re.compile(r"(?<![\w'’\-])(" + "|".join(re.escape(k) for k in sorted(_CANON, key=len, reverse=True)) + r")(?![\w\-])", re.I)
+_EXTEXT = io.open("js/data/examples-supplement.js", encoding="utf-8").read()
+_texts = [("desc " + c["id"], c["desc"] or "") for c in CARDS] + [("write-up " + k, v) for k, v in DETAILS.items()] + \
+         [("examples", _m.group(1)) for _m in re.finditer(r"String\.raw`(.*?)`", _EXTEXT, re.S)]
+_lowcap = []
+for _w, _t in _texts:
+    for _i, _part in enumerate(re.split(r"(\$\$.*?\$\$|\$[^$]*\$)", _t, flags=re.S)):
+        if _i % 2: continue
+        for _m in _cap_re.finditer(_part):
+            _want = _CANON[_m.group(1).lower()]
+            if _want.split()[0] == "De": _want = _m.group(1).split()[0] + _want[2:]
+            if _m.group(1) != _want: _lowcap.append((_w, _m.group(1), _want))
+print("\n-- cross-links and names on a card's page --")
+print("  a card linked after an earlier plain mention on its page: %d  (must stay 0)" % len(_late))
+for _x in _late[:8]:
+    print("    %s: [[%s]] is mentioned earlier as %r; link that mention instead" % _x)
+print("  a card linked twice on one page: %d  (must stay 0)" % len(_twice))
+for _x in _twice[:8]:
+    print("    %s: [[%s]] again; keep only the first" % _x)
+print("  named results written without their capitals: %d  (must stay 0)" % len(_lowcap))
+for _x in _lowcap[:8]:
+    print("    %s: %r should read %r" % _x)
+
+bad = bool(missing_wu or _late or _twice or _lowcap or missing_ex or missing_dia or bare or _bad or mislaid or emph or kf_examples
            or _lt or fig_bad or _odd_heads or _unknown or _long_paras or _probref_hits
            or _no_plain or _kf_sigma or _bad_alt)
 print("\n%s" % ("FAILURES ABOVE" if bad else "no convention violations found"))

@@ -1,6 +1,6 @@
 # CONVENTIONS
 
-Every rule here was measured against all 555 cards, and the count that proves it is quoted. If a
+Every rule here was measured against all 556 cards, and the count that proves it is quoted. If a
 rule has no number, it is not a rule. `CONTRIBUTING.md` holds the reasoning, the gap register and
 the per-year retag notes; this file is the checklist you follow while actually adding a card.
 
@@ -12,7 +12,7 @@ Regenerate the numbers with `tools/scan-conventions.py`.
 
 Exactly two field orders exist, and nothing else. Copy one of these.
 
-**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 434 of 434 cards:
+**Subject file** (`geometry.js`, `algebra.js`, `number-theory.js`, `counting.js`) — 448 of 448 cards:
 
 ```js
         {
@@ -26,16 +26,16 @@ Exactly two field orders exist, and nothing else. Copy one of these.
         },
 ```
 
-**`patterns.js`** — 105 of 105 cards. Same, plus `type` and `subject` immediately after `name`:
+**`patterns.js`** — 108 of 108 cards. Same, plus `type` and `subject` immediately after `name`:
 
 ```js
           type: "method",       // or "pattern"
           subject: "counting",  // geometry | algebra | number-theory | counting
 ```
 
-- `type` and `subject` appear on **105/105** `patterns.js` cards and on **0/434** subject-file cards.
+- `type` and `subject` appear on **108/108** `patterns.js` cards and on **0/448** subject-file cards.
   Putting either in a subject file, or omitting either from `patterns.js`, is always wrong.
-- `latex` uses `String.raw` on **555/555** cards. Use it even when there is no backslash.
+- `latex` uses `String.raw` on **556/556** cards. Use it even when there is no backslash.
 - **never write a raw `<` followed by a letter inside `$...$`** — write `\lt`. Every one of these
   strings reaches the page through `innerHTML`, so the HTML parser sees `<j` as the start of a tag
   and eats everything up to the next `>` before KaTeX is ever called. This shipped once as
@@ -46,9 +46,8 @@ Exactly two field orders exist, and nothing else. Copy one of these.
   intentional `<br>` in examples.
 - One card deviates: `periodic-sequences` in `patterns.js` orders its fields
   `id, type, subject, name, ...`. That card was corrected, so the corpus now has **no** exception:
-  all 555 cards use one of the four canonical orders, the extra two being the same pair with an
-  optional `latexPlain` after `latex` (13 cards carry one, giving the expanded-notation setting
-  something to show).
+  all 556 cards use one of the four canonical orders, the extra two being the same pair with an
+  optional `latexPlain` after `latex` (93 cards carry one; see "Expanded notation" below).
   `tools/scan-conventions.py` names any card that is not in one of the two orders.
 - Every card has a `latex` and a `description`. **0** cards omit either.
 
@@ -56,11 +55,11 @@ Exactly two field orders exist, and nothing else. Copy one of these.
 
 | field | measured |
 |---|---|
-| `importance` | five values, not three: `high` 136, `medium` 223, `low` 90, `lower` 42, `lowest` 48 |
-| `level` | drawn from `MATHCOUNTS` (106), `AMC10` (204), `AMC12` (290), `AIME` (385), `Olympiad` (198). No other string appears |
-| `keywords` | min 4, median 6, 90th percentile 9, max 20. Four is the floor — never ship fewer |
+| `importance` | five values, not three: `high` 136, `medium` 225, `low` 99, `lower` 44, `lowest` 52 |
+| `level` | drawn from `MATHCOUNTS` (105), `AMC10` (206), `AMC12` (301), `AIME` (401), `Olympiad` (209). No other string appears |
+| `keywords` | min 4, median 6, 90th percentile 10, max 20. Four is the floor — never ship fewer |
 | `name` | median 24 chars, max 55. 63 names use ` & `, 42 carry a parenthetical like `(PIE)` |
-| `description` | median 273 chars, 90th percentile 501, max 1001. Three to five sentences, to the intro standard below |
+| `description` | median 427 chars, 90th percentile 601, max 1001. Three to five sentences, to the intro standard below |
 
 ### The intro (`description`) standard
 
@@ -80,13 +79,33 @@ a good job of explaining it". Progress is tracked in `tools/rewrite-register.jso
   conditions under which something happens before saying what it is.
 - **Sentence two says when you reach for it and what it buys you.**
 - Then conditions, variants and symbol meanings, woven into sentences. Three to five in all.
-- **No `[[links]]`** — descriptions are not linkified, and the scan fails on one.
+- **Links are allowed, and the first mention gets one.** The card page linkifies its
+  description; the grid, search results, previews and the search index read it as plain text.
+  See Cross-links below for the first-mention and capitalization rules.
 - **Search reads it.** Descriptions feed both search channels, so rebuild the index and run the
   eval after every batch. A specialisation's intro must not paraphrase the general card's
   defining phrase: "The line through the circumcenter and the orthocenter..." on
   `euler-line-parallel-side` took "line through the circumcenter centroid and orthocenter" off
   `euler-line-ratio`, and "the circle that touches $AD$, touches $BC$..." on `sawayama-thebault`
   took "radius of the circle touching all three sides" off `inradius-area`.
+
+### Expanded notation
+
+The notation setting has a sigma form and an expanded form, and the expanded form must never show
+a sigma. Adopted 2026-09-27, after Cauchy-Schwarz still showed $\sum$ in its formula box with
+Expanded selected: only 13 cards had a written-out twin, and the gate that should have caught the
+rest matched `\sum\b`, which misses `\sum_`, so it saw 17 of the 93.
+
+- **A `latex` containing `\sum` or `\prod` needs a `latexPlain`**, directly after it, with the
+  terms written out: `a_1 b_1 + a_2 b_2 + \cdots + a_n b_n`, not a sigma with its index spelled
+  differently. 93 of 93 such cards have one.
+- **A Key forms bullet with a sigma writes both forms**, `\alt{sigma form}{expanded form}`.
+  `notate()` in `js/app.js` picks the side the reader chose, and `sigma_form()` in
+  `tools/build-search-index.py` indexes the sigma side so search is unaffected.
+- Body prose may keep sigma notation: rewriting every derivation would introduce more errors than
+  it removes. The rule covers the formula box and Key forms, which is what the setting promises.
+- `scan-conventions.py` fails on a sigma formula box with no sigma-free `latexPlain`, a Key forms
+  bullet that still shows a sigma in the expanded form, and a malformed `\alt`.
 
 ### Naming
 
@@ -97,17 +116,17 @@ This is exactly why the duplicate check in §5 must search names, not ids.
 
 ## 2. The write-up — mandatory, in `js/data/details/<subject>-details.js`
 
-**555 write-ups for 555 cards. One each, no orphans, no card without one.**
+**556 write-ups for 556 cards. One each, no orphans, no card without one.**
 
 Three headings, and all three are required:
 
 ```
-## Why it works      555/555
-## How to use it     555/555
-## On contests       555/555
+## Why it works      556/556
+## How to use it     556/556
+## On contests       556/556
 ```
 
-Two optional headings, and no others (the scan fails on any other): `## Key forms`, on 109, and
+Two optional headings, and no others (the scan fails on any other): `## Key forms`, on 113, and
 `## Full proof`, which renders collapsed behind a "Show full proof" button.
 
 - **Why it works explains; Full proof proves.** Open Why it works with the idea in one plain
@@ -120,7 +139,7 @@ Two optional headings, and no others (the scan fails on any other): `## Key form
   pattern with nothing to prove, and do not duplicate a Why it works that is already complete.
   Where the real proof is beyond contest level, say so in Why it works instead.
 
-- **Key forms is a `patterns.js` habit**: 98 of 105 `patterns.js` cards have one, against 11 of 434
+- **Key forms is a `patterns.js` habit**: 102 of 108 `patterns.js` cards have one, against 11 of 448
   subject-file cards. If you are writing a formula card and reaching for Key forms, put the material
   in the prose instead.
 - Key forms lists the shapes a technique takes, not worked examples.
@@ -132,9 +151,11 @@ Two optional headings, and no others (the scan fails on any other): `## Key form
 ### Prose rules
 
 - **No `**bold**` anywhere.** Markdown emphasis is never processed; it reaches the reader as literal
-  asterisks. **0 of 555** write-ups contain `**`. This rule is unbroken — do not be the first.
-- **Em dashes: median 2 per write-up, 90th percentile 5, and 87 write-ups use none.** Prefer commas.
-  (`CONTRIBUTING.md` quotes a p90 of 3 from an older census; the current corpus measures 5.)
+  asterisks. **0 of 556** write-ups contain `**`. This rule is unbroken — do not be the first.
+- **Em dashes: median 1 per write-up, 90th percentile 4, and 206 write-ups use none.** Prefer
+  commas. A rewritten card uses none at all in its prose, description, example or figure
+  captions; the renovation is steadily removing the rest. (The ` — ` separator in Key forms is
+  structural and exempt.)
 - **American spellings** in anything you write: `center`, `-ize`. 31 existing write-ups carry British
   forms; leave those alone rather than sweeping a file.
 - **Never a raw `<` inside maths.** The write-up, the description and a problem `strategy` are all
@@ -143,13 +164,30 @@ Two optional headings, and no others (the scan fails on any other): `## Key form
 
 ### Cross-links
 
-Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **687 piped
-links, 0 bare** across the corpus. A bare link renders the card's Title Case
-name, which lands capitalised in the middle of a sentence.
+Always `[[card-id|display text]]`, effectively never bare `[[card-id]]`. Measured: **1034 piped
+links, 0 bare** across the corpus, write-ups and descriptions together. A bare link renders the
+card's full Title Case name, which rarely fits a sentence.
 
-- **Lowercase the display text mid-sentence** (268 of the piped links do), capitalising only a
-  proper name: "apply [[gcd-substitution|gcd substitution]] first", but "[[kummers-theorem|Kummer's
-  theorem]]".
+- **Link the first mention, once.** Read the page in order: the description, then Key forms, Why
+  it works, How to use it, On contests, Full proof. The first time another card is mentioned
+  carries the link, and later mentions stay plain. Adopted 2026-09-27, when a reader found
+  "Fermat's Little Theorem" unlinked in an intro and linked two paragraphs later, and
+  capitalized differently each time. 212 links were moved to their first mention (154 of them into
+  descriptions) and 52 repeat links removed. `scan-conventions.py` fails on a link placed after an
+  earlier plain mention of the same card and on a card linked twice on one page. Exempt: a link
+  whose text points at a card ("see that card"), which would point at nothing if unlinked, and a
+  short list of pairs in the scan where the earlier words are a different sense ("the altitude"
+  is not the altitude-to-the-hypotenuse result).
+- **Linking never changes capitalization.** Write the phrase exactly as the sentence would have it
+  unlinked. A named result is a proper name and keeps its capitals everywhere, linked or not: a
+  theorem, lemma or "Law of ...", or a formula, identity, inequality, sums, principle or criterion
+  named after a person, is written as its card titles it: "[[fermats-little-theorem|Fermat's
+  Little Theorem]]", "the [[law-of-cosines|Law of Cosines]]", "[[vietas-general|Vieta's
+  Formulas]]". A particle keeps its sentence case ("de Moivre"). Everything else is a common noun
+  and is lowercase mid-sentence: "[[gcd-substitution|gcd substitution]]", "[[mass-points|mass
+  points]]", "the [[euler-line-ratio|Euler line]]" (a person's name inside stays capitalized).
+  417 lowercased named results were fixed; the scan derives the list of named results from the
+  card names and fails on any written without its capitals.
 - **Never put `$...$` inside a link's display text.** `linkifyCards` (`js/app.js`) splits the prose on
   `$...$` *before* it matches `[[...]]`, so a link whose label contains math is torn across two parts,
   the pattern never matches, and the raw `[[id|...]]` is printed to the reader. It fails silently: the
@@ -158,12 +196,12 @@ name, which lands capitalised in the middle of a sentence.
   Three occurrences existed when this was found; a corpus check is one grep for `\[\[[^\]]*\$`.
 - **No `*italics*` either.** Same reason as bold: markdown emphasis is not processed, so it reaches the
   reader as literal asterisks.
-- **A card's `description` is never linkified.** `linkifyCards` runs on the write-up in
-  `js/data/details/` and nowhere else, so `[[id|text]]` placed in a `description` is printed to the
-  reader verbatim. It fails the same silent way math-inside-a-link does: the validator passes and
-  `.card-link-broken` never fires, because no link was attempted. Put the cross-link in the write-up
-  and let the description read as plain prose. One grep finds any regression:
-  `grep -n 'description: String.raw`[^`]*\[\[' js/data/*.js`.
+- **A description's links render on the card page only.** `js/app.js` keeps the linked text as
+  `descriptionLinked` for `renderDetail` and replaces `description` with the plain text for every
+  other use (grid, search, previews), `lab/lab-common.js` strips links for the lab pages, and
+  `tools/build-search-index.py` indexes the plain text. Anything new that reads a description
+  must read the plain one. (Until 2026-09-27 descriptions were never linkified and a link in one
+  printed raw; the scan's old check for that is gone.)
 - **Do not write a paragraph in order to hang a link on it.** Link where the sentence was going to
   mention the idea anyway. A sentence that exists only to list three neighbouring cards is padding;
   a sentence that says how this card differs from them is not.
@@ -192,7 +230,7 @@ positives and should be rejected every time they reappear:
 
 ## 3. The example — mandatory, in `js/data/examples-supplement.js`
 
-**555 example keys for 555 cards. Zero cards lack one.**
+**556 example keys for 556 cards. Zero cards lack one.**
 
 Shape is `{ q, s }`: a clean question, and the solution shown on demand.
 
@@ -205,18 +243,31 @@ window.MATH_EXAMPLES["your-card-id"] = { q: String.raw`...`, s: String.raw`...` 
   `};`" drops your entry *inside the last example's object*, where it parses fine and silently never
   loads. Use the standalone-statement form above, appended at the end of the file.
 - Never use a card's dead inline `example:` field. Those 143 fields were deleted for drifting.
+- **The example uses the card's own method.** An example is there to show the card at work, so
+  its solution must run through the card's idea, not a different route that happens to reach
+  the answer. `tangency-condition` (Unique Solution ⟹ Tangency) shipped an example asking when a
+  line "touches" a circle, so the step the card teaches, reading "exactly one solution" as a
+  tangency, never happened. Its second version did make that step, on a shifted circle whose
+  algebra buried it. It now asks when $x^2 + y^2 = 1$, $y = x + c$ has exactly one solution,
+  reads that as tangency, and sets the distance from the origin to the line equal to $1$. Check
+  this for every example you write or review, and prefer the simplest instance that still needs
+  the method.
+- **Do not repeat a neighbour's worked numbers.** `gcd-lcm-product` already counts the pairs with
+  $\gcd = 6$ and $\operatorname{lcm} = 210$, so `gcd-substitution`'s example uses a sum
+  condition instead, which is the part of the substitution the other card does not show.
 
 ---
 
 ## 4. The diagram — mandatory for geometry
 
-**200 of 200 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
-geometry card without a figure is incomplete. The count reached 200/200 only after a card shipped
+**203 of 203 `geometry.js` cards have a diagram.** It is not a strong tendency, it is the rule: a
+geometry card without a figure is incomplete. The count first reached 200/200 only after a card shipped
 without one and had to be fixed, which is why `tools/scan-conventions.py` exits non-zero on any
 geometry card missing a diagram.
 
-Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 38/105,
-`algebra.js` 11/102, `counting.js` 3/67, `number-theory.js` 1/78.
+Elsewhere it is the exception, reserved for configuration-heavy figures: `patterns.js` 41/108,
+`algebra.js` 11/102, `counting.js` 3/67, `number-theory.js` 1/76. In-text figures are counted
+separately: 152 placed on 130 cards, in every subject.
 
 - **Figures inside the text.** A paragraph that is nothing but `{{figure:name}}` draws
   `BODY["card-id"]["name"]` at that point in the write-up. Use one wherever a paragraph describes
@@ -385,6 +436,24 @@ A related trap in the details and examples files: the last entry of an object ha
 comma**, so appending after it produces `...\`` immediately followed by your `"id":` and the parse
 fails with `Unexpected string literal`. Add the comma.
 
+### Removing or merging a card safely
+
+The same missing comma makes deletion dangerous, and this one fails silently. The details files
+are a series of `Object.assign(window.MATH_DETAILS, {...})` blocks. Deleting an entry with a
+pattern like `"old-id": String\.raw\`.*?\`,\n` works for an entry in the middle of a block, but
+the last entry of a block ends in `` `\n}); `` with no comma, so the lazy match runs on through the
+block's end and the next block's opening and stops at the end of the *following* entry. The file
+still parses, so nothing complains. On 2026-09-27 the `digit-sum-mod-9` and `vp-factorial` merges
+each took the next card's write-up this way (`recognition-numbers`, `gcd-substitution`); they were
+caught only because the census read 554/556.
+
+- Delete by exact span: find the entry's start, then its closing backtick with
+  `s.index("`", start + len(head))`, and remove through the comma **if** one follows, otherwise
+  through the backtick alone. Never let a pattern decide where the entry ends.
+- Afterwards, check that every other card still has its write-up and example.
+  `scan-conventions.py` now fails on a card with no write-up (`cards with no write-up: must stay
+  0`); it used to report the count and pass.
+
 ---
 
 ## 7. Verify, in this order
@@ -412,8 +481,10 @@ python3 tools/build-cross-links.py --seed && python3 tools/build-cross-links.py 
   A cold first run and a warm re-run differ by a point or two because the semantic index loads
   lazily; warm runs are reproducible to the query. Measured 2026-09-20 over 539 cards, the
   original 171 queries give **154 warm**, against a previously recorded warm **155**. The query
-  set is now **183**, twelve added for the matrices, conics and projection cards, of which eleven
-  rank first: **165/183 warm, MRR 0.9323**. Every point lost across this work was traced before
+  set is now **185**, and the renovation's clearer intros have lifted it to **170/185 warm, MRR
+  0.950** (2026-09-27, 556 cards). Two probe sets, `probe-queries.json` (64/78) and
+  `probe2-queries.json` (48/77), are run alongside it after every batch to catch regressions
+  the labelled set does not cover. Every point lost across this work was traced before
   being accepted, and one was not accepted -- see CONTRIBUTING for the card that had to have its
   keywords narrowed because it out-ranked the general card it specialises.
   Adding a card jostles neighbouring queries by a rank or two; what must not move is the top-1 count.
@@ -477,8 +548,14 @@ The failure is invisible in the UI -- the route just quietly omits a card the re
 
 ## 10. Touching persisted state
 
-Three keys live in `localStorage`: `mq-lists`, `mq-settings` and `theme`. One rule governs all of
-them, and it exists because breaking it destroyed user data twice.
+The app keeps four keys in `localStorage`: `mq-lists`, `mq-stars`, `mq-settings` and `theme`. The
+lab pages keep their own (`mq-quiz-misses`, `mq-flashcards`, `mq-flashcards-prefs`), which the app
+never reads. One rule governs all of them, and it exists because breaking it destroyed user data
+twice.
+
+- **Settings live under `prefs`.** `saveSettings()` writes `mq-settings` as `{ sections, prefs }`,
+  so a lab page reading a setting must read `prefs.notation`, not `notation`. Flashcards read the
+  top level at first and silently ignored the Expanded setting on every card.
 
 - **Merge into stored state; never rebuild it from anything derived from the data files.** `BY_ID`
   and `SECTION_IDS` are both empty when a data script fails to load, so code that rebuilds storage
@@ -516,3 +593,24 @@ are untouched.
   and change only the `ref`.
 - Detect sharing by comparing statements on AoPS before writing, not after. `tools/scan-conventions.py`
   gates on the consequence: two entries with identical strategy text must carry identical `formulas`.
+
+---
+
+## 12. Connected formulas
+
+`js/data/connected.js` gives a few broad cards a curated row of the cards that are part of the
+same idea. It renders after Practice problems and before Related, in exactly Related's chip style
+(a row of names; an earlier version with a line of text under each name was replaced because it
+read as a different kind of section). Related is computed and means "explore more"; Connected is
+hand-written and means "these belong to this card". 15 hubs carry 83 links.
+
+- **Only broad cards get one**: a card whose topic is an umbrella over other cards
+  (`auxiliary-lines` over the construction cards, `p-adic-valuation` over LTE, Legendre and
+  Kummer, `telescoping` over its special forms). A specific result never gets one, and a hub lists
+  the cards that are instances or direct parts of it, not every neighbour.
+- Each entry is `{ id, note }`. The note says in one line how the card connects. It is not
+  displayed; it is the editor's justification, and a link you cannot justify in one line does not
+  belong.
+- A card on a hub's Connected row is removed from that hub's Related row, so no name shows twice.
+- `tools/check-lists.py` fails on a hub or id that does not resolve, a hub listing itself, a
+  repeated id, an empty note, and an em dash in a note.

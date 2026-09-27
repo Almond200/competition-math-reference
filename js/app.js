@@ -219,6 +219,9 @@
   // written up; "problems" puts the cards the practice problems actually use first, and only
   // falls back to the (subjective) importance tier for the cards no problem uses yet.
   const ORDERS = ["curated", "problems"];
+  // Figure captions on the browsing cards. A card's own page always shows them, since there
+  // the caption is part of the explanation; on the card grid some readers want just the picture.
+  const CAPTION_MODES = ["show", "hide"];
   const SECTION_IDS = SECTIONS.map(s => s.id);
 
   // Every write to localStorage can fail -- Safari private browsing refuses outright, and
@@ -265,6 +268,7 @@
       notation: pick(P.notation, NOTATIONS),
       text: pick(P.text, TEXT_SIZES),
       order: pick(P.order, ORDERS),
+      captions: pick(P.captions, CAPTION_MODES),
       tags: P.tags === false ? false : true,
       autoGroup: P.autoGroup === false ? false : true
     };
@@ -283,7 +287,7 @@
           layout: state.layout, diagrams: state.diagrams,
           density: state.density, notation: state.notation,
           text: state.text, tags: state.tags, autoGroup: state.autoGroup,
-          order: state.order
+          order: state.order, captions: state.captions
         }
       };
       SECTION_IDS.forEach(id => {
@@ -307,6 +311,7 @@
     notation: _loaded.notation,  // "sigma" | "expanded"
     text: _loaded.text,          // "normal" | "large"
     order: _loaded.order,        // "curated" | "problems" — card order on section pages
+    captions: _loaded.captions,  // "show" | "hide" — figure captions on the browsing cards
     tags: _loaded.tags,          // keyword chips on the card face
     autoGroup: _loaded.autoGroup // group a saved list into sections instead of one flat run
   };
@@ -772,7 +777,7 @@
     "primes and factorials": [
       "bertrands-postulate", "consecutive-product-factorial", "floor-multiples",
       "kummers-theorem", "legendres-formula", "lucas-theorem", "p-adic-valuation",
-      "prime-divides-binomial", "primes-6k", "trailing-zeros", "vp-factorial"
+      "prime-divides-binomial", "primes-6k", "trailing-zeros"
     ],
     "trigonometry": [
       "angle-addition", "arctan-telescoping", "common-angle-values",
@@ -974,11 +979,16 @@
   })();
 
   const ALL = [];
+  // A description may carry [[id|text]] links: a card is linked at its first mention on the
+  // page, and that is often in the intro. Only the card's own page shows them (descriptionLinked);
+  // the grid, search, previews and the search index all read the plain text.
+  const unlinkText = s => String(s || "").replace(/\[\[([\w-]+)(?:\|([^\]]*))?\]\]/g, (m, id, label) => label || id);
   const BY_ID = {};
   SECTIONS.forEach(section => {
     section.subsections.forEach(sub => {
       sub.formulas.forEach(f => {
         if (BY_ID[f.id]) return;      // a mirrored listing, already entered under its own section
+        if (f.descriptionLinked == null) { f.descriptionLinked = f.description; f.description = unlinkText(f.description); }
         const entry = { formula: f, section, subsection: sub };
         if (EXTRA_TAGS[f.id]) f.keywords = f.keywords.concat(EXTRA_TAGS[f.id].filter(k => f.keywords.indexOf(k) === -1));
         entry.nameWords = new Set(indexWordsOf(f.name));
@@ -1196,7 +1206,10 @@
     if (m && PROBLEM_BY_SLUG[m[1]]) return { type: "problem", slug: m[1] };
     m = location.hash.match(/^#\/topic\/([\w-]+)$/);
     if (m && TOPICS_BY_ID[m[1]]) return { type: "topic", topicId: m[1] };
-    if (/^#\/settings$/.test(location.hash)) return { type: "settings" };
+    m = location.hash.match(/^#\/settings(?:\/(commands))?$/);
+    if (m) return { type: "settings", anchor: m[1] || null };
+    m = location.hash.match(/^#\/special\/([^/]+)(?:\/(.*))?$/);
+    if (m) return { type: "special", name: m[1].toLowerCase(), arg: decodeURIComponent(m[2] || "") };
     return { type: "home" };
   }
 
@@ -2324,6 +2337,16 @@
       </div>`;
   }
 
+  // Connected formulas (js/data/connected.js): on a few broad cards, the cards that are part of
+  // the same idea. Curated, where Related is computed, but drawn exactly like Related: a row of
+  // name chips. Each entry's note records why it belongs; it is for editors and is not shown.
+  function connectedHtml(f) {
+    const list = ((window.MATH_CONNECTED || {})[f.id] || []).filter(c => BY_ID[c.id]);
+    if (!list.length) return "";
+    return `<div class="connected"><h4>Connected formulas</h4><div class="related-grid">${list.map(c =>
+      `<a class="related-item" href="#/f/${c.id}">${BY_ID[c.id].formula.name}</a>`).join("")}</div></div>`;
+  }
+
   function practiceHtml(f) {
     // Uniform format: numbered examples, each a question with a hidden solution.
     // MATH_EXAMPLES holds { q, s } pairs; legacy inline strings are a fallback.
@@ -2947,7 +2970,9 @@
     // key forms, so it keeps the honest heading.
     const formsHtml = split.formsHtml("Key forms");
     const rest = split.rest;
-    const related = relatedEntries(entry, 6);
+    // Cards already listed under Connected formulas are not repeated under Related.
+    const connectedIds = new Set(((window.MATH_CONNECTED || {})[f.id] || []).map(c => c.id));
+    const related = relatedEntries(entry, 6 + connectedIds.size).filter(r => !connectedIds.has(r.formula.id)).slice(0, 6);
     const hasDiagram = !!((window.MATH_DIAGRAMS || {})[f.id] || []).length;
     // Not geometry-only: plenty of algebra and counting cards carry a computed figure,
     // and the Asymptote export works off the rendered SVG regardless of subject.
@@ -2978,7 +3003,7 @@
           ${asyBtn}
         </div>
         <div class="formula-display detail-formula" data-latex="${escapeAttr(latexFor(f))}"></div>
-        <p class="card-desc detail-summary">${f.description}</p>
+        <p class="card-desc detail-summary">${linkifyCards(f.descriptionLinked || f.description)}</p>
         ${formsHtml}
         ${(() => {
           // The inline diagram used to render in its own block ABOVE the panel grid, so a
@@ -2995,6 +3020,7 @@
         ${(window.MATH_WIDGETS || {})[f.id] ? `<div class="interactive"><h4>Interactive</h4><div id="formula-widget"></div></div>` : ""}
         ${practiceHtml(f)}
         ${contestHtml(f)}
+        ${connectedHtml(f)}
         ${related.length ? `
           <div class="related">
             <h4>Related</h4>
@@ -3193,6 +3219,11 @@
               "Every card that has a figure shows it while browsing.") +
             settingsChoice("diagrams", "none", state.diagrams, "None",
               "Text only. Figures still appear on a card's own page."))}
+          ${opt("Figure captions on cards",
+            settingsChoice("captions", "show", state.captions, "Show",
+              "The explanation under each figure on the card grid.") +
+            settingsChoice("captions", "hide", state.captions, "Hide",
+              "Just the picture while browsing. A card's own page still shows its captions."))}
           <p class="settings-hint">Expanded notation writes out the first few terms instead of
             \u2211 or \u220f in every card's formula box and key forms. The explanations keep sigma
             notation, where the index is usually the point.</p>
@@ -3225,6 +3256,19 @@
             live behind the funnel in the toolbar, next to Advanced.</p>
         </div>
 
+        <div class="settings-group">
+          <div class="settings-group-title">Commands</div>
+          <form class="command-box" autocomplete="off">
+            <input type="text" class="command-input" placeholder="Special:Random" aria-label="Run a command" spellcheck="false">
+            <button type="submit" class="command-run">Run</button>
+          </form>
+          <p class="settings-hint command-msg" hidden></p>
+          <p class="settings-hint">Commands also run from the search box: type one and press Enter.
+            Arguments follow a slash, as in Special:Random/Algebra.</p>
+          <button type="button" class="show-more-btn command-toggle" aria-expanded="false">Show all commands</button>
+          <div class="command-all" hidden>${commandListHtml()}</div>
+        </div>
+
         <div class="settings-group settings-lab">
           <div class="settings-group-title">Experimental <span class="lab-tag">for fun</span></div>
           <p class="settings-hint">Toys built on the same data, living outside the app in their own
@@ -3242,9 +3286,43 @@
                 figure, four choices at a time. Wrong answers come from the same subsection, so
                 they are not giveaways.</span>
             </a>
+            <a class="lab-card" href="lab/flashcards.html" target="_blank" rel="noopener">
+              <span class="lab-name">Flashcards &rarr;</span>
+              <span class="lab-desc">Spaced-repetition review of any section or study list: see a
+                name and recall its formula, or the reverse. Cards you know come back less and
+                less often; misses come back the same session.</span>
+            </a>
           </div>
         </div>
       </div>`;
+    const $cmdToggle = $content.querySelector(".command-toggle");
+    if ($cmdToggle) $cmdToggle.addEventListener("click", () => {
+      const box = $content.querySelector(".command-all"), open = box.hidden;
+      box.hidden = !open;
+      $cmdToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      $cmdToggle.textContent = open ? "Hide commands" : "Show all commands";
+    });
+    // #/settings/commands, the "All commands" link on every special page: open the list and
+    // bring the Commands group into view. Deferred to after the router's hashchange handler (a
+    // timer, not a frame: frames are paused in a background tab).
+    if (getRoute().anchor === "commands") {
+      if ($cmdToggle && $content.querySelector(".command-all").hidden) $cmdToggle.click();
+      const grp = $content.querySelector(".command-box");
+      if (grp) setTimeout(() => grp.closest(".settings-group").scrollIntoView({ block: "start", behavior: "instant" }), 0);
+    }
+    const $cmdForm = $content.querySelector(".command-box");
+    if ($cmdForm) $cmdForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = $cmdForm.querySelector("input").value;
+      if (!text.trim()) return;
+      if (!runCommand(/^\s*special:/i.test(text) ? text : "Special:" + text)) {
+        const msg = $content.querySelector(".command-msg");
+        msg.hidden = false;
+        msg.textContent = "No such command. Here are the ones that exist.";
+        const box = $content.querySelector(".command-all");
+        if (box && box.hidden && $cmdToggle) $cmdToggle.click();
+      }
+    });
     $content.querySelector(".settings-page").addEventListener("click", e => {
       const btn = e.target.closest("[data-set]");
       if (!btn) return;
@@ -4019,7 +4097,7 @@
 
   function routeKey(r) {
     return r.type + ":" + (r.entry ? r.entry.formula.id
-      : r.slug || r.listId || r.topicId || r.fam || "");
+      : r.slug || r.listId || r.topicId || r.fam || (r.name ? r.name + "/" + r.arg : ""));
   }
   function trackOrigin(route) {
     const key = routeKey(route);
@@ -4047,6 +4125,299 @@
     }
   }
 
+  // ---------- Special pages ----------
+  // Wikipedia-style commands. Type "Special:Random" in the search box or the box on the Settings
+  // page and press Enter, or open #/special/random directly. A command either jumps somewhere
+  // (a random card, a search) or is a page of its own (every card A to Z, what links here).
+  // Names match case-insensitively and ignore spaces, so "special:random problem" works too.
+  const pickOne = arr => arr[Math.floor(Math.random() * arr.length)];
+  const plainName = n => (n || "").replace(/\$[^$]*\$/g, m => m.replace(/[\\${}^_]/g, "")).toLowerCase();
+  function sectionMatches(e, arg) {
+    const a = arg.toLowerCase().replace(/[^a-z]/g, "");
+    const t = (e.section.title + " " + e.section.id).toLowerCase().replace(/[^a-z ]/g, "");
+    return t.split(" ").some(w => w && w.startsWith(a)) || t.replace(/ /g, "").startsWith(a) ||
+      ((e.formula.subject || "").replace(/-/g, "").startsWith(a));
+  }
+  // A card from a typed name or id: the exact id, then an exact name, then a name containing it.
+  function cardFromArg(arg) {
+    const a = (arg || "").trim().toLowerCase();
+    if (!a) return null;
+    if (BY_ID[a]) return BY_ID[a];
+    return ALL.find(e => plainName(e.formula.name) === a) || ALL.find(e => plainName(e.formula.name).includes(a)) || null;
+  }
+  // Incoming [[links]], computed once: id -> ids of the cards whose write-ups link to it.
+  let backlinks = null;
+  function getBacklinks() {
+    if (backlinks) return backlinks;
+    backlinks = {};
+    const D = window.MATH_DETAILS || {};
+    Object.keys(D).forEach(src => {
+      const seen = new Set();
+      for (const m of String(D[src]).matchAll(/\[\[([\w-]+)(?:\|[^\]]*)?\]\]/g)) {
+        const to = m[1];
+        if (to === src || seen.has(to) || !BY_ID[to]) continue;
+        seen.add(to);
+        (backlinks[to] = backlinks[to] || []).push(src);
+      }
+    });
+    return backlinks;
+  }
+  const specialHref = (name, arg) => "#/special/" + name.toLowerCase() + (arg ? "/" + encodeURIComponent(arg) : "");
+  const cardLinks = entries => `<ul class="wiki-list">${entries
+    .slice().sort((a, b) => plainName(a.formula.name).localeCompare(plainName(b.formula.name)))
+    .map(e => `<li><a href="#/f/${e.formula.id}">${e.formula.name}</a></li>`).join("")}</ul>`;
+  // A long list is laid out like the wiki index: one heading per letter, "#" first, with a row
+  // of letters at the top that jumps to each heading.
+  const cardIndex = entries => {
+    const buckets = new Map();
+    entries.forEach(e => { const k = alphaKey(e.formula.name); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(e); });
+    const keys = [...buckets.keys()].sort((a, b) => a === "#" ? -1 : b === "#" ? 1 : a.localeCompare(b));
+    return `<nav class="letter-jump">${keys.map(k => `<button type="button" data-jump="special-${k === "#" ? "num" : k}">${k}</button>`).join("")}</nav>` +
+      keys.map(k => `<section class="wiki-letter" id="special-${k === "#" ? "num" : k}"><h3>${k}</h3>${cardLinks(buckets.get(k))}</section>`).join("");
+  };
+  const COMMANDS = [
+    { name: "Random", arg: "section", example: "Special:Random/Geometry",
+      desc: "Open a random card. Add a section to stay inside it.",
+      go: arg => { const pool = arg ? ALL.filter(e => sectionMatches(e, arg)) : ALL;
+        return pool.length ? "#/f/" + pickOne(pool).formula.id : null; } },
+    { name: "RandomProblem", arg: "contest", example: "Special:RandomProblem/AIME",
+      desc: "Open a random practice problem, optionally from one contest.",
+      go: arg => { const a = resolveContest(arg);
+        const pool = PROBLEM_DB.filter(p => !a || normKey(p.ref).includes(a));
+        return pool.length ? "#/problem/" + pickOne(pool).slug : null; } },
+    { name: "RandomStarred", example: "Special:RandomStarred",
+      desc: "Open a random card from your Starred list.",
+      go: () => { const l = lists.items.find(x => x.id === "starred");
+        const ids = (l ? l.ids : []).filter(id => BY_ID[id]);
+        return ids.length ? "#/f/" + pickOne(ids) : null; } },
+    { name: "WhatLinksHere", arg: "card", example: "Special:WhatLinksHere/Ceva's Theorem",
+      desc: "Every card whose explanation links to a given card.",
+      page: arg => {
+        const e = cardFromArg(arg);
+        if (!e) return { title: "What links here", body: `<p class="special-note">No card matches <b>${escapeAttr(arg || "")}</b>. Give a card's name or id, as in Special:WhatLinksHere/Ceva's Theorem.</p>` };
+        const from = (getBacklinks()[e.formula.id] || []).map(id => BY_ID[id]);
+        return { title: `What links to ${e.formula.name}`,
+          body: `<p class="special-note">${from.length} card${from.length === 1 ? "" : "s"} link to <a href="#/f/${e.formula.id}">${e.formula.name}</a> in their explanations.</p>` + (from.length ? cardLinks(from) : "") };
+      } },
+    { name: "AllPages", example: "Special:AllPages",
+      desc: "Every card in the library, A to Z.",
+      page: () => ({ title: "All pages", body: `<p class="special-note">${ALL.length} cards, A to Z.</p>` + cardIndex(ALL) }) },
+    { name: "LonelyPages", example: "Special:LonelyPages",
+      desc: "Cards that no other card's explanation links to.",
+      page: () => { const bl = getBacklinks(); const lonely = ALL.filter(e => !(bl[e.formula.id] || []).length);
+        return { title: "Lonely pages", body: `<p class="special-note">${lonely.length} of ${ALL.length} cards have no incoming links.</p>` + cardIndex(lonely) }; } },
+    { name: "Statistics", example: "Special:Statistics",
+      desc: "Counts of cards, problems, figures and links.",
+      page: () => {
+        const bl = getBacklinks(), links = Object.values(bl).reduce((n, a) => n + a.length, 0);
+        const withProblems = ALL.filter(e => (PROBLEMS_BY_FORMULA[e.formula.id] || []).length).length;
+        const panels = Object.keys(window.MATH_DIAGRAMS || {}).length;
+        const body = Object.values(window.MATH_BODY_DIAGRAMS || {}).reduce((n, o) => n + Object.keys(o).length, 0);
+        const fams = {};
+        PROBLEM_DB.forEach(p => { const k = /AIME/.test(p.ref) ? "AIME" : /AMC 12/.test(p.ref) ? "AMC 12" : /AMC 10/.test(p.ref) ? "AMC 10" : "other"; fams[k] = (fams[k] || 0) + 1; });
+        const row = (k, v) => `<tr><td>${k}</td><td>${v}</td></tr>`;
+        const sections = SECTIONS.map(sec => row(sec.title, ALL.filter(e => e.section === sec).length)).join("");
+        return { title: "Statistics", body: `<table class="special-table">
+          ${row("Cards", ALL.length)}${sections}
+          ${row("Practice problems", PROBLEM_DB.length)}${Object.keys(fams).map(k => row("&nbsp;&nbsp;" + k, fams[k])).join("")}
+          ${row("Cards used by at least one problem", withProblems)}
+          ${row("Cards with a figure at the top", panels)}${row("Figures inside explanations", body)}
+          ${row("Links between cards", links)}${row("Study lists", lists.items.length)}
+        </table>` };
+      } },
+    { name: "Search", arg: "query", example: "Special:Search/angle bisector",
+      desc: "Search for the rest of the command.",
+      search: arg => arg },
+  ];
+  function parseCommand(text) {
+    const t = String(text || "").trim().replace(/^special:\s*/i, "");
+    const slash = t.indexOf("/");
+    const name = (slash < 0 ? t : t.slice(0, slash)).replace(/\s+/g, "").toLowerCase();
+    const arg = slash < 0 ? "" : t.slice(slash + 1).trim();
+    return { cmd: COMMANDS.find(c => c.name.toLowerCase() === name), name, arg };
+  }
+  // Runs a typed command; false when there is no such command, so the caller can say so.
+  function runCommand(text) {
+    const { cmd, arg } = parseCommand(text);
+    if (!cmd) return false;
+    hideSuggest();
+    if (cmd.search) {
+      clearSearch();
+      state.query = $search.value = cmd.search(arg);
+      stripHash(); render(); window.scrollTo({ top: 0 });
+      return true;
+    }
+    clearSearch();
+    location.hash = specialHref(cmd.name, arg);
+    return true;
+  }
+  function renderSpecial(route) {
+    shownIds = [];
+    const cmd = COMMANDS.find(c => c.name.toLowerCase() === route.name);
+    if (cmd && cmd.go) {
+      const to = cmd.go(route.arg);
+      // replace, not push: Back should return to where the command was typed, not re-roll it
+      if (to) { location.replace(to); return; }
+      $content.innerHTML = specialShell("Nothing to open", `<p class="special-note">${
+        cmd.name === "RandomStarred" ? "Your Starred list is empty. Star a card with &#9734; first." : "Nothing matches that."}</p>`);
+      return;
+    }
+    if (cmd && cmd.page) {
+      const p = cmd.page(route.arg);
+      $content.innerHTML = specialShell(p.title, p.body);
+      renderMath($content);
+      return;
+    }
+    $content.innerHTML = specialShell("Unknown command", `<p class="special-note">There is no command called <b>Special:${escapeAttr(route.name)}</b>.</p>` + commandListHtml());
+  }
+  function specialShell(title, body) {
+    return `<div class="section-header"><h2>${title}</h2><p>A special page. <a href="#/settings/commands">All commands</a> are in Settings.</p></div>
+      <div class="special-page">${body}</div>`;
+  }
+  function commandListHtml() {
+    return `<ul class="command-list">${COMMANDS.map(c => `
+      <li><button type="button" class="command-chip" data-command="${escapeAttr(c.example)}">${c.example}</button>
+        <span class="command-desc">${c.desc}</span></li>`).join("")}</ul>`;
+  }
+  // While a command is being typed in the search box, list the commands it could be instead of
+  // searching the cards for the word "special".
+  // ---- suggestions while typing a command, the way Wikipedia's search box offers pages ----
+  const normKey = t => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  // How well a typed fragment matches a candidate: a prefix beats a substring beats a near miss,
+  // and a near miss allows about one slip per five letters ("hmmtfebuary" still finds
+  // HMMT February).
+  function suggestScore(typed, cand) {
+    const t = normKey(typed), c = normKey(cand);
+    if (!t) return 1;
+    if (c.startsWith(t)) return 4 - c.length / 1000;
+    if (c.includes(t)) return 3 - c.length / 1000;
+    const cap = Math.max(1, Math.floor(t.length / 5));
+    let best = 99;
+    for (let len = Math.max(1, t.length - cap); len <= Math.min(c.length, t.length + cap); len++)
+      best = Math.min(best, levBounded(t, c.slice(0, len), cap));
+    return best <= cap ? 2 - best / 10 - c.length / 1000 : 0;
+  }
+  const rankBy = (typed, items, key, n) => items.map(x => ({ x, s: suggestScore(typed, key(x)) }))
+    .filter(o => o.s > 0).sort((a, b) => b.s - a.s).slice(0, n).map(o => o.x);
+  // Contest names drawn from the problem references: families ("AIME", "AMC 12"), exact contests
+  // ("AIME II", "HMMT February Geometry") and, when a year is typed, single sittings.
+  let contestNames = null;
+  function getContests() {
+    if (contestNames) return contestNames;
+    const counts = new Map(), bump = (k, n = 1) => counts.set(k, (counts.get(k) || 0) + n);
+    PROBLEM_DB.forEach(p => {
+      const sitting = p.ref.replace(/,?\s*Problem.*$/, "").trim();
+      const base = sitting.replace(/\b(19|20)\d\d\b/, "").replace(/\s+/g, " ").trim();
+      bump(sitting); bump(base);
+      const m = base.match(/^(Fall )?(AMC 1[02]|AIME|HMMT February|HMMT)/);
+      if (m && m[2] !== base) bump(m[2]);
+      if (/^HMMT February/.test(base) && base !== "HMMT") bump("HMMT");
+    });
+    contestNames = [...counts.entries()].map(([name, n]) => ({ name, n }));
+    return contestNames;
+  }
+  // "AIME 2" is how people type AIME II.
+  const romanAime = t => String(t || "").replace(/\baime\s*([12])\b/i, (m, d) => "AIME " + (d === "1" ? "I" : "II"));
+  function resolveContest(arg) {
+    arg = romanAime(arg);
+    const a = normKey(arg);
+    if (!a) return "";
+    if (PROBLEM_DB.some(p => normKey(p.ref).includes(a))) return a;
+    const best = rankBy(arg, getContests(), c => c.name, 1)[0];
+    return best ? normKey(best.name) : a;
+  }
+  // Suggestions for one command's argument: [{ text, note }] where text is the full command.
+  function argSuggestions(cmd, arg) {
+    const full = v => "Special:" + cmd.name + "/" + v;
+    if (cmd.name === "Random") {
+      return rankBy(arg, SECTIONS, sec => sec.title, 6).map(sec => ({ text: full(sec.title), note: `a random card from ${sec.title}` }));
+    }
+    if (cmd.name === "RandomProblem") {
+      arg = romanAime(arg);
+      const pool = getContests().filter(c => /\d/.test(arg) || !/\b(19|20)\d\d\b/.test(c.name));
+      return rankBy(arg, pool, c => c.name, 8).map(c => ({ text: full(c.name), note: `${c.n} problem${c.n === 1 ? "" : "s"}` }));
+    }
+    if (cmd.name === "WhatLinksHere") {
+      return rankBy(arg, ALL, e => plainName(e.formula.name), 8).map(e => ({ text: full(plainName(e.formula.name) === e.formula.name.toLowerCase() ? e.formula.name : e.formula.id), note: e.section.title }));
+    }
+    if (cmd.name === "Search" && arg.trim()) {
+      const hits = searchFormulas(arg).results.slice(0, 6);
+      return [{ text: full(arg), note: "search for it" }].concat(hits.map(e => ({ text: "#/f/" + e.formula.id, label: e.formula.name, note: e.section.title })));
+    }
+    return [];
+  }
+  // The suggestions for what is typed after "Special:": matching commands, or once a command is
+  // chosen, its arguments. [{ text, label?, note }]; text is a command, or a #/ route for a card.
+  function commandSuggestions(query) {
+    const t = String(query).trim().replace(/^special:\s*/i, "");
+    const slash = t.indexOf("/");
+    const typedName = (slash < 0 ? t : t.slice(0, slash)).replace(/\s+/g, "");
+    const arg = slash < 0 ? "" : t.slice(slash + 1);
+    const exact = COMMANDS.find(c => c.name.toLowerCase() === typedName.toLowerCase());
+    const cmd = exact || (slash >= 0 ? rankBy(typedName, COMMANDS, c => c.name, 1)[0] : null);
+    if (cmd && slash >= 0) {
+      const items = argSuggestions(cmd, arg);
+      return items.length ? items : [{ text: "Special:" + cmd.name + (arg ? "/" + arg : ""), note: cmd.desc }];
+    }
+    const items = rankBy(typedName, COMMANDS, c => c.name, COMMANDS.length)
+      .map(c => ({ text: "Special:" + c.name, note: c.desc + (c.arg ? ` Add /${c.arg} to choose.` : "") }));
+    return items.length ? items : COMMANDS.map(c => ({ text: "Special:" + c.name, note: c.desc }));
+  }
+  // A dropdown under the search box, like Wikipedia's: it lists the suggestions while a command
+  // is being typed and closes when the reader clicks anywhere else. The page underneath is left
+  // alone, so typing a command never throws away what was on screen.
+  const $suggest = document.createElement("div");
+  $suggest.className = "cmd-suggest";
+  $suggest.hidden = true;
+  $suggest.setAttribute("role", "listbox");
+  $search.parentElement.appendChild($suggest);
+  function showSuggest(items) {
+    $suggest.innerHTML = items.map((it, i) => `<button type="button" role="option" class="cs-item${i === 0 ? " is-active" : ""}" ${
+      it.text.startsWith("#/") ? `data-href="${escapeAttr(it.text)}"` : `data-command="${escapeAttr(it.text)}"`}>
+      <span class="cs-title">${it.label || escapeAttr(it.text)}</span><span class="cs-desc">${it.note || ""}</span></button>`).join("");
+    $suggest.hidden = !items.length;
+    if (window.renderMathInElement) renderMathInElement($suggest, { delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false });
+  }
+  function hideSuggest() { $suggest.hidden = true; }
+  function moveSuggestion(step) {
+    const rows = [...$suggest.querySelectorAll(".cs-item")];
+    if (!rows.length || $suggest.hidden) return;
+    let i = rows.findIndex(r => r.classList.contains("is-active"));
+    rows.forEach(r => r.classList.remove("is-active"));
+    i = (i + step + rows.length) % rows.length;
+    rows[i].classList.add("is-active");
+    rows[i].scrollIntoView({ block: "nearest" });
+  }
+  function activeSuggestion() { return $suggest.hidden ? null : $suggest.querySelector(".cs-item.is-active"); }
+  // Keep focus in the box while a row is pressed, so the click lands before the box blurs.
+  $suggest.addEventListener("mousedown", e => e.preventDefault());
+  document.addEventListener("mousedown", e => { if (!$search.parentElement.contains(e.target)) hideSuggest(); });
+  $search.addEventListener("focus", () => { if (/^\s*special:/i.test($search.value)) showSuggest(commandSuggestions($search.value)); });
+  document.addEventListener("click", e => {
+    const h = e.target.closest("[data-href]");
+    if (!h) return;
+    e.preventDefault();
+    clearSearch();
+    hideSuggest();
+    location.hash = h.dataset.href;
+  });
+  // Letter row on a special page: scroll to the heading. Anchors would change the hash, which
+  // is the router.
+  document.addEventListener("click", e => {
+    const j = e.target.closest("[data-jump]");
+    if (!j) return;
+    const t = document.getElementById(j.dataset.jump);
+    if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  // Any command chip, anywhere, runs its example.
+  document.addEventListener("click", e => {
+    const chip = e.target.closest("[data-command]");
+    if (!chip) return;
+    e.preventDefault();
+    hideSuggest();
+    runCommand(chip.dataset.command);
+  });
+
   function render() {
     const route = getRoute();
     trackOrigin(route);
@@ -4066,6 +4437,8 @@
       renderProblemDetail(route.slug);
     } else if (route.type === "settings") {
       renderSettingsPage();
+    } else if (route.type === "special") {
+      renderSpecial(route);
     } else if (state.adv) {
       renderAdvancedResults();
     } else if (state.query.trim()) {
@@ -4543,6 +4916,8 @@
   let searchTimer = null;
   $search.addEventListener("input", () => {
     clearTimeout(searchTimer);
+    if (/^\s*special:/i.test($search.value)) { showSuggest(commandSuggestions($search.value)); return; }
+    hideSuggest();
     searchTimer = setTimeout(() => {
       state.query = $search.value;
       if (state.query.trim()) { state.adv = null; stripHash(); }
@@ -4554,9 +4929,22 @@
   // Enter in the search box just commits the query and leaves the field (blurs);
   // it stays on the results list rather than jumping into the top hit.
   $search.addEventListener("keydown", e => {
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !$suggest.hidden) {
+      e.preventDefault();
+      moveSuggestion(e.key === "ArrowDown" ? 1 : -1);
+      return;
+    }
+    if (e.key === "Escape" && !$suggest.hidden) { hideSuggest(); return; }
     if (e.key !== "Enter") return;
     e.preventDefault();
     clearTimeout(searchTimer);
+    if (/^\s*special:/i.test($search.value)) {
+      const act = activeSuggestion();
+      if (act) { act.click(); $search.blur(); return; }
+      if (runCommand($search.value)) { hideSuggest(); $search.blur(); return; }
+      showSuggest(commandSuggestions($search.value));
+      return;
+    }
     state.query = $search.value;
     if (state.query.trim()) { state.adv = null; stripHash(); }
     render();
@@ -4632,6 +5020,7 @@
     r.setAttribute("data-density", state.density);
     r.setAttribute("data-text", state.text);
     r.setAttribute("data-tags", state.tags ? "on" : "off");
+    r.setAttribute("data-captions", state.captions);
   }
 
   // The latex a card shows. A card may carry latexPlain, the same statement written out
@@ -5011,7 +5400,9 @@
     // the top. The old test named only "formula" as the top-scrolling route, so Settings,
     // Lists, the Database and topic pages all reopened wherever the section list had been —
     // and because this fires after each button's own scrollTo(0), it overwrote that too.
-    window.scrollTo({ top: route.type === "home" ? listScrollY : 0 });
+    // #/settings/commands scrolls to its own anchor (renderSettingsPage); a reset here would
+    // fight it, and being smooth it would still be running when that scroll started.
+    if (!(route.type === "settings" && route.anchor)) window.scrollTo({ top: route.type === "home" ? listScrollY : 0 });
   });
 
   // ---------- Init ----------

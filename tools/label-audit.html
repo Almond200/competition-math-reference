@@ -140,6 +140,34 @@
       return r > 0 && r <= 7 && f !== "none" && !/rgba\(255,255,255/.test(f);
     }).map(c => ({ x: +c.getAttribute("cx"), y: +c.getAttribute("cy"), r: parseFloat(c.getAttribute("r")) }));
 
+    // Arrowheads: a small filled triangle whose tip runs into another stroke reads as the arrow
+    // stabbing the shape it points at (the substitution arrow touching the diamond's corner). The
+    // tip is the vertex farthest from the other two; its own shaft is any stroke ending within
+    // 12px of the triangle, and is ignored.
+    [...svg.querySelectorAll("polygon")].forEach(pg => {
+      const f = (pg.getAttribute("fill") || "none").toLowerCase();
+      const pts = (pg.getAttribute("points") || "").trim().split(/\s+/).map(t => t.split(",").map(Number));
+      if (f === "none" || pts.length !== 3) return;
+      const area = Math.abs((pts[1][0] - pts[0][0]) * (pts[2][1] - pts[0][1]) - (pts[2][0] - pts[0][0]) * (pts[1][1] - pts[0][1])) / 2;
+      if (area > 80) return;
+      const d = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+      const tip = pts.reduce((best, p) => { const sc = pts.reduce((t, q) => t + d(p, q), 0); return sc > best.sc ? { p, sc } : best; }, { p: pts[0], sc: -1 }).p;
+      const near = (sg) => Math.min(d(sg.p, tip), d(sg.q, tip), ...pts.map(q => Math.min(d(sg.p, q), d(sg.q, q)))) < 12;
+      const segDist = (sg) => { const vx = sg.q[0] - sg.p[0], vy = sg.q[1] - sg.p[1], L2 = vx * vx + vy * vy || 1;
+        let t = ((tip[0] - sg.p[0]) * vx + (tip[1] - sg.p[1]) * vy) / L2; t = Math.max(0, Math.min(1, t));
+        return Math.hypot(tip[0] - sg.p[0] - vx * t, tip[1] - sg.p[1] - vy * t); };
+      // Any element with a piece ending at the arrowhead is its shaft, straight or curved.
+      const shafts = new Set(segs.filter(near).map(sg => sg.el));
+      // An arrow drawn ALONG a line (a basis vector on an axis, a direction mark on a polygon
+      // edge) sits on that line by design: skip any stroke that also passes the arrowhead's base.
+      const others = pts.filter(p => p !== tip), bm = [(others[0][0] + others[1][0]) / 2, (others[0][1] + others[1][1]) / 2];
+      const distTo = (sg, P) => { const vx = sg.q[0] - sg.p[0], vy = sg.q[1] - sg.p[1], L2 = vx * vx + vy * vy || 1;
+        let t = ((P[0] - sg.p[0]) * vx + (P[1] - sg.p[1]) * vy) / L2; t = Math.max(0, Math.min(1, t));
+        return Math.hypot(P[0] - sg.p[0] - vx * t, P[1] - sg.p[1] - vy * t); };
+      const along = new Set(segs.filter(sg => distTo(sg, bm) < 3).map(sg => sg.el));
+      const hit = segs.find(sg => sg.el !== pg && !shafts.has(sg.el) && !along.has(sg.el) && segDist(sg) < 3);
+      if (hit) findings.push({ name, kind: "arrow-touch", label: "arrowhead", el: hit.el.tagName + " " + strokeOf(hit.el).replace(/var\(--|\)/g, "") });
+    });
     G.forEach((g, a) => {
       if (g.x0 < vb[0] - 1 || g.x1 > vb[0] + vb[2] + 1 || g.y0 < vb[1] - 1 || g.y1 > vb[1] + vb[3] + 1)
         findings.push({ name, kind: "off-canvas", label: g.s });

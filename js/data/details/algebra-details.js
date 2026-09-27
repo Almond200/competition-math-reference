@@ -18,7 +18,7 @@ The figure shows where the name comes from. The expression $x^2 + px$ is a squar
 The discriminant is the numerator on the right-hand side. A square of a real number cannot be negative, so real solutions need $b^2 - 4ac \ge 0$; when it is $0$ both signs give the same root, and when it is positive they give two different ones.
 
 ## How to use it
-Before grinding through the formula, look for a shortcut. If the quadratic factors, the roots are immediate, and if the question asks only for the sum or product of the roots, [[vietas-quadratic|Vieta's formulas]] give them straight from the coefficients: $$r_1 + r_2 = -\frac ba, \qquad r_1r_2 = \frac ca.$$
+Before grinding through the formula, look for a shortcut. If the quadratic factors, the roots are immediate, and if the question asks only for the sum or product of the roots, Vieta's Formulas give them straight from the coefficients: $$r_1 + r_2 = -\frac ba, \qquad r_1r_2 = \frac ca.$$
 
 What makes the discriminant worth more than the formula is that it answers questions without solving anything. Whether the roots are real, equal, rational or integers is decided by $\Delta$ alone, so a question about the nature of the roots never needs the roots, and an integrality question becomes "when is $\Delta$ a perfect square", which is a Diophantine problem rather than an algebraic one.
 
@@ -27,14 +27,14 @@ What makes the discriminant worth more than the formula is that it answers quest
 ## On contests
 Almost never alone — 3 of its 32 problems — because it is the step that finishes a setup rather than the setup itself. Its partners say what those setups are: [[pythagorean-theorem|Pythagoras]] (4 problems), [[similar-figures-ratios|similar triangles]] (3) and [[coordinate-bash|coordinates]] (3), all geometry that reduces to one quadratic in one unknown.
 
-Two shapes recur. "For how many integer $k$ does this quadratic have rational roots" is perfect-square discriminant analysis. And tangency is $\Delta=0$: substituting a line into a circle or parabola and setting the discriminant to zero settles contact problems with no calculus, which is why [[tangency-condition|unique solution implies tangency]] is the same idea under another name.
+Two shapes recur. "For how many integer $k$ does this quadratic have rational roots" is perfect-square discriminant analysis. And tangency is $\Delta=0$: substituting a line into a circle or parabola and setting the discriminant to zero settles contact problems with no calculus, which is why unique solution implies tangency is the same idea under another name.
 `,
 
 "vietas-quadratic": String.raw`
 ## Why it works
 A quadratic with roots $r$ and $s$ is $a(x - r)(x - s)$, and multiplying that out shows the sum and the product of the roots sitting in the coefficients.
 
-Expand: $$a(x - r)(x - s) = ax^2 - a(r + s)x + ars.$$ Matching this with $ax^2 + bx + c$ term by term gives $-a(r + s) = b$ and $ars = c$, so $r + s = -\frac ba$ and $rs = \frac ca$. The factored form exists for every quadratic once complex roots are allowed, so the formulas hold whether the roots are real or not. The same expansion at higher degree gives [[vietas-general|Vieta's formulas in general]].
+Expand: $$a(x - r)(x - s) = ax^2 - a(r + s)x + ars.$$ Matching this with $ax^2 + bx + c$ term by term gives $-a(r + s) = b$ and $ars = c$, so $r + s = -\frac ba$ and $rs = \frac ca$. The factored form exists for every quadratic once complex roots are allowed, so the formulas hold whether the roots are real or not. The same expansion at higher degree gives [[vietas-general|Vieta's Formulas in general]].
 
 The reverse direction is the same identity read the other way. If two numbers have sum $p$ and product $q$, then $(x - r)(x - s) = x^2 - px + q$, so they are exactly the two roots of that quadratic.
 
@@ -42,7 +42,7 @@ The reverse direction is the same identity read the other way. If two numbers ha
 Compute symmetric expressions of roots without finding the roots: $r^2 + s^2 = (r+s)^2 - 2rs$, $\frac{1}{r} + \frac{1}{s} = \frac{r+s}{rs}$, $|r - s| = \frac{\sqrt{\Delta}}{|a|}$, the [[quadratic-formula|discriminant]] again. Also in reverse: numbers with known sum $s$ and product $p$ are roots of $x^2 - sx + p = 0$.
 
 ## On contests
-Constant at AMC level and a routine step on AIME: 14 problems are tagged here, 2 of them solved by it alone, and its partners are scattered, because it is the step that turns roots into coefficients inside many different setups, from [[log-substitution|log substitutions]] to [[casework-method|casework]]. The reverse direction cracks systems like $x + y = 7$, $xy = 12$ instantly. For power sums of the roots beyond the second, [[newtons-sums|Newton's sums]] take over.
+Constant at AMC level and a routine step on AIME: 14 problems are tagged here, 2 of them solved by it alone, and its partners are scattered, because it is the step that turns roots into coefficients inside many different setups, from [[log-substitution|log substitutions]] to [[casework-method|casework]]. The reverse direction cracks systems like $x + y = 7$, $xy = 12$ instantly. For power sums of the roots beyond the second, [[newtons-sums|Newton's Sums]] take over.
 `,
 
 "vietas-general": String.raw`
@@ -54,7 +54,7 @@ Try degree two first. $(x - r)(x - s) = x^2 - (r + s)x + rs$, so the middle coef
 When the leading coefficient is not $1$, divide by it first. The polynomial $$x^n + \frac{a_{n-1}}{a_n}x^{n-1} + \cdots + \frac{a_0}{a_n}$$ has the same roots, which is why every formula is a coefficient divided by $a_n$.
 
 ## Full proof
-Over the complex numbers every polynomial of degree $n$ has $n$ roots counted with multiplicity, by [[fundamental-theorem-algebra|the fundamental theorem of algebra]], so $a_nx^n + \cdots + a_0 = a_n(x - r_1)\cdots(x - r_n)$.
+Over the complex numbers every polynomial of degree $n$ has $n$ roots counted with multiplicity, by [[fundamental-theorem-algebra|the Fundamental Theorem of Algebra]], so $a_nx^n + \cdots + a_0 = a_n(x - r_1)\cdots(x - r_n)$.
 
 Expand the right-hand side. Each term of the expansion is made by choosing, from every one of the $n$ brackets, either its $x$ or its $-r_i$, and multiplying the choices together. A choice that takes $-r_i$ from the brackets in a set $S$ of size $k$, and $x$ from the other $n - k$, contributes $(-1)^k\left(\prod_{i \in S} r_i\right)x^{n-k}$.
 
@@ -65,32 +65,32 @@ Comparing the coefficients of $x^{n-k}$ on the two sides gives $a_{n-k} = (-1)^k
 For a monic quartic $x^4 + bx^3 + cx^2 + dx + e$ this reads $\sum r_i = -b$, $\sum_{i \lt j} r_ir_j = c$, $\sum_{i \lt j \lt \ell} r_ir_jr_\ell = -d$ and $r_1r_2r_3r_4 = e$.
 
 ## How to use it
-Any symmetric expression in the roots can be rebuilt from the $e_k$. The two used most are $$\sum r_i^2 = e_1^2 - 2e_2, \qquad \sum \frac{1}{r_i} = \frac{e_{n-1}}{e_n}.$$ The first comes from squaring the sum of the roots and removing the cross terms, and the second from putting the reciprocals over the common denominator $r_1r_2\cdots r_n$. For higher powers, [[newtons-sums|Newton's sums]] do the bookkeeping.
+Any symmetric expression in the roots can be rebuilt from the $e_k$. The two used most are $$\sum r_i^2 = e_1^2 - 2e_2, \qquad \sum \frac{1}{r_i} = \frac{e_{n-1}}{e_n}.$$ The first comes from squaring the sum of the roots and removing the cross terms, and the second from putting the reciprocals over the common denominator $r_1r_2\cdots r_n$. For higher powers, [[newtons-sums|Newton's Sums]] do the bookkeeping.
 
 The point of the relations is that they give you the roots' symmetric functions without the roots, and for most questions that is all you need. A question about $\sum r_i$, $\sum r_i r_j$ or $\prod r_i$ is answered by reading coefficients; a question about $\sum r_i^2$ or $\sum \frac1{r_i}$ becomes one of those after one identity. Solving the polynomial is not just unnecessary, it is usually impossible, which is the real reason the tool exists.
 
 When the expression is not symmetric, transform the polynomial instead, so that the question becomes a symmetric one about new roots. If $p$ has roots $r_i$, then the polynomials $$p(x - c), \qquad p\left(\tfrac{x}{k}\right), \qquad x^np\left(\tfrac{1}{x}\right)$$ have roots $r_i + c$, $kr_i$ and $\frac{1}{r_i}$; the last is $p$ with its coefficients reversed, and needs no root to be $0$. Building the polynomial for the new roots turns a hard question about the old ones into coefficient bookkeeping.
 
 ## On contests
-AIME's favorite polynomial tool, and rarely alone: 3 of 31. Its most frequent companion is [[conjugate-root-theorems|the conjugate root theorems]] (5 problems), which is the standard pairing, since the conjugate rule pins down which roots must occur together and Vieta then converts that structure into coefficients.
+AIME's favorite polynomial tool, and rarely alone: 3 of 31. Its most frequent companion is [[conjugate-root-theorems|the Conjugate Root Theorems]] (5 problems), which is the standard pairing, since the conjugate rule pins down which roots must occur together and Vieta then converts that structure into coefficients.
 
-The trigger is a question about the roots that never asks for a root. Whenever that happens, stop trying to factor and start writing symmetric functions; [[newtons-sums|Newton's sums]] take over once the powers climb past the second.
+The trigger is a question about the roots that never asks for a root. Whenever that happens, stop trying to factor and start writing symmetric functions; Newton's Sums take over once the powers climb past the second.
 `,
 
 "fundamental-theorem-algebra": String.raw`## Why it works
 The analytic core is that every non-constant complex polynomial has at least one root (provable via Liouville's theorem, a winding-number argument, or a minimum-modulus argument). Once you have one root $r$, divide out $(x - r)$ to drop the degree by one and repeat; after $n$ steps you have peeled off $n$ linear factors, $P(x) = a_n\prod (x - r_k)$, with exactly $n$ roots counted by multiplicity.
 
 ## How to use it
-It is the license behind "a degree-$n$ polynomial has $n$ roots," which underwrites [[vietas-general|Vieta's formulas]], partial fractions, and all root counting. Two corollaries do heavy lifting: a polynomial of degree $\le n$ that vanishes at $n+1$ points is identically zero (the standard way to prove a polynomial identity), and $n+1$ values pin a polynomial down uniquely ([[lagrange-interpolation|Lagrange interpolation]]). Over $\mathbb{R}$, pairing conjugate roots yields real linear and irreducible-quadratic factors — hence every odd-degree real polynomial has a real root.
+It is the license behind "a degree-$n$ polynomial has $n$ roots," which underwrites [[vietas-general|Vieta's Formulas]], partial fractions, and all root counting. Two corollaries do heavy lifting: a polynomial of degree $\le n$ that vanishes at $n+1$ points is identically zero (the standard way to prove a polynomial identity), and $n+1$ values pin a polynomial down uniquely ([[lagrange-interpolation|Lagrange interpolation]]). Over $\mathbb{R}$, pairing conjugate roots yields real linear and irreducible-quadratic factors — hence every odd-degree real polynomial has a real root.
 
 ## On contests
 Usually invoked implicitly: knowing the exact root count sets up Vieta, and the "agree at enough points $\Rightarrow$ identical" corollary cracks many AIME polynomial and functional-equation problems. The conjugate-pairing consequence is a common parity/real-root argument.`,
 
 "factor-remainder-theorem": String.raw`
 ## Why it works
-Divide $P(x)$ by $x - a$. The remainder has degree less than $1$, so it is a constant $r$, and $$P(x) = (x - a)Q(x) + r.$$ Evaluating at $x = a$ kills the first term and leaves $r = P(a)$. The factor theorem is the case $P(a)=0$, and dividing by a degree-$k$ polynomial leaves a remainder of degree less than $k$, which is why a quadratic divisor leaves a line, pinned down by its values at the two roots.
+Divide $P(x)$ by $x - a$. The remainder has degree less than $1$, so it is a constant $r$, and $$P(x) = (x - a)Q(x) + r.$$ Evaluating at $x = a$ kills the first term and leaves $r = P(a)$. The Factor Theorem is the case $P(a)=0$, and dividing by a degree-$k$ polynomial leaves a remainder of degree less than $k$, which is why a quadratic divisor leaves a line, pinned down by its values at the two roots.
 
-The integer statement is the same theorem read over $\mathbb{Z}$. Apply the factor theorem to $P(x) - P(b)$: it vanishes at $x = b$, so $P(x) - P(b) = (x-b)Q(x)$ with $Q$ having integer coefficients whenever $P$ does. Substituting $x = a$ gives $$P(a) - P(b) = (a - b)Q(a),$$ and $Q(a)$ is an integer, so $(a-b) \mid P(a) - P(b)$. Equivalently, expand $P(a) - P(b) = \sum c_k(a^k - b^k)$ and note every $a^k - b^k$ carries the factor $a - b$.
+The integer statement is the same theorem read over $\mathbb{Z}$. Apply the Factor Theorem to $P(x) - P(b)$: it vanishes at $x = b$, so $P(x) - P(b) = (x-b)Q(x)$ with $Q$ having integer coefficients whenever $P$ does. Substituting $x = a$ gives $$P(a) - P(b) = (a - b)Q(a),$$ and $Q(a)$ is an integer, so $(a-b) \mid P(a) - P(b)$. Equivalently, expand $P(a) - P(b) = \sum c_k(a^k - b^k)$ and note every $a^k - b^k$ carries the factor $a - b$.
 
 ## How to use it
 For a remainder, evaluate rather than divide. Mod a quadratic $(x-a)(x-b)$ the remainder is linear, so interpolate the line through $(a,P(a))$ and $(b,P(b))$; mod $(x-a)^2$ use $P(a) + P'(a)(x-a)$, or match coefficients. Divisibility questions reduce to evaluations at the roots of the divisor, complex ones included: $x^2+1 \mid P(x)$ exactly when $P(i) = 0$, and [[roots-of-unity|roots of unity]] handle $x^2+x+1$ and friends.
@@ -131,7 +131,7 @@ Evaluate the polynomial in whatever form the problem gives it, a product, a powe
 For every third or every fourth coefficient, replace $\pm 1$ by the cube or fourth roots of unity, which is the [[roots-of-unity-filter|roots of unity filter]]. In a polynomial of two variables, fix the other variable first. A [[generating-function-method|generating function]] read this way counts all its objects at once, since $G(1)$ adds up every coefficient.
 
 ## On contests
-Two problems here, one AIME and one AMC 10, one solved by it alone. The AMC version combines it with the [[binomial-theorem|binomial theorem]], and the AIME version asks for the sum of the absolute values of the coefficients, which one evaluation at $x = -1$ produces once the sign of every coefficient is known.
+Two problems here, one AIME and one AMC 10, one solved by it alone. The AMC version combines it with the [[binomial-theorem|Binomial Theorem]], and the AIME version asks for the sum of the absolute values of the coefficients, which one evaluation at $x = -1$ produces once the sign of every coefficient is known.
 `,
 
 
@@ -150,14 +150,14 @@ Take a cubic with roots $r$, $s$, $t$ and $e_1 = r + s + t$, $e_2 = rs + st + tr
 Below the degree the same shape holds: $p_1 = e_1$, and squaring the sum of the roots gives $p_2 = e_1^2 - 2e_2 = e_1p_1 - 2e_2$. Only the coefficients enter, so the ladder works just as well when the roots are complex.
 
 ## How to use it
-Read $e_1, e_2, \ldots$ off the coefficients with [[vietas-general|Vieta's formulas]], minding the alternating signs, then climb one power at a time. For $x^3 - 6x^2 + 11x - 6$, with $e_1 = 6$, $e_2 = 11$ and $e_3 = 6$, $$p_1 = 6, \qquad p_2 = 36 - 22 = 14, \qquad p_3 = 6 \cdot 14 - 11 \cdot 6 + 18 = 36.$$ The roots are $1$, $2$, $3$, and indeed $1 + 8 + 27 = 36$.
+Read $e_1, e_2, \ldots$ off the coefficients with Vieta's Formulas, minding the alternating signs, then climb one power at a time. For $x^3 - 6x^2 + 11x - 6$, with $e_1 = 6$, $e_2 = 11$ and $e_3 = 6$, $$p_1 = 6, \qquad p_2 = 36 - 22 = 14, \qquad p_3 = 6 \cdot 14 - 11 \cdot 6 + 18 = 36.$$ The roots are $1$, $2$, $3$, and indeed $1 + 8 + 27 = 36$.
 
 Past the degree drop the $k\,e_k$ term, so the relation becomes a pure recursion in the previous $n$ power sums.
 
 The ladder also runs backwards: given $p_1$, $p_2$, $p_3$ for three numbers, solve for $e_1$, $e_2$, $e_3$, and the numbers are the roots of $t^3 - e_1t^2 + e_2t - e_3$.
 
 ## On contests
-Three problems here, all AIME, none solved by it alone, and two pair it with Vieta's formulas. The classic form gives $x + y + z$, $x^2 + y^2 + z^2$ and $x^3 + y^3 + z^3$ and asks for $x^4 + y^4 + z^4$. Harder versions reduce one polynomial modulo another so that only low power sums of the roots are needed, or ask for a symmetric sum over the roots of a polynomial that cannot be solved.`,
+Three problems here, all AIME, none solved by it alone, and two pair it with Vieta's Formulas. The classic form gives $x + y + z$, $x^2 + y^2 + z^2$ and $x^3 + y^3 + z^3$ and asks for $x^4 + y^4 + z^4$. Harder versions reduce one polynomial modulo another so that only low power sums of the roots are needed, or ask for a symmetric sum over the roots of a polynomial that cannot be solved.`,
 
 "conjugate-root-theorems": String.raw`
 ## Why it works
@@ -170,12 +170,12 @@ If $P(r) = 0$, conjugate both sides. Conjugation respects sums and products, and
 The radical version works the same way with the map $\sqrt d \mapsto -\sqrt d$ on numbers $x + y\sqrt d$ with $x$ and $y$ rational. It respects sums and products, because $\sqrt d$ and $-\sqrt d$ have the same square, and it leaves rational numbers fixed, so it sends roots of a rational polynomial to roots.
 
 ## How to use it
-Each pair comes with its quadratic factor: $a \pm bi$ gives $x^2 - 2ax + (a^2 + b^2)$, and $a \pm b\sqrt d$ gives $x^2 - 2ax + (a^2 - b^2d)$. A rational cubic with root $2 + \sqrt3$ therefore has the factor $x^2 - 4x + 1$, and its third root follows from [[vietas-general|Vieta's formulas]].
+Each pair comes with its quadratic factor: $a \pm bi$ gives $x^2 - 2ax + (a^2 + b^2)$, and $a \pm b\sqrt d$ gives $x^2 - 2ax + (a^2 - b^2d)$. A rational cubic with root $2 + \sqrt3$ therefore has the factor $x^2 - 4x + 1$, and its third root follows from [[vietas-general|Vieta's Formulas]].
 
 Two consequences come up. A real polynomial of odd degree has a real root, since its non-real roots pair off. And the hypothesis matters: $x - \sqrt2$ has the root $\sqrt2$ but not $-\sqrt2$, because its coefficients are not rational.
 
 ## On contests
-Five problems here, all AIME, and every one of them finishes with [[vietas-general|Vieta's formulas]]: the conjugate supplies the missing root, and Vieta turns the roots into the coefficients the problem asks about.
+Five problems here, all AIME, and every one of them finishes with Vieta's Formulas: the conjugate supplies the missing root, and Vieta turns the roots into the coefficients the problem asks about.
 `,
 
 "palindromic-polynomials": String.raw`## Key forms
@@ -201,7 +201,7 @@ The square is never negative and is zero only at $x = -\frac{b}{2a}$. So when $a
 ## How to use it
 For an optimization, write the quantity as a quadratic in one variable and read off the vertex. That is why [[max-product-fixed-sum|a fixed sum has its largest product in the middle]]: $x(s - x)$ is a downward parabola with its vertex at $x = \frac s2$. If the variable is restricted to a range that misses the vertex, the extreme value is at the endpoint nearer to it, as in the example.
 
-The symmetry is used even more than the extremum. Two points at the same height put the axis halfway between them, and the roots are such a pair, so they average to $-\frac{b}{2a}$, as [[vietas-quadratic|Vieta's formulas]] also say.
+The symmetry is used even more than the extremum. Two points at the same height put the axis halfway between them, and the roots are such a pair, so they average to $-\frac{b}{2a}$, as [[vietas-quadratic|Vieta's Formulas]] also say.
 
 {{figure:symmetry}}
 
@@ -237,7 +237,7 @@ All three are cases of one pattern. As a polynomial in $a$, $a^n - b^n$ is zero 
 ## How to use it
 The identity does one thing everywhere it appears: it converts a subtraction into a product, and a product is something you can count, cancel or bound. Everything below is that conversion wearing different clothes.
 
-Against a Diophantine equation it turns solving into counting. Writing $$n = a^2 - b^2 = (a - b)(a + b)$$ means every representation is a factorization of $n$, so the question stops being "which squares differ by $n$" and becomes "how many factor pairs does $n$ have", which is why this card and [[factor-pair-counting|factor-pair counting]] appear together more than either does with anything else.
+Against a Diophantine equation it turns solving into counting. Writing $$n = a^2 - b^2 = (a - b)(a + b)$$ means every representation is a factorization of $n$, so the question stops being "which squares differ by $n$" and becomes "how many factor pairs does $n$ have", which is why this card and factor-pair counting appear together more than either does with anything else.
 
 The one filter that matters: $a - b$ and $a + b$ always have the same parity, so an $n \equiv 2 \pmod 4$ has no representations at all.
 
@@ -248,7 +248,7 @@ Against a product it telescopes. Multiplying the chain by $1 - x$ collapses it c
 And against arithmetic it is a shortcut: $51 \cdot 49 = 2500 - 1$, and more usefully $a^2 - b^2$ with $a$ and $b$ close together is small, which is often the bound a problem needs.
 
 ## On contests
-Rarely the whole problem — three of the 42 tagged here stand alone — because it is a move rather than a result. Its standing partner is [[factor-pair-counting|factor-pair counting]] (6 problems): factor first, then count the pairs and filter by parity and sign. The next most common partner is [[arithmetic-series|an arithmetic series]] (4), where pairing consecutive terms produces differences of squares that cancel down the list.
+Rarely the whole problem — three of the 42 tagged here stand alone — because it is a move rather than a result. Its standing partner is factor-pair counting (6 problems): factor first, then count the pairs and filter by parity and sign. The next most common partner is [[arithmetic-series|an arithmetic series]] (4), where pairing consecutive terms produces differences of squares that cancel down the list.
 
 The trigger to train is "one less than a power". Anything of the form $2^{32}-1$, $10^4-1$ or $n^2-1$ should be factored before it is thought about, and the [[sophie-germain|Sophie Germain]] identity is the same instinct applied to $a^4+4b^4$, which is a difference of squares once you add and subtract $4a^2b^2$.
 `,
@@ -301,7 +301,7 @@ When the $xy$ term has a coefficient $A$, the product needs it on both factors. 
 ## How to use it
 List the factor pairs of the right side, negative ones included unless the problem restricts to positive integers, and read off each solution; then apply whatever bounds the problem imposes. For $xy + 2x + 5y = 30$, adding $10$ gives $(x + 5)(y + 2) = 40$, and positive $x$ and $y$ need $x + 5 \ge 6$ and $y + 2 \ge 3$, which leaves only $8 \cdot 5$ and $10 \cdot 4$, so $(x, y) = (3, 3)$ or $(5, 2)$.
 
-Two standard consequences are worth knowing on sight. The unit-fraction equation $\frac1x + \frac1y = \frac1n$ clears to $(x - n)(y - n) = n^2$, so its positive solutions are counted by the divisors of $n^2$. And counting lattice points on the hyperbola $xy = N$ is just [[factor-pair-counting|counting factor pairs]] of $N$.
+Two standard consequences are worth knowing on sight. The unit-fraction equation $\frac1x + \frac1y = \frac1n$ clears to $(x - n)(y - n) = n^2$, so its positive solutions are counted by the divisors of $n^2$. And counting lattice points on the hyperbola $xy = N$ is just counting factor pairs of $N$.
 
 ## On contests
 An AIME staple, 12 of the 14 problems tagged here, and rarely alone (2), since the factoring only sets up the count. The unit-fraction equation, with its answer "the number of divisors of $n^2$", is the classic, and any two-variable equation that is linear in each variable separately is SFFT bait.
@@ -433,7 +433,7 @@ Any polynomial summed over $k = 1$ to $n$ reduces to these formulas plus $\sum 1
 Every formula here starts at $k = 1$, so a sum that starts anywhere else needs the prefix subtracted first: $$\sum_{k=a}^{b} f(k) = \sum_{k=1}^{b} f(k) - \sum_{k=1}^{a-1} f(k).$$ The piece removed ends at $a - 1$, not $a$; using $a$ silently drops the $k = a$ term. The same care applies to the odd and even sums, whose last terms are $2n - 1$ and $2n$, so "the even numbers up to $100$" means $n = 50$.
 
 ## On contests
-Eight problems here, six AIME and two AMC 12, none by it alone and each with a different partner, since a closed-form sum is usually one step inside a larger count: [[rectangles-in-grid|rectangles in a grid]], or a divisibility condition on $\frac{n(n + 1)}{2}$ settled with [[crt|the Chinese remainder theorem]]. The identity $\sum k^3 = \left(\sum k\right)^2$ is sometimes tested directly.
+Eight problems here, six AIME and two AMC 12, none by it alone and each with a different partner, since a closed-form sum is usually one step inside a larger count: [[rectangles-in-grid|rectangles in a grid]], or a divisibility condition on $\frac{n(n + 1)}{2}$ settled with [[crt|the Chinese Remainder Theorem]]. The identity $\sum k^3 = \left(\sum k\right)^2$ is sometimes tested directly.
 `,
 
 "telescoping": String.raw`
@@ -463,16 +463,16 @@ Interleaved telescopes are common: $$\frac{1}{k(k+2)} = \frac12\left(\frac1k - \
 
 Products telescope the same way, as in $$\prod_{k=2}^{n}\left(1 - \frac{1}{k^2}\right) = \prod_{k=2}^{n}\frac{(k-1)(k+1)}{k \cdot k},$$ which splits into two telescoping products and equals $\frac{n+1}{2n}$.
 
-The other payoff is [[generating-function-method|generating functions]]. Decomposing $\frac{P(x)}{\prod(1 - r_ix)}$ turns a rational generating function into a sum of [[geometric-series|geometric series]], so the coefficient of $x^n$ becomes a sum of $r_i^n$ terms. That is the generating-function proof of the closed form for a linear recurrence.
+The other payoff is [[generating-function-method|generating functions]]. Decomposing $\frac{P(x)}{\prod(1 - r_ix)}$ turns a rational generating function into a sum of [[geometric-series|geometric series]], so the coefficient of $x^n$ becomes a sum of $r_i^n$ terms. That is the generating-function proof of the closed form for a [[linear-recurrence|linear recurrence]].
 
 ## On contests
-A standard AIME finisher, with 21 tagged problems here, 20 of them AIME, and 3 solved by the collapse alone. Its partners are spread thin, a [[difference-of-squares|difference of squares]], a [[linear-recurrence|recurrence]], [[product-sum|product-to-sum]] or [[log-rules|log rules]] in 2 problems each, because each of those is a way of producing the $f(k) - f(k+1)$ shape.
+A standard AIME finisher, with 21 tagged problems here, 20 of them AIME, and 3 solved by the collapse alone. Its partners are spread thin, a [[difference-of-squares|difference of squares]], a recurrence, [[product-sum|product-to-sum]] or [[log-rules|log rules]] in 2 problems each, because each of those is a way of producing the $f(k) - f(k+1)$ shape.
 
 The recognition cue is a denominator made of factors in arithmetic progression, or any long sum that the no-calculator setting makes look impossible: impossible usually means telescoping.
 `,
 
 "arithmetico-geometric": String.raw`## Why it works
-Differentiate $\sum x^k = \frac{1}{1-x}$ termwise, or avoid calculus: $S - xS$ turns the linear coefficients into a plain [[geometric-series|geometric series]].
+Differentiate $\sum x^k = \frac{1}{1-x}$ termwise, or avoid calculus: $S - xS$ turns the linear coefficients into a plain geometric series.
 
 ## How to use it
 $\sum_{k\ge1} k x^k = \frac{x}{(1-x)^2}$ and, one more derivative up, $\sum k^2 x^k = \frac{x(1+x)}{(1-x)^3}$. Finite versions come from the same shift trick. This is the standard closed form behind expected values of geometric-type random variables.
@@ -494,7 +494,7 @@ For a single far-out term or its size, use the closed form: $F_n$ is the nearest
 For sums, products and divisibility, use the identities instead: $$F_1 + \cdots + F_n = F_{n+2} - 1, \qquad F_1^2 + \cdots + F_n^2 = F_nF_{n+1},$$ together with Cassini's $F_{n-1}F_{n+1} - F_n^2 = (-1)^n$, the addition rule $F_{m+n} = F_mF_{n+1} + F_{m-1}F_n$, and $\gcd(F_m, F_n) = F_{\gcd(m, n)}$. For example $F_1 + \cdots + F_8 = F_{10} - 1 = 54$, and $\gcd(F_{12}, F_{18}) = F_6 = 8$.
 
 ## On contests
-Four problems here, split between AMC and AIME, none by it alone; two continue into [[linear-recurrence|linear recurrences]] in general. Fibonacci sums and gcds appear on AIME with the identities as the intended shortcuts.
+Four problems here, split between AMC and AIME, none by it alone; two continue into linear recurrences in general. Fibonacci sums and gcds appear on AIME with the identities as the intended shortcuts.
 `,
 
 "linear-recurrence": String.raw`
@@ -519,7 +519,7 @@ When the recurrence is not linear, look for a substitution that makes it so. Wit
 ## On contests
 Recognizing the branch within seconds is what the time pressure rewards: a $+d$ on a first-order rule means shifting to the fixed point, a two-term rule with no extra term means the characteristic equation, and an ugly rational rule means periodicity or a reciprocal substitution.
 
-Of the 13 problems tagged here only 1 needs nothing else, with [[telescoping|telescoping]] and [[binets-formula|Binet's formula]] the usual partners (2 each).
+Of the 13 problems tagged here only 1 needs nothing else, with [[telescoping|telescoping]] and [[binets-formula|Binet's Formula]] the usual partners (2 each).
 
 Counting recursions, such as tilings and strings avoiding a pattern, are usually Fibonacci-like and yield closed forms this way, though AIME more often asks for a term modulo $m$, and then the right move is to skip the closed form and iterate the recurrence modulo $m$, hunting for the cycle.
 `,
@@ -534,7 +534,7 @@ $$\frac{a + b}{2} - \sqrt{ab} = \frac{(\sqrt a - \sqrt b)^2}{2} \ge 0,$$ and the
 
 For $n$ numbers, a smoothing argument gives the general case. Let $m$ be their mean. If the numbers are not all equal to $m$, one of them, $x$, is above $m$ and another, $y$, is below. Replace $x$ by $m$ and $y$ by $x + y - m$.
 
-The sum does not change, and the product goes up, because $$m(x + y - m) - xy = (x - m)(m - y) \gt 0.$$ Each step makes one more number equal to $m$, so after at most $n$ steps all of them equal $m$, and the product has only grown, to $m^n$. The original product was therefore at most $m^n$, which is the inequality. It also follows from [[jensens-inequality|Jensen's inequality]] for the concave function $\log x$.
+The sum does not change, and the product goes up, because $$m(x + y - m) - xy = (x - m)(m - y) \gt 0.$$ Each step makes one more number equal to $m$, so after at most $n$ steps all of them equal $m$, and the product has only grown, to $m^n$. The original product was therefore at most $m^n$, which is the inequality. It also follows from [[jensens-inequality|Jensen's Inequality]] for the concave function $\log x$.
 
 ## How to use it
 To minimize a sum whose terms have a constant product, or maximize a product with a constant sum, arrange the terms so that the equality case can happen. For example $$x + \frac{16}{x} \ge 2\sqrt{16} = 8,$$ with equality at $x = 4$.
@@ -555,7 +555,7 @@ Throughout, $a_1,\dots,a_n \gt 0$ and $\bar a = \frac{1}{n}\sum a_i$ denotes the
 
 QM $\ge$ AM. Since squares are non-negative, $\sum_{i=1}^n (a_i - \bar a)^2 \ge 0$. Expanding, $\sum a_i^2 - 2\bar a\sum a_i + n\bar a^2 \ge 0$, and $\sum a_i = n\bar a$, so this is $\sum a_i^2 - n\bar a^2 \ge 0$. Dividing by $n$ gives $\frac{1}{n}\sum a_i^2 \ge \bar a^2$, and taking square roots of both non-negative sides gives $\sqrt{\frac{1}{n}\sum a_i^2} \ge \bar a$. Equality needs every $(a_i-\bar a)^2 = 0$, i.e. all $a_i$ equal. (The same conclusion follows from Cauchy-Schwarz against the all-ones vector: $\left(\sum a_i\cdot 1\right)^2 \le n\sum a_i^2$.)
 
-AM $\ge$ GM. The function $\ln$ is concave, since $(\ln x)'' = -1/x^2 \lt 0$. [[jensens-inequality|Jensen's inequality]] for a concave function says the function of the average is at least the average of the function, so $\ln\!\left(\frac{1}{n}\sum a_i\right) \ge \frac{1}{n}\sum \ln a_i = \ln\!\left(\left(\prod a_i\right)^{1/n}\right)$. Exponentiating the increasing function $e^x$ preserves the inequality, giving $\frac{1}{n}\sum a_i \ge \left(\prod a_i\right)^{1/n}$. Jensen is an equality exactly when all inputs coincide, so again all $a_i$ must be equal.
+AM $\ge$ GM. The function $\ln$ is concave, since $(\ln x)'' = -1/x^2 \lt 0$. [[jensens-inequality|Jensen's Inequality]] for a concave function says the function of the average is at least the average of the function, so $\ln\!\left(\frac{1}{n}\sum a_i\right) \ge \frac{1}{n}\sum \ln a_i = \ln\!\left(\left(\prod a_i\right)^{1/n}\right)$. Exponentiating the increasing function $e^x$ preserves the inequality, giving $\frac{1}{n}\sum a_i \ge \left(\prod a_i\right)^{1/n}$. Jensen is an equality exactly when all inputs coincide, so again all $a_i$ must be equal.
 
 For $n=2$ this needs no machinery: $\frac{a+b}{2}-\sqrt{ab} = \frac{(\sqrt a-\sqrt b)^2}{2} \ge 0$.
 
@@ -573,7 +573,7 @@ AMC comparison problems and AIME bounding steps. HM's appearance: [[average-spee
 ## Key forms
 - $\alt{\left(\sum a_ib_i\right)^2 \le \left(\sum a_i^2\right)\left(\sum b_i^2\right)}{(a_1b_1 + \cdots + a_nb_n)^2 \le (a_1^2 + \cdots + a_n^2)(b_1^2 + \cdots + b_n^2)}$ — the plain form, with equality exactly when the two sequences are proportional
 - $\alt{\sum \dfrac{x_i^2}{y_i} \ge \dfrac{\left(\sum x_i\right)^2}{\sum y_i}}{\dfrac{x_1^2}{y_1} + \cdots + \dfrac{x_n^2}{y_n} \ge \dfrac{(x_1 + \cdots + x_n)^2}{y_1 + \cdots + y_n}}$ — Titu's lemma, also called the Engel form; the one to reach for whenever squares sit over positive denominators
-- $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$ — the vector reading, which makes it obvious: the dot product carries a $\cos\theta$ that never exceeds $1$
+- $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$ — the vector reading, which makes it obvious: the [[vector-dot-product|dot product]] carries a $\cos\theta$ that never exceeds $1$
 - $a_i = \sqrt{w_i}\cdot\dfrac{a_i}{\sqrt{w_i}}$ — the weighting trick: split each term this way before applying it to get a weighted version for free
 
 ## Why it works
@@ -581,7 +581,7 @@ A quadratic that is never negative cannot have two real roots, and that is the w
 
 For every real $t$, $$\sum_i (a_it + b_i)^2 = \left(\sum a_i^2\right)t^2 + 2\left(\sum a_ib_i\right)t + \sum b_i^2 \ge 0.$$ A quadratic that never dips below zero has discriminant at most $0$, and here the discriminant is $4\left(\sum a_ib_i\right)^2 - 4\left(\sum a_i^2\right)\left(\sum b_i^2\right)$, which gives the inequality. Equality needs a $t$ that makes every $a_it + b_i$ zero, which means the sequences are proportional.
 
-[[lagranges-identity|Lagrange's identity]] writes the gap as a sum of squares, which proves the inequality a second way. Geometrically the statement is $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$, since the [[vector-dot-product|dot product]] carries a factor $\cos\theta$, which is never more than $1$ in size.
+[[lagranges-identity|Lagrange's Identity]] writes the gap as a sum of squares, which proves the inequality a second way. Geometrically the statement is $|\mathbf a \cdot \mathbf b| \le \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert$, since the dot product carries a factor $\cos\theta$, which is never more than $1$ in size.
 
 Titu's lemma is the plain form with $a_i = \frac{x_i}{\sqrt{y_i}}$ and $b_i = \sqrt{y_i}$: then $\sum a_ib_i = \sum x_i$, and the inequality reads $\left(\sum x_i\right)^2 \le \left(\sum \frac{x_i^2}{y_i}\right)\left(\sum y_i\right)$.
 
@@ -597,7 +597,7 @@ Three problems here, two AIME and one AMC 12, one solved by it alone. The model 
 For sorted sequences $a_1\le\cdots\le a_n$ and $b_1\le\cdots\le b_n$, the sum $\sum a_i b_{\sigma(i)}$ over permutations $\sigma$ is largest when $\sigma$ keeps the same order and smallest when it reverses one. The proof is a swap argument: if some pair is matched out of order, exchanging the two partners changes the sum by $(a_i-a_j)(b_{\sigma(i)}-b_{\sigma(j)})$, whose sign forces the straightened pairing to be at least as large. Repeating until everything is aligned needs no convexity or positivity — just the ordering.
 
 ## How to use it
-It makes "pair large with large" rigorous, and it is the honest engine behind several results: averaging the same-order and reverse-order versions gives [[chebyshev-sum-inequality|Chebyshev's sum inequality]], and it underlies many bounds that look like forced AM-GM. When a cyclic sum resists, ask whether its terms are two sorted sequences in disguise. Equality needs one sequence constant or the orders already matched.
+It makes "pair large with large" rigorous, and it is the honest engine behind several results: averaging the same-order and reverse-order versions gives Chebyshev's Sum Inequality, and it underlies many bounds that look like forced AM-GM. When a cyclic sum resists, ask whether its terms are two sorted sequences in disguise. Equality needs one sequence constant or the orders already matched.
 
 ## On contests
 Mostly olympiad, but AMC/AIME "assign these values to maximize (or minimize) $\sum a_i b_i$" problems are direct: sort both lists and pair them in the same order for the maximum, opposite order for the minimum.`,
@@ -661,7 +661,7 @@ Domain discipline is where most marks are lost. Arguments must be positive and t
 The reason all of this pays is that logs turn multiplication into addition, so a problem that is nonlinear in $x$ is linear in $\log x$. That is the conversion to look for: substituting $u=\log x$ does not simplify the algebra so much as change its type, and a system that looked intractable becomes a linear system you can solve by adding and halving.
 
 ## On contests
-Almost never alone, 3 of the 45 problems tagged here, and its inseparable partner is [[change-of-base|change of base]] (11 problems), because the first move in nearly every log problem is putting everything over one base so the rules can apply at all.
+Almost never alone, 3 of the 45 problems tagged here, and its inseparable partner is change of base (11 problems), because the first move in nearly every log problem is putting everything over one base so the rules can apply at all.
 
 Two shapes recur. On AMC 12, convert to a common base and substitute $u = \log x$. On AIME, a system in $\log(xy)$, $\log(yz)$ and $\log(zx)$ is linear algebra in three log variables: adding all three and halving gives $\log(xyz)$, and each individual variable follows by subtraction. Recognizing that shape is the entire problem.
 `,
@@ -704,10 +704,10 @@ Zero, negative and fractional exponents are then defined so that the addition la
 ## How to use it
 Put everything over a common base and compare exponents: $4^x = 8$ becomes $2^{2x} = 2^3$, so $x = \frac32$. To compare sizes, take the same root of both sides: $$2^{300} = 8^{100} \lt 9^{100} = 3^{200}.$$ When the exponents share no convenient factor, take [[log-rules|logarithms]] instead.
 
-Read towers from the top down: $2^{3^2} = 2^9 = 512$, while $(2^3)^2 = 64$. And a law like $(ab)^n = a^nb^n$ has no counterpart for sums: $(a + b)^n$ needs the [[binomial-theorem|binomial theorem]].
+Read towers from the top down: $2^{3^2} = 2^9 = 512$, while $(2^3)^2 = 64$. And a law like $(ab)^n = a^nb^n$ has no counterpart for sums: $(a + b)^n$ needs the [[binomial-theorem|Binomial Theorem]].
 
 ## On contests
-Four problems here, split between AMC and AIME, one solved by it alone; two continue into [[log-rules|logarithms]], which are the exponent laws read in reverse. Base matching solves most AMC exponential equations, and taking a common root settles size comparisons.
+Four problems here, split between AMC and AIME, one solved by it alone; two continue into logarithms, which are the exponent laws read in reverse. Base matching solves most AMC exponential equations, and taking a common root settles size comparisons.
 `,
 
 "complex-basics": String.raw`
@@ -718,7 +718,7 @@ Multiply a number by its conjugate: $$(a + bi)(a - bi) = a^2 - abi + abi - b^2i^
 
 The powers of $i$ cycle because each step multiplies by $i$ once more: $i^1 = i$, $i^2 = -1$, $i^3 = -i$ and $i^4 = 1$, and then $i^5 = i$ starts the cycle over. So $i^n$ depends only on $n$ modulo $4$.
 
-Moduli multiply because conjugation respects products, $\overline{zw} = \bar z\,\bar w$, which you can check by expanding both sides. Then $$|zw|^2 = zw\,\overline{zw} = z\bar z\,w\bar w = |z|^2|w|^2.$$ Written out in real numbers this is the [[brahmagupta-fibonacci|Brahmagupta–Fibonacci identity]], $(a^2 + b^2)(c^2 + d^2) = (ac - bd)^2 + (ad + bc)^2$.
+Moduli multiply because conjugation respects products, $\overline{zw} = \bar z\,\bar w$, which you can check by expanding both sides. Then $$|zw|^2 = zw\,\overline{zw} = z\bar z\,w\bar w = |z|^2|w|^2.$$ Written out in real numbers this is the [[brahmagupta-fibonacci|Brahmagupta–Fibonacci Identity]], $(a^2 + b^2)(c^2 + d^2) = (ac - bd)^2 + (ad + bc)^2$.
 
 ## How to use it
 Division means multiplying the top and bottom by the conjugate of the bottom, which turns the denominator into the real number $|z|^2$. Powers of $i$ reduce by taking the exponent modulo $4$. And modulus conditions become algebra through $$|z|^2 = z\bar z, \qquad z + \bar z = 2\operatorname{Re}(z), \qquad z - \bar z = 2i\operatorname{Im}(z);$$ in particular $z$ is real exactly when $z = \bar z$.
@@ -752,12 +752,12 @@ The key step is a product of two such numbers. Using $i^2 = -1$, $$(\cos\alpha +
 
 Now apply that repeatedly. Each further factor of $\cos\theta + i\sin\theta$ adds $\theta$ to the angle, so after $n$ factors the angle is $n\theta$, which is the theorem for every positive integer $n$. For negative $n$, the reciprocal of $\cos\theta + i\sin\theta$ is its conjugate $\cos(-\theta) + i\sin(-\theta)$, so the theorem holds for every integer $n$.
 
-With [[eulers-formula|Euler's formula]] $e^{i\theta} = \cos\theta + i\sin\theta$ it is simply the exponent law $\left(e^{i\theta}\right)^n = e^{in\theta}$.
+With [[eulers-formula|Euler's Formula]] $e^{i\theta} = \cos\theta + i\sin\theta$ it is simply the exponent law $\left(e^{i\theta}\right)^n = e^{in\theta}$.
 
 ## How to use it
 Forward, it computes powers without expanding: write the base in polar form, raise the modulus to the $n$th power and multiply the angle by $n$. For $(1 + i)^{20}$, the modulus is $\sqrt2$ and the angle $45^\circ$, and $900^\circ$ is $180^\circ$ plus full turns: $$(1 + i)^{20} = \left(\sqrt2\right)^{20}\left(\cos 900^\circ + i\sin 900^\circ\right) = -2^{10}.$$
 
-Backward is the richer direction. Expand $(\cos\theta + i\sin\theta)^3$ with [[binomial-theorem|the binomial theorem]] and match the real part with $\cos 3\theta$: the real part is $\cos^3\theta - 3\cos\theta\sin^2\theta$, and replacing $\sin^2\theta$ by $1 - \cos^2\theta$ gives $$\cos 3\theta = 4\cos^3\theta - 3\cos\theta.$$ The same move gives $\tan n\theta$ as a rational function of $\tan\theta$.
+Backward is the richer direction. Expand $(\cos\theta + i\sin\theta)^3$ with the Binomial Theorem and match the real part with $\cos 3\theta$: the real part is $\cos^3\theta - 3\cos\theta\sin^2\theta$, and replacing $\sin^2\theta$ by $1 - \cos^2\theta$ gives $$\cos 3\theta = 4\cos^3\theta - 3\cos\theta.$$ The same move gives $\tan n\theta$ as a rational function of $\tan\theta$.
 
 ## On contests
 Never the whole problem, none of the 17 tagged here, and most often paired with [[roots-of-unity|roots of unity]] (6 problems), since the $n$th roots of unity are exactly the numbers whose angles De Moivre multiplies back to a full turn. AIME trig identities that seem to come from nowhere are usually De Moivre expansions, and it is also the fastest way to evaluate a large power of a complex number such as $(1 + i)^{20}$.
@@ -767,9 +767,9 @@ Never the whole problem, none of the 17 tagged here, and most often paired with 
 ## Why it works
 A root of $z^n = 1$ must have length $1$, and its angle must come back to a whole number of turns after $n$ steps, which leaves exactly $n$ equally spaced points.
 
-Write $z = r(\cos\theta + i\sin\theta)$. By [[de-moivre|De Moivre's theorem]], $z^n$ has length $r^n$ and angle $n\theta$. For $z^n = 1$ the length must be $1$, so $r = 1$, and the angle $n\theta$ must be a whole number of turns, $2\pi k$, so $$\theta = \frac{2\pi k}{n}.$$ The values $k = 0, 1, \ldots, n - 1$ give $n$ different points, and every other $k$ repeats one of them, as the figure at the top shows.
+Write $z = r(\cos\theta + i\sin\theta)$. By [[de-moivre|De Moivre's Theorem]], $z^n$ has length $r^n$ and angle $n\theta$. For $z^n = 1$ the length must be $1$, so $r = 1$, and the angle $n\theta$ must be a whole number of turns, $2\pi k$, so $$\theta = \frac{2\pi k}{n}.$$ The values $k = 0, 1, \ldots, n - 1$ give $n$ different points, and every other $k$ repeats one of them, as the figure at the top shows.
 
-Since $x^n - 1$ has degree $n$ and these are $n$ distinct roots, they are all of its roots, and $$x^n - 1 = \prod_{k=0}^{n-1}(x - \omega^k).$$ [[vietas-general|Vieta's formulas]] then read their sum from the missing $x^{n-1}$ term, which gives $0$ when $n \gt 1$, and their product from the constant term, $(-1)^n \cdot (-1) = (-1)^{n+1}$. The zero sum has a picture too: the points are balanced around the center, so their average is the center.
+Since $x^n - 1$ has degree $n$ and these are $n$ distinct roots, they are all of its roots, and $$x^n - 1 = \prod_{k=0}^{n-1}(x - \omega^k).$$ Vieta's Formulas then read their sum from the missing $x^{n-1}$ term, which gives $0$ when $n \gt 1$, and their product from the constant term, $(-1)^n \cdot (-1) = (-1)^{n+1}$. The zero sum has a picture too: the points are balanced around the center, so their average is the center.
 
 ## How to use it
 Evaluate the factorization at a chosen point to turn a product over the roots into a number. Dividing out the factor $x - 1$ leaves $1 + x + \cdots + x^{n-1} = \prod_{k=1}^{n-1}(x - \omega^k)$, and at $x = 1$ this gives $\prod_{k=1}^{n-1}(1 - \omega^k) = n$: the product of the distances from one vertex of the polygon to all the others is $n$. Evaluating at $x = -1$ gives the alternating versions.
@@ -777,12 +777,12 @@ Evaluate the factorization at a chosen point to turn a product over the roots in
 Powers of a fixed root recycle with period $n$, so exponents live modulo $n$. And summing $\omega^{jk}$ over all $k$ gives $n$ when $n$ divides $j$ and $0$ otherwise, which is [[roots-of-unity-filter|the filter]] that picks out every $n$th coefficient of a polynomial.
 
 ## On contests
-An AIME staple, with 17 problems tagged here and only 1 solved by the roots alone; the usual partner is [[de-moivre|De Moivre's theorem]] (6 problems), which locates the roots in the first place. The recurring uses are evaluating a polynomial at every root and multiplying the values, symmetric sums over the vertices of a regular polygon, and periodicity arguments. Seeing the regular $n$-gon as the $n$th roots converts polygon geometry into algebra.
+An AIME staple, with 17 problems tagged here and only 1 solved by the roots alone; the usual partner is De Moivre's Theorem (6 problems), which locates the roots in the first place. The recurring uses are evaluating a polynomial at every root and multiplying the values, symmetric sums over the vertices of a regular polygon, and periodicity arguments. Seeing the regular $n$-gon as the $n$th roots converts polygon geometry into algebra.
 `,
 
 "roots-of-unity-filter": String.raw`
 ## Key forms
-- $\frac1n\alt{\sum_{j=0}^{n-1} f(\omega^j)}{\left(f(1) + f(\omega) + \cdots + f(\omega^{n-1})\right)}$ — averaging a [[generating-function-method|generating function]] over the $n$th [[roots-of-unity|roots of unity]] keeps exactly the coefficients whose index is divisible by $n$
+- $\frac1n\alt{\sum_{j=0}^{n-1} f(\omega^j)}{\left(f(1) + f(\omega) + \cdots + f(\omega^{n-1})\right)}$ — averaging a [[generating-function-method|generating function]] over the $n$th roots of unity keeps exactly the coefficients whose index is divisible by $n$
 - $\alt{\sum_{k\equiv r\,(n)}[x^k]f(x)=\frac1n\sum_{j=0}^{n-1}\omega^{-jr}f(\omega^j)}{[x^r]f + [x^{r+n}]f + [x^{r+2n}]f + \cdots = \frac1n\left(f(1) + \omega^{-r}f(\omega) + \cdots + \omega^{-(n-1)r}f(\omega^{n-1})\right)}$ — the phase factor $\omega^{-jr}$ selects any residue class, the form to write when the problem names a specific remainder
 - $\frac{f(1) + f(-1)}{2}$ and $\frac{f(1) + f(\omega) + f(\omega^2)}{3}$ — the cases $n = 2$ and $n = 3$, which cover almost every contest use
 
@@ -801,7 +801,7 @@ For every third binomial coefficient, $$\sum_{3 \mid k}\binom mk = \frac{(1 + 1)
 The case $n = 2$ needs only $f(1)$ and $f(-1)$, as in the example, and $n = 4$ uses $\pm1$ and $\pm i$. Most contest problems are one of these three.
 
 ## On contests
-Four problems here, two AIME, one AMC 12 and one AMC 10, one solved by it alone. The typical question counts subsets whose sum is divisible by $3$, filtering $\prod(1 + x^k)$ at the cube roots of unity; harder ones read a multisection as a reduction modulo $x^n - 1$ and finish with [[fermats-little-theorem|Fermat's little theorem]]. The simplest case, $n = 2$, is a count by parity.`,
+Four problems here, two AIME, one AMC 12 and one AMC 10, one solved by it alone. The typical question counts subsets whose sum is divisible by $3$, filtering $\prod(1 + x^k)$ at the cube roots of unity; harder ones read a multisection as a reduction modulo $x^n - 1$ and finish with [[fermats-little-theorem|Fermat's Little Theorem]]. The simplest case, $n = 2$, is a count by parity.`,
 
 "roots-unity-distance-product": String.raw`
 ## Why it works
@@ -823,12 +823,12 @@ For products of sines at equally spaced angles, pair $\sin\frac{k\pi}{n}$ with $
 When the point is on the circle but not at a vertex, the product depends on where it is, which is [[ngon-vertex-distance-product|the product from a general point]]; other spacings of sines and cosines are on [[evenly-spaced-angle-products|evenly spaced angle products]].
 
 ## On contests
-Three problems here, all AIME, none solved by it alone. The factors $1 - \omega^k$ come from a polynomial whose roots are roots of unity, or appear as chord lengths in a regular polygon, and the product is finished with [[de-moivre|De Moivre's theorem]] or a [[double-angle|double-angle]] identity that simplifies what it leaves.
+Three problems here, all AIME, none solved by it alone. The factors $1 - \omega^k$ come from a polynomial whose roots are roots of unity, or appear as chord lengths in a regular polygon, and the product is finished with [[de-moivre|De Moivre's Theorem]] or a [[double-angle|double-angle]] identity that simplifies what it leaves.
 `,
 
 "pythagorean-identities": String.raw`
 ## Why it works
-The point at angle $\theta$ on the unit circle is $(\cos\theta, \sin\theta)$, and its distance from the center is $1$, so the [[pythagorean-theorem|Pythagorean theorem]] gives $\cos^2\theta + \sin^2\theta = 1$.
+The point at angle $\theta$ on the unit circle is $(\cos\theta, \sin\theta)$, and its distance from the center is $1$, so the Pythagorean Theorem gives $\cos^2\theta + \sin^2\theta = 1$.
 
 Dividing that equation by $\cos^2\theta$, where it is not zero, gives $1 + \tan^2\theta = \sec^2\theta$; dividing by $\sin^2\theta$ gives $\cot^2\theta + 1 = \csc^2\theta$. The second identity can also be seen directly: extending the radius to the tangent line $x = 1$ makes a right triangle with legs $1$ and $\tan\theta$ and hypotenuse $\sec\theta$.
 
@@ -843,14 +843,26 @@ The squaring trick is a favorite. If $\sin\theta + \cos\theta = k$, squaring giv
 Six problems here, five of them AIME, one solved by it alone; two combine it with [[log-rules|logarithm rules]], in problems that give logarithms of $\sin x$ and $\cos x$. The sum-and-product squaring trick is a permanent AMC favorite.
 `,
 
-"common-angle-values": String.raw`## Why it works
-The [[special-right-triangles|two special right triangles]] — legs $1$ with hypotenuse $\sqrt2$, and sides $1, \sqrt3, 2$ — give the values directly as opposite/hypotenuse and adjacent/hypotenuse. The $0^\circ$ and $90^\circ$ entries are the degenerate limits on the unit circle, where $\tan 90^\circ$ blows up (undefined).
+"common-angle-values": String.raw`
+## Why it works
+The values come from the two [[special-right-triangles|special right triangles]], read as opposite over hypotenuse and adjacent over hypotenuse. The $45$-$45$-$90$ triangle with legs $1$ has hypotenuse $\sqrt2$, so $\sin 45^\circ = \cos 45^\circ = \frac{\sqrt2}{2}$. Half an equilateral triangle of side $2$ has sides $1$, $\sqrt3$ and $2$, which gives $\sin 30^\circ = \cos 60^\circ = \frac12$ and $\sin 60^\circ = \cos 30^\circ = \frac{\sqrt3}{2}$.
+
+The table is easy to rebuild: the sines of $0^\circ$, $30^\circ$, $45^\circ$, $60^\circ$ and $90^\circ$ are $$\frac{\sqrt0}{2},\ \frac{\sqrt1}{2},\ \frac{\sqrt2}{2},\ \frac{\sqrt3}{2},\ \frac{\sqrt4}{2},$$ and the cosines are the same list backwards, since $\cos\theta = \sin(90^\circ - \theta)$.
+
+On the unit circle the point at angle $\theta$ is $(\cos\theta, \sin\theta)$, so $0^\circ$ and $90^\circ$ are the points $(1, 0)$ and $(0, 1)$, and $\tan 90^\circ = \frac10$ is undefined.
 
 ## How to use it
-Memorize the first quadrant once, then reach any angle by taking its reference angle to the $x$-axis and attaching the quadrant sign (ASTC). Know the radian conversions ($\frac{\pi}{6}, \frac{\pi}{4}, \frac{\pi}{3}$) cold — they are the default at AMC 12 / AIME level.
+For any angle, find its reference angle, the acute angle it makes with the $x$-axis, and attach the sign of its quadrant. The points at $\theta$, $180^\circ - \theta$, $180^\circ + \theta$ and $360^\circ - \theta$ are mirror images across the axes, so their coordinates differ only in sign.
+
+{{figure:reference}}
+
+So $\sin 150^\circ = \sin 30^\circ = \frac12$, $\cos 225^\circ = -\cos 45^\circ = -\frac{\sqrt2}{2}$ and $\tan 300^\circ = -\tan 60^\circ = -\sqrt3$. The signs follow the mnemonic ASTC: all three functions are positive in the first quadrant, sine in the second, tangent in the third and cosine in the fourth.
+
+In radians the angles are $\frac\pi6$, $\frac\pi4$, $\frac\pi3$ and $\frac\pi2$, the default at the AMC 12 and AIME. Other exact values come from these through the [[angle-addition|angle addition formulas]], such as $\sin 15^\circ = \sin(45^\circ - 30^\circ) = \frac{\sqrt6 - \sqrt2}{4}$.
 
 ## On contests
-Pure speed: these sit inside nearly every trig computation on the AMC, and the reference-angle-plus-sign routine handles $120^\circ, 135^\circ, 210^\circ$, and the rest without re-deriving anything.`,
+Two problems here, both AIME, one solved by it alone; the other works on the unit circle with [[de-moivre|De Moivre's Theorem]]. The AIME uses them to locate points on the unit circle and to solve $\sin\alpha = \sin\beta$ by reflecting across the vertical axis, and on the AMC they sit inside nearly every trigonometric computation.
+`,
 
 "reduction-identities": String.raw`## Why it works
 Everything is a unit-circle reflection. Reflecting across $y = x$ swaps coordinates, giving the cofunction pair $\sin(90^\circ - \theta) = \cos\theta$. Reflecting across the $x$-axis negates $y$ (so $\sin$ is odd) and fixes $x$ (so $\cos$ is even). Reflecting across the $y$-axis is the supplement $180^\circ - \theta$: $y$ stays, $x$ flips, so $\sin$ is preserved and $\cos$ negates.
@@ -874,7 +886,7 @@ Without complex numbers, draw it. Put a right triangle $OQP$ with hypotenuse $OP
 The difference formulas follow by replacing $b$ with $-b$, using $\cos(-b) = \cos b$ and $\sin(-b) = -\sin b$. Dividing the sine formula by the cosine formula, then dividing the top and bottom by $\cos a\cos b$, gives the tangent formula.
 
 ## How to use it
-Nearly everything else in trigonometry is downstream. [[double-angle|Double angle]] is the case $a = b$, half angle is double angle read backwards, and shifts like $\sin(\theta + 90^\circ) = \cos\theta$ are the case $b = 90^\circ$. Used directly, the formulas give exact values at $15^\circ$, $75^\circ$ and $105^\circ$ as sums and differences of $30^\circ$, $45^\circ$ and $60^\circ$.
+Nearly everything else in trigonometry is downstream. Double angle is the case $a = b$, half angle is double angle read backwards, and shifts like $\sin(\theta + 90^\circ) = \cos\theta$ are the case $b = 90^\circ$. Used directly, the formulas give exact values at $15^\circ$, $75^\circ$ and $105^\circ$ as sums and differences of $30^\circ$, $45^\circ$ and $60^\circ$.
 
 Read backwards, they collapse a combination of sine and cosine into one wave, which is [[harmonic-addition|harmonic addition]]; its maximum is $\sqrt{a^2 + b^2}$.
 
@@ -893,7 +905,7 @@ A high-frequency AMC 12 and AIME shape whenever a trigonometric expression must 
 
 "double-angle": String.raw`
 ## Why it works
-Doubling an angle is adding it to itself, so each formula is an [[angle-addition|angle addition formula]] with the two angles equal.
+Doubling an angle is adding it to itself, so each formula is an angle addition formula with the two angles equal.
 
 Put $\alpha = \beta = \theta$ into $$\sin(\alpha + \beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta$$ and into its companions for cosine and tangent. Each one collapses: $$\sin 2\theta = 2\sin\theta\cos\theta, \qquad \cos 2\theta = \cos^2\theta - \sin^2\theta, \qquad \tan 2\theta = \frac{2\tan\theta}{1 - \tan^2\theta}.$$
 
@@ -915,7 +927,7 @@ Read backwards, the formulas lower powers. Power reduction turns $\sin^2\theta$ 
 Halving works the same way in reverse: $\cos\theta = 2\cos^2\frac\theta2 - 1$ gives $\cos\frac\theta2$ from $\cos\theta$ up to sign, which is how chains of half angles are unwound.
 
 ## On contests
-Eleven problems here, ten of them AIME, and one solved by it alone. It usually converts an angle the figure gives into the doubled or halved angle another formula needs, next to the [[law-of-cosines|law of cosines]], a [[chord-length|chord length]] or an [[inradius-area|inradius]] computation. Watch for an angle bisector or an inscribed angle, both of which put an angle and its double in the same figure. Power reduction appears in AIME sums of squared trigonometric values.
+Eleven problems here, ten of them AIME, and one solved by it alone. It usually converts an angle the figure gives into the doubled or halved angle another formula needs, next to the [[law-of-cosines|Law of Cosines]], a [[chord-length|chord length]] or an [[inradius-area|inradius]] computation. Watch for an angle bisector or an inscribed angle, both of which put an angle and its double in the same figure. Power reduction appears in AIME sums of squared trigonometric values.
 `,
 
 "half-angle": String.raw`
@@ -924,7 +936,7 @@ They are the double angle formulas with $\theta$ in place of $2\theta$, solved f
 
 From $\cos\theta = 1 - 2\sin^2\frac\theta2$ and $\cos\theta = 2\cos^2\frac\theta2 - 1$, solving for the squares gives the first two formulas. For the tangent, divide $\sin\theta = 2\sin\frac\theta2\cos\frac\theta2$ by $1 + \cos\theta = 2\cos^2\frac\theta2$: $$\frac{\sin\theta}{1 + \cos\theta} = \frac{2\sin\frac\theta2\cos\frac\theta2}{2\cos^2\frac\theta2} = \tan\frac\theta2.$$
 
-The tangent form also has a picture. On the unit circle, the angle at $(-1, 0)$ that looks at the arc from $(1, 0)$ to $(\cos\theta, \sin\theta)$ is $\frac\theta2$, by the [[inscribed-angle-theorem|inscribed angle theorem]], and the line from $(-1, 0)$ to that point has slope $\frac{\sin\theta}{1 + \cos\theta}$.
+The tangent form also has a picture. On the unit circle, the angle at $(-1, 0)$ that looks at the arc from $(1, 0)$ to $(\cos\theta, \sin\theta)$ is $\frac\theta2$, by the [[inscribed-angle-theorem|Inscribed Angle Theorem]], and the line from $(-1, 0)$ to that point has slope $\frac{\sin\theta}{1 + \cos\theta}$.
 
 {{figure:inscribed}}
 
@@ -934,7 +946,7 @@ Repeated halving gives exact values: $$\cos 22.5^\circ = \sqrt{\frac{1 + \cos 45
 In triangle problems prefer the radical-free tangent forms. The incircle gives $\tan\frac A2 = \frac{r}{s - a}$, because the incenter, the vertex $A$ and the point where the incircle touches $AB$ form a right triangle with legs $r$ and $s - a$; [[half-angle-tangent-identity|the half-angle tangent identity]] develops this.
 
 ## On contests
-Five problems here, split between AMC and AIME, none by it alone; two use [[tangent-facts|tangent lengths]] with the incircle form above, and two follow the [[law-of-cosines|law of cosines]], which produces $\cos\theta$ when the problem needs the half angle.
+Five problems here, split between AMC and AIME, none by it alone; two use [[tangent-facts|tangent lengths]] with the incircle form above, and two follow the [[law-of-cosines|Law of Cosines]], which produces $\cos\theta$ when the problem needs the half angle.
 `,
 
 "product-sum": String.raw`
@@ -953,11 +965,11 @@ Turn products into sums to make a series telescope. Multiplying $\sin\theta + \s
 Turn sums into products to solve equations: $\sin x + \sin 3x = 0$ becomes $2\sin 2x\cos x = 0$, which splits into $\sin 2x = 0$ or $\cos x = 0$. A single product can also be evaluated directly: $$\sin 75^\circ \sin 15^\circ = \frac12(\cos 60^\circ - \cos 90^\circ) = \frac14.$$
 
 ## On contests
-Six problems here, all AIME, none by it alone: two feed a [[telescoping|telescoping sum]] such as $\sum \sin k^\circ$, and two simplify a [[law-of-cosines|law of cosines]] computation involving several angles. When an equation mixes sines or cosines of different multiples of $\theta$, sum-to-product is the standard first step.
+Six problems here, all AIME, none by it alone: two feed a [[telescoping|telescoping sum]] such as $\sum \sin k^\circ$, and two simplify a [[law-of-cosines|Law of Cosines]] computation involving several angles. When an equation mixes sines or cosines of different multiples of $\theta$, sum-to-product is the standard first step.
 `,
 
 "special-trig-values": String.raw`## Why it works
-$\sin 15^\circ$: angle subtraction $45^\circ - 30^\circ$. The $18^\circ/36^\circ$ family: the isosceles 36-72-72 triangle's self-similarity yields the [[golden-ratio-pentagon|golden ratio]], or solve $\sin 2\theta = \cos 3\theta$ at $\theta = 18^\circ$ as a cubic.
+$\sin 15^\circ$: angle subtraction $45^\circ - 30^\circ$. The $18^\circ/36^\circ$ family: the isosceles 36-72-72 triangle's self-similarity yields the golden ratio, or solve $\sin 2\theta = \cos 3\theta$ at $\theta = 18^\circ$ as a cubic.
 
 ## How to use it
 Recognize the family resemblances: anything with $\sqrt6 \pm \sqrt2$ is the $15^\circ/75^\circ$ family; anything with $\sqrt5$ is the $18^\circ/36^\circ$ (pentagon) family. Derive on demand from the two generator methods rather than memorizing all eight values.
@@ -1079,7 +1091,7 @@ AMC/AIME nested radicals and continued fractions are routine; the root-selection
 ## Why it works
 Multiplying a sum of two square roots by their difference squares each root away: $$(\sqrt a + \sqrt b)(\sqrt a - \sqrt b) = a - b.$$ So multiplying the top and bottom of $\frac1{\sqrt a + \sqrt b}$ by $\sqrt a - \sqrt b$ leaves $a - b$ in the denominator. When the numbers under the roots differ by $1$, the denominator is $1$ and the fraction becomes a plain difference, which is why sums of such fractions [[telescoping|telescope]].
 
-For the integrality trick, expand $(a + \sqrt b)^n$ and $(a - \sqrt b)^n$ with the [[binomial-theorem|binomial theorem]]. The terms with an odd power of $\sqrt b$ have opposite signs in the two expansions and cancel when the two are added, and the terms with an even power are integers. So the sum is an integer.
+For the integrality trick, expand $(a + \sqrt b)^n$ and $(a - \sqrt b)^n$ with the [[binomial-theorem|Binomial Theorem]]. The terms with an odd power of $\sqrt b$ have opposite signs in the two expansions and cancel when the two are added, and the terms with an even power are integers. So the sum is an integer.
 
 ## How to use it
 $\frac1{\sqrt5 - 2} = \frac{\sqrt5 + 2}{5 - 4} = \sqrt5 + 2$, and a telescoping sum collapses to its ends: $$\sum_{k=1}^{99}\frac1{\sqrt k + \sqrt{k + 1}} = \sqrt{100} - \sqrt1 = 9.$$
@@ -1087,7 +1099,7 @@ $\frac1{\sqrt5 - 2} = \frac{\sqrt5 + 2}{5 - 4} = \sqrt5 + 2$, and a telescoping 
 For the fractional part of a power like $(3 + \sqrt5)^n$: the conjugate $3 - \sqrt5$ lies between $0$ and $1$, so its $n$th power is small, and the two powers add to an integer $N$. So $(3 + \sqrt5)^n$ sits just below $N$, and its fractional part is $1 - (3 - \sqrt5)^n$.
 
 ## On contests
-Four problems here, all AIME, none by it alone; two lean on the [[difference-of-squares|difference of squares]] that the conjugate is built from. The conjugate-pair integrality trick is a favorite AIME device, as in "find the [[floor-basics|fractional part]] of $(\sqrt3 + \sqrt2)^6$", and telescoping radical sums appear at every level.
+Four problems here, all AIME, none by it alone; two lean on the [[difference-of-squares|difference of squares]] that the conjugate is built from. The conjugate-pair integrality trick is a favorite AIME device, as in "find the fractional part of $(\sqrt3 + \sqrt2)^6$", and telescoping radical sums appear at every level.
 
 ## Key forms
 - $\frac1{\sqrt a + \sqrt b} = \frac{\sqrt a - \sqrt b}{a - b}$ — multiply the top and bottom by the conjugate
@@ -1165,7 +1177,7 @@ Run the standard sequence, $(0, 0)$, then $(x, 0)$, then $(x, x)$ and $(x, -x)$,
 Guess the answer's form from the template, then use the substitutions to confirm it and find its constants; the problem usually asks for a value like $f(2)$ or the number of possible functions, not a full solution. If a substitution only rearranges the equation without removing anything, it is the wrong one: the aim is always to remove a variable.
 
 ## On contests
-Nine problems here, six of them AIME and three AMC 12, and four solved by it alone. The cosine equation above is a recurring AMC 12 shape, where the substitutions give $f(0) = 1$ and evenness, which settle the answer. On AIME the equation is often tied to polynomials, and [[vietas-general|Vieta's formulas]] or the [[factor-remainder-theorem|factor theorem]] finish the job once the substitutions have produced enough values.`
+Nine problems here, six of them AIME and three AMC 12, and four solved by it alone. The cosine equation above is a recurring AMC 12 shape, where the substitutions give $f(0) = 1$ and evenness, which settle the answer. On AIME the equation is often tied to polynomials, and [[vietas-general|Vieta's Formulas]] or the [[factor-remainder-theorem|Factor Theorem]] finish the job once the substitutions have produced enough values.`
 
 });
 
@@ -1189,21 +1201,21 @@ AMC 12 uses it to eliminate cases in "how many real solutions" problems; on AIME
 ## Why it works
 Each difference lowers the degree by exactly one, so after $k$ differences only a constant is left.
 
-For the top term, the binomial theorem gives $$(x + 1)^k - x^k = kx^{k-1} + (\text{lower terms}),$$ so $\Delta$ of a degree-$k$ polynomial has degree $k - 1$, with its leading coefficient multiplied by $k$. Doing this $k$ times leaves the constant $k!\,a_k$, where $a_k$ is the leading coefficient.
+For the top term, the Binomial Theorem gives $$(x + 1)^k - x^k = kx^{k-1} + (\text{lower terms}),$$ so $\Delta$ of a degree-$k$ polynomial has degree $k - 1$, with its leading coefficient multiplied by $k$. Doing this $k$ times leaves the constant $k!\,a_k$, where $a_k$ is the leading coefficient.
 
 {{figure:table}}
 
-Conversely, the table can be rebuilt from its left edge. Moving one step right in any row adds the entry below, so a shift is $1 + \Delta$, and $n$ shifts expand by the binomial theorem into Newton's forward formula, $$a_n = \sum_j \binom nj \Delta^j a_0.$$ If row $k$ is constant, every row below it is zero and the sum stops at $j = k$. Since $\binom nj$ is a polynomial in $n$ of degree $j$, the sequence is a polynomial of degree $k$.
+Conversely, the table can be rebuilt from its left edge. Moving one step right in any row adds the entry below, so a shift is $1 + \Delta$, and $n$ shifts expand by the Binomial Theorem into Newton's forward formula, $$a_n = \sum_j \binom nj \Delta^j a_0.$$ If row $k$ is constant, every row below it is zero and the sum stops at $j = k$. Since $\binom nj$ is a polynomial in $n$ of degree $j$, the sequence is a polynomial of degree $k$.
 
 ## How to use it
 Given consecutive values, build the table until a row is constant; the number of differencing steps it takes is the degree. To get more values, extend the constant row and add back up each diagonal, as in the figure. To get a formula, read the left edge into Newton's formula.
 
 The values must be at equally spaced inputs. If the inputs skip, as with $P(1)$, $P(2)$, $P(4)$, the table does not apply directly; use [[lagrange-interpolation|Lagrange interpolation]] instead.
 
-The table is also a quick test for a hidden polynomial. Sums, products of two arithmetic sequences, and counts that grow with a parameter often turn out to have constant second or third differences, and that one observation replaces a page of algebra.
+The table is also a quick test for a hidden polynomial. Sums, products of two [[arithmetic-series|arithmetic sequences]], and counts that grow with a parameter often turn out to have constant second or third differences, and that one observation replaces a page of algebra.
 
 ## On contests
-Four problems here, all AIME, two solved by it alone. The usual move is to spot a hidden polynomial: the term-by-term product of two [[arithmetic-series|arithmetic sequences]] is a quadratic, so three given terms extend by constant second differences, and some problems state the second differences outright. The converse also explains why a sum of a degree-$k$ polynomial over $1, \dots, n$ is a polynomial of degree $k + 1$: its differences are the degree-$k$ polynomial.`,
+Four problems here, all AIME, two solved by it alone. The usual move is to spot a hidden polynomial: the term-by-term product of two arithmetic sequences is a quadratic, so three given terms extend by constant second differences, and some problems state the second differences outright. The converse also explains why a sum of a degree-$k$ polynomial over $1, \dots, n$ is a polynomial of degree $k + 1$: its differences are the degree-$k$ polynomial.`,
 
 "cauchy-functional-equations": String.raw`## Why it works
 For additive $f$: build from $f(1)$ over integers, then rationals ($qf(p/q) = f(p)$); regularity (continuity/monotonicity/boundedness on an interval) forces the rational-linear behavior to extend to all reals. The other three templates reduce to the additive one via logarithms and exponentials (e.g. $g = \ln f$ turns multiplicative into additive).
@@ -1221,7 +1233,7 @@ Object.assign(window.MATH_DETAILS, {
 "root-transformations": String.raw`## Key forms
 - to build the polynomial whose roots are shifted, substitute backwards: roots $r_i+k$ come from $P(x-k)$, since $x$ is a root of the new polynomial exactly when $x-k$ was a root of the old — substitute the inverse map, not the map, which is the step most often done backwards
 - roots $kr_i$ come from $P\!\left(\frac xk\right)$, and roots $\frac{1}{r_i}$ come from reversing the coefficient list — the reversal works because $x^nP\!\left(\frac1x\right)$ has exactly the reciprocal roots
-- once the new polynomial is written down, [[vietas-general|Vieta]] reads off its symmetric functions directly, which is usually the point of transforming in the first place — the transformation is worth doing purely to make Vieta answer the question directly
+- once the new polynomial is written down, Vieta reads off its symmetric functions directly, which is usually the point of transforming in the first place — the transformation is worth doing purely to make Vieta answer the question directly
 
 ## Why it works
 If $y = g(r)$ for each root $r$ of $P$, then the values $r = g^{-1}(y)$ satisfy $P(g^{-1}(y)) = 0$ — substituting the inverse transformation produces a polynomial equation in $y$ whose roots are exactly the transformed values (clear denominators as needed).
@@ -1393,7 +1405,7 @@ Three standard deployments: (1) prove $\sum x^2 \ge \sum xy$ with equality analy
 AMC/AIME symmetric systems constantly hide the "$= 0$ forces equal" step; inequality problems use it as the base case of [[sos-method|SOS]] (sum-of-squares) arguments. Worth recognizing in both directions — expanded and factored.`,
 
 "useful-factorizations": String.raw`## Why it works
-$a^4 + a^2b^2 + b^4$: add and subtract $a^2b^2$ to reach $(a^2+b^2)^2 - (ab)^2$, then [[difference-of-squares|difference of squares]]. The cube identity expands directly, or via symmetry: the left side vanishes when $a = -b$ (etc.), so $(a+b)(b+c)(c+a)$ divides it, and degree/leading-coefficient comparison fixes the factor 3.
+$a^4 + a^2b^2 + b^4$: add and subtract $a^2b^2$ to reach $(a^2+b^2)^2 - (ab)^2$, then difference of squares. The cube identity expands directly, or via symmetry: the left side vanishes when $a = -b$ (etc.), so $(a+b)(b+c)(c+a)$ divides it, and degree/leading-coefficient comparison fixes the factor 3.
 
 ## How to use it
 $x^4 + x^2 + 1$ (and $x^8 + x^4 + 1$, iterated) show up in telescoping products and "factor this large number" problems — e.g. $n^4 + n^2 + 1 = (n^2+n+1)(n^2-n+1)$ with the bonus that $n^2 - n + 1 = (n-1)^2 + (n-1) + 1$, chaining consecutive values into telescoping fractions. The identity $(a+b)(b+c)(c+a) = (a+b+c)(ab+bc+ca) - abc$ converts products of pairwise sums into elementary symmetric data (Vieta-ready).
@@ -1422,7 +1434,7 @@ Common on AIME and olympiad algebra when a symmetric or cyclic quantity must be 
 "sum-zero-identities": String.raw`
 ## Key forms
 - $a^3+b^3+c^3 - 3abc = (a+b+c)(a^2+b^2+c^2-ab-bc-ca)$ — the parent factorization; setting the first factor to zero is what makes the whole card work
-- $p_k = -e_2\,p_{k-2} + e_3\,p_{k-3}$ — with $e_1 = 0$ Newton's sums collapse to this, and every higher power sum follows from it
+- $p_k = -e_2\,p_{k-2} + e_3\,p_{k-3}$ — with $e_1 = 0$ [[newtons-sums|Newton's Sums]] collapse to this, and every higher power sum follows from it
 - $p_5 = -5e_2e_3$, $p_7 = 7e_2^2e_3$ — the clean consequences, and the source of the power-sum ratios these problems ask for
 
 ## Why it works
@@ -1430,12 +1442,12 @@ Everything follows from the elementary symmetric values $e_1 = a + b + c = 0$, $
 
 Squaring $a + b + c = 0$ gives $a^2 + b^2 + c^2 + 2e_2 = 0$, which is the square identity. For cubes, the factorization $$a^3 + b^3 + c^3 - 3abc = (a + b + c)(a^2 + b^2 + c^2 - ab - bc - ca)$$ has a first factor of $0$, so $a^3 + b^3 + c^3 = 3abc$.
 
-Higher powers come from [[newtons-sums|Newton's sums]]. Each of $a$, $b$, $c$ is a root of $t^3 + e_2t - e_3$, so $t^3 = -e_2t + e_3$; multiplying by $t^{k-3}$ and adding over the three roots gives $$p_k = -e_2\,p_{k-2} + e_3\,p_{k-3},$$ where $p_k = a^k + b^k + c^k$. Starting from $p_0 = 3$, $p_1 = 0$ and $p_2 = -2e_2$, it produces $p_4 = 2e_2^2$, $p_5 = -5e_2e_3$ and $p_7 = 7e_2^2e_3$.
+Higher powers come from Newton's Sums. Each of $a$, $b$, $c$ is a root of $t^3 + e_2t - e_3$, so $t^3 = -e_2t + e_3$; multiplying by $t^{k-3}$ and adding over the three roots gives $$p_k = -e_2\,p_{k-2} + e_3\,p_{k-3},$$ where $p_k = a^k + b^k + c^k$. Starting from $p_0 = 3$, $p_1 = 0$ and $p_2 = -2e_2$, it produces $p_4 = 2e_2^2$, $p_5 = -5e_2e_3$ and $p_7 = 7e_2^2e_3$.
 
 ## How to use it
 The moment a problem states or implies $a + b + c = 0$, reach for the cube and square identities, and get higher powers from the recurrence.
 
-The zero sum is often hidden. The roots of a cubic with no $x^2$ term sum to $0$ by [[vietas-general|Vieta's formulas]], and the differences of any three numbers always sum to $0$, so for all $a$, $b$, $c$, $$(a - b)^3 + (b - c)^3 + (c - a)^3 = 3(a - b)(b - c)(c - a).$$ A shift creates one too: if $x + y + z = 3m$, then $x - m$, $y - m$ and $z - m$ sum to $0$.
+The zero sum is often hidden. The roots of a cubic with no $x^2$ term sum to $0$ by [[vietas-general|Vieta's Formulas]], and the differences of any three numbers always sum to $0$, so for all $a$, $b$, $c$, $$(a - b)^3 + (b - c)^3 + (c - a)^3 = 3(a - b)(b - c)(c - a).$$ A shift creates one too: if $x + y + z = 3m$, then $x - m$, $y - m$ and $z - m$ sum to $0$.
 
 ## On contests
 Three problems here, all AIME, none solved by it alone. The usual trigger is a cubic with no $x^2$ term, whose roots sum to $0$, so sums like $(r + s)^3 + (s + t)^3 + (t + r)^3$ collapse to $-3rst$. Others create the zero sum by shifting all three variables by their average, or force it from a symmetry of the problem.`,
@@ -1480,13 +1492,13 @@ The fastest tool for "maximize a symmetric sum of function values with a fixed s
 By symmetry assume $x \ge y \ge z$. Group the three terms as $(x - y)\big(x^t(x - z) - y^t(y - z)\big) + z^t(x - z)(y - z)$: every factor in both products is nonnegative under the ordering, so the whole sum is. This WLOG-and-group argument is the entire proof — no expansion needed.
 
 ## How to use it
-Deploy the $t = 1$ expansion $x^3 + y^3 + z^3 + 3xyz \ge \sum_{\text{cyc}} xy(x + y)$ when a symmetric degree-3 inequality has the "wrong direction" for AM–GM — the $+3xyz$ on the small side is Schur's signature, and no bunching argument produces it ([[muirheads-inequality|Muirhead]] can never yield it, since $(1,1,1)$ is majorized by everything). Useful normalized form: with $x + y + z = s$, $q = \sum xy$, $r = xyz$, the $t = 1$ case reads $s^3 + 9r \ge 4sq$. The $t = 2$ case handles degree-4 versions.
+Deploy the $t = 1$ expansion $x^3 + y^3 + z^3 + 3xyz \ge \sum_{\text{cyc}} xy(x + y)$ when a symmetric degree-3 inequality has the "wrong direction" for AM–GM — the $+3xyz$ on the small side is Schur's signature, and no bunching argument produces it (Muirhead can never yield it, since $(1,1,1)$ is majorized by everything). Useful normalized form: with $x + y + z = s$, $q = \sum xy$, $r = xyz$, the $t = 1$ case reads $s^3 + 9r \ge 4sq$. The $t = 2$ case handles degree-4 versions.
 
 ## On contests
 An olympiad tool: it settles many symmetric three-variable inequalities that resist AM–GM/Cauchy, and the $s, q, r$ form combines cleanly with $q^2 \ge 3sr$ and friends. Recognize its equality cases — $x = y = z$ and the degenerate $(k, k, 0)$ — as the tell that Schur (not Muirhead) is intended.`,
 
 "muirheads-inequality": String.raw`## Why it works
-[[karamata-inequality|Majorization]] means the exponent vector $(a)$ can be reached from $(b)$ by repeatedly moving two exponents apart ($(b_i, b_j) \to (b_i + \epsilon, b_j - \epsilon)$ with $b_i \ge b_j$). Each such move is a two-variable AM–GM-style smoothing step on the symmetric sum, so the more "spread out" exponent triple dominates. In fact every Muirhead inequality is a positive combination of weighted AM–GMs.
+Majorization means the exponent vector $(a)$ can be reached from $(b)$ by repeatedly moving two exponents apart ($(b_i, b_j) \to (b_i + \epsilon, b_j - \epsilon)$ with $b_i \ge b_j$). Each such move is a two-variable AM–GM-style smoothing step on the symmetric sum, so the more "spread out" exponent triple dominates. In fact every Muirhead inequality is a positive combination of weighted AM–GMs.
 
 ## How to use it
 Sort both exponent triples in decreasing order, then check the partial sums: $a_1 \ge b_1$, $a_1 + a_2 \ge b_1 + b_2$, $a_1 + a_2 + a_3 = b_1 + b_2 + b_3$. If all hold, $\sum_{\text{sym}}$ of the $a$-monomial dominates. Two standing warnings: it applies only to full symmetric sums — cyclic sums are not covered, so convert first and watch the factor of $2$ — and both sides must be homogeneous of the same degree (normalize the constraint, e.g. impose $xyz = 1$, to homogenize).
@@ -1517,14 +1529,14 @@ Object.assign(window.MATH_DETAILS, {
 ## Why it works
 An expression that does not change when $x$ and $y$ are swapped depends only on the pair $\{x, y\}$, and the pair is completely determined by its sum and its product.
 
-That second fact is [[vietas-general|Vieta's formulas]] in reverse: $x$ and $y$ are exactly the roots of $(t - x)(t - y) = t^2 - st + p$, so knowing $s$ and $p$ pins down the pair, and nothing is lost by the substitution.
+That second fact is Vieta's Formulas in reverse: $x$ and $y$ are exactly the roots of $(t - x)(t - y) = t^2 - st + p$, so knowing $s$ and $p$ pins down the pair, and nothing is lost by the substitution.
 
 The first fact, that every symmetric polynomial is a polynomial in $s$ and $p$, is the two-variable case of the [[symmetric-polynomial-strategies|fundamental theorem on symmetric polynomials]]. In practice it comes from a ladder: expanding the product on the right shows $$x^n + y^n = s\,(x^{n-1} + y^{n-1}) - p\,(x^{n-2} + y^{n-2}),$$ so each power sum is $s$ times the previous one minus $p$ times the one before. That gives $x^2 + y^2 = s^2 - 2p$, then $x^3 + y^3 = s(s^2 - 2p) - ps = s^3 - 3sp$, and so on.
 
 ## How to use it
 Rewrite the system in $s$ and $p$, solve it, then recover $x$ and $y$ from $t^2 - st + p = 0$. For $x + y = 5$ and $x^2 + y^2 = 13$: $s = 5$ and $s^2 - 2p = 13$ give $p = 6$, and $t^2 - 5t + 6 = 0$ has roots $2$ and $3$.
 
-If $x$ and $y$ must be real, check $s^2 \ge 4p$ at the end; a solution in $s$ and $p$ that fails it gives complex $x$ and $y$. A chain like $x + \frac1x = k$ is the case $p = 1$, where the whole ladder runs on $s$ alone: $x^2 + \frac1{x^2} = k^2 - 2$. For three variables, use $e_1, e_2, e_3$ and [[newtons-sums|Newton's sums]].
+If $x$ and $y$ must be real, check $s^2 \ge 4p$ at the end; a solution in $s$ and $p$ that fails it gives complex $x$ and $y$. A chain like $x + \frac1x = k$ is the case $p = 1$, where the whole ladder runs on $s$ alone: $x^2 + \frac1{x^2} = k^2 - 2$. For three variables, use $e_1, e_2, e_3$ and Newton's Sums.
 
 ## On contests
 Seven problems here, six of them AIME, one solved by it alone; the others use it inside a larger computation, from [[linear-recurrence|recurrences]] for power sums to trigonometric systems. The trigger is a system or expression that does not change when the variables are swapped: "given $x + y$ and $x^2 + y^2$, find $x^5 + y^5$" is a pure ladder climb.
@@ -1560,7 +1572,7 @@ In two variables, complete the square in $x$ and in $y$ separately. $x^2 + y^2 -
 It also opens inequalities: $a^2 - 2ab + 2b^2$ is $(a - b)^2 + b^2$, visibly nonnegative, and the [[trivial-inequality|trivial inequality]] finishes the argument. In number theory it turns "$n^2 + bn + c$ is a perfect square $m^2$" into a [[difference-of-squares|difference of squares]]: multiplying by $4$ gives $(2n + b)^2 - (2m)^2 = b^2 - 4c$, and the left side factors.
 
 ## On contests
-Eleven problems here, ten of them AIME, and one solved by it alone. The most common use is number-theoretic rather than algebraic: completing the square turns "$n^2 + bn + c$ is a perfect square" into a [[difference-of-squares|difference of squares]] equal to a constant, and then [[factor-pair-counting|factor pairs]] or [[bounding-diophantine|bounding]] finish it. The algebraic uses, minimum values and circle centers, are routine at AMC level.
+Eleven problems here, ten of them AIME, and one solved by it alone. The most common use is number-theoretic rather than algebraic: completing the square turns "$n^2 + bn + c$ is a perfect square" into a difference of squares equal to a constant, and then [[factor-pair-counting|factor pairs]] or [[bounding-diophantine|bounding]] finish it. The algebraic uses, minimum values and circle centers, are routine at AMC level.
 `,
 
 "abs-value-relations": String.raw`
@@ -1634,7 +1646,7 @@ Turn each absolute value into a distance or into two cases. To solve $|2x - 1| \
 The usual trap is a forgotten branch: $|x| \gt a$ has two rays, and $\sqrt{x^2}$ carries a sign. For nested absolute values, peel them from the outside by cases or graph and count, as in [[piecewise-graph-counting|counting solutions by graphing]]; with two variables, [[abs-value-relations|absolute value relations]] are graphed by symmetry.
 
 ## On contests
-Five problems here, mostly AMC, two solved by it alone; two others move on to [[abs-value-relations|regions in the plane]]. Distance readings, sums of distances and piecewise equations are the common forms on MATHCOUNTS and early AMC.
+Five problems here, mostly AMC, two solved by it alone; two others move on to regions in the plane. Distance readings, sums of distances and piecewise equations are the common forms on MATHCOUNTS and early AMC.
 `,
 
 "median-minimizes-abs": String.raw`## Key forms
@@ -1724,7 +1736,7 @@ Olympiad inequalities, especially symmetric ones whose extremum is at a boundary
 Taylor-expanding $(1+x)^\alpha$ gives $n$-th coefficient $\frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!} = \binom{\alpha}{n}$. For $\alpha = -k$, $\binom{-k}{n} = (-1)^n\binom{n+k-1}{n}$, and those signs cancel the $(-x)^n$ inside $\frac{1}{(1-x)^k}$, leaving the positive coefficients $\binom{n+k-1}{k-1}$ — the stars-and-bars count of $n$ as an ordered sum of $k$ nonnegative parts. Fractional exponents behave the same way: $\alpha=\tfrac12$ gives $\sqrt{1+x}=1+\frac x2-\frac{x^2}{8}+\cdots$, the standard route to approximating a square root by hand.
 
 ## How to use it
-This is the dictionary that turns [[generating-function-method|generating functions]] into numbers. Model unlimited repetition of $k$ item types by $\frac{1}{(1-x)^k}$ and read the $x^n$ coefficient as $\binom{n+k-1}{k-1}$. Multiply such factors (and finite pieces $\frac{1-x^{m+1}}{1-x}$ for bounded supply), expand, and extract the coefficient. Know $\frac{1}{1-x} = \sum x^n$ and $\frac{1}{(1-x)^2} = \sum (n+1)x^n$ cold.
+This is the dictionary that turns generating functions into numbers. Model unlimited repetition of $k$ item types by $\frac{1}{(1-x)^k}$ and read the $x^n$ coefficient as $\binom{n+k-1}{k-1}$. Multiply such factors (and finite pieces $\frac{1-x^{m+1}}{1-x}$ for bounded supply), expand, and extract the coefficient. Know $\frac{1}{1-x} = \sum x^n$ and $\frac{1}{(1-x)^2} = \sum (n+1)x^n$ cold.
 
 ## On contests
 The engine behind AIME/olympiad generating-function counts and every "number of nonnegative integer solutions" problem — it is [[stars-and-bars|stars and bars]], packaged to compose with other generating functions. For formal coefficient extraction, convergence never matters.`,
@@ -1733,7 +1745,7 @@ The engine behind AIME/olympiad generating-function counts and every "number of 
 The substitution $x = t - \frac{b}{3a}$ kills the quadratic term, leaving $t^3 + pt + q = 0$. Setting $t = u + v$ with $3uv + p = 0$ turns it into $u^3 + v^3 = -q$ and $u^3 v^3 = -\frac{p^3}{27}$, so $u^3, v^3$ are roots of a quadratic — giving the nested cube-root expression. The term under the inner square root is (up to a constant) the discriminant $\Delta = -4p^3 - 27q^2$.
 
 ## How to use it
-Depress the cubic, apply the formula, then add $-\frac{b}{3a}$ back. Read the discriminant to predict roots: $\Delta \lt  0$ → one real root the formula gives directly; $\Delta > 0$ → three real roots but via complex cube roots (casus irreducibilis), where the trig substitution $t = 2\sqrt{-p/3}\cos\theta$ is cleaner; $\Delta = 0$ → a repeated root. In practice, try the [[rational-root-theorem|rational root theorem]] and factoring first.
+Depress the cubic, apply the formula, then add $-\frac{b}{3a}$ back. Read the discriminant to predict roots: $\Delta \lt  0$ → one real root the formula gives directly; $\Delta > 0$ → three real roots but via complex cube roots (casus irreducibilis), where the trig substitution $t = 2\sqrt{-p/3}\cos\theta$ is cleaner; $\Delta = 0$ → a repeated root. In practice, try the Rational Root Theorem and factoring first.
 
 ## On contests
 Almost never the intended path — contest cubics are designed to factor. Worth knowing it exists (and the discriminant's root count is occasionally handy), but reach for rational roots, [[vietas-general|Vieta]], or a clever substitution before Cardano.`
@@ -1749,13 +1761,13 @@ $p \mapsto M_p$ is nondecreasing because $x \mapsto x^{p/q}$ is convex for $p > 
 Match the two exponents to your data: $M_2 \ge M_1$ compares $\sum a_i^2$ with $(\sum a_i)^2$; $M_1 \ge M_{-1}$ is AM–HM; $M_1 \ge M_0$ is AM–GM. When a problem mixes, say, cubes and first powers, quote the general $M_p \le M_q$ ($p \lt  q$) directly. It's often the cleanest finish after normalizing $n$ or $\sum a_i$.
 
 ## On contests
-The workhorse behind "compare these symmetric sums" inequalities on AIME and olympiad — it packages the whole [[mean-chain|QM–AM–GM–HM chain]] into one statement. Name the specific exponent step you use.`,
+The workhorse behind "compare these symmetric sums" inequalities on AIME and olympiad — it packages the whole QM–AM–GM–HM chain into one statement. Name the specific exponent step you use.`,
 
 "weighted-am-gm": String.raw`## Why it works
 It is Jensen for the concave logarithm: $\ln\!\big(\sum w_i a_i\big) \ge \sum w_i \ln a_i = \ln\!\big(\prod a_i^{w_i}\big)$. Rational weights reduce to ordinary AM–GM by repeating terms; arbitrary weights follow by continuity.
 
 ## How to use it
-Choose weights to produce the exponents you want. To bound a product $\prod a_i^{c_i}$, take weights $w_i \propto c_i$ so the weighted GM is your product and the weighted AM is a sum you control — this is how targeted bounds like $a^3 + a^3 + b^3 \ge 3a^2 b$ are proved. It also proves Young's inequality and, through it, [[holders-inequality|Hölder]].
+Choose weights to produce the exponents you want. To bound a product $\prod a_i^{c_i}$, take weights $w_i \propto c_i$ so the weighted GM is your product and the weighted AM is a sum you control — this is how targeted bounds like $a^3 + a^3 + b^3 \ge 3a^2 b$ are proved. It also proves Young's inequality and, through it, Hölder.
 
 ## On contests
 Half of olympiad inequality work is picking good weights. Equal weights (plain AM–GM) handle symmetric sums; the weighted form is what unequal exponents demand. Equality iff all $a_i$ are equal.`,
@@ -1773,7 +1785,7 @@ Rare below olympiad level, and when it appears the polynomial is usually cycloto
 Summation by parts: substitute $a_k = A_k - A_{k-1}$ and reindex, exactly mirroring $\int u\,dv = uv - \int v\,du$. The boundary term $A_n b_n$ minus the sum of $A_k$ against the forward differences $b_{k+1} - b_k$ reconstructs the original sum.
 
 ## How to use it
-Use it when one factor has a clean partial sum $A_k$ (arithmetic, geometric, binomial) or the other is monotone. Sums such as $\sum k r^k$, $\sum k\binom{n}{k}$, and Dirichlet-type $\sum a_k/k$ all yield. When $b_k$ is monotone the transformed sum has one-signed terms — the mechanism behind the proofs of [[chebyshev-sum-inequality|Chebyshev's]] and [[karamata-inequality|Karamata's]] inequalities and Abel's convergence test.
+Use it when one factor has a clean partial sum $A_k$ (arithmetic, geometric, binomial) or the other is monotone. Sums such as $\sum k r^k$, $\sum k\binom{n}{k}$, and Dirichlet-type $\sum a_k/k$ all yield. When $b_k$ is monotone the transformed sum has one-signed terms — the mechanism behind the proofs of Chebyshev's and Karamata's inequalities and Abel's convergence test.
 
 ## On contests
 An olympiad and advanced-AIME tool for sums of products, and for turning an intractable sum into a telescoping or bounded one. The trigger is spotting that one factor telescopes or is monotone.`,
@@ -1796,7 +1808,7 @@ Object.assign(window.MATH_DETAILS, {
 - push the difference into the form $S_a(b-c)^2+S_b(c-a)^2+S_c(a-b)^2$, which is visibly non-negative once every coefficient is — this works because a symmetric expression vanishing at $a=b=c$ naturally reorganizes around the squared differences
 - when the coefficients are not all non-negative, the ordered test usually rescues it: assuming $a\ge b\ge c$, it suffices that $S_b\ge0$, $S_b+S_a\ge0$ and $S_b+S_c\ge0$ — ordering the variables is the standard rescue, and it is usually enough
 - the $uvw$ partner rewrites everything in $p=a+b+c$, $q=ab+bc+ca$, $r=abc$; with $p$ and $q$ fixed the expression is linear in $r$, so its extremes sit at the boundary, meaning it is enough to check the two shapes $b=c$ and $c=0$ — linearity in $r$ means the extremes sit at the boundary, which is where two variables become equal
-- keep [[schurs-inequality|Schur's inequality]] $p^3+9r\ge4pq$ on hand — it is the standard closer for the residual case neither method kills
+- keep [[schurs-inequality|Schur's Inequality]] $p^3+9r\ge4pq$ on hand — it is the standard closer for the residual case neither method kills
 
 ## Why it works
 Any symmetric expression in $a,b,c$ can be written in $p=a+b+c$, $q=ab+bc+ca$, $r=abc$, and with $p,q$ fixed it is linear — hence monotone — in $r$. So its extreme values sit where $r$ is extremal, and that boundary is exactly where two variables are equal or one is $0$. SOS is the complementary view: a difference that vanishes at $a=b=c$ usually reorganizes into a weighted sum of $(b-c)^2,(c-a)^2,(a-b)^2$, which is visibly nonnegative when the weights are.
@@ -1805,7 +1817,7 @@ Any symmetric expression in $a,b,c$ can be written in $p=a+b+c$, $q=ab+bc+ca$, $
 Try SOS first: expand $\text{LHS}-\text{RHS}$ and group it as $S_a(b-c)^2+S_b(c-a)^2+S_c(a-b)^2$. If every $S\ge 0$ you are done; if not, use the ordered test — assuming $a\ge b\ge c$, it suffices that $S_b\ge 0$, $S_b+S_a\ge 0$, and $S_b+S_c\ge 0$. If the grouping is ugly, switch to $uvw$: convert to $p,q,r$, fix $p,q$, and verify the inequality only at the two boundary shapes $b=c$ and $c=0$, since the extremum lives there.
 
 ## On contests
-Olympiad three-variable symmetric inequalities are the home turf: many "prove for positive reals" problems fall to one clean SOS grouping or a two-case $uvw$ boundary check. Keep Schur's inequality $p^3 + 9r \ge 4pq$ on hand to close the stubborn residual case.`,
+Olympiad three-variable symmetric inequalities are the home turf: many "prove for positive reals" problems fall to one clean SOS grouping or a two-case $uvw$ boundary check. Keep Schur's Inequality $p^3 + 9r \ge 4pq$ on hand to close the stubborn residual case.`,
 
 "max-product-fixed-sum": String.raw`## Why it works
 For a fixed sum, AM–GM makes the product largest when the parts are equal, so the ideal part is near $e\approx 2.718$ — and among integers $3$ beats $2$. Two local swaps pin the integer rule: a $1$ is always wasteful (merging it, $1+x \to (x+1)$, raises the product), and three $2$'s lose to two $3$'s (same sum $6$, but $8\lt 9$), so never keep more than two $2$'s.
@@ -1835,13 +1847,13 @@ Two moves. First, substitute $x=\cos\theta$ to evaluate stubborn polynomials or 
 Iterated maps like $x\mapsto 2x^2-1$ (which is $T_2$) and multiple-angle [[even-power-sin-cos-sums|cosine sums]] are the recurring AIME/olympiad uses; the minimax property answers the rarer "minimize the peak of a monic polynomial" question. Closely tied to the trig substitution $x=\cos\theta$.`,
 
 "lagranges-identity": String.raw`## Why it works
-Expand both sides. The product $\left(\sum a_i^2\right)\left(\sum b_j^2\right) = \sum_{i,j} a_i^2 b_j^2$ splits into the diagonal terms $\sum_i a_i^2 b_i^2$ and the off-diagonal $\sum_{i\ne j} a_i^2 b_j^2$. The squared [[vector-dot-product|dot product]] $\left(\sum a_i b_i\right)^2 = \sum_i a_i^2 b_i^2 + \sum_{i\ne j} a_i b_i a_j b_j$ shares the same diagonal. Subtracting, the diagonals cancel and the off-diagonal remainder pairs up: $a_i^2 b_j^2 + a_j^2 b_i^2 - 2 a_i b_i a_j b_j = (a_i b_j - a_j b_i)^2$ for each pair $i \lt j$. That is the right-hand side.
+Expand both sides. The product $\left(\sum a_i^2\right)\left(\sum b_j^2\right) = \sum_{i,j} a_i^2 b_j^2$ splits into the diagonal terms $\sum_i a_i^2 b_i^2$ and the off-diagonal $\sum_{i\ne j} a_i^2 b_j^2$. The squared dot product $\left(\sum a_i b_i\right)^2 = \sum_i a_i^2 b_i^2 + \sum_{i\ne j} a_i b_i a_j b_j$ shares the same diagonal. Subtracting, the diagonals cancel and the off-diagonal remainder pairs up: $a_i^2 b_j^2 + a_j^2 b_i^2 - 2 a_i b_i a_j b_j = (a_i b_j - a_j b_i)^2$ for each pair $i \lt j$. That is the right-hand side.
 
 ## How to use it
-Because the right side is a sum of squares it is $\ge 0$, which is exactly the [[cauchy-schwarz|Cauchy–Schwarz inequality]] — and it pins the equality case: every $a_i b_j - a_j b_i = 0$, i.e. the sequences are proportional. It also names the "defect" in Cauchy–Schwarz precisely, useful when you need not just $\le$ but how much slack there is. In three dimensions it is the vector identity $|\mathbf a|^2 |\mathbf b|^2 - (\mathbf a\cdot\mathbf b)^2 = |\mathbf a\times\mathbf b|^2$.
+Because the right side is a sum of squares it is $\ge 0$, which is exactly the Cauchy–Schwarz Inequality — and it pins the equality case: every $a_i b_j - a_j b_i = 0$, i.e. the sequences are proportional. It also names the "defect" in Cauchy–Schwarz precisely, useful when you need not just $\le$ but how much slack there is. In three dimensions it is the vector identity $|\mathbf a|^2 |\mathbf b|^2 - (\mathbf a\cdot\mathbf b)^2 = |\mathbf a\times\mathbf b|^2$.
 
 ## On contests
-The two-term case $(a^2+b^2)(c^2+d^2) = (ac-bd)^2 + (ad+bc)^2$ is the [[brahmagupta-fibonacci|Brahmagupta–Fibonacci identity]] — the workhorse for sum-of-two-squares problems and complex-number norms. The full identity itself is rarer, but it is the cleanest one-line proof of Cauchy–Schwarz and the tidiest way to argue an equality/proportionality condition.`,
+The two-term case $(a^2+b^2)(c^2+d^2) = (ac-bd)^2 + (ad+bc)^2$ is the Brahmagupta–Fibonacci Identity — the workhorse for sum-of-two-squares problems and complex-number norms. The full identity itself is rarer, but it is the cleanest one-line proof of Cauchy–Schwarz and the tidiest way to argue an equality/proportionality condition.`,
 
 "abs-value-graphing": String.raw`## Key forms
 - $f(|x|)$ — delete the graph for $x\lt 0$ and replace it with the mirror image of the $x\ge0$ half, so the result is always even and symmetric about the $y$-axis
@@ -1922,7 +1934,7 @@ Mostly olympiad and advanced algebra; the discriminant is everyday, while the re
 For a symmetric objective under a fixed constraint, moving two unequal variables toward their average (or toward a boundary) changes the objective monotonically by convexity or concavity; iterating drives every variable to be equal or extremal, so the optimum must sit there.
 
 ## How to use it
-To justify "equality when all variables are equal," show each smoothing step improves the objective without violating the constraint — then the extremum is the all-equal (or boundary) configuration. This is the rigorous backbone under many [[am-gm|AM-GM]] and [[jensens-inequality|Jensen]] guesses.
+To justify "equality when all variables are equal," show each smoothing step improves the objective without violating the constraint — then the extremum is the all-equal (or boundary) configuration. This is the rigorous backbone under many [[am-gm|AM-GM]] and Jensen guesses.
 
 ## On contests
 An olympiad inequality technique; when a symmetric max or min "obviously" occurs at equality, smoothing (or its [[sos-method|SOS]] / mixing-variables cousin) is how you prove it rather than assert it.`,
@@ -1959,10 +1971,10 @@ An AMC/AIME favorite for the golden-ratio radical and a classic olympiad curiosi
 - $\alt{\prod_i(a-r_i)}{(a-r_1)\cdots(a-r_n)}=\frac{P(a)}{a_n}$ — any product over the roots collapses to a single evaluation of $P$, which is the highest-leverage move available
 - $\alt{\prod_i(r_i^2+c^2)}{(r_1^2+c^2)\cdots(r_n^2+c^2)}=\frac{P(ci)\,P(-ci)}{a_n^{2}}$ — the same identity read at complex points, since $r^2+c^2=(r-ci)(r+ci)$; the answer comes out real, which is a useful check
 - $\alt{\sum_i\frac{1}{a-r_i}}{\frac{1}{a-r_1}+\cdots+\frac{1}{a-r_n}}=\frac{P'(a)}{P(a)}$ — the logarithmic derivative, which evaluates sums of reciprocals in one step
-- [[newtons-sums|Newton's sums]] turn the $e_k$ into power sums $\alt{\sum r_i^k}{r_1^k+\cdots+r_n^k}$ — the bridge whenever the target is a sum of powers rather than a product
+- [[newtons-sums|Newton's Sums]] turn the $e_k$ into power sums $\alt{\sum r_i^k}{r_1^k+\cdots+r_n^k}$ — the bridge whenever the target is a sum of powers rather than a product
 
 ## Why it works
-Permuting the roots does not change the polynomial, so anything built from its coefficients is symmetric in the roots. The theorem is the converse: every symmetric polynomial in $r_1, \ldots, r_n$ is a polynomial in the elementary symmetric sums $e_1, \ldots, e_n$, which [[vietas-general|Vieta's formulas]] identify with the coefficients.
+Permuting the roots does not change the polynomial, so anything built from its coefficients is symmetric in the roots. The theorem is the converse: every symmetric polynomial in $r_1, \ldots, r_n$ is a polynomial in the elementary symmetric sums $e_1, \ldots, e_n$, which Vieta's Formulas identify with the coefficients.
 
 The evaluation identities come from the factored form. $P(x) = a_n\prod(x - r_i)$ holds for every $x$, so substituting any number, real or complex, turns a product over the roots into a single value of $P$. For example $r^2 + 1 = (r - i)(r + i)$, so $$\prod_i\left(r_i^2 + 1\right) = \frac{P(i)\,P(-i)}{a_n^2}.$$
 
@@ -1971,14 +1983,14 @@ Work down a short ladder and stop at the first rung that applies.
 
 - Check that the expression is symmetric; if swapping two roots changes it, pair it with its partner to make a symmetric combination.
 - Read the elementary symmetric sums off the coefficients, and never solve for the roots.
-- For a sum of powers, climb from the $e_k$ with [[newtons-sums|Newton's sums]].
+- For a sum of powers, climb from the $e_k$ with Newton's Sums.
 - For a product over the roots, evaluate $P$ instead of expanding.
 - Otherwise expand into the $e_k$ by hand, as in $\sum r_i^2 = e_1^2 - 2e_2$.
 
 For $r, s, t$ the roots of $x^3 - 2x + 5$, the product $(r^2 + 1)(s^2 + 1)(t^2 + 1)$ is $P(i)P(-i) = (5 - 3i)(5 + 3i) = 34$, and no root is ever found. Sums of reciprocals use the logarithmic derivative, $\sum \frac1{a - r_i} = \frac{P'(a)}{P(a)}$.
 
 ## On contests
-Five problems here, four of them AIME, one solved by it alone; two finish with [[vietas-general|Vieta's formulas]] directly. The tell is a symmetric expression in roots that would be hopeless to find: ask whether it is symmetric, then whether it is a product, and reach for $P(i)P(-i)$ the moment you see $r^2 + 1$.
+Five problems here, four of them AIME, one solved by it alone; two finish with Vieta's Formulas directly. The tell is a symmetric expression in roots that would be hopeless to find: ask whether it is symmetric, then whether it is a product, and reach for $P(i)P(-i)$ the moment you see $r^2 + 1$.
 `,
 
 "even-power-sin-cos-sums": String.raw`## Why it works
@@ -2002,7 +2014,7 @@ The whole derivation rests on one identity connecting the roots of $z^n=1$ to co
 The $\omega^k$ are precisely the roots of $P(z) = \frac{z^n-1}{z-1} = 1+z+\cdots+z^{n-1}$, so $\sum_k \frac{1}{z-\omega^k} = \frac{P'(z)}{P(z)}$ and $\sum_k \frac{1}{(z-\omega^k)^2} = \left(\frac{P'}{P}\right)^{2} - \frac{P''}{P}$. Evaluating at $z=1$ needs only $P(1)=n$, $P'(1)=\sum_{j=1}^{n-1} j = \frac{n(n-1)}{2}$ and $P''(1)=\sum_{j=2}^{n-1} j(j-1) = \frac{n(n-1)(n-2)}{3}$, giving $\sum_k \frac{1}{(1-\omega^k)^2} = \frac{(n-1)^2}{4} - \frac{(n-1)(n-2)}{3}$. Setting the two expressions for the real part equal and solving yields $\sum\cot^2 = \frac{(n-1)(n-2)}{3}$. Finally $\csc^2 = \cot^2+1$ adds $n-1$ to the total, and $\frac{(n-1)(n-2)}{3} + (n-1) = \frac{n^2-1}{3}$.
 
 ## How to use it
-Recognize the shape first: a sum over $k=1,\dots,n-1$ of a trigonometric function of $k\pi/n$ is a sum over the nontrivial $n$th [[roots-of-unity|roots of unity]] in disguise, and the substitution above is the standard way in. The two results are worth storing as a pair, since $\csc^2 = \cot^2+1$ converts either into the other in one line and problems quote both.
+Recognize the shape first: a sum over $k=1,\dots,n-1$ of a trigonometric function of $k\pi/n$ is a sum over the nontrivial $n$th roots of unity in disguise, and the substitution above is the standard way in. The two results are worth storing as a pair, since $\csc^2 = \cot^2+1$ converts either into the other in one line and problems quote both.
 
 The identity $\frac{1}{1-\omega^k} = \frac12+\frac{i}{2}\cot\frac{k\pi}{n}$ is the reusable part. Taking real parts of $\sum\frac{1}{1-\omega^k} = \frac{n-1}{2}$ recovers $\sum\cot\frac{k\pi}{n}=0$, and pushing the same method to fourth powers gives $\sum\csc^4$, the next sum in the family.
 
@@ -2016,7 +2028,7 @@ Standard AIME fare whenever a problem asks for a closed form of $\sum\csc^2$ or 
 - $\deg Q = \deg f - m$ — when $m$ equals the degree, only the leading coefficient is left to find
 
 ## Why it works
-It is the [[factor-remainder-theorem|factor theorem]] applied to the right polynomial. The given points are not roots of $f$, but they are roots of $h(x) = f(x) - k$, which has the same degree and leading coefficient as $f$. So $h$ carries the factors $(x - a_i)$, and $f(x) = h(x) + k$.
+It is the [[factor-remainder-theorem|Factor Theorem]] applied to the right polynomial. The given points are not roots of $f$, but they are roots of $h(x) = f(x) - k$, which has the same degree and leading coefficient as $f$. So $h$ carries the factors $(x - a_i)$, and $f(x) = h(x) + k$.
 
 Nothing there used the fact that $k$ is a constant. If $f$ agrees with a polynomial $g$ at the points $a_i$, then $f - g$ vanishes at all of them, so $$f(x) - g(x) = (x - a_1)\cdots(x - a_m)\,Q(x).$$ Two values on a line give $g$ linear, which is the statement that the remainder of $f$ on division by $(x - a)(x - b)$ is the line through the two data points.
 
@@ -2040,7 +2052,7 @@ Three problems here, all AIME, none solved by it alone. The shapes are a polynom
 - $X^2-Y^2=(X-Y)(X+Y)$ — the shape to force; add and subtract whatever the square is missing
 - compare the actual middle term with the $2XY$ a perfect square would need — the gap is exactly what you add and subtract
 - $x^4+x^2+1=(x^2+1)^2-x^2$ — it factors only when that leftover is itself a square, which is why $x^4+3x^2+1$ does not
-- $a^4+4b^4=(a^2+2b^2)^2-(2ab)^2$ — the [[sophie-germain|Sophie Germain identity]], the same move with $Y=2ab$
+- $a^4+4b^4=(a^2+2b^2)^2-(2ab)^2$ — the Sophie Germain Identity, the same move with $Y=2ab$
 
 ## Why it works
 A quartic with no linear terms almost forms a perfect square. In $x^4 + x^2 + 1$ the outer terms $x^4$ and $1$ are the squares of $x^2$ and $1$, and a genuine square $(x^2+1)^2$ would need a middle term of $2x^2$. There is only $x^2$, so the expression is $(x^2+1)^2$ short by exactly $x^2$. Adding and subtracting that shortfall changes nothing but rewrites the expression as $(x^2+1)^2 - x^2$, and a difference of two squares always factors.
@@ -2083,12 +2095,12 @@ Look for a repeated logarithmic block, then name it.
 Finish with the two steps that are easy to skip: convert back with $x = b^{\,u}$ for every root, and test each candidate in the original equation, since the substitution can produce roots that violate the domain.
 
 ## On contests
-Three problems here, two AIME and one AMC 12, none solved by it alone. The common shapes are an equation that becomes a quadratic in $u$ after a change of base, and a system that one variable per logarithm turns into a [[symmetric-linear-system|symmetric linear system]]. When the question asks for the product of the solutions, $$x_1x_2 = b^{\,u_1 + u_2},$$ so the sum of the roots in $u$, from [[vietas-quadratic|Vieta's formulas]], is all that is needed.`,
+Three problems here, two AIME and one AMC 12, none solved by it alone. The common shapes are an equation that becomes a quadratic in $u$ after a change of base, and a system that one variable per logarithm turns into a [[symmetric-linear-system|symmetric linear system]]. When the question asks for the product of the solutions, $$x_1x_2 = b^{\,u_1 + u_2},$$ so the sum of the roots in $u$, from [[vietas-quadratic|Vieta's Formulas]], is all that is needed.`,
 
 "normalization": String.raw`## Key forms
 - $f(ta,tb,tc)=t^d f(a,b,c)$ — the definition of homogeneous of degree $d$; when it holds, only the ratios of the variables matter
 - normalize: fix one scale-sensitive quantity for free, setting $a+b+c=1$, or $abc=1$, or one length to $1$, whichever removes the most clutter — pick whichever constraint kills the most clutter, since all of them are equally valid
-- homogenize: replace each constant by the constraint raised to the power that levels the degrees, so $\frac13$ under $a+b+c=1$ becomes $\frac13(a+b+c)^2$ in a degree-$2$ inequality — this is what makes [[muirheads-inequality|Muirhead]] and [[schurs-inequality|Schur]] available, since both require every term to share a degree
+- homogenize: replace each constant by the constraint raised to the power that levels the degrees, so $\frac13$ under $a+b+c=1$ becomes $\frac13(a+b+c)^2$ in a degree-$2$ inequality — this is what makes Muirhead and Schur available, since both require every term to share a degree
 - check homogeneity before normalizing — on a non-homogeneous expression the scaling changes the two sides differently and the argument is simply invalid
 
 ## Why it works
@@ -2189,9 +2201,9 @@ When two people cover the same route, write the total-time equation for each and
 Watch for a leg whose distance is stated as a fraction of the whole, since that turns the distance equation into an identity and leaves the time equation carrying all the information.
 
 ## On contests
-Four problems here, all AIME, three solved by it alone: races with several stages, cyclists who stop for breaks, and travelers who take turns on one vehicle. The same shape covers walked then jogged, or rowed upstream and back. Sometimes one leg runs diagonally across a rectangle, and the [[pythagorean-theorem|Pythagorean theorem]] supplies its length.
+Four problems here, all AIME, three solved by it alone: races with several stages, cyclists who stop for breaks, and travelers who take turns on one vehicle. The same shape covers walked then jogged, or rowed upstream and back. Sometimes one leg runs diagonally across a rectangle, and the [[pythagorean-theorem|Pythagorean Theorem]] supplies its length.
 
-Three neighbors are close enough to confuse: [[average-speed|average speed]] is only total distance over total time, [[work-rates|combined work rates]] is simultaneous effort where rates genuinely do add, and [[relative-motion|relative motion]] is about closing speeds.
+Three neighbors are close enough to confuse: average speed is only total distance over total time, [[work-rates|combined work rates]] is simultaneous effort where rates genuinely do add, and [[relative-motion|relative motion]] is about closing speeds.
 `,
 
 
@@ -2222,7 +2234,7 @@ A matrix is a linear map written in coordinates, and the product is what you get
 The counting reading is the one worth having on sight. If $A$ is an adjacency matrix, $(A^n)_{ij}$ counts walks of length $n$ from $i$ to $j$, because the sum over $k$ is precisely "choose where the walk stood one step earlier". That is the engine inside [[transfer-matrix-method|the transfer matrix method]], and it converts a tiling or no-two-adjacent count into a matrix power. To evaluate that power, do not multiply $n$ times: either square repeatedly, or use [[eigenvalues-characteristic|the eigenvalues]] to get a closed form.
 
 ## On contests
-Matrices themselves are essentially never asked for on the AMC or AIME. They appear as the machinery under a counting card, which is why the useful fact is not how to multiply two matrices but what a matrix power means. If a problem gives a small state machine and asks for long-run counts, the matrix is available, but so is the linear recurrence it produces, and [[linear-recurrence|solving the recurrence]] is usually the shorter road.`,
+Matrices themselves are essentially never asked for on the AMC or AIME. They appear as the machinery under a counting card, which is why the useful fact is not how to multiply two matrices but what a matrix power means. If a problem gives a small state machine and asks for long-run counts, the matrix is available, but so is the [[linear-recurrence|linear recurrence]] it produces, and solving the recurrence is usually the shorter road.`,
 
 "cramers-rule": String.raw`## Why it works
 Replace column $i$ of $A$ by $\mathbf{b} = \sum_j x_j (\text{column } j)$ and expand using linearity in that column. Every term except the $j = i$ one has a repeated column and so contributes zero, leaving $\det A_i = x_i \det A$. The rule is therefore not a separate theorem, just [[determinant-basics|column linearity]] applied once.
@@ -2234,13 +2246,13 @@ It earns its keep when a problem asks for one unknown out of three and you would
 Roughly eighteen problems in this library's database solve a system somewhere in the middle of a solution, and almost none of them need a general method, because contest systems are small and usually structured. Treat Cramer as the fallback when the structure genuinely is not there, and check for the symmetric shape first.`,
 
 "eigenvalues-characteristic": String.raw`## Why it works
-$A\mathbf{v} = \lambda\mathbf{v}$ with $\mathbf{v} \ne \mathbf{0}$ says $(A - \lambda I)$ kills a nonzero vector, so its rows are dependent and its determinant vanishes. Expanding $\det(A - \lambda I)$ gives a degree-$n$ polynomial in $\lambda$ whose roots are exactly the eigenvalues. [[vietas-general|Vieta's formulas]] on that polynomial then hand you the two identities worth memorizing, since the coefficient of $\lambda^{n-1}$ is the trace and the constant term is the determinant.
+$A\mathbf{v} = \lambda\mathbf{v}$ with $\mathbf{v} \ne \mathbf{0}$ says $(A - \lambda I)$ kills a nonzero vector, so its rows are dependent and its determinant vanishes. Expanding $\det(A - \lambda I)$ gives a degree-$n$ polynomial in $\lambda$ whose roots are exactly the eigenvalues. [[vietas-general|Vieta's Formulas]] on that polynomial then hand you the two identities worth memorizing, since the coefficient of $\lambda^{n-1}$ is the trace and the constant term is the determinant.
 
 ## How to use it
-Use eigenvalues when you need $A^n$, not when you need $A$. If $A = PDP^{-1}$ with $D$ diagonal then $A^n = PD^nP^{-1}$, so each eigenvalue is simply raised to the $n$, and the entries of $A^n$ become a fixed combination of $\lambda_1^n, \ldots, \lambda_k^n$. That is the same shape as the closed form of [[linear-recurrence|a linear recurrence]], and it is not a coincidence: the characteristic polynomial of the transfer matrix is the characteristic equation of the recurrence.
+Use eigenvalues when you need $A^n$, not when you need $A$. If $A = PDP^{-1}$ with $D$ diagonal then $A^n = PD^nP^{-1}$, so each eigenvalue is simply raised to the $n$, and the entries of $A^n$ become a fixed combination of $\lambda_1^n, \ldots, \lambda_k^n$. That is the same shape as the closed form of a linear recurrence, and it is not a coincidence: the characteristic polynomial of the transfer matrix is the characteristic equation of the recurrence.
 
 ## On contests
-Olympiad-adjacent only, and it appears in this library as the machinery two cards already lean on. [[matrix-tree-theorem|The matrix-tree theorem]] states the spanning-tree count as a product of Laplacian eigenvalues, and [[transfer-matrix-method|the transfer matrix]] gets its recurrence from $\det(xI - M) = 0$. If you are reading either of those, this is the card that makes the sentence mean something.`,
+Olympiad-adjacent only, and it appears in this library as the machinery two cards already lean on. [[matrix-tree-theorem|The matrix-tree theorem]] states the spanning-tree count as a product of Laplacian eigenvalues, and the transfer matrix gets its recurrence from $\det(xI - M) = 0$. If you are reading either of those, this is the card that makes the sentence mean something.`,
 
 "symmetric-linear-system": String.raw`
 ## Key forms
@@ -2274,7 +2286,7 @@ The same move hides behind [[log-substitution|logarithms]], which become symmetr
 [[determinant-basics|Linearity in a row]] lets you split that row into its individual entries, and each piece leaves a determinant with a single nonzero entry in that row. Moving that entry to the corner by $i + j - 2$ adjacent swaps produces the sign $(-1)^{i+j}$, and what remains is the minor $M_{ij}$ with row $i$ and column $j$ deleted. Every row and every column gives the same answer, which is what makes the choice of expansion line free.
 
 ## How to use it
-Choose the row or column with the most zeros, since each zero deletes an entire minor unevaluated. If none has enough, manufacture them first: adding a multiple of one row to another leaves the determinant unchanged, so you can clear a row down to a single entry at no cost. For an indexed family of matrices the expansion is a derivation rather than an arithmetic step, since expanding $D_n$ along its first row leaves $D_{n-1}$ and, from the one off-diagonal term, $D_{n-2}$, converting the determinant into [[linear-recurrence|a linear recurrence]].
+Choose the row or column with the most zeros, since each zero deletes an entire minor unevaluated. If none has enough, manufacture them first: adding a multiple of one row to another leaves the determinant unchanged, so you can clear a row down to a single entry at no cost. For an indexed family of matrices the expansion is a derivation rather than an arithmetic step, since expanding $D_n$ along its first row leaves $D_{n-1}$ and, from the one off-diagonal term, $D_{n-2}$, converting the determinant into a linear recurrence.
 
 ## Key forms
 - one sparse row — expand there directly, ignoring every zero entry

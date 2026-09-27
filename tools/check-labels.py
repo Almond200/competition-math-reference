@@ -14,6 +14,8 @@ Findings (all must be zero):
   on-dot / on-stroke / on-faint-stroke / on-label   a label touches a dot, a line or a label
   off-canvas                                         a label leaves the viewBox
   far-move      tidyDiagram() had to carry a label more than 14px; place it in the figure instead
+  arrow-touch   an arrowhead's tip runs into a shape it is not drawn along (the substitution
+                arrow that stabbed the corner of the square it pointed at)
 
 Run:  python3 tools/check-labels.py      (about 30 seconds; exit 1 on any finding)
       Open http://127.0.0.1:<port>/tools/label-audit.html#show on a local server to SEE the

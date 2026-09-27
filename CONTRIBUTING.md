@@ -2,7 +2,7 @@
 
 > **Adding a card? Read [CONVENTIONS.md](CONVENTIONS.md) instead.** It is the short checklist:
 > the two legal field orders, the three required write-up headings, the mandatory example, the
-> diagram rule for geometry, and the duplicate check — each with the measurement across all 555
+> diagram rule for geometry, and the duplicate check — each with the measurement across all 556
 > cards that proves it, regenerable with `python3 tools/scan-conventions.py`. This file holds the
 > reasoning, the coverage-gap register and the per-year retag notes, which is why it is long.
 
@@ -16,11 +16,11 @@ reference rather than people editing it.
 `## On contests`, and optionally `## Key forms` and `## Full proof` (collapsed behind a button;
 see CONVENTIONS §2 for when one belongs). Do not invent another one; `scan-conventions.py` fails on
 any other heading. A card may gain or lose an optional block as its content changes. Census
-across 555 write-ups: Why it works 555, On contests 555, How to use it 555, Key forms 113.
+across 556 write-ups: Why it works 556, On contests 556, How to use it 556, Key forms 113.
 
 - **Key forms is not a default section.** It belongs to cards that are a technique or a bundle
-  of related statements, which in practice means methods and patterns: 93 of the 100 cards in
-  `patterns.js` have one, against 11 of the 418 in the subject files. A formula card whose latex
+  of related statements, which in practice means methods and patterns: 102 of the 108 cards in
+  `patterns.js` have one, against 11 of the 448 in the subject files. A formula card whose latex
   already shows the statement does not get one; put the material in the prose instead.
 - Key forms lists the shapes a technique takes, not examples of it. This is now gated:
   `scan-conventions.py` fails on a bullet that is mostly concrete digits. Exactly one existed
@@ -30,10 +30,11 @@ across 555 write-ups: Why it works 555, On contests 555, How to use it 555, Key 
   and then typeset by KaTeX, so `**like this**` reaches the reader as literal asterisks. (A
   widget caption in `js/geo-interactive.js` or `js/math-tools.js` is a different context: those
   are raw HTML strings and `<b>` there does render, which is the existing precedent.)
-- **Em dashes: a budget of about three per write-up, and prefer commas.** The ` — ` inside a
-  Key forms bullet is a structural separator and does not count. Measured house usage in prose
-  is a median of 2 and a 90th percentile of 3, with 77 write-ups using none, so four or more is
-  a signal to rewrite rather than a hard error.
+- **Em dashes: none in a rewritten card, and prefer commas everywhere.** The ` — ` inside a
+  Key forms bullet is a structural separator and does not count. The corpus measured a median
+  of 2 per write-up when this was first written; with 210 cards rewritten it is a median of 1,
+  a 90th percentile of 4, and 206 write-ups use none. The rewrite helper refuses an em dash in
+  any rewritten prose, so the remainder is on cards not yet reached.
 - **American spellings.** `center`, not `centre` (the corpus runs about 4:1 American, and the
   problem database was 100% American before it drifted). Likewise `-ize`, not `-ise`:
   `recognize`, `normalize`, `minimize`. That axis is messier — 221 `-ize` against 75 `-ise`, and
@@ -84,7 +85,24 @@ Each item here is something that has actually gone wrong, not a hypothetical.
    if you added or **renamed** a card, since the alias table is generated from card names and a
    rename leaves it stale; `--report` and review every candidate in context; then rebuild the
    index with the build venv at `~/Downloads/competition-math-buildenv/bin/python`, never the
-   system Python.
+   system Python. The full gate list, including `check-labels.py`, is CONVENTIONS §7.
+
+8. **Delete by exact span, never by pattern.** A merge removes the absorbed card's write-up and
+   example. A lazy regex ending in `` `,\n `` finds the end of an entry only when a comma follows
+   it, and the last entry of each `Object.assign` block has none, so the match runs into the next
+   block and takes the following entry with it. Two merges on 2026-09-27 each deleted a
+   neighbour's write-up this way, and the file still parsed. Locate the closing backtick by
+   index, and let `scan-conventions.py` (which now fails on a card with no write-up) confirm.
+
+9. **The example must use the card's method.** A correct answer by another route teaches the
+   other route. Write the example so the card's own step is the one that cracks it, choose the
+   simplest numbers that still need it, and do not reuse a neighbouring card's worked instance.
+
+10. **Merging a card is more than deleting it.** Fold its best content into the survivor's
+   write-up, point its problem tags at the survivor (a problem tagged with both keeps one), move
+   it out of every list and route, retarget any Connected formulas entry, and drop its search
+   eval queries onto the survivor. Then run every gate: `check-lists.py` catches a dangling list
+   id, `validate-problem-db.js` a dangling tag.
 
 
 ## Tagging a problem in the database
@@ -537,6 +555,19 @@ rather than only moving old ones:
 When a card moves into a new subsection, check the curated lists as well as the routes: see the
 duplicate-placement gate in CONVENTIONS &sect;9, which exists because this batch broke it.
 
+Merged and added on 2026-09-27. Each merge removed a card that said the same thing as another,
+not a card that was merely close:
+
+| removed | into | why |
+|---|---|---|
+| `digit-sum-mod-9` | `divisibility-rules` | both explained $10 \equiv 1 \pmod 9$ and $10 \equiv -1 \pmod{11}$; the survivor gained the extension of the rule for $11$ to $101$, $1001$ and the other factors of $10^k \pm 1$ |
+| `vp-factorial` | `legendres-formula` | the same formula for $v_p(n!)$ under two names; the survivor took the MATHCOUNTS level and all 12 problems |
+| `angle-bisector-reflection` | `perp-to-angle-bisector` | reflecting a vertex across a bisector is the construction that card already teaches |
+
+`linear-change-of-variables` (Methods, in the Transformations & Inversion cluster: $m = ax + by$,
+$n = cx + dy$ and the area factor $|ad - bc|$) and `polar-coordinates` (Geometry, after
+`circle-equation`) were added the same day.
+
 ## Writing a cross-link
 
 `linkifyCards` (`js/app.js:2324`) renders `[[id|label]]` with **`label` verbatim**. The visible
@@ -576,10 +607,17 @@ and it is worth knowing what it looked like so it is not reintroduced:
 
 ### Density and correctness
 
-- **One link per host card per target.** The generator enforces this within a run and across runs
-  (it seeds its `taken` set from the markup already in the body), which means **`--report` can
-  never surface a violation** — a hand-written duplicate is invisible to it. There were 30; they
-  are gone. Check with a one-off scan over `entries_of`, not with `--report`.
+- **One link per page per target, on the first mention.** The page is the description and the
+  write-up together; see CONVENTIONS §2 for the rule and its exemptions. The generator seeds its
+  `taken` set from the body and, since descriptions can carry links, from the description too, so
+  `--report` never proposes a second link. It can still propose a link on a body mention when the
+  description mentioned the card first; `scan-conventions.py` catches that (move the link up into
+  the description). The duplicates this rule was first written against, 30 of them, were removed
+  by hand; 52 more across description and body went in the 2026-09-27 pass that also moved 212
+  links to their first mention.
+- **Capitalization follows the words, not the link.** A named result (Fermat's Little Theorem,
+  the Law of Cosines) keeps its capitals linked or not; a technique or object (casework, the Euler
+  line) is lowercase mid-sentence. The scan enforces the named-result half.
 - **A link must point at the card that owns the idea**, which is the same standard as tagging a
   problem. Four links pointed at a near neighbour: "polar form" of a complex number at the
   projective `pole-polar` card, $v-e+f=2$ at the complex-numbers `eulers-formula` instead of
@@ -591,6 +629,14 @@ and it is worth knowing what it looked like so it is not reintroduced:
   `quadratic` and `pick`, and the two real links were hand-written.
 - A terse label is acceptable when it is established contest shorthand — `casework`, `CRT`,
   `Vieta`, `Ceva`, `AM-GM`, `LTE`. 163 of the links use one-word labels and most read correctly.
+
+### Links in descriptions (2026-09-27)
+
+The first mention of a card is often in the intro, so descriptions carry links. They render only
+on the card page: the grid shows the first two sentences of every card on a page that is itself a
+grid of links, and a link inside a link is both invalid HTML and a trap for the pointer. The split
+happens once, at load, in `js/app.js` (`descriptionLinked` for the card page, plain `description`
+for everything else), so no other code path had to change.
 
 ## Curated lists drift, and nothing used to notice
 
@@ -831,3 +877,23 @@ counting (2), the floor function (5), absolute value (5), and the twelvefold way
 already has cross-section topics for `generating-functions` and `functions` precisely because no
 subsection holds them — which is the argument that topics, not subsections, are the right home for
 these, and that the taxonomy may not need to change at all.
+
+## Learning features, and why Connected formulas looks like Related
+
+The reference began as a lookup: find the formula, read it, leave. From 2026-09-25 it is also
+meant to teach, and that changed what gets built. The card rewrite (CONVENTIONS §1 and §2) is the
+largest part: an intro that defines, a Why it works that argues step by step, figures inside the
+text wherever a picture explains, and an example that uses the card's own method. Around it:
+
+- **Flashcards** (`lab/flashcards.html`) turn any section or list into a spaced-repetition deck.
+  Name to statement and statement to name are scheduled separately, because recognising a
+  formula and recalling it are different skills. It stays in `lab/`, like the quiz and the
+  formula web, so an experiment cannot break the app.
+- **Special pages** give Wikipedia-style ways to wander: a random card or problem, what links to
+  a card, every card from A to Z, the cards nothing links to.
+- **Connected formulas** make the structure of a topic visible on its broadest card. Related
+  answers "what else is near this"; Connected answers "what is this made of". The first version
+  put a line of explanation under each name. It was replaced within the day by Related's chips,
+  because two stacked sections in two visual styles read as two different kinds of thing and the
+  notes repeated what the cards themselves say one click away. The notes stayed in the data as
+  the editor's justification for each link.

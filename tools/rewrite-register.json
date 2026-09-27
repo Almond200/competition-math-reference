@@ -617,11 +617,6 @@
    "batch": "15"
   },
   {
-   "id": "vp-factorial",
-   "date": "2026-09-25",
-   "batch": "15"
-  },
-  {
    "id": "lattice-points-gcd",
    "date": "2026-09-26",
    "batch": "16"
@@ -1000,6 +995,61 @@
    "id": "trivial-inequality",
    "date": "2026-09-27",
    "batch": "24"
+  },
+  {
+   "id": "linear-change-of-variables",
+   "date": "2026-09-27",
+   "batch": "new"
+  },
+  {
+   "id": "polar-coordinates",
+   "date": "2026-09-27",
+   "batch": "new"
+  },
+  {
+   "id": "common-angle-values",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "euclids-lemma",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "sum-of-divisors",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "last-digit-patterns",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "trailing-zeros",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "pythagorean-triples",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "trapezoid-special-segments",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "cevas-theorem",
+   "date": "2026-09-27",
+   "batch": "25"
+  },
+  {
+   "id": "gcd-substitution",
+   "date": "2026-09-27",
+   "batch": "26"
   }
  ]
 }

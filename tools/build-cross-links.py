@@ -186,7 +186,9 @@ def find_candidates(host, body, table, cfg, cards):
     # only WITHIN a run: on the next run the applied link is hidden inside a [[...]] skip
     # span, so a second mention further down looks unlinked and a duplicate is proposed.
     found = []
-    taken = set(re.findall(r"\[\[([\w-]+)[|\]]", body))
+    # Since 2026-09-27 a description may carry links too (a card is linked at its first mention
+    # on the page), so a target already linked in the intro is taken as well.
+    taken = set(re.findall(r"\[\[([\w-]+)[|\]]", body)) | desc_links().get(host, set())
     for alias in sorted(table, key=len, reverse=True):
         tgt, form = table[alias]
         if tgt == host or tgt in taken or (host + " -> " + tgt) in reject:
@@ -207,6 +209,25 @@ def find_candidates(host, body, table, cfg, cards):
             taken.add(tgt)
             break
     return found
+
+
+_DESC_LINKS = None
+
+
+def desc_links():
+    """{card id: ids its description links}. The shared card parser strips description links
+    (search indexes the plain text), so they are read from the data files here."""
+    global _DESC_LINKS
+    if _DESC_LINKS is None:
+        _DESC_LINKS = {}
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        for fn in ("geometry", "algebra", "number-theory", "counting", "patterns"):
+            src = open(os.path.join(root, "js/data/%s.js" % fn), encoding="utf-8").read()
+            for m in re.finditer(r'\n\s+id: "([a-z0-9-]+)",', src):
+                d = re.compile(r"description: String\.raw`(.*?)`", re.S).search(src, m.end())
+                if d:
+                    _DESC_LINKS[m.group(1)] = set(re.findall(r"\[\[([\w-]+)[|\]]", d.group(1)))
+    return _DESC_LINKS
 
 
 def sentence_of(body, i, j):

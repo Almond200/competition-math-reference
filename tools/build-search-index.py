@@ -89,7 +89,8 @@ def load_cards():
             cards[cid] = {
                 "name": name.group(1),
                 "keywords": " ".join(re.findall(r'"([^"]+)"', kw.group(1))) if kw else "",
-                "description": desc.group(1) if desc else "",
+                # [[id|text]] links render only on the card page; index the text the reader sees
+                "description": re.sub(r"\[\[[\w-]+\|([^\]]*)\]\]", r"\1", desc.group(1)) if desc else "",
                 "body": "",
                 "section": section,
             }

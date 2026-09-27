@@ -6827,4 +6827,215 @@ DIAGRAMS["trig-ceva"] = [(() => {
     })()
   };
 
+  BODY["shared-angle-area-ratio"] = {
+    // The same-height proof: [AXY]/[ABY] = AX/AB (apex Y, bases on AB), [ABY]/[ABC] = AY/AC (apex B, bases on AC).
+    // Its own triangle: B's foot on AC lands halfway down, well clear of Y, so the two heights stay apart.
+    heights: (() => {
+      const A = [200, 40], B = [52, 268], C = [336, 252];
+      const tX = 0.55, tY = 0.32, X = lerp(A, B, tX), Y = lerp(A, C, tY), F1 = foot(Y, A, B), F2 = foot(B, A, C);
+      const ar = (p, q, r) => Math.abs((q[0] - p[0]) * (r[1] - p[1]) - (r[0] - p[0]) * (q[1] - p[1])) / 2;
+      const ok = Math.abs(ar(A, X, Y) / ar(A, B, C) - tX * tY) < 1e-9 && Math.abs(ar(A, B, Y) / ar(A, B, C) - tY) < 1e-9;
+      return wrap(430, 300, [
+        poly([A, B, Y], ACC, 1, ACCS), poly([A, X, Y], GLD, 1.4, GLDS),
+        poly([A, B, C], DIM, 2), seg(B, Y, ACC, 2.2), seg(X, Y, GLD, 2),
+        seg(Y, F1, DIM, 1.3, "4 4"), rightAngle(F1, Y, A, 8, DIM),
+        seg(B, F2, DIM, 1.3, "4 4"), rightAngle(F2, B, C, 8, DIM),
+        dot(X, DIM, 3.5), dot(Y, DIM, 3.5),
+        txt(add(A, [0, -10]), "A", DIM, 13), txt(add(B, [-10, 5]), "B", DIM, 13, "end"), txt(add(C, [10, 5]), "C", DIM, 13, "start"),
+        txt(add(X, [-11, 4]), "X", DIM, 13, "end"), txt(add(Y, [11, 4]), "Y", DIM, 13, "start"),
+        txt(add(mid(Y, F1), [-7, 14]), "h₁", DIM, 12), txt(add(mid(B, F2), [4, 17]), "h₂", DIM, 12),
+        cap(430, 300, "Draw BY. Triangles AXY (gold) and ABY (blue, gold included) share the apex Y, so they have the same height h₁ to line AB and their areas are in the ratio AX : AB. Triangles ABY and ABC share the apex B and the height h₂ to line AC, so their areas are in the ratio AY : AC. Multiplying gives the product of the two side ratios." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  // ---------- Linear change of variables and polar coordinates ----------
+  // Polar helpers: the point at radius R and angle t (degrees, counterclockwise) from centre c,
+  // and the circular arc between two angles.
+  const pol = (c, R, t) => [c[0] + R * Math.cos(rad(t)), c[1] - R * Math.sin(rad(t))];
+  const parc = (c, R, t1, t2, col, w, dash) =>
+    `<path d="M ${pf(pol(c, R, t1))} A ${r1(R)} ${r1(R)} 0 ${Math.abs(t2 - t1) > 180 ? 1 : 0} 0 ${pf(pol(c, R, t2))}" fill="none" stroke="${col}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+
+  DIAGRAMS["linear-change-of-variables"] = [(() => {
+    // u = 2x + y, v = x + 2y on one scale: the unit square (area 1) goes to the parallelogram
+    // spanned by (2, 1) and (1, 2), of area |2*2 - 1*1| = 3, and the grid to a grid of copies.
+    const s = 34, O1 = [44, 272], O2 = [206, 272];
+    const P1 = (x, y) => [O1[0] + s * x, O1[1] - s * y], M = (x, y) => [2 * x + y, x + 2 * y], P2 = (x, y) => { const q = M(x, y); return [O2[0] + s * q[0], O2[1] - s * q[1]]; };
+    const cell = [P2(0, 0), P2(1, 0), P2(1, 1), P2(0, 1)];
+    const area = Math.abs((cell[1][0] - cell[0][0]) * (cell[3][1] - cell[0][1]) - (cell[3][0] - cell[0][0]) * (cell[1][1] - cell[0][1])) / (s * s);
+    const parts = [poly([P1(0, 0), P1(1, 0), P1(1, 1), P1(0, 1)], GLD, 1.2, GLDS), poly(cell, GLD, 1.2, GLDS)];
+    for (let k = 0; k <= 2; k++) parts.push(seg(P1(k, 0), P1(k, 2), DIM, 1.2), seg(P1(0, k), P1(2, k), DIM, 1.2), seg(P2(k, 0), P2(k, 2), DIM, 1.2), seg(P2(0, k), P2(2, k), DIM, 1.2));
+    parts.push(
+      seg(P1(0, 0), P1(1, 0), ACC, 2.6), seg(P1(0, 0), P1(0, 1), GRN, 2.6), seg(P2(0, 0), P2(1, 0), ACC, 2.6), seg(P2(0, 0), P2(0, 1), GRN, 2.6),
+      txt(add(P1(1, 2), [0, -12]), "xy-plane", DIM, 12), txt(add(P2(0, 0), [-10, 4]), "O", DIM, 12, "end"), txt(add(P1(0, 0), [-8, 4]), "O", DIM, 12, "end"),
+      txt(add(P1(0.5, 0.5), [0, 4]), "1", GLD, 13), txt(add(P2(0.5, 0.5), [0, 4]), "3", GLD, 13),
+      txt(add(P2(1, 0), [12, 8]), "(2, 1)", ACC, 12, "start"), txt(add(P2(0, 1), [-10, 2]), "(1, 2)", GRN, 12, "end"),
+      txt(add(P2(2, 0), [14, 16]), "uv-plane", DIM, 12, "start"),
+      seg([130, 200], [176, 200], DIM, 1.6), `<polygon points="176,196 184,200 176,204" fill="${DIM}"/>`,
+      txt([153, 180], "u = 2x + y", DIM, 11.5), txt([153, 222], "v = x + 2y", DIM, 11.5),
+      cap(460, 300, "The substitution u = 2x + y, v = x + 2y, drawn on one scale. The unit square (area 1) goes to the parallelogram spanned by (2, 1) and (1, 2), whose area is |2 · 2 − 1 · 1| = 3, and every square of the grid goes to a copy of it, so every area is multiplied by 3." + (Math.abs(area - 3) < 1e-9 ? "" : " MISMATCH"))
+    );
+    return wrap(460, 300, parts);
+  })()];
+
+  BODY["linear-change-of-variables"] = {
+    // |x + y| + |x - y| <= 2 is the square max(|x|,|y|) <= 1 (area 4); with u = x + y, v = x - y it is
+    // the diamond |u| + |v| <= 2 (area 8). The determinant is -2.
+    region: (() => {
+      const s = 38, C1 = [100, 118], C2 = [342, 118];
+      const P1 = (x, y) => [C1[0] + s * x, C1[1] - s * y], P2 = (u, v) => [C2[0] + s * u, C2[1] - s * v];
+      const sq = [P1(1, 1), P1(-1, 1), P1(-1, -1), P1(1, -1)], dia = [P2(2, 0), P2(0, 2), P2(-2, 0), P2(0, -2)];
+      const ar = pts => Math.abs(pts.reduce((t, p, i) => { const q = pts[(i + 1) % pts.length]; return t + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2 / (s * s);
+      const ok = Math.abs(ar(sq) - 4) < 1e-9 && Math.abs(ar(dia) - 8) < 1e-9;
+      return wrap(460, 236, [
+        seg(P1(-1.9, 0), P1(1.9, 0), FNT, 1.1), seg(P1(0, -2.2), P1(0, 2.2), FNT, 1.1),
+        seg(P2(-2.4, 0), P2(2.4, 0), FNT, 1.1), seg(P2(0, -2.4), P2(0, 2.4), FNT, 1.1),
+        poly(sq, ACC, 2, ACCS), poly(dia, ACC, 2, ACCS),
+        txt(add(P1(0.5, 0.5), [0, 4]), "area 4", ACC, 12), txt(add(P2(0.8, 0.8), [6, -2]), "area 8", ACC, 12, "start"),
+        txt(add(P1(1, -1), [6, 18]), "(1, −1)", DIM, 11.5), txt(add(P2(2, 0), [6, 16]), "(2, 0)", DIM, 11.5),
+        seg([186, 118], [222, 118], DIM, 1.6), `<polygon points="222,114 230,118 222,122" fill="${DIM}"/>`,
+        txt([208, 100], "u = x + y", DIM, 11.5), txt([208, 140], "v = x − y", DIM, 11.5),
+        cap(460, 236, "The region |x + y| + |x − y| ≤ 2 is the square with corners (±1, ±1), of area 4. In the coordinates u = x + y, v = x − y it is the square |u| + |v| ≤ 2 standing on a corner, of area 8: twice as large, because the determinant of the substitution is −2." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  DIAGRAMS["polar-coordinates"] = [(() => {
+    // P at r = 3, theta = 40 degrees on a polar grid; its rectangular coordinates are (r cos, r sin).
+    const O = [70, 262], s = 58, r = 3, th = 40, P = pol(O, r * s, th), F = [P[0], O[1]];
+    const parts = [];
+    for (let k = 1; k <= 2; k++) parts.push(parc(O, k * s, 0, 90, FNT, 1.1));
+    for (const a of [30, 60, 90]) parts.push(seg(O, pol(O, 3.6 * s, a), FNT, 1.1));
+    parts.push(
+      seg(O, [O[0] + 3.9 * s, O[1]], DIM, 1.3),
+      seg(O, P, ACC, 2.6), seg(P, F, GLD, 1.6, "5 4"), seg(O, F, GLD, 2.4), rightAngle(F, O, P, 9, DIM),
+      angleArc(O, [O[0] + 10, O[1]], P, 34, ACC), dot(O, DIM, 3.5), dot(P, ACC, 5),
+      txt(add(O, [-8, 5]), "O", DIM, 13, "end"),
+      txt(add(pol(O, 1.5 * s, th), [-8, -6]), "r", ACC, 14, "end"), txt(add(pol(O, 46, th / 2), [5, 4]), "θ", ACC, 13, "start"),
+      txt(add(mid(O, F), [0, 20]), "r cos θ", GLD, 12), txt(add(mid(P, F), [8, 4]), "r sin θ", GLD, 12, "start"),
+      txt(add(P, [10, -6]), "P = (r cos θ, r sin θ)", ACC, 12.5, "start"),
+      cap(430, 300, "The point at distance r from the origin and angle θ from the positive x-axis. Dropping a perpendicular to the axis makes a right triangle with hypotenuse r, so x = r cos θ and y = r sin θ, and r² = x² + y².")
+    );
+    return wrap(430, 300, parts);
+  })()];
+
+  BODY["polar-coordinates"] = {
+    // r = 2 cos(theta): O and Q = (2, 0) are ends of a diameter of the circle (x - 1)^2 + y^2 = 1, so the
+    // angle at P is right and OP = OQ cos(theta) = 2 cos(theta).
+    circle: (() => {
+      const s = 100, O = [104, 150], Q = [O[0] + 2 * s, O[1]], Cc = [O[0] + s, O[1]], th = 35;
+      const P = pol(O, 2 * s * Math.cos(rad(th)), th);
+      const ok = Math.abs(dist(P, Cc) - s) < 1e-9;
+      return wrap(430, 262, [
+        seg([O[0] - 30, O[1]], [Q[0] + 40, O[1]], FNT, 1.1),
+        circ(Cc, s, DIM, 1.6), seg(O, Q, DIM, 1.6), seg(P, Q, DIM, 1.6), seg(O, P, ACC, 2.6),
+        rightAngle(P, O, Q, 10, DIM), angleArc(O, Q, P, 30, ACC),
+        dot(O, DIM, 3.5), dot(Q, DIM, 3.5), dot(P, ACC, 4.5), dot(Cc, FNT, 3),
+        txt(add(O, [-9, 5]), "O", DIM, 13, "end"), txt(add(Q, [8, 18]), "(2, 0)", DIM, 12, "start"), txt(add(P, [4, -10]), "P", ACC, 13),
+        txt(add(pol(O, 42, th / 2), [5, 4]), "θ", ACC, 13, "start"),
+        txt(add(mid(O, P), [10, 14]), "r = 2 cos θ", ACC, 12.5, "start"),
+        cap(430, 262, "O and (2, 0) are the ends of a diameter of the circle (x − 1)² + y² = 1, so the angle at any point P of the circle is a right angle, and OP = 2 cos θ. The polar equation r = 2 cos θ is exactly this circle." + (ok ? "" : " MISMATCH"))
+      ]);
+    })(),
+    // Two cells with the same dr = 0.5 and dtheta = 12 degrees, at r = 1 and r = 3: the outer one is about
+    // three times the area, since a cell is about r dr dtheta.
+    cell: (() => {
+      const O = [56, 262], s = 62, t1 = 28, t2 = 42, dr = 0.5;
+      const cellPath = (r0, col, fill) => `<path d="M ${pf(pol(O, r0 * s, t1))} L ${pf(pol(O, (r0 + dr) * s, t1))} A ${r1((r0 + dr) * s)} ${r1((r0 + dr) * s)} 0 0 0 ${pf(pol(O, (r0 + dr) * s, t2))} L ${pf(pol(O, r0 * s, t2))} A ${r1(r0 * s)} ${r1(r0 * s)} 0 0 1 ${pf(pol(O, r0 * s, t1))} Z" fill="${fill}" stroke="${col}" stroke-width="1.6"/>`;
+      const exact = r0 => ((r0 + dr) ** 2 - r0 ** 2) / 2 * rad(t2 - t1);
+      const ok = Math.abs(exact(3) / exact(1) - (3 + dr / 2) / (1 + dr / 2)) < 1e-9;
+      const parts = [seg(O, [O[0] + 4.3 * s, O[1]], DIM, 1.3)];
+      for (const k of [1, 1.5, 3, 3.5]) parts.push(parc(O, k * s, 0, 70, FNT, 1));
+      for (const a of [t1, t2]) parts.push(seg(O, pol(O, 4 * s, a), FNT, 1.1));
+      parts.push(cellPath(1, ACC, ACCS), cellPath(3, GLD, GLDS), dot(O, DIM, 3.5), txt(add(O, [-8, 5]), "O", DIM, 13, "end"),
+        txt(add(pol(O, 3.25 * s, t1), [10, 12]), "Δr", GLD, 12, "start"),
+        txt(add(pol(O, 3.5 * s, (t1 + t2) / 2), [10, 0]), "r Δθ", GLD, 12, "start"),
+        txt(add(pol(O, 1.25 * s, t1), [8, 14]), "Δr", ACC, 12, "start"),
+        txt(add(pol(O, 3 * s, 0), [0, 17]), "r = 3", DIM, 11.5), txt(add(pol(O, 1 * s, 0), [0, 17]), "r = 1", DIM, 11.5),
+        cap(430, 300, "Both cells span the same Δr and Δθ. Each is nearly a rectangle with sides Δr and r Δθ, so its area is about r Δr Δθ, and the cell at r = 3 is about three times the one at r = 1. That factor r is how polar coordinates stretch areas." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 300, parts);
+    })()
+  };
+
+  // ---------- Batch 25 ----------
+  BODY["common-angle-values"] = {
+    // 30, 150, 210, 330 degrees: mirror images across the axes, same reference angle, signs by quadrant.
+    reference: (() => {
+      const O = [215, 150], R = 108, angs = [30, 150, 210, 330];
+      const P = angs.map(a => pol(O, R, a));
+      const labs = ["(√3/2, 1/2)", "(−√3/2, 1/2)", "(−√3/2, −1/2)", "(√3/2, −1/2)"];
+      const cols = [ACC, GLD, GRN, PUR];
+      const ok = angs.every((a, i) => Math.abs(Math.abs(Math.cos(rad(a))) - Math.sqrt(3) / 2) < 1e-12 && Math.abs(Math.abs(Math.sin(rad(a))) - 0.5) < 1e-12);
+      const parts = [seg([O[0] - R - 30, O[1]], [O[0] + R + 30, O[1]], FNT, 1.2), seg([O[0], O[1] - R - 22], [O[0], O[1] + R + 22], FNT, 1.2), circ(O, R, FNT, 1.4)];
+      P.forEach((p, i) => {
+        const axisPt = [O[0] + (Math.cos(rad(angs[i])) > 0 ? 40 : -40), O[1]];
+        parts.push(seg(O, p, cols[i], 2), angleArc(O, axisPt, p, 26, cols[i]), dot(p, cols[i], 4.5));
+        const out = pol(O, R + 16, angs[i]);
+        parts.push(txt(add(out, [0, Math.sin(rad(angs[i])) > 0 ? -2 : 12]), labs[i], cols[i], 12, Math.cos(rad(angs[i])) > 0 ? "start" : "end"));
+      });
+      [["A", 45], ["S", 135], ["T", 225], ["C", 315]].forEach(([s, a]) => parts.push(txt(add(pol(O, 72, a), [0, 5]), s, DIM, 15)));
+      parts.push(
+        cap(430, 300, "The points at 30°, 150°, 210° and 330° are mirror images of one another across the axes, so their coordinates differ only in sign: each has reference angle 30°. The signs follow the quadrant, as ASTC records: All positive in the first, Sine in the second, Tangent in the third, Cosine in the fourth." + (ok ? "" : " MISMATCH")));
+      return wrap(430, 300, parts);
+    })()
+  };
+
+  BODY["pythagorean-triples"] = {
+    // The line through (-1, 0) with slope 2/3 meets the unit circle again at (5/13, 12/13).
+    rational: (() => {
+      const u = 120, O = [210, 168], M = (x, y) => [O[0] + u * x, O[1] - u * y];
+      const t = 2 / 3, px = (1 - t * t) / (1 + t * t), py = 2 * t / (1 + t * t);
+      const A = M(-1, 0), P = M(px, py), F = M(px, 0), Yi = M(0, t), far = M(px + 0.35, t * (px + 0.35 + 1));
+      const ok = Math.abs(px - 5 / 13) < 1e-12 && Math.abs(py - 12 / 13) < 1e-12 && Math.abs(px * px + py * py - 1) < 1e-12;
+      return wrap(430, 300, [
+        seg(M(-1.35, 0), M(1.35, 0), FNT, 1.2), seg(M(0, -1.1), M(0, 1.25), FNT, 1.2), circ(O, u, DIM, 1.5),
+        seg(A, far, ACC, 2), poly([O, F, P], GLD, 1.6, GLDS), rightAngle(F, O, P, 8, DIM),
+        dot(A, ACC, 4.5), dot(P, ACC, 4.5), dot(Yi, ACC, 3.5),
+        txt(add(A, [-8, 18]), "(−1, 0)", ACC, 12, "end"), txt(add(P, [10, -6]), "(5/13, 12/13)", ACC, 12.5, "start"),
+        txt(add(Yi, [-8, -6]), "(0, 2/3)", ACC, 11.5, "end"),
+        txt(add(mid(O, F), [0, 17]), "5/13", GLD, 12), txt(add(mid(F, P), [8, 4]), "12/13", GLD, 12, "start"),
+        txt(add(O, [-8, 16]), "O", DIM, 12, "end"),
+        cap(430, 300, "A line through (−1, 0) with rational slope t meets the unit circle again at ((1 − t²)/(1 + t²), 2t/(1 + t²)), a point with rational coordinates. With t = 2/3 it is (5/13, 12/13), and clearing the denominator 13 gives the triple 5, 12, 13; slope n/m gives (m² − n², 2mn, m² + n²)." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["trapezoid-special-segments"] = {
+    // Bases a = 4 (top) and b = 12 (bottom): the diagonals meet at P, AP : PC = a : b, and the parallel
+    // through P has halves XP = PY = ab/(a + b) = 3, so XY = 2ab/(a + b) = 6.
+    harmonic: (() => {
+      const k = 22, a = 4, b = 12, h = 8, Dp = [60, 250], Cp = [60 + b * k, 250], Ap = [60 + 3 * k, 250 - h * k], Bp = [60 + (3 + a) * k, 250 - h * k];
+      const P = lineInt(Ap, Cp, Bp, Dp), X = lineInt(Ap, Dp, P, add(P, [1, 0])), Y = lineInt(Bp, Cp, P, add(P, [1, 0]));
+      const ok = Math.abs(dist(X, P) / k - a * b / (a + b)) < 1e-9 && Math.abs(dist(P, Y) / k - a * b / (a + b)) < 1e-9;
+      return wrap(430, 290, [
+        poly([Ap, Dp, Cp], ACC, 1, ACCS),
+        poly([Ap, Bp, Cp, Dp], DIM, 2), seg(Ap, Cp, DIM, 1.4), seg(Bp, Dp, DIM, 1.4),
+        seg(X, P, GLD, 3), seg(P, Y, GRN, 3),
+        dot(P, DIM, 4), dot(X, GLD, 3.5), dot(Y, GRN, 3.5),
+        txt(add(Ap, [-6, -8]), "A", DIM, 13, "end"), txt(add(Bp, [6, -8]), "B", DIM, 13, "start"),
+        txt(add(Cp, [8, 16]), "C", DIM, 13, "start"), txt(add(Dp, [-8, 16]), "D", DIM, 13, "end"),
+        txt(add(X, [-8, 4]), "X", GLD, 13, "end"), txt(add(Y, [8, 4]), "Y", GRN, 13, "start"), txt(add(P, [0, -10]), "P", DIM, 13),
+        txt(add(mid(Ap, Bp), [0, -8]), "a", DIM, 13), txt(add(mid(Dp, Cp), [0, 20]), "b", DIM, 13),
+        cap(430, 290, "AB = a and DC = b are parallel, so triangles PAB and PCD are similar and the diagonals cut each other in the ratio a : b. In triangle ACD (blue) the segment XP is parallel to DC, so XP = (a/(a + b)) · b = ab/(a + b), and PY is the same length by the same argument in triangle BCD. So XY = 2ab/(a + b), the harmonic mean." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
+  BODY["cevas-theorem"] = {
+    // P = (2A + 3B + 4C)/9 on cevian AD, D = (3B + 4C)/7: BD/DC = 4/3 = [ABP]/[ACP].
+    areas: (() => {
+      const P = mul(add(add(mul(A, 2), mul(B, 3)), mul(C, 4)), 1 / 9), D = lineInt(A, P, B, C);
+      const ar = (p, q, r) => Math.abs((q[0] - p[0]) * (r[1] - p[1]) - (r[0] - p[0]) * (q[1] - p[1])) / 2;
+      const ok = Math.abs(dist(B, D) / dist(D, C) - ar(A, B, P) / ar(A, C, P)) < 1e-9 && Math.abs(dist(B, D) / dist(D, C) - 4 / 3) < 1e-9;
+      return wrap(430, 330, [
+        poly([A, B, P], ACC, 1, ACCS), poly([A, C, P], GLD, 1, GLDS),
+        poly([P, B, D], ACC, 1.2, "none", "4 3"), poly([P, C, D], GLD, 1.2, "none", "4 3"),
+        ABC(), seg(A, D, DIM, 2), dot(P, DIM, 4), dot(D, DIM, 3.5),
+        txt(add(P, [-12, 2]), "P", DIM, 13, "end"), txt(add(D, [0, 19]), "D", DIM, 13),
+        txt(add(centroidOf(A, B, P), [0, 4]), "[ABP]", ACC, 12), txt(add(centroidOf(A, C, P), [0, 4]), "[ACP]", GLD, 12),
+        cap(430, 330, "BD : DC is the ratio of [ABD] to [ACD], with apex A, and also of [PBD] to [PCD], with apex P (dashed). Subtracting the dashed triangles from the big ones leaves the same ratio, so BD : DC = [ABP] : [ACP], the two triangles on either side of AP." + (ok ? "" : " MISMATCH"))
+      ]);
+    })()
+  };
+
 })();

@@ -296,7 +296,6 @@
    "highest power of a prime dividing a factorial",
    [
     "legendres-formula",
-    "vp-factorial",
     "p-adic-valuation"
    ]
   ],

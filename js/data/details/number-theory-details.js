@@ -45,7 +45,7 @@ For expressions, the power is that any multiple of one may be subtracted from th
 
 When the reduction ends at a constant instead, the gcd can only be a divisor of that constant. $\gcd(n + 3, n^2 + 7) = \gcd(n + 3, 16)$, because $n^2 + 7 = (n + 3)(n - 3) + 16$, so the two share a factor exactly when $n + 3$ is even, that is, when $n$ is odd.
 
-Running the steps backwards writes the gcd as a combination. From $252 = 2 \cdot 105 + 42$ and $105 = 2 \cdot 42 + 21$, substitute upward: $$21 = 105 - 2 \cdot 42 = 105 - 2(252 - 2 \cdot 105) = 5 \cdot 105 - 2 \cdot 252.$$ That is [[bezouts-identity|Bézout's identity]] made concrete.
+Running the steps backwards writes the gcd as a combination. From $252 = 2 \cdot 105 + 42$ and $105 = 2 \cdot 42 + 21$, substitute upward: $$21 = 105 - 2 \cdot 42 = 105 - 2(252 - 2 \cdot 105) = 5 \cdot 105 - 2 \cdot 252.$$ That is [[bezouts-identity|Bézout's Identity]] made concrete.
 
 ## On contests
 Eleven problems here, nine of them AIME, and two solved by it alone. The recurring type asks for how many $n$ a fraction $\frac{f(n)}{g(n)}$ is not in lowest terms: run the algorithm on the expressions, find the constant it ends at, and count the $n$ that share a factor with it. It also appears next to [[modular-basics|modular arithmetic]], since $\gcd(a, m) = 1$ is exactly the condition for $a$ to have an inverse mod $m$.
@@ -90,7 +90,7 @@ Seven problems here, six of them AIME, four solved by it alone; two others split
 `,
 
 "gcd-power-minus-one": String.raw`## Why it works
-The [[euclidean-algorithm|Euclidean algorithm]] lifts to exponents: $\gcd(a^m - 1, a^n - 1) = \gcd(a^{m - n} - 1 \cdot a^n\ldots)$ — concretely, $a^m - 1 \bmod (a^n - 1) = a^{m \bmod n} - 1$, so the exponent undergoes the Euclidean algorithm.
+The Euclidean algorithm lifts to exponents: $\gcd(a^m - 1, a^n - 1) = \gcd(a^{m - n} - 1 \cdot a^n\ldots)$ — concretely, $a^m - 1 \bmod (a^n - 1) = a^{m \bmod n} - 1$, so the exponent undergoes the Euclidean algorithm.
 
 ## How to use it
 Immediate answers to gcds of repunits and Mersenne-type numbers: $\gcd(2^{100} - 1, 2^{36} - 1) = 2^{\gcd(100,36)} - 1 = 2^4 - 1 = 15$. Also the divisibility criterion $a^m - 1 \mid a^n - 1 \iff m \mid n$.
@@ -132,17 +132,27 @@ The formula turns a question about a number into a question about its exponents,
 ## On contests
 Among the most-tested number-theory facts at every level, and self-contained in 4 of its 32 problems. Its partners are [[modular-basics|modular arithmetic]] and [[casework-method|casework]] (3 each), the usual shape being a divisibility condition that cuts the exponent patterns before the count is taken.
 
-Three shapes recur: smallest number with exactly $k$ divisors, the locker-door problem and its relatives (the answer is always the squares, by the odd-divisor fact above), and divisor-counting a factorial, which needs [[legendres-formula|Legendre's formula]] first to get the exponents.
+Three shapes recur: smallest number with exactly $k$ divisors, the locker-door problem and its relatives (the answer is always the squares, by the odd-divisor fact above), and divisor-counting a factorial, which needs [[legendres-formula|Legendre's Formula]] first to get the exponents.
 `,
 
-"sum-of-divisors": String.raw`## Why it works
-Expand the product $\prod_i(1 + p_i + \cdots + p_i^{e_i})$: choosing one term from each factor generates every divisor exactly once. Each factor is a [[geometric-series|geometric series]].
+"sum-of-divisors": String.raw`
+## Why it works
+Expanding the product picks one term from each bracket, a power of each prime, and multiplies them. By unique factorization every divisor of $n$ is exactly one such choice, so the expansion lists each divisor once and the product is their sum.
+
+{{figure:grid}}
+
+Each bracket is a geometric series, $$1 + p + \cdots + p^e = \frac{p^{e+1} - 1}{p - 1},$$ which gives the closed form. The same grid with every cell counted as $1$ instead of its value gives the [[number-of-divisors|number of divisors]], $(e_1 + 1) \cdots (e_k + 1)$.
 
 ## How to use it
-Compute prime-power by prime-power. For "sum of even divisors" or "sum of divisors divisible by 3": factor out the forced part ($2 \cdot \sigma(\text{odd part})$-style manipulations). Sum of reciprocals of divisors: $\frac{\sigma(n)}{n}$ — a neat quotient worth knowing.
+Compute prime by prime: $\sigma(72) = \sigma(2^3)\,\sigma(3^2) = 15 \cdot 13 = 195$. Because the formula is a product over primes, $\sigma(mn) = \sigma(m)\,\sigma(n)$ whenever $m$ and $n$ are coprime.
+
+For a restricted sum, keep only the allowed powers of each prime. The odd divisors drop every positive power of $2$, so their sum is $\sigma$ of the odd part, and the even divisors are the total minus that, as in the example. For the divisors that are multiples of $3$, factor one $3$ out of each.
+
+The divisors pair up as $d$ and $\frac nd$, so the sum of their reciprocals is $\frac{\sigma(n)}{n}$, and $n$ is perfect exactly when that sum is $2$.
 
 ## On contests
-AIME asks for $\sigma$ of specific large factorizations and for sums over restricted divisor classes — always reduce to modified geometric-series products.`,
+Two problems here, one AIME and one AMC 12, one solved by it alone. The AMC version compares the sums of the odd and even divisors, which the product formula splits by the power of $2$. The AIME version needs $\sigma(a^n) - 1$ divisible by a fixed number for every $a$, which comes down to the geometric series in each bracket and [[multiplicative-order|multiplicative orders]].
+`,
 
 "product-of-divisors": String.raw`
 ## Why it works
@@ -151,7 +161,7 @@ Pair each divisor with its partner and multiply the pairs.
 The map $d \mapsto \frac nd$ sends divisors to divisors and undoes itself, so the divisors listed in the order $\frac nd$ are the same divisors again. Multiplying the two lists term by term, $$\left(\prod_{d \mid n} d\right)^2 = \prod_{d \mid n} d \cdot \frac nd = n^{d(n)},$$ so the product is $n^{d(n)/2}$. Squaring first avoids any special case: for a perfect square, $\sqrt n$ is paired with itself, and the formula still holds.
 
 ## How to use it
-Count the divisors with [[number-of-divisors|the divisor-count formula]], then halve that for the exponent. For $42 = 2 \cdot 3 \cdot 7$ there are $8$ divisors, so their product is $42^4$.
+Count the divisors with the divisor-count formula, then halve that for the exponent. For $42 = 2 \cdot 3 \cdot 7$ there are $8$ divisors, so their product is $42^4$.
 
 Problems usually run it backwards. The product of the proper divisors, all but $n$ itself, is $n^{d(n)/2 - 1}$, so for $n \gt 1$ $$n^{d(n)/2 - 1} = n \iff d(n) = 4,$$ which means $n = pq$ or $n = p^3$. Logarithms turn the product into a sum: the logarithms of all the divisors add up to $\frac{d(n)}{2}\log n$.
 
@@ -164,7 +174,7 @@ Removing the multiples of each prime factor of $n$ leaves exactly the numbers co
 
 For a prime power it is a direct count. Among $1, 2, \ldots, p^k$, the numbers that share a factor with $p^k$ are the multiples of $p$, and there are $p^{k-1}$ of them, so $$\varphi(p^k) = p^k - p^{k-1} = p^k\left(1 - \frac1p\right).$$
 
-For other $n$, the [[crt|Chinese remainder theorem]] matches each residue mod $mn$ with a pair of residues mod $m$ and mod $n$, and a number is coprime to $mn$ exactly when it is coprime to both. So for coprime $m$ and $n$, $\varphi(mn) = \varphi(m)\varphi(n)$, and multiplying the prime-power values gives $$\varphi(n) = n\prod_{p \mid n}\left(1 - \frac1p\right).$$ The same product comes out of [[pie|inclusion-exclusion]] on the multiples of each prime.
+For other $n$, the [[crt|Chinese Remainder Theorem]] matches each residue mod $mn$ with a pair of residues mod $m$ and mod $n$, and a number is coprime to $mn$ exactly when it is coprime to both. So for coprime $m$ and $n$, $\varphi(mn) = \varphi(m)\varphi(n)$, and multiplying the prime-power values gives $$\varphi(n) = n\prod_{p \mid n}\left(1 - \frac1p\right).$$ The same product comes out of [[pie|inclusion-exclusion]] on the multiples of each prime.
 
 ## How to use it
 Factor $n$, then multiply $n$ by $1 - \frac1p$ for each distinct prime; the exponents matter only through $n$ itself. For $1000 = 2^3 \cdot 5^3$, $$\varphi(1000) = 1000 \cdot \frac12 \cdot \frac45 = 400.$$
@@ -219,7 +229,7 @@ A divisor of $n$ is $\prod p_i^{f_i}$ with $0 \le f_i \le e_i$, and it is a perf
 The even numbers from $0$ to $e_i$ are $0, 2, \ldots, 2\left\lfloor \frac{e_i}{2} \right\rfloor$, which is $\left\lfloor \frac{e_i}{2} \right\rfloor + 1$ choices, and the choices for different primes are independent, so $$\#\{\text{square divisors}\} = \prod_i \left(\left\lfloor \frac{e_i}{2} \right\rfloor + 1\right).$$
 
 ## How to use it
-Factor first; for a factorial, [[legendres-formula|Legendre's formula]] gives the exponents. For $12! = 2^{10} \cdot 3^5 \cdot 5^2 \cdot 7 \cdot 11$, $$6 \cdot 3 \cdot 2 \cdot 1 \cdot 1 = 36$$ divisors are perfect squares. The divisors that are not squares follow by [[complementary-counting|complementary counting]], $d(n)$ minus this.
+Factor first; for a factorial, [[legendres-formula|Legendre's Formula]] gives the exponents. For $12! = 2^{10} \cdot 3^5 \cdot 5^2 \cdot 7 \cdot 11$, $$6 \cdot 3 \cdot 2 \cdot 1 \cdot 1 = 36$$ divisors are perfect squares. The divisors that are not squares follow by [[complementary-counting|complementary counting]], $d(n)$ minus this.
 
 A related question asks what to multiply by to make a square. Every prime at an odd power must be fixed, so the smallest multiplier is the product of those primes: for $12!$ it is $3 \cdot 7 \cdot 11 = 231$.
 
@@ -248,25 +258,25 @@ Multiplying each list together, $a^{p-1}(p - 1)! \equiv (p - 1)! \pmod p$. The f
 ## How to use it
 Reduce the exponent mod $p - 1$ when the base is coprime to $p$: for $2^{100} \bmod 7$, $100 \equiv 4 \pmod 6$, so the answer is $2^4 = 16 \equiv 2$. The true period can be shorter than $p - 1$, and here $2^3 \equiv 1$ already; that period, the [[multiplicative-order|multiplicative order]], always divides $p - 1$.
 
-For towers, reduce level by level: the top exponent matters mod $p - 1$, so the exponent above it matters mod $\varphi(p - 1)$ by [[eulers-theorem|Euler's theorem]], and so on down. For a composite modulus, split it into prime powers, work in each, and recombine with [[crt|the Chinese remainder theorem]]; for mod $1000$, work mod $8$ and mod $125$.
+For towers, reduce level by level: the top exponent matters mod $p - 1$, so the exponent above it matters mod $\varphi(p - 1)$ by Euler's Theorem, and so on down. For a composite modulus, split it into prime powers, work in each, and recombine with the Chinese Remainder Theorem; for mod $1000$, work mod $8$ and mod $125$.
 
 ## On contests
-Seven problems here, all AIME, none by it alone; three continue into the [[multiplicative-order|multiplicative order]], the exact period that divides $p - 1$, and two combine it with the [[binomial-theorem|binomial theorem]] to expand a power before reducing it. Watch the hypothesis $p \nmid a$, and use $a^p \equiv a$ when unsure.
+Seven problems here, all AIME, none by it alone; three continue into the multiplicative order, the exact period that divides $p - 1$, and two combine it with the [[binomial-theorem|Binomial Theorem]] to expand a power before reducing it. Watch the hypothesis $p \nmid a$, and use $a^p \equiv a$ when unsure.
 `,
 
 "eulers-theorem": String.raw`
 ## Why it works
 Multiplying by $a$ shuffles the residues that are coprime to $n$, and comparing their product before and after the shuffle gives the theorem.
 
-Let $r_1, \ldots, r_k$ be the $k = \varphi(n)$ residues coprime to $n$. The numbers $ar_1, \ldots, ar_k$ are also coprime to $n$, and they are all different mod $n$, since $ar_i \equiv ar_j$ would let us cancel the invertible $a$. So they are the same residues in a new order, and $$a^k\,r_1 \cdots r_k \equiv r_1 \cdots r_k \pmod n.$$ The product $r_1 \cdots r_k$ is coprime to $n$, so it cancels, leaving $a^{\varphi(n)} \equiv 1$. For a prime $n$ this is exactly [[fermats-little-theorem|Fermat's argument]].
+Let $r_1, \ldots, r_k$ be the $k = \varphi(n)$ residues coprime to $n$. The numbers $ar_1, \ldots, ar_k$ are also coprime to $n$, and they are all different mod $n$, since $ar_i \equiv ar_j$ would let us cancel the invertible $a$. So they are the same residues in a new order, and $$a^k\,r_1 \cdots r_k \equiv r_1 \cdots r_k \pmod n.$$ The product $r_1 \cdots r_k$ is coprime to $n$, so it cancels, leaving $a^{\varphi(n)} \equiv 1$. For a prime $n$ this is exactly Fermat's argument.
 
 ## How to use it
 Reduce the exponent modulo $\varphi(n)$, but only when $\gcd(a, n) = 1$. For the last two digits of $3^{100}$, $\varphi(100) = 40$, so $3^{100} \equiv 3^{20}$, and $$3^{20} = (3^{10})^2 \equiv 49^2 = 2401 \equiv 1 \pmod{100}.$$
 
-When $a$ shares a factor with $n$, as for the last digits of $4^{100}$, split the modulus with [[crt|the Chinese remainder theorem]] into a part sharing factors with $a$, where the powers quickly become $0$, and a coprime part, where Euler applies. For the last three digits, working mod $8$ and mod $125$, with $\varphi(125) = 100$, is usually cleaner than mod $1000$ directly.
+When $a$ shares a factor with $n$, as for the last digits of $4^{100}$, split the modulus with [[crt|the Chinese Remainder Theorem]] into a part sharing factors with $a$, where the powers quickly become $0$, and a coprime part, where Euler applies. For the last three digits, working mod $8$ and mod $125$, with $\varphi(125) = 100$, is usually cleaner than mod $1000$ directly.
 
 ## On contests
-Four problems here, split between AMC and AIME, none by it alone; two combine it with [[crt|the Chinese remainder theorem]], its standard partner for last-digit questions. A tower of exponents reduces down a chain of $\varphi$ values, $1000 \to 400 \to 160 \to \cdots$, one level at a time.
+Four problems here, split between AMC and AIME, none by it alone; two combine it with the Chinese Remainder Theorem, its standard partner for last-digit questions. A tower of exponents reduces down a chain of $\varphi$ values, $1000 \to 400 \to 160 \to \cdots$, one level at a time.
 `,
 
 "wilsons-theorem": String.raw`## Why it works
@@ -305,14 +315,14 @@ For $x \equiv 2 \pmod 3$ and $x \equiv 3 \pmod 5$, $x = 2 + 3t$ needs $3t \equiv
 The closed form from the full proof, $x = \sum_i a_iN_iM_i$, does it in one step when there are many moduli.
 
 ## On contests
-The standard move for "find the remainder modulo a composite", and the reason prime-power analysis is the default first step in olympiad number theory. Of the 17 problems tagged here, 16 are AIME and 3 need nothing else; its partners are [[modular-basics|the congruence rules]] (3) and [[eulers-theorem|Euler's theorem]] (2), which do the work inside each prime-power piece before the theorem recombines them. Splitting modulo $1000$ into $8$ and $125$ is the most common instance.
+The standard move for "find the remainder modulo a composite", and the reason prime-power analysis is the default first step in olympiad number theory. Of the 17 problems tagged here, 16 are AIME and 3 need nothing else; its partners are [[modular-basics|the congruence rules]] (3) and [[eulers-theorem|Euler's Theorem]] (2), which do the work inside each prime-power piece before the theorem recombines them. Splitting modulo $1000$ into $8$ and $125$ is the most common instance.
 `,
 
 "multiplicative-order": String.raw`
 ## Why it works
 The powers of $a$ modulo $n$ repeat with period exactly the order $d$, so $a^m \equiv 1$ happens exactly when $m$ is a multiple of $d$.
 
-Write $m = qd + r$ with $0 \le r \lt d$. Then $a^m = (a^d)^qa^r \equiv a^r$, and since $d$ is the smallest positive exponent giving $1$, $a^r \equiv 1$ only when $r = 0$. So $a^m \equiv 1$ exactly when $d \mid m$. By [[eulers-theorem|Euler's theorem]] $a^{\varphi(n)} \equiv 1$, so $d$ divides $\varphi(n)$.
+Write $m = qd + r$ with $0 \le r \lt d$. Then $a^m = (a^d)^qa^r \equiv a^r$, and since $d$ is the smallest positive exponent giving $1$, $a^r \equiv 1$ only when $r = 0$. So $a^m \equiv 1$ exactly when $d \mid m$. By [[eulers-theorem|Euler's Theorem]] $a^{\varphi(n)} \equiv 1$, so $d$ divides $\varphi(n)$.
 
 There is also a picture of why the order divides $\varphi(n)$: multiplying by $a$ splits the $\varphi(n)$ residues coprime to $n$ into cycles, and every cycle has the same length $d$.
 
@@ -324,7 +334,7 @@ To find an order, test only the divisors of $\varphi(n)$, from small to large. F
 Exponents can then be reduced modulo the order: $a^i \equiv a^j$ exactly when $i \equiv j \pmod d$. Questions like "the smallest $k$ with $n \mid a^k - 1$" and "the period of $\frac1n$" are order computations. For orders modulo prime powers, such as that of $2$ modulo $3^m$, the [[lte|lifting the exponent lemma]] takes over.
 
 ## On contests
-Five problems here, all AIME, none by it alone; three pair it with [[fermats-little-theorem|Fermat's little theorem]], which supplies an exponent the order must divide. AIME favors fractions $\frac1n$ with a prescribed period and divisibility chains like $2^k \equiv 1 \pmod{3^m}$.
+Five problems here, all AIME, none by it alone; three pair it with [[fermats-little-theorem|Fermat's Little Theorem]], which supplies an exponent the order must divide. AIME favors fractions $\frac1n$ with a prescribed period and divisibility chains like $2^k \equiv 1 \pmod{3^m}$.
 `,
 
 "modular-inverse": String.raw`## Why it works
@@ -350,19 +360,27 @@ AMC/AIME impossibility questions and digit puzzles ("can $\overline{abc}$ be a p
 The multiplicative group mod $p$ is cyclic of order $p-1$: writing $a = g^k$, $a^{\frac{p-1}{2}} = g^{k\frac{p-1}{2}} = (\pm1)$ according to the parity of $k$ — even $k$ means square.
 
 ## How to use it
-Decides quadratic residuosity by one modular exponentiation. The headline corollary: $-1$ is a QR mod $p$ iff $p \equiv 1 \pmod 4$ — equivalently, $p \mid x^2 + 1$ has solutions only for such $p$ (and 2). Similar criteria: $2$ is a QR iff $p \equiv \pm1 \pmod 8$. It is the computational test behind [[squares-mod-small|quadratic residues]], and [[gauss-lemma-qr|Gauss's lemma]] is the counting proof of the same fact.
+Decides quadratic residuosity by one modular exponentiation. The headline corollary: $-1$ is a QR mod $p$ iff $p \equiv 1 \pmod 4$ — equivalently, $p \mid x^2 + 1$ has solutions only for such $p$ (and 2). Similar criteria: $2$ is a QR iff $p \equiv \pm1 \pmod 8$. It is the computational test behind [[squares-mod-small|quadratic residues]], and [[gauss-lemma-qr|Gauss's Lemma]] is the counting proof of the same fact.
 
 ## On contests
 Divisibility problems about $x^2 + 1$ (its odd prime factors are all $\equiv 1 \bmod 4$ — a strong structural fact), and residue-existence questions on AIME. Full reciprocity is rarely needed; these special cases usually suffice.`,
 
-"last-digit-patterns": String.raw`## Why it works
-Units digits multiply independently of the rest of the number, and each digit's powers cycle: 2, 3, 7, 8 with period 4; 4, 9 with period 2; 0, 1, 5, 6 fixed. Period 4 divides all of them.
+"last-digit-patterns": String.raw`
+## Why it works
+The units digit of a product depends only on the units digits of its factors, so the units digit of $n^2$ is the units digit of $d^2$, where $d$ is the last digit of $n$. Squaring the ten digits gives endings $0, 1, 4, 9, 6, 5, 6, 9, 4, 1$, and $2$, $3$, $7$ and $8$ never appear.
+
+Cubes modulo $9$ work the same way, with $n \equiv 0, \pm1, \pm2, \pm3, \pm4 \pmod 9$: $$(\pm1)^3 = \pm1, \quad (\pm2)^3 = \pm8 \equiv \mp1, \quad (\pm3)^3 \equiv 0, \quad (\pm4)^3 = \pm64 \equiv \pm1,$$ so every cube is $0$ or $\pm1$ modulo $9$.
+
+The powers of each digit cycle because there are only ten possible endings: $$2, 4, 8, 6; \qquad 3, 9, 7, 1; \qquad 7, 9, 3, 1; \qquad 8, 4, 2, 6,$$ with $4$ and $9$ alternating and $0$, $1$, $5$, $6$ fixed. Every period divides $4$.
 
 ## How to use it
-Reduce the exponent mod 4 (careful: exponent $\equiv 0$ means use the 4th power's digit, not the 0th). For last TWO digits, switch to mod 100 machinery (Euler/[[crt|CRT]]). Squares end only in 0,1,4,5,6,9; that filter plus cycles answers most units-digit questions.
+For the units digit of $a^k$, reduce $k$ modulo $4$ and read the cycle, remembering that $k \equiv 0$ means the fourth entry, not a zeroth one: $7^{2027}$ ends in $3$, because $2027 \equiv 3 \pmod 4$.
+
+To reject a claimed square, check its last digit; to reject a claimed cube, check its digit sum modulo $9$, which equals the number modulo $9$ by the [[divisibility-rules|digit-sum rule]]. For the last two or three digits, work modulo $100$ or $1000$ with [[eulers-theorem|Euler's Theorem]] and the [[crt|Chinese Remainder Theorem]]; squares modulo other small numbers are on [[squares-mod-small|squares mod small numbers]].
 
 ## On contests
-MATHCOUNTS/AMC 10 staple ("units digit of $7^{2027}$"), and the entry point to the harder mod-100/mod-1000 AIME versions.`,
+Two problems here, one AIME and one AMC 10, one solved by it alone. The AMC version adds the units digits of two large powers, each read off its cycle; the AIME version sums a units-digit sequence over many terms, where the pattern repeats and [[periodicity-mod-m|periodicity]] does the rest.
+`,
 
 "primitive-roots": String.raw`## Why it works
 The units mod $n$ form a cyclic group exactly for $n=1,2,4,p^k,2p^k$ (odd prime $p$) — the structure theorem. A primitive root $g$ is a generator: its powers $g^0,\dots,g^{\varphi(n)-1}$ run through all units, the number of primitive roots is $\varphi(\varphi(n))$, and the order of any element divides $\varphi(n)$ with a primitive root hitting the maximum.
@@ -411,14 +429,16 @@ The first row has a dot over every multiple of $p$, and there are $\left\lfloor\
 The digit-sum form comes from writing $n$ in base $p$. Each floor $\left\lfloor \frac n{p^i}\right\rfloor$ is $n$ with its last $i$ base-$p$ digits removed, and adding these up digit by digit gives $\frac{n - s_p(n)}{p - 1}$.
 
 ## How to use it
-For the largest power of $3$ dividing $100!$: $$\left\lfloor \tfrac{100}{3} \right\rfloor + \left\lfloor \tfrac{100}{9} \right\rfloor + \left\lfloor \tfrac{100}{27} \right\rfloor + \left\lfloor \tfrac{100}{81} \right\rfloor = 33 + 11 + 3 + 1 = 48.$$ Trailing zeros of $n!$ are $v_5(n!)$, because each zero needs a $2$ and a $5$ and fives are the scarcer factor; $100!$ ends in $20 + 4 = 24$ zeros.
+For the largest power of $3$ dividing $100!$: $$\left\lfloor \tfrac{100}{3} \right\rfloor + \left\lfloor \tfrac{100}{9} \right\rfloor + \left\lfloor \tfrac{100}{27} \right\rfloor + \left\lfloor \tfrac{100}{81} \right\rfloor = 33 + 11 + 3 + 1 = 48.$$ [[trailing-zeros|Trailing zeros]] of $n!$ are $v_5(n!)$, because each zero needs a $2$ and a $5$ and fives are the scarcer factor; $100!$ ends in $20 + 4 = 24$ zeros.
 
-For binomial coefficients, subtract: $$v_p\binom nk = v_p(n!) - v_p(k!) - v_p((n - k)!),$$ which also equals the number of carries when adding $k$ and $n - k$ in base $p$, [[kummers-theorem|Kummer's theorem]]. The digit-sum form answers a question like "for which $n$ is $v_2(n!) = n - 1$" at once: exactly when $s_2(n) = 1$, that is, when $n$ is a power of $2$.
+Each floor is the previous one divided by $p$ and rounded down, since $\left\lfloor \frac{\lfloor n/p^i \rfloor}{p} \right\rfloor = \left\lfloor \frac{n}{p^{i+1}} \right\rfloor$, so the sum is a short chain of divisions. For the zeros at the end of $2025!$: $$2025 \to 405 \to 81 \to 16 \to 3, \qquad 405 + 81 + 16 + 3 = 505.$$ To test whether $p^k$ divides $n!$, compare $k$ with the sum.
 
-Inverse questions use the jumps in the sum, which is larger than $1$ at multiples of $p^2$. $v_5(124!) = 28$ but $v_5(125!) = 31$, so no factorial ends in exactly $29$ or $30$ zeros.
+For binomial coefficients, subtract: $$v_p\binom nk = v_p(n!) - v_p(k!) - v_p((n - k)!),$$ which also equals the number of carries when adding $k$ and $n - k$ in base $p$, [[kummers-theorem|Kummer's Theorem]]. The digit-sum form answers a question like "for which $n$ is $v_2(n!) = n - 1$" at once: exactly when $s_2(n) = 1$, that is, when $n$ is a power of $2$.
+
+The sum jumps by more than $1$ at multiples of $p^2$, so some values are never taken; for $p = 5$ that is the question of which zero counts are skipped, on trailing zeros.
 
 ## On contests
-Seven problems here, six of them AIME, two solved by it alone; two more are [[trailing-zeros|trailing-zero counts]], and two apply it to a binomial coefficient that came out of a [[permutations-combinations|counting]] problem.
+Twelve problems here, seven AIME and five AMC, five solved by it alone. Two more are trailing-zero counts, two apply it to a binomial coefficient that came out of a [[permutations-combinations|counting]] problem, and two to a count that arrives as a ratio of factorials, as in [[uniform-overcount|division by a uniform overcount]]. "How many zeros does $n!$ end in" and "the largest $k$ with $7^k \mid 100!$" appear at every level from MATHCOUNTS to AIME.
 `,
 
 "kummers-theorem": String.raw`## Why it works
@@ -468,20 +488,20 @@ The multiples of $d$ are evenly spaced, one in every block of $d$ consecutive nu
 
 The multiples of $d$ up to $n$ are $d, 2d, 3d, \ldots, kd$, where $k$ is the largest whole number with $kd \le n$, and there are exactly $k$ of them. The condition $kd \le n$ says $k \le \frac nd$, so the largest such whole number is $\left\lfloor \frac nd \right\rfloor$. For $n = 100$ and $d = 7$, $\frac{100}{7}$ is about $14.3$, and indeed $$7 \cdot 14 = 98 \le 100 \lt 105 = 7 \cdot 15.$$
 
-The numbers divisible by both $a$ and $b$ are exactly the multiples of $\operatorname{lcm}(a, b)$, which is why that term appears when [[pie|inclusion-exclusion]] corrects the double count in "divisible by $a$ or $b$".
+The numbers divisible by both $a$ and $b$ are exactly the multiples of $\operatorname{lcm}(a, b)$, which is why that term appears when inclusion-exclusion corrects the double count in "divisible by $a$ or $b$".
 
 ## How to use it
 Combine with inclusion-exclusion for unions ("divisible by 3 or 5"), complements ("divisible by neither"), and exact conditions ("by 6 but not 9"). This plus [[legendres-formula|Legendre]] covers most "how many numbers up to $N$..." questions. Ranges: count up to $b$, subtract count up to $a - 1$.
 
 ## On contests
-Constant at MATHCOUNTS and AMC level, with 12 problems tagged here, 3 of them solved by it alone and 3 more with [[casework-method|casework]] on top. It is also the counting engine inside [[legendres-formula|Legendre's formula]], totient computations and AIME lattice problems.
+Constant at MATHCOUNTS and AMC level, with 12 problems tagged here, 3 of them solved by it alone and 3 more with [[casework-method|casework]] on top. It is also the counting engine inside Legendre's Formula, totient computations and AIME lattice problems.
 `,
 
 "prime-divides-binomial": String.raw`## Why it works
 $\binom{p}{k} = \frac{p!}{k!(p-k)!}$: the numerator has one factor of $p$, and for $0 \lt  k \lt  p$ neither factorial below can cancel it.
 
 ## How to use it
-Immediate consequence: the [[freshmans-dream|freshman's dream]] $(x + y)^p \equiv x^p + y^p \pmod p$ — the middle terms vanish. That powers induction proofs of [[fermats-little-theorem|Fermat's little theorem]] and digit-based expansions (Lucas). Also $\binom{p^k}{j} \equiv 0 \pmod p$ for $0 \lt  j \lt  p^k$.
+Immediate consequence: the freshman's dream $(x + y)^p \equiv x^p + y^p \pmod p$ — the middle terms vanish. That powers induction proofs of Fermat's Little Theorem and digit-based expansions (Lucas). Also $\binom{p^k}{j} \equiv 0 \pmod p$ for $0 \lt  j \lt  p^k$.
 
 ## On contests
 Appears as a lemma constantly: binomial expansions mod $p$, showing $p \mid 2^p - 2$, and prime-detection via Pascal's triangle rows (row $p$ is all multiples of $p$ inside).`,
@@ -508,21 +528,33 @@ The class that starts last begins at $(a - 1)b$, and the amount just before it i
 For the count, pair each amount $n$ from $0$ to $ab - a - b$ with $ab - a - b - n$. Exactly one of each pair can be made, and there are $\frac{(a - 1)(b - 1)}{2}$ pairs.
 
 ## How to use it
-Check that $\gcd(a, b) = 1$ first. Otherwise only multiples of the gcd can ever be made, and the theorem applies after dividing through, as [[bezouts-identity|Bézout's identity]] explains.
+Check that $\gcd(a, b) = 1$ first. Otherwise only multiples of the gcd can ever be made, and the theorem applies after dividing through, as [[bezouts-identity|Bézout's Identity]] explains.
 
 To decide which amounts can be made, work one residue class at a time modulo the smaller denomination, as in the figure. With three or more denominations there is no closed formula, and the same class-by-class picture, done by hand, is the way in.
 
 ## On contests
 Three problems here, two AIME and one AMC 12, none solved by it alone. Typical questions reduce a coin problem to two coprime denominations after a parity or divisibility step, count the attainable values in a bounded range, or run the theorem backwards, finding the denominations that leave a given largest impossible amount.`,
 
-"pythagorean-triples": String.raw`## Why it works
-A primitive triple has odd hypotenuse and one even leg; factoring the [[pythagorean-theorem|Pythagorean relation]] as $b^2 = c^2 - a^2 = (c-a)(c+a)$ with the two factors coprime-up-to-2 forces both to be (twice) squares — yielding the $m, n$ parametrization. Geometrically: rational points on the unit circle via lines through $(-1, 0)$.
+"pythagorean-triples": String.raw`
+## Why it works
+In a primitive triple $a$ and $b$ cannot both be even, and they cannot both be odd, since then $c^2 = a^2 + b^2 \equiv 2 \pmod 4$, which no square is. So one leg, say $b$, is even, and $c$ is odd.
+
+Then $$b^2 = c^2 - a^2 = (c - a)(c + a),$$ where $c - a$ and $c + a$ are both even and share no other factor. Half of each is then a perfect square, $c + a = 2m^2$ and $c - a = 2n^2$, which gives $a = m^2 - n^2$, $b = 2mn$ and $c = m^2 + n^2$.
+
+Geometrically, a triple is a rational point $\left(\frac ac, \frac bc\right)$ on the unit circle, and the line through $(-1, 0)$ with slope $\frac nm$ meets the circle again at exactly that point.
+
+{{figure:rational}}
 
 ## How to use it
-Generate: coprime $m > n$, opposite parity. Structural facts for problems: exactly one leg divisible by 3, one by 4, one side by 5; area divisible by 6; inradius $r = n(m - n)\cdot$(scaling) — and for [[right-triangle-inradius|ANY right triangle with integer sides]], $r$ is an integer.
+To generate triples, run over coprime $m \gt n$ of opposite parity and scale: $(m, n) = (2, 1)$, $(3, 2)$, $(4, 1)$ and $(4, 3)$ give $3$-$4$-$5$, $5$-$12$-$13$, $15$-$8$-$17$ and $7$-$24$-$25$.
+
+To find every right triangle with a given leg $a$, factor $a^2 = (c - b)(c + b)$ and match factor pairs of the same parity, which usually beats the parametrization. For the leg $15$, $$225 = 1 \cdot 225 = 3 \cdot 75 = 5 \cdot 45 = 9 \cdot 25$$ gives the hypotenuses $113$, $39$, $25$ and $17$.
+
+A primitive triangle's inradius is $n(m - n)$, from $r = \frac{a + b - c}{2}$, and for any integer right triangle it is an integer, as on [[right-triangle-inradius|the right-triangle inradius]].
 
 ## On contests
-"How many right triangles with leg 15" (factor $15^2 = (c-b)(c+b)$), perimeter/area matching problems, and AIME counting of triples with a fixed element — all flow from the parametrization or the difference-of-squares factoring.`,
+Two problems here, one AIME and one AMC 12, neither solved by it alone. Both hide familiar triples, scaled up in the given lengths or as the tangents of angles, and recognizing them turns the geometry into arithmetic; one finishes with the [[angle-addition|angle addition formulas]].
+`,
 
 "pell-equation": String.raw`## Why it works
 Units in $\mathbb{Z}[\sqrt D]$: if $(x_1, y_1)$ is the smallest solution, every solution is a power $(x_1 + y_1\sqrt D)^k$ because norms multiply ($N(u) = x^2 - Dy^2$ is multiplicative). Continued fractions of $\sqrt D$ find the fundamental solution.
@@ -546,10 +578,10 @@ Check the factorization: odd powers of any prime $\equiv 3 \pmod 4$ ⟹ not repr
 Pigeonhole. Consider the $(\lfloor\sqrt n\rfloor + 1)^2 > n$ numbers $ai - j$ for $0 \le i, j \le \lfloor\sqrt n\rfloor$. Two must be congruent mod $n$; subtracting gives $a(i_1 - i_2) \equiv (j_1 - j_2) \pmod n$ with both differences at most $\sqrt n$ in absolute value and not both zero — exactly the promised $x \equiv ay$ with $|x|, |y| \le \sqrt n$.
 
 ## How to use it
-The elementary route to representation theorems. For $p \equiv 1 \pmod 4$, $-1$ is a quadratic residue, so pick $a$ with $a^2 \equiv -1$; then Thue's $x \equiv ay$ gives $x^2 \equiv a^2 y^2 \equiv -y^2$, so $p \mid x^2 + y^2$, and since $0 \lt  x^2 + y^2 \lt  2p$ it equals $p$. The same move with $a^2 \equiv -2$ or $-3$ produces $x^2 + 2y^2$ and $x^2 + 3y^2$ representations. The proof is a [[pigeonhole|pigeonhole argument]] on the roughly $p$ pairs $(x,y)$ in a box of side $\sqrt p$.
+The elementary route to representation theorems. For $p \equiv 1 \pmod 4$, $-1$ is a quadratic residue, so pick $a$ with $a^2 \equiv -1$; then Thue's $x \equiv ay$ gives $x^2 \equiv a^2 y^2 \equiv -y^2$, so $p \mid x^2 + y^2$, and since $0 \lt  x^2 + y^2 \lt  2p$ it equals $p$. The same move with $a^2 \equiv -2$ or $-3$ produces $x^2 + 2y^2$ and $x^2 + 3y^2$ representations. The proof is a pigeonhole argument on the roughly $p$ pairs $(x,y)$ in a box of side $\sqrt p$.
 
 ## On contests
-An olympiad tool — the standard "no Gaussian integers required" proof of [[fermat-two-squares|Fermat's two-squares theorem]], and a clean way to force a bounded solution of a modular condition into existence when a problem needs one.`,
+An olympiad tool — the standard "no Gaussian integers required" proof of Fermat's two-squares theorem, and a clean way to force a bounded solution of a modular condition into existence when a problem needs one.`,
 
 "factor-pair-counting": String.raw`
 ## Why it works
@@ -560,9 +592,9 @@ Take $xy = 36$ in positive integers. For each divisor $x$ of $36$ there is exact
 The same holds after a substitution. If an equation can be rearranged into $$(x - a)(y - b) = N,$$ then $x - a$ and $y - b$ form an integer factor pair of $N$, and each pair gives back exactly one solution $(x, y)$. The count is $d(N)$ positive pairs, or $2d(N)$ if negative factors are allowed, before any filter is applied.
 
 ## How to use it
-The whole idea is to stop solving and start counting. An equation in two unknowns has no general method, but once it is rearranged into (something)(something) $= N$, every solution corresponds to a factorization of $N$, and the number of factorizations is just [[number-of-divisors|the divisor count]]. A problem with no obvious method becomes a problem with a formula.
+The whole idea is to stop solving and start counting. An equation in two unknowns has no general method, but once it is rearranged into (something)(something) $= N$, every solution corresponds to a factorization of $N$, and the number of factorizations is just the divisor count. A problem with no obvious method becomes a problem with a formula.
 
-The pipeline is fixed. Force a product with [[sfft|SFFT]] or direct factoring, count the divisor pairs of the constant, then filter. The filtering is where the marks are, and there are only three filters worth remembering.
+The pipeline is fixed. Force a product with SFFT or direct factoring, count the divisor pairs of the constant, then filter. The filtering is where the marks are, and there are only three filters worth remembering.
 
 - Positivity: do the negative factor pairs give valid variables?
 - Ordering: unordered pairs number $\frac{d(N)}{2}$, except when $N$ is a perfect square, where the pair $\sqrt N \cdot \sqrt N$ has no partner and the count is $\frac{d(N) + 1}{2}$.
@@ -571,7 +603,7 @@ The pipeline is fixed. Force a product with [[sfft|SFFT]] or direct factoring, c
 That parity filter is why this card and the difference of squares travel together: $n = (a - b)(a + b)$ is precisely this pipeline with a parity constraint attached.
 
 ## On contests
-Almost never alone — 2 of 24 — and its constant companion is [[difference-of-squares|the difference of squares]] (6 problems), which is the step that manufactures the product in the first place.
+Almost never alone — 2 of 24 — and its constant companion is the difference of squares (6 problems), which is the step that manufactures the product in the first place.
 
 The evergreen is "how many ordered pairs solve $\frac1x+\frac1y=\frac1{12}$": rearranged it is $(x-12)(y-12)=144$, so the count is $d(144)=15$ positive pairs plus the negative-side analysis. Every problem of this family is the same three steps with a different constant, and the difficulty lives entirely in the filters.
 `,
@@ -583,16 +615,16 @@ Every representation is a factorization into two factors of the same parity, and
 The factors $a - b$ and $a + b$ differ by $2b$, an even number, so they are both odd or both even. If both are odd, $n$ is odd; if both are even, $n$ is a multiple of $4$. So an $n$ that is $2 \bmod 4$ has no representation. Conversely, if $n = st$ with $s \le t$ of the same parity, then $$a = \frac{s + t}{2}, \qquad b = \frac{t - s}{2}$$ are whole numbers with $a^2 - b^2 = st = n$. Every odd $n$ works with $s = 1$ and $t = n$, and every multiple of $4$ with $s = 2$ and $t = \frac n2$.
 
 ## How to use it
-$40$ is a multiple of $4$, so it is a difference of squares: the pair $4 \cdot 10$ gives $a = 7$ and $b = 3$, and $7^2 - 3^2 = 40$. $42$ is $2 \bmod 4$, so it is not.
+$40$ is a multiple of $4$, so it is a [[difference-of-squares|difference of squares]]: the pair $4 \cdot 10$ gives $a = 7$ and $b = 3$, and $7^2 - 3^2 = 40$. $42$ is $2 \bmod 4$, so it is not.
 
-To count representations, count the factor pairs of matching parity. For odd $n$ every factor pair works, so there are $\lceil \frac{d(n)}{2} \rceil$ representations, counting $b = 0$ when $n$ is a square. Equations like $x^2 - y^2 = k$ are solved the same way, by listing factor pairs of $k$, which is the [[difference-of-squares|difference of squares factoring]] at work.
+To count representations, count the factor pairs of matching parity. For odd $n$ every factor pair works, so there are $\lceil \frac{d(n)}{2} \rceil$ representations, counting $b = 0$ when $n$ is a square. Equations like $x^2 - y^2 = k$ are solved the same way, by listing factor pairs of $k$, which is the difference of squares factoring at work.
 
 ## On contests
-Four problems here, mostly AMC, one solved by it alone and three combined with [[difference-of-squares|the difference of squares factoring]] itself. "How many numbers up to $N$ are differences of two squares" and "in how many ways" are the two recurring questions, and both come down to the parity condition and factor pairs.
+Four problems here, mostly AMC, one solved by it alone and three combined with the difference of squares factoring itself. "How many numbers up to $N$ are differences of two squares" and "in how many ways" are the two recurring questions, and both come down to the parity condition and factor pairs.
 `,
 
 "farey-sequences": String.raw`## Why it works
-The determinant condition $bc - ad = 1$ says consecutive Farey fractions form a unimodular pair — no lattice point strictly between their vectors ([[picks-theorem|Pick's theorem]] on the empty triangle). The mediant is the lattice vector sum, the unique "next" fraction between them.
+The determinant condition $bc - ad = 1$ says consecutive Farey fractions form a unimodular pair — no lattice point strictly between their vectors ([[picks-theorem|Pick's Theorem]] on the empty triangle). The mediant is the lattice vector sum, the unique "next" fraction between them.
 
 ## How to use it
 Best-approximation problems: the fraction with smallest denominator between two given fractions is found by mediant descent (Stern-Brocot search). Neighbor condition answers "which fractions are adjacent to $\frac{a}{b}$": solve $bc - ad = 1$. Counting: $|F_n| = 1 + \sum_{k\le n}\varphi(k)$.
@@ -613,7 +645,7 @@ In the long division of $1$ by $n$, each step multiplies the current remainder b
 ## How to use it
 Convert in either direction by counting digits: $0.\overline{57} = \frac{57}{99} = \frac{19}{33}$, and $$0.1\overline{6} = \frac1{10}\left(1 + 0.\overline{6}\right) = \frac1{10} \cdot \frac53 = \frac16.$$ Factors of $2$ and $5$ in a denominator create the digits before the repeat; the rest of the denominator sets the period.
 
-Period questions are [[multiplicative-order|order computations]]: the period of $\frac1{49}$ is $\operatorname{ord}_{49}(10) = 42$, and the period always divides $\varphi(n)$. Every fraction $\frac{k}{999}$ has a three-digit repeating block, and $999 = 27 \cdot 37$, so counting numbers of the form $0.\overline{abc}$ comes down to the divisors of $999$.
+Period questions are order computations: the period of $\frac1{49}$ is $\operatorname{ord}_{49}(10) = 42$, and the period always divides $\varphi(n)$. Every fraction $\frac{k}{999}$ has a three-digit repeating block, and $999 = 27 \cdot 37$, so counting numbers of the form $0.\overline{abc}$ comes down to the divisors of $999$.
 
 ## On contests
 Five problems here, all AIME, one solved by it alone; two are counts over fractions $\frac{k}{999}$ in lowest terms, handled with [[pie|inclusion-exclusion]] on the prime factors $3$ and $37$. AIME also builds problems on the period of $\frac1n$ and on the digit sums of repeating blocks.
@@ -665,7 +697,7 @@ For the squares, the diagonal of an $m \times n$ grid crosses $m - 1$ inner vert
 {{figure:squares}}
 
 ## How to use it
-For [[picks-theorem|Pick's theorem]], count boundary points edge by edge: an edge from $(x_1, y_1)$ to $(x_2, y_2)$ contributes $\gcd(|x_2 - x_1|, |y_2 - y_1|)$ points, counting one endpoint, so adding over the edges counts each vertex once. The segment from $(0, 0)$ to $(9, 6)$ is three steps of $(3, 2)$, so it has $2$ interior lattice points.
+For Pick's Theorem, count boundary points edge by edge: an edge from $(x_1, y_1)$ to $(x_2, y_2)$ contributes $\gcd(|x_2 - x_1|, |y_2 - y_1|)$ points, counting one endpoint, so adding over the edges counts each vertex once. The segment from $(0, 0)$ to $(9, 6)$ is three steps of $(3, 2)$, so it has $2$ interior lattice points.
 
 A lattice point $(a, b)$ is visible from the origin, with no lattice point in between, exactly when $\gcd(a, b) = 1$. In three dimensions, inclusion-exclusion gives the number of unit cubes the diagonal of an $a \times b \times c$ box passes through: $$a + b + c - \gcd(a, b) - \gcd(b, c) - \gcd(c, a) + \gcd(a, b, c).$$
 
@@ -718,7 +750,7 @@ The fractional part of the logarithm decides the leading digits. If $\log_{10} n
 ## How to use it
 For $2^{100}$, $\log_{10} 2^{100} = 100\log_{10} 2 \approx 30.103$, so it has $31$ digits, and since $10^{0.103} \approx 1.27$, it begins $1.27\ldots$, with leading digit $1$. Memorize $\log_{10} 2 \approx 0.30103$ and $\log_{10} 3 \approx 0.47712$; with $\log_{10} 5 = 1 - \log_{10} 2$ they cover most questions.
 
-Leading-digit questions about a sequence of powers become questions about the [[floor-basics|fractional parts]] of multiples of a logarithm: $2^k$ starts with $1$ exactly when the fractional part of $k\log_{10} 2$ is less than $\log_{10} 2$.
+Leading-digit questions about a sequence of powers become questions about the fractional parts of multiples of a logarithm: $2^k$ starts with $1$ exactly when the fractional part of $k\log_{10} 2$ is less than $\log_{10} 2$.
 
 ## On contests
 Four problems here, mostly AMC, three solved by it alone; the fourth works through [[log-rules|logarithm rules]] first. "How many digits does $5^{2027}$ have" and "how many powers of $2$ below $2^{1000}$ start with a $7$" are the classic forms.
@@ -741,14 +773,14 @@ Expanding around the known root, every term past the linear one carries a factor
 For a polynomial with integer coefficients, Taylor's formula gives $$f(a + pt) = f(a) + pt\,f'(a) + p^2(\cdots),$$ with integers hidden in the dots. Since $p$ divides $f(a)$, the condition $f(a + pt) \equiv 0 \pmod{p^2}$ divides through by $p$ to $$\frac{f(a)}{p} + t\,f'(a) \equiv 0 \pmod p,$$ a linear congruence in $t$ with exactly one solution when $p$ does not divide $f'(a)$. Repeating the step with $p^3$, $p^4, \ldots$ lifts the root as far as needed.
 
 ## How to use it
-Solve modulo $p$ first, then lift each root one power at a time, substituting $x = a + pt$ and keeping only the terms linear in $t$; the [[binomial-theorem|binomial theorem]] does the expansion for powers.
+Solve modulo $p$ first, then lift each root one power at a time, substituting $x = a + pt$ and keeping only the terms linear in $t$; the [[binomial-theorem|Binomial Theorem]] does the expansion for powers.
 
 For $x^k \equiv -1$ with $k$ a power of $2$, first decide which primes allow a solution modulo $p$ at all: a solution has order exactly $2k$ modulo $p$, so $2k$ must divide $p - 1$, by [[multiplicative-order|multiplicative orders]]. Then lift.
 
 When $f'(a) \equiv 0 \pmod p$ the root is singular: it lifts to all $p$ values of $t$ if $p^2$ divides $f(a)$, and to none otherwise.
 
 ## On contests
-Two problems here, both AIME, neither solved by it alone. Typical questions solve a cube or fourth-power congruence modulo a prime power by splitting with the [[crt|Chinese remainder theorem]] and lifting one power at a time, or study a sequence that stabilizes modulo powers of $2$ through multiplicative orders.
+Two problems here, both AIME, neither solved by it alone. Typical questions solve a cube or fourth-power congruence modulo a prime power by splitting with the [[crt|Chinese Remainder Theorem]] and lifting one power at a time, or study a sequence that stabilizes modulo powers of $2$ through multiplicative orders.
 `
 
 });
@@ -759,10 +791,10 @@ Object.assign(window.MATH_DETAILS, {
 The multiplicative group mod $p^k$ is cyclic for odd $p$ (so $\lambda = \varphi$ there), but mod $2^k$ ($k \ge 3$) it is a product of a group of order 2 and a cyclic group of order $2^{k-2}$ — whence the smaller exponent. [[crt|CRT]] splits the group mod $n$ into the prime-power pieces, and the universal exponent of a product is the lcm of the pieces' exponents.
 
 ## How to use it
-For "last $k$ digits of a huge power" problems, reduce the exponent mod $\lambda(10^k)$ instead of $\varphi(10^k)$: $\lambda(1000) = 100$ versus $\varphi(1000) = 400$. For power towers, iterate down the tower with $\lambda$ at each level. Remember the special cases $\lambda(2) = 1$, $\lambda(4) = 2$ and the lcm (not product) combination rule. Since $\lambda(n)\mid\varphi(n)$ always, using $\lambda$ can only sharpen [[eulers-theorem|Euler's theorem]], never weaken it — and the true order of any particular $a$ divides $\lambda(n)$ in turn.
+For "last $k$ digits of a huge power" problems, reduce the exponent mod $\lambda(10^k)$ instead of $\varphi(10^k)$: $\lambda(1000) = 100$ versus $\varphi(1000) = 400$. For power towers, iterate down the tower with $\lambda$ at each level. Remember the special cases $\lambda(2) = 1$, $\lambda(4) = 2$ and the lcm (not product) combination rule. Since $\lambda(n)\mid\varphi(n)$ always, using $\lambda$ can only sharpen [[eulers-theorem|Euler's Theorem]], never weaken it — and the true order of any particular $a$ divides $\lambda(n)$ in turn.
 
 ## On contests
-AIME tower-of-exponents problems reward $\lambda$ heavily — a $4\times$ smaller modulus at each level compounds. Euler's theorem is never wrong, just slower; $\lambda$ is the sharp version of the same idea.`
+AIME tower-of-exponents problems reward $\lambda$ heavily — a $4\times$ smaller modulus at each level compounds. Euler's Theorem is never wrong, just slower; $\lambda$ is the sharp version of the same idea.`
 
 });
 
@@ -803,62 +835,6 @@ Chiefly an olympiad tool, but its consequences reach the AIME (sum-of-two-square
 
 Object.assign(window.MATH_DETAILS, {
 
-"vp-factorial": String.raw`
-## Why it works
-Each multiple of $p$ contributes one factor, each multiple of $p^2$ one more, and so on, so counting multiples power by power counts every factor exactly once.
-
-Among $1, 2, \ldots, n$ there are $\lfloor \frac np \rfloor$ multiples of $p$, each contributing at least one factor of $p$. The $\lfloor \frac n{p^2} \rfloor$ multiples of $p^2$ contribute a second factor, the multiples of $p^3$ a third, and so on. A number divisible by exactly $p^e$ is counted in the first $e$ terms and no others, so the sum is the total. [[legendres-formula|Legendre's formula]] has a picture of this count and a closed form.
-
-## How to use it
-Each quotient is the previous quotient divided by $p$ and rounded down, so the computation is a short chain. For the zeros at the end of $2025!$: $$2025 \to 405 \to 81 \to 16 \to 3,$$ and $405 + 81 + 16 + 3 = 505$. Fives are counted rather than twos because fives are the scarcer factor.
-
-To test whether $p^k$ divides $n!$, compare $k$ with the sum. For a binomial coefficient, compute the sums for $n!$, $k!$ and $(n - k)!$ and subtract; the result is also the number of carries when $k$ and $n - k$ are added in base $p$, which is [[kummers-theorem|Kummer's theorem]].
-
-## On contests
-Five problems here, mostly AMC, three solved by it alone; two pair it with [[uniform-overcount|division by a uniform overcount]], where a count arrives as a ratio of factorials whose prime powers must be compared. "How many zeros does $n!$ end in" and "the largest $k$ with $7^k \mid 100!$" appear at every level from MATHCOUNTS to AIME.
-`
-
-});
-
-Object.assign(window.MATH_DETAILS, {
-
-"recognition-numbers": String.raw`
-## Why it works
-There is no theorem here, only the reason these particular numbers keep appearing.
-
-Divisibility by $2$, $3$ and $5$ can be seen at a glance, so a number that passes those tests looks prime. A composite number that passes them has all its prime factors at least $7$, and the products of two primes from $7$ to $19$ are the ones that turn up most. Knowing those few products means $221$ or $323$ never slows you down.
-
-$1001 = 7 \cdot 11 \cdot 13$ is behind a whole family of tricks. Repeating a three-digit block multiplies it by $1001$, $$\overline{abcabc} = \overline{abc} \cdot 1001 = \overline{abc} \cdot 7 \cdot 11 \cdot 13,$$ so every such six-digit number is divisible by $7$, $11$ and $13$. And $2^{10} = 1024$ is so close to $10^3$ that it converts between powers of $2$ and powers of $10$ with an error under $3\%$.
-
-## How to use it
-To factor a three-digit number, test $7$, $11$, $13$, $17$ and $19$ after the obvious small primes. A number below $529 = 23^2$ that passes all of them is prime, since a composite one would need two prime factors of at least $23$.
-
-The family built on repeated digit patterns cracks numbers like $111111 = 111 \cdot 1001$: $111 = 3 \cdot 37$, $999 = 3^3 \cdot 37$, $10101 = 3 \cdot 7 \cdot 13 \cdot 37$, and $101 \cdot 9901 = 1000001$.
-
-One power is worth knowing for last digits: $$7^4 = 2401 \equiv 1 \pmod{100},$$ so the last two digits of $7, 7^2, 7^3, 7^4, \ldots$ run $07, 49, 43, 01$ and repeat every four. [[eulers-theorem|Euler's theorem]] only promises a repeat every $40$ steps; $7$ has [[multiplicative-order|order]] $4$ modulo $100$. So $7^{2025}$ ends in $07$, because $2025$ is one more than a multiple of $4$.
-
-For estimates, $\log_{10} 2 \approx 0.301$ and $\log_{10} 3 \approx 0.477$ settle digit counts and size comparisons, and the square-root values settle which answer choice a messy expression is closest to.
-
-## On contests
-Four problems here, all solved by it alone, and really two, each shared between the AMC 10 and AMC 12. They reward recognizing products like $101 \cdot 9901 = 1000001$ and $99 \cdot 10101 = 999999$, or $10 \cdot 9 \cdot 8 = 720 = 6!$, instead of multiplying out. AIME answers often need a quick factorization such as $221$ or $299 = 13 \cdot 23$, and AMC estimates lean on $2^{10} \approx 10^3$.`
-
-});
-
-Object.assign(window.MATH_DETAILS, {
-
-"gcd-substitution": String.raw`## Key forms
-- write $a=dx$ and $b=dy$ where $d=\gcd(a,b)$, and the quotients are automatically coprime — that is exactly what "greatest" means, and it is why every condition on the pair simplifies afterwards
-- coprimality makes the derived quantities immediate: $\operatorname{lcm}(a,b)=dxy$, hence $ab=\gcd\cdot\operatorname{lcm}$, and $a+b=d(x+y)$ — every relation simplifies at once, which is why this is the opening move rather than a later step
-- given the gcd and lcm, the pairs $(x,y)$ are the coprime factorisations of $\frac{\operatorname{lcm}}{\gcd}$, and there are $2^{\omega}$ ordered ones since each prime's whole block must go entirely to $x$ or entirely to $y$ — counting the prime factors is all the work, since each one goes wholly to $x$ or wholly to $y$
-
-## Why it works
-Dividing $a$ and $b$ by their gcd leaves quotients with no common factor — that's what "greatest" means. Everything about the pair then splits cleanly: $\operatorname{lcm}(a,b) = dxy$ because $x$ and $y$ share nothing, $ab = d^2xy = \gcd \cdot \operatorname{lcm}$ falls out immediately, and any equation in $a, b$ becomes an equation in $d$ and the coprime pair $(x, y)$.
-
-## How to use it
-Write $a = dx$, $b = dy$ the moment a problem mentions gcd or lcm — before doing anything else. Given $\gcd$ and $\operatorname{lcm}$, the pairs $(x, y)$ are the coprime factorizations of $\frac{\operatorname{lcm}}{\gcd}$, and there are exactly $2^{\omega}$ ordered ones ($\omega$ = number of distinct primes of $\frac{\operatorname{lcm}}{\gcd}$), since each prime's whole block goes entirely to $x$ or entirely to $y$. Sum conditions like $a + b = d(x + y)$ hand you a factor of the sum for free. It is the working form of [[gcd-lcm-product|gcd–lcm product]]: reducing a pair to coprime cofactors is what the identity licenses.
-
-## On contests
-The standard opener for "gcd + lcm + one more condition" problems at every level: count the pairs, minimize the sum, match a given product. MATHCOUNTS uses it with concrete numbers; AIME versions layer it with divisor counting — after substituting, everything reduces to prime-block bookkeeping on $xy$.`,
 
 "choose-modulus": String.raw`## Key forms
 - powers occupy very few residues, which is what makes a well-chosen modulus decisive: squares are $0,1$ mod $4$ and $0,1,4$ mod $8$; cubes are $0,\pm1$ mod $9$; fourth powers are $0,1$ mod $16$ — the sparseness is the point, since a modulus where one side simply cannot land finishes the problem outright
@@ -873,6 +849,27 @@ Match the modulus to the exponents present: squares → mod 4 or 8, cubes → mo
 
 ## On contests
 The first thing to try on "show no solutions exist" and on narrowing AIME Diophantine searches. Also the engine behind parity arguments — mod 2 is the simplest instance. If mod 4, 8, 9, and 16 all fail to break the equation, switch tools: size/bounding arguments or factoring usually take over.`,
+
+"recognition-numbers": String.raw`
+## Why it works
+There is no theorem here, only the reason these particular numbers keep appearing.
+
+Divisibility by $2$, $3$ and $5$ can be seen at a glance, so a number that passes those tests looks prime. A composite number that passes them has all its prime factors at least $7$, and the products of two primes from $7$ to $19$ are the ones that turn up most. Knowing those few products means $221$ or $323$ never slows you down.
+
+$1001 = 7 \cdot 11 \cdot 13$ is behind a whole family of tricks. Repeating a three-digit block multiplies it by $1001$, $$\overline{abcabc} = \overline{abc} \cdot 1001 = \overline{abc} \cdot 7 \cdot 11 \cdot 13,$$ so every such six-digit number is divisible by $7$, $11$ and $13$. And $2^{10} = 1024$ is so close to $10^3$ that it converts between powers of $2$ and powers of $10$ with an error under $3\%$.
+
+## How to use it
+To factor a three-digit number, test $7$, $11$, $13$, $17$ and $19$ after the obvious small primes. A number below $529 = 23^2$ that passes all of them is prime, since a composite one would need two prime factors of at least $23$.
+
+The family built on repeated digit patterns cracks numbers like $111111 = 111 \cdot 1001$: $111 = 3 \cdot 37$, $999 = 3^3 \cdot 37$, $10101 = 3 \cdot 7 \cdot 13 \cdot 37$, and $101 \cdot 9901 = 1000001$.
+
+One power is worth knowing for last digits: $$7^4 = 2401 \equiv 1 \pmod{100},$$ so the last two digits of $7, 7^2, 7^3, 7^4, \ldots$ run $07, 49, 43, 01$ and repeat every four. [[eulers-theorem|Euler's Theorem]] only promises a repeat every $40$ steps; $7$ has [[multiplicative-order|order]] $4$ modulo $100$. So $7^{2025}$ ends in $07$, because $2025$ is one more than a multiple of $4$.
+
+For estimates, $\log_{10} 2 \approx 0.301$ and $\log_{10} 3 \approx 0.477$ settle digit counts and size comparisons, and the square-root values settle which answer choice a messy expression is closest to.
+
+## On contests
+Four problems here, all solved by it alone, and really two, each shared between the AMC 10 and AMC 12. They reward recognizing products like $101 \cdot 9901 = 1000001$ and $99 \cdot 10101 = 999999$, or $10 \cdot 9 \cdot 8 = 720 = 6!$, instead of multiplying out. AIME answers often need a quick factorization such as $221$ or $299 = 13 \cdot 23$, and AMC estimates lean on $2^{10} \approx 10^3$.
+`,
 
 "digit-manipulation": String.raw`## Key forms
 - write the number as its place-value polynomial, $\overline{abc}=100a+10b+c$, which turns a digit condition into an ordinary equation in the digits — once it is an equation the digit constraints are just bounds, and the problem stops being about digits
@@ -923,14 +920,26 @@ Purely an olympiad weapon: its best-known result is that $\frac{a^2+b^2}{ab+1}$ 
 
 Object.assign(window.MATH_DETAILS, {
 
-"trailing-zeros": String.raw`## Why it works
-A trailing zero is a factor of $10 = 2 \cdot 5$, so the number of them is $\min(v_2(n!), v_5(n!))$. In any factorial there are always more factors of $2$ than of $5$ (every other number is even, only every fifth is a multiple of $5$), so the minimum is always $v_5(n!)$ — [[legendres-formula|Legendre's formula]] with $p = 5$.
+"trailing-zeros": String.raw`
+## Why it works
+A number ends in $k$ zeros exactly when $10^k$ divides it, and $10^k = 2^k 5^k$, so the number of trailing zeros of $n!$ is $\min\left(v_2(n!), v_5(n!)\right)$.
+
+Among $1, \ldots, n$ every second number is even but only every fifth is a multiple of $5$, and the same holds at every power, so $v_2(n!) \ge v_5(n!)$ always. The minimum is therefore $v_5(n!)$, which [[legendres-formula|Legendre's Formula]] computes.
+
+The count rises at every multiple of $5$, by one more at every multiple of $25$, and by one more again at multiples of $125$, and at those points some counts are skipped.
+
+{{figure:jumps}}
 
 ## How to use it
-Sum $\left\lfloor \frac{n}{5} \right\rfloor + \left\lfloor \frac{n}{25} \right\rfloor + \left\lfloor \frac{n}{125} \right\rfloor + \cdots$ until the terms hit zero. For trailing zeros in another base $b$, factor $b = \prod p_i^{a_i}$, compute $\left\lfloor \frac{v_{p_i}(n!)}{a_i} \right\rfloor$ for each prime, and take the minimum — e.g. base $12 = 2^2 \cdot 3$ is limited by whichever of $\lfloor v_2/2 \rfloor$, $v_3$ is smaller.
+Add $\left\lfloor \frac n5 \right\rfloor + \left\lfloor \frac n{25} \right\rfloor + \cdots$ until the terms reach zero. For the reverse question, which $n$ give exactly $k$ zeros, estimate $n \approx 4k$, since the count is about $\frac n4$, and adjust: a skipped value has no such $n$, and any other value has exactly five, a run of consecutive $n$ from a multiple of $5$.
+
+Each multiple of $25$ skips one count, each multiple of $125$ skips one more, and so on, which counts the values that never occur below any bound.
+
+In another base, factor the base and take the scarcest prime power: in base $12 = 2^2 \cdot 3$ the number of trailing zeros is $\min\left(\left\lfloor \frac{v_2(n!)}{2} \right\rfloor, v_3(n!)\right)$.
 
 ## On contests
-A perennial MATHCOUNTS and early-AMC item ("how many zeros does $100!$ end in?"), and a building block inside harder valuation problems. The base-$b$ generalization and the reverse question ("for which $n$ does $n!$ end in exactly $k$ zeros?", which can have $0$ or $5$ answers) are the standard twists.`,
+Two problems here, one AIME and one AMC 10, neither solved by it alone, since both need Legendre's Formula for the count itself. The AIME version counts the values that are never attained, and the AMC version compares the zeros of $(2n)!$ and $n!$. At MATHCOUNTS and on the AMC 10 the plain count appears on its own.
+`,
 
 "pisano-periods": String.raw`## Why it works
 A Fibonacci term mod $m$ is determined by the pair $(F_{n-1}, F_n) \bmod m$, and there are only $m^2$ possible pairs, so the sequence of pairs must eventually repeat. Because the recurrence $F_{n-1} = F_{n+1} - F_n$ runs backward as cleanly as forward, the repetition can't start late — it cycles from the very beginning, giving a pure period $\pi(m)$.
@@ -964,7 +973,7 @@ For "count the pairs/triples with these gcd and lcm" problems, each prime contri
 Working one prime at a time is what makes [[gcd-lcm-product|gcd–lcm product]] and the lcm pair counts fall out, since min and max are decided independently per prime.
 
 ## On contests
-The standard AIME approach to gcd and lcm counting and to "how many divisors of $N$ satisfy …", with 12 problems tagged here; [[casework-method|casework]] joins in 4, usually for the cases at a single prime. The reflex to build: the moment a problem mixes gcd, lcm, products or powers, switch to exponent lists and work one prime at a time.
+The standard AIME approach to gcd and lcm counting and to "how many divisors of $N$ satisfy …", with 12 problems tagged here; casework joins in 4, usually for the cases at a single prime. The reflex to build: the moment a problem mixes gcd, lcm, products or powers, switch to exponent lists and work one prime at a time.
 `
 
 });
@@ -1028,17 +1037,17 @@ Division is still possible, just not by everything. If $x \equiv a$ and $y \equi
 
 Exponents are the genuine exception to "treat $\equiv$ like $=$". Bases reduce freely: $x \equiv a$ gives $x^k \equiv a^k$. Exponents do not. From $k \equiv j \pmod m$ you may not conclude $a^k \equiv a^j \pmod m$; the exponent reduces modulo $\varphi(m)$, not modulo $m$, and only when $\gcd(a, m) = 1$.
 
-Take $3^{14} \pmod{10}$, whose true value is $9$. Reducing the exponent modulo $10$ would give $3^4 \equiv 1$, which is wrong; reducing it modulo $\varphi(10) = 4$ is right: $$3^{14} = \left(3^4\right)^3 \cdot 3^2 \equiv 1^3 \cdot 9 = 9 \pmod{10}.$$ The base $3$ is coprime to $10$, which is what licenses the second reduction. That is [[eulers-theorem|Euler's theorem]], with [[fermats-little-theorem|Fermat]] as the prime case.
+Take $3^{14} \pmod{10}$, whose true value is $9$. Reducing the exponent modulo $10$ would give $3^4 \equiv 1$, which is wrong; reducing it modulo $\varphi(10) = 4$ is right: $$3^{14} = \left(3^4\right)^3 \cdot 3^2 \equiv 1^3 \cdot 9 = 9 \pmod{10}.$$ The base $3$ is coprime to $10$, which is what licenses the second reduction. That is [[eulers-theorem|Euler's Theorem]], with [[fermats-little-theorem|Fermat]] as the prime case.
 
 ## Full proof
-Cancellation. Let $g = \gcd(k, m)$ and suppose $ka \equiv kb \pmod m$, so $m$ divides $k(a - b)$. Dividing through by $g$, the number $\frac mg$ divides $\frac kg(a - b)$. The numbers $\frac mg$ and $\frac kg$ share no factor, since $g$ was the greatest common factor of $m$ and $k$, so by [[euclids-lemma|Euclid's lemma]] $\frac mg$ divides $a - b$. That is $a \equiv b \pmod{\frac mg}$, and when $g = 1$ it is ordinary cancellation modulo $m$.
+Cancellation. Let $g = \gcd(k, m)$ and suppose $ka \equiv kb \pmod m$, so $m$ divides $k(a - b)$. Dividing through by $g$, the number $\frac mg$ divides $\frac kg(a - b)$. The numbers $\frac mg$ and $\frac kg$ share no factor, since $g$ was the greatest common factor of $m$ and $k$, so by [[euclids-lemma|Euclid's Lemma]] $\frac mg$ divides $a - b$. That is $a \equiv b \pmod{\frac mg}$, and when $g = 1$ it is ordinary cancellation modulo $m$.
 
-Inverses. If $\gcd(b, m) = 1$, [[bezouts-identity|Bézout's identity]] gives integers $u$ and $v$ with $bu + mv = 1$, so $bu \equiv 1 \pmod m$ and $u$ is an inverse of $b$. Conversely, if $bu \equiv 1 \pmod m$ then $bu - 1$ is a multiple of $m$, so any common factor of $b$ and $m$ divides $1$. The inverse therefore exists exactly when $\gcd(b, m) = 1$.
+Inverses. If $\gcd(b, m) = 1$, [[bezouts-identity|Bézout's Identity]] gives integers $u$ and $v$ with $bu + mv = 1$, so $bu \equiv 1 \pmod m$ and $u$ is an inverse of $b$. Conversely, if $bu \equiv 1 \pmod m$ then $bu - 1$ is a multiple of $m$, so any common factor of $b$ and $m$ divides $1$. The inverse therefore exists exactly when $\gcd(b, m) = 1$.
 
 ## How to use it
 Reduce early and often: replace any number by its remainder before multiplying, to keep values small. The rule that trips people up is cancellation: from $ka \equiv kb \pmod m$ you get $$a \equiv b \pmod{\frac{m}{\gcd(k, m)}},$$ not mod $m$. So $6x \equiv 6y \pmod{15}$ only gives $x \equiv y \pmod 5$.
 
-When $\gcd(k, m) = 1$ the cancellation is clean and, equivalently, $k$ has a [[modular-inverse|modular inverse]] you can multiply by. When it is not $1$, either shrink the modulus as above or split into cases.
+When $\gcd(k, m) = 1$ the cancellation is clean and, equivalently, $k$ has a modular inverse you can multiply by. When it is not $1$, either shrink the modulus as above or split into cases.
 
 Beyond the mechanics, the reason to reach for a modulus at all is that it is the cheapest way to prove something is impossible. An equation that survives every algebraic attack often dies instantly mod 3, 4, 8 or 9, because those moduli have very few squares: $$x^2 \equiv 0, 1 \pmod 4, \qquad x^2 \equiv 0, 1, 4 \pmod 8,$$ so any equation forcing a square to be $3 \bmod 4$ has no solutions at all and the search stops before it starts.
 
@@ -1047,7 +1056,7 @@ That is the payoff: not computing a remainder, but replacing an infinite search 
 It is also the standard way to shrink a problem. Reducing a variable mod $m$ replaces infinitely many cases with $m$ of them, which is why this card is almost always followed by [[casework-method|casework]]: the modulus produces the cases, and the casework closes them.
 
 ## On contests
-The foundation under every modular problem — last-digit and remainder questions on MATHCOUNTS, and the setup for [[fermats-little-theorem|Fermat]], Euler, and [[crt|CRT]] on AMC/AIME. The pairing is very consistent: [[casework-method|casework]] shares 12 of the 61 problems tagged here, more than double any other partner, and only six use the modulus alone.
+The foundation under every modular problem — last-digit and remainder questions on MATHCOUNTS, and the setup for Fermat, Euler, and [[crt|CRT]] on AMC/AIME. The pairing is very consistent: casework shares 12 of the 61 problems tagged here, more than double any other partner, and only six use the modulus alone.
 
 The single most common error is illegal division; the fix is always to track what $\gcd(k, m)$ does to the modulus.
 `
@@ -1110,8 +1119,8 @@ Olympiad number theory and "why the Fermat test fails" discussions. Keep it dist
 Object.assign(window.MATH_DETAILS, {
 
 "extended-euclidean-algorithm": String.raw`## Key forms
-- the [[euclidean-algorithm|Euclidean algorithm]] runs on $\gcd(a,b)=\gcd(b,\,a\bmod b)$; the extended version also tracks how each remainder is built from $a$ and $b$, producing [[bezouts-identity|Bézout's identity]] $\gcd(a,b)=ax+by$ — the tracking costs nothing extra, so run the extended version by default
-- the Bézout coefficient is exactly the [[modular-inverse|modular inverse]]: if $\gcd(a,b)=1$ then $ax+by=1$ gives $ax\equiv1\pmod b$, so $x\equiv a^{-1}$ — this is how an inverse is computed by hand when the modulus is too large to guess
+- the Euclidean algorithm runs on $\gcd(a,b)=\gcd(b,\,a\bmod b)$; the extended version also tracks how each remainder is built from $a$ and $b$, producing Bézout's Identity $\gcd(a,b)=ax+by$ — the tracking costs nothing extra, so run the extended version by default
+- the Bézout coefficient is exactly the modular inverse: if $\gcd(a,b)=1$ then $ax+by=1$ gives $ax\equiv1\pmod b$, so $x\equiv a^{-1}$ — this is how an inverse is computed by hand when the modulus is too large to guess
 - the same coefficients settle solvability: $ax\equiv c\pmod b$ has a solution exactly when $\gcd(a,b)\mid c$, and then it has exactly $\gcd(a,b)$ solutions modulo $b$ — check the divisibility first, since it decides whether to look for solutions at all
 
 ## Why it works
@@ -1121,23 +1130,46 @@ Each remainder in the Euclidean algorithm is an integer combination of the origi
 For a modular inverse $a^{-1} \bmod m$: run the algorithm on $(a, m)$; when the gcd is $1$, the coefficient of $a$, reduced mod $m$, is the inverse. To solve $ax + by = c$: find $g = \gcd(a,b)$ with coefficients $(x_0, y_0)$ — solvable iff $g \mid c$ — then $(x, y) = \frac{c}{g}(x_0, y_0)$, with the general solution adding $t\left(\frac{b}{g}, -\frac{a}{g}\right)$. On paper the back-substitution chain (or a coefficient table) is quickest.
 
 ## On contests
-The workhorse behind modular inverses on AIME and olympiad, and the constructive companion to Bézout's identity — reach for it whenever you need an actual $(x, y)$, not just their existence. [[crt|CRT]] reconstruction and solving $ax \equiv c \pmod m$ both rely on it.`
+The workhorse behind modular inverses on AIME and olympiad, and the constructive companion to Bézout's Identity — reach for it whenever you need an actual $(x, y)$, not just their existence. [[crt|CRT]] reconstruction and solving $ax \equiv c \pmod m$ both rely on it.`
 
 });
 
 // Detail body added for a dense medium-importance card.
 Object.assign(window.MATH_DETAILS, {
 
+"gcd-substitution": String.raw`
+## Why it works
+Dividing two numbers by their greatest common divisor leaves two numbers with nothing left in common.
+
+Let $d = \gcd(a, b)$ and write $a = dx$ and $b = dy$. If a prime $p$ divided both $x$ and $y$, then $pd$ would divide both $a$ and $b$, a common divisor larger than $d$. That contradicts the choice of $d$ as the greatest, so $$\gcd(x, y) = 1.$$ The figure makes the same argument with lengths.
+
+{{figure:blocks}}
+
+Coprime quotients are what make the conditions split. The lcm is $dxy$, because $x$ and $y$ bring no prime in twice, and [[gcd-lcm-product|the gcd times lcm identity]] follows. A sum of the quotients is also coprime to their product: a prime dividing $xy$ divides $x$ or $y$, say $x$, and if it divided $x + y$ as well it would divide $y$, which is impossible. So $$\gcd(x + y,\ xy) = 1.$$
+
+## How to use it
+Substitute first, before anything else: write $a = dx$ and $b = dy$ with $\gcd(x, y) = 1$, then rewrite every condition in the problem in terms of $d$, $x$ and $y$.
+
+A given gcd and sum: $a + b = S$ becomes $x + y = \frac Sd$. Any common divisor of $x$ and $y$ divides $x + y$, and the other way round, so $\gcd(x, y) = \gcd(x, x + y)$, and the coprime pairs are counted by [[eulers-totient|Euler's totient]], as in the example.
+
+A ratio: $\frac ab = \frac pq$ in lowest terms means $a = kp$ and $b = kq$ for a positive integer $k$, the same substitution with the gcd of the ratio pulled out. A given gcd and lcm fixes $xy = \frac{\operatorname{lcm}}{\gcd}$.
+
+The substitution also turns strange-looking conditions into a factorization. If $\gcd(a, b) + \operatorname{lcm}(a, b) = a + b$, dividing by $d$ gives $$1 + xy = x + y \quad\Longrightarrow\quad (x - 1)(y - 1) = 0,$$ so $x = 1$ or $y = 1$: one of the two numbers divides the other.
+
+## On contests
+One problem here, an AIME, not solved by it alone: pulling the gcd out of two side lengths leaves a coprime pair, and [[euclids-lemma|Euclid's Lemma]] then forces a divisibility. The substitution is the standard first line whenever a problem names a gcd or an lcm, from MATHCOUNTS pair counts to AIME divisor bookkeeping, and solutions often use it without naming it.
+`,
+
 "periodicity-mod-m": String.raw`
 ## Key forms
 - finitely many states — one residue for a power, or the last $k$ residues for an order-$k$ recurrence, so by [[pigeonhole|pigeonhole]] the state eventually repeats
 - $a_N \equiv a_{\,n_0 + ((N - n_0) \bmod T)} \pmod m$ — reduce the index once the cycle start $n_0$ and period $T$ are known
-- $T = \operatorname{ord}_m(a)$ for $a^n$ with $\gcd(a, m) = 1$ — the [[multiplicative-order|multiplicative order]], which divides $\varphi(m)$, so only the divisors of $\varphi(m)$ need checking
+- $T = \operatorname{ord}_m(a)$ for $a^n$ with $\gcd(a, m) = 1$ — the multiplicative order, which divides $\varphi(m)$, so only the divisors of $\varphi(m)$ need checking
 
 ## Why it works
 Each term's remainder depends only on a finite amount of information, and anything drawn from a finite supply must eventually repeat.
 
-For a power, $a^{n+1} \bmod m$ is determined by $a^n \bmod m$ alone, since it is that residue times $a$, reduced. There are only $m$ possible residues, so among the first $m + 1$ terms two must be equal, by [[pigeonhole|the pigeonhole principle]]. Once a residue repeats, everything after it repeats too, because each term is computed from the one before by the same rule.
+For a power, $a^{n+1} \bmod m$ is determined by $a^n \bmod m$ alone, since it is that residue times $a$, reduced. There are only $m$ possible residues, so among the first $m + 1$ terms two must be equal, by the pigeonhole principle. Once a residue repeats, everything after it repeats too, because each term is computed from the one before by the same rule.
 
 For a recurrence that uses the last $k$ terms, the same argument applies to the list of the last $k$ residues, of which there are at most $m^k$.
 
@@ -1148,7 +1180,7 @@ That happens when the step cannot be run backwards, as when $a$ shares a factor 
 ## How to use it
 List residues from the start until a state repeats, noting where the repeat begins ($n_0$) and the period $T$; then $$a_N \equiv a_{\,n_0 + ((N-n_0)\bmod T)} \pmod m.$$
 
-For a pure power with $\gcd(a,m)=1$ the cycle starts immediately and $T$ is the multiplicative order of $a$; for a linear recurrence, $T$ is the period of its state vector (the Pisano period for Fibonacci). Speed things up with [[eulers-theorem|Euler's theorem]], or with [[crt|CRT]], since the period mod $m$ is the lcm of the periods mod each prime power.
+For a pure power with $\gcd(a,m)=1$ the cycle starts immediately and $T$ is the multiplicative order of $a$; for a linear recurrence, $T$ is the period of its state vector (the Pisano period for Fibonacci). Speed things up with [[eulers-theorem|Euler's Theorem]], or with [[crt|CRT]], since the period mod $m$ is the lcm of the periods mod each prime power.
 
 ## On contests
 "Last digits of $7^{2024}$", "$F_{2015} \bmod 1000$" and "the far-out term of a recurrence modulo $m$" are the standard appearances; 13 of the 15 problems tagged here are AIME, and [[casework-method|casework]] joins in 4, usually to treat the terms of one cycle separately. Watch for a pre-period when the base shares a factor with the modulus.
@@ -1168,7 +1200,7 @@ It is the fast filter for "$\sigma(n)$ is odd/even" and a clean parity handle on
 Object.assign(window.MATH_DETAILS, {
 
 "dirichlet-convolution": String.raw`## Why it works
-Grouping divisors as $d\cdot\frac{n}{d}=n$ makes $*$ commutative and associative with identity $\varepsilon(n)=[n=1]$, and on prime powers the convolution of two [[multiplicative-functions|multiplicative functions]] stays multiplicative — so any such identity reduces to one prime at a time. Möbius inversion is exactly the statement that $\mu$ is the $*$-inverse of $\mathbf 1$.
+Grouping divisors as $d\cdot\frac{n}{d}=n$ makes $*$ commutative and associative with identity $\varepsilon(n)=[n=1]$, and on prime powers the convolution of two multiplicative functions stays multiplicative — so any such identity reduces to one prime at a time. Möbius inversion is exactly the statement that $\mu$ is the $*$-inverse of $\mathbf 1$.
 
 ## How to use it
 Recognize a divisor sum $\sum_{d\mid n} f(d)g(n/d)$ as a convolution and factor it over primes, or invert $g=f*\mathbf 1$ into $f=g*\mu$ to peel a summatory function back to its summand. Keep the staples handy: $\mu*\mathbf 1=\varepsilon$, $\varphi*\mathbf 1=\mathrm{id}$, $\mathrm{id}*\mathbf 1=\sigma$.
@@ -1192,19 +1224,19 @@ The least residues of $a,2a,\dots,\frac{p-1}{2}a$ are, up to sign, a permutation
 Count $\mu$, the number of "folded-over" multiples, to read a Legendre symbol directly — cleanest for small fixed $a$, where it produces the closed formulas for $\left(\frac{2}{p}\right)$ and $\left(\frac{-1}{p}\right)$, and as the engine inside a reciprocity proof. Extending the symbol to composite lower arguments gives the [[jacobi-symbol|Jacobi symbol]], which is what makes the reciprocity flip practical to run by hand.
 
 ## On contests
-Olympiad number theory; less a shortcut than the standard lemma for proving [[quadratic-reciprocity|quadratic reciprocity]] and the supplementary laws from first principles.`,
+Olympiad number theory; less a shortcut than the standard lemma for proving quadratic reciprocity and the supplementary laws from first principles.`,
 
 "freshmans-dream": String.raw`## Why it works
 Each middle coefficient $\binom{p}{k}$ with $0\lt k\lt p$ carries a factor of $p$ that the denominator cannot cancel, so mod $p$ every cross term dies and $(a+b)^p\equiv a^p+b^p$. Iterating raises the exponent to $p^m$; this is precisely the Frobenius map $x\mapsto x^p$.
 
 ## How to use it
-Collapse $p$-th powers of sums mod $p$, prove [[fermats-little-theorem|Fermat's little theorem]] by induction ($n^p\equiv n$), and factor over $\mathbb F_p$ (for instance $x^p-x=\prod_{a}(x-a)$). It is the reason $\binom{p}{k}\equiv 0$ shows up so often.
+Collapse $p$-th powers of sums mod $p$, prove Fermat's Little Theorem by induction ($n^p\equiv n$), and factor over $\mathbb F_p$ (for instance $x^p-x=\prod_{a}(x-a)$). It is the reason $\binom{p}{k}\equiv 0$ shows up so often.
 
 ## On contests
 A recurring olympiad and AIME lemma; whenever a prime exponent meets a sum taken modulo that prime, this is the simplification to reach for.`,
 
 "power-minus-self": String.raw`## Why it works
-[[fermats-little-theorem|Fermat's little theorem]] gives $n^p\equiv n\pmod p$, and more generally $n^k\equiv n\pmod p$ for every $n$ exactly when $(p-1)\mid(k-1)$ (then $n^{k-1}\equiv 1$ for $\gcd(n,p)=1$, and both sides vanish when $p\mid n$). Multiplying all such primes gives the universal modulus.
+Fermat's Little Theorem gives $n^p\equiv n\pmod p$, and more generally $n^k\equiv n\pmod p$ for every $n$ exactly when $(p-1)\mid(k-1)$ (then $n^{k-1}\equiv 1$ for $\gcd(n,p)=1$, and both sides vanish when $p\mid n$). Multiplying all such primes gives the universal modulus.
 
 ## How to use it
 To find the largest $m$ dividing $n^k-n$ for all $n$, list the primes $p$ with $(p-1)\mid(k-1)$ and multiply them (each once). So $n^3-n$ is always divisible by $6$, $n^5-n$ by $30$, $n^7-n$ by $42$, and $n^{13}-n$ by $2730$.
@@ -1225,7 +1257,7 @@ A staple divisibility and parity tool from MATHCOUNTS through AIME; "the product
 Summing the indicator of the common zero set over $\mathbb F_p^{\,n}$ and using that $\sum_{x\in\mathbb F_p}x^t\equiv 0$ unless $(p-1)\mid t$, the degree bound $\sum\deg f_i\lt n$ forces that sum to vanish mod $p$ — so the number of common zeros is a multiple of $p$.
 
 ## How to use it
-When the $f_i$ over $\mathbb F_p$ have degrees summing below the number of variables, the zero count is divisible by $p$; and if the $f_i$ have no constant term then $x=0$ is a zero, so a nonzero zero must also exist. That existence step is the usual payoff (e.g. the [[erdos-ginzburg-ziv|Erdős–Ginzburg–Ziv theorem]]).
+When the $f_i$ over $\mathbb F_p$ have degrees summing below the number of variables, the zero count is divisible by $p$; and if the $f_i$ have no constant term then $x=0$ is a zero, so a nonzero zero must also exist. That existence step is the usual payoff (e.g. the [[erdos-ginzburg-ziv|Erdős–Ginzburg–Ziv Theorem]]).
 
 ## On contests
 Olympiad number theory and combinatorics; it is the standard nonconstructive tool for "show a nontrivial solution exists mod $p$" and for divisibility of solution counts.`,
@@ -1260,13 +1292,13 @@ Light MATHCOUNTS / trivia territory, but occasionally an AMC problem rewards spo
 Object.assign(window.MATH_DETAILS, {
 
 "p-adic-valuation": String.raw`## Why it works
-Unique factorization makes $v_p$ additive — the power of $p$ in a product is the sum of the powers, exactly like a logarithm for a single prime. The ultrametric bound holds because $p^{\min}$ divides both terms; when the two valuations differ, the smaller power survives the sum uncancelled, forcing equality there. Divisibility statements translate the same way: $v_p(\gcd(m,n))$ is the minimum of the two valuations and $v_p(\operatorname{lcm}(m,n))$ the maximum, and for factorials [[legendres-formula|Legendre's formula]] gives $v_p(n!)=\sum_{i\ge1}\lfloor n/p^i\rfloor$.
+Unique factorization makes $v_p$ additive — the power of $p$ in a product is the sum of the powers, exactly like a logarithm for a single prime. The ultrametric bound holds because $p^{\min}$ divides both terms; when the two valuations differ, the smaller power survives the sum uncancelled, forcing equality there. Divisibility statements translate the same way: $v_p(\gcd(m,n))$ is the minimum of the two valuations and $v_p(\operatorname{lcm}(m,n))$ the maximum, and for factorials [[legendres-formula|Legendre's Formula]] gives $v_p(n!)=\sum_{i\ge1}\lfloor n/p^i\rfloor$.
 
 ## How to use it
 Take $v_p$ of both sides of a divisibility statement or equation to turn it into linear arithmetic on exponents: $p^k \mid N \iff v_p(N)\ge k$, a perfect square needs every $v_p$ even, and "how many factors of $p$" becomes a sum. The equality case of the ultrametric bound is exactly the engine behind [[lte|Lifting the Exponent]].
 
 ## On contests
-The backbone of AIME and olympiad prime-power problems, and the language in which LTE, Legendre's formula, and [[kummers-theorem|Kummer's theorem]] are all phrased — reach for it whenever only the power of one prime matters.`,
+The backbone of AIME and olympiad prime-power problems, and the language in which LTE, Legendre's Formula, and [[kummers-theorem|Kummer's Theorem]] are all phrased — reach for it whenever only the power of one prime matters.`,
 
 "fermat-two-squares": String.raw`## Key forms
 - $p\equiv1\pmod 4\iff p=a^2+b^2$ for an odd prime $p$ — and the pair $\{a,b\}$ is unique
@@ -1277,7 +1309,7 @@ The backbone of AIME and olympiad prime-power problems, and the language in whic
 ## Why it works
 One direction is a two-line parity argument: every square is $0$ or $1$ modulo $4$, so a sum of two squares is $0$, $1$ or $2$ mod $4$ and never $3$. That disposes of every prime $p\equiv3\pmod4$ immediately.
 
-The other direction is the real theorem. Since $p\equiv1\pmod4$, the congruence $x^2\equiv-1\pmod p$ is solvable, so $p$ divides $x^2+1$ for some $x$. [[thues-lemma|Thue's lemma]] then produces integers $a,b$ with $0\lt a,b\lt\sqrt p$ and $a\equiv xb\pmod p$, whence $p\mid a^2+b^2$; but $0\lt a^2+b^2\lt2p$ forces $a^2+b^2=p$ exactly.
+The other direction is the real theorem. Since $p\equiv1\pmod4$, the congruence $x^2\equiv-1\pmod p$ is solvable, so $p$ divides $x^2+1$ for some $x$. [[thues-lemma|Thue's Lemma]] then produces integers $a,b$ with $0\lt a,b\lt\sqrt p$ and $a\equiv xb\pmod p$, whence $p\mid a^2+b^2$; but $0\lt a^2+b^2\lt2p$ forces $a^2+b^2=p$ exactly.
 
 Uniqueness is cleanest in the Gaussian integers. There $p=a^2+b^2$ factors as $(a+bi)(a-bi)$, and $\mathbb{Z}[i]$ has unique factorisation, so a prime $p\equiv1\pmod4$ splits into exactly one conjugate pair of Gaussian primes — leaving no freedom in $\{a,b\}$ beyond order and sign.
 
@@ -1291,16 +1323,24 @@ To find $a$ and $b$ for a specific prime, just test $p-b^2$ for squareness with 
 ## On contests
 It is the engine behind Pythagorean-triple problems with a prime hypotenuse, and behind "how many ways can $N$ be written as a sum of two squares" once $N$ is factored. AIME uses it in disguise more often than by name — any time a prime that is $1$ mod $4$ appears alongside a sum of squares, this theorem is the reason the configuration is rigid.`,
 
-"euclids-lemma": String.raw`## Why it works
-From [[bezouts-identity|Bezout's identity]] there are integers with $ax + by = 1$ whenever $\gcd(a,b) = 1$. Multiplying through by $n$ gives $anx + bny = n$, and $b$ divides both terms on the left, the first because $b \mid an$ was assumed. So $b \mid n$. The prime statement is the special case: if $p \nmid a$ then $\gcd(p,a) = 1$, so $p \mid ab$ forces $p \mid b$.
+"euclids-lemma": String.raw`
+## Why it works
+The proof runs through [[bezouts-identity|Bézout's Identity]]: since $\gcd(a, b) = 1$, there are integers $x$ and $y$ with $ax + by = 1$.
+
+Multiplying by $n$ gives $$anx + bny = n.$$ The first term is a multiple of $b$ because $b \mid an$ was assumed, and the second plainly is, so $b$ divides their sum, $n$.
+
+The prime version is the special case $b = p$. If $p \nmid a$, then $\gcd(p, a) = 1$, because the only divisors of $p$ are $1$ and $p$, so $p \mid ab$ forces $p \mid b$. Primality matters: $6 \mid 4 \cdot 9$, but $6$ divides neither $4$ nor $9$.
 
 ## How to use it
-Reach for it whenever a divisibility has to survive a cancellation. If $\frac{an}{b}$ is an integer and $b$ shares no factor with $a$, then $b \mid n$, and that is usually the step pinning a variable to a multiple of something.
+Use it whenever a divisibility has to survive a cancellation. If $\frac{an}{b}$ is an integer and $b$ shares no factor with $a$, then $b \mid n$, which usually pins a variable to a multiple of something: $\frac{13n}{6}$ being an integer forces $6 \mid n$.
 
-It is also what makes lowest terms rigid. Once a rational is written as $\frac pq$ with $\gcd(p,q) = 1$, knowing $q \mid kp$ forces $q \mid k$, so a denominator cannot be quietly absorbed elsewhere. When the gcd is not yet $1$, apply [[gcd-substitution|gcd substitution]] first: pull the common factor out, and what remains is coprime by construction.
+It also makes lowest terms rigid. Once a rational number is written as $\frac pq$ with $\gcd(p, q) = 1$, a condition like $q \mid kp$ forces $q \mid k$. When the gcd is not yet $1$, pull the common factor out first with [[gcd-substitution|gcd substitution]], and what remains is coprime by construction.
+
+Unique factorization follows by applying it one prime at a time: a prime dividing a product of primes must be one of them, so two factorizations of the same number can be matched prime by prime.
 
 ## On contests
-The invisible step in a large share of AIME number theory, rarely mentioned in a solution even when it is doing the work. It is why $\frac{13n}{6}$ being an integer forces $6 \mid n$, and it is the step on which unique factorization itself rests, since without it a prime could split its divisibility across two composite factors.`,
+Two problems here, both AIME, neither solved by it alone: one uses it after gcd substitution has made two numbers coprime, and the other to decide when a repeated rotation first returns to its start. It is the invisible step in a large share of AIME number theory, rarely named in a solution even when it does the work.
+`,
 
 "digit-sum-carries": String.raw`
 ## Why it works
@@ -1316,7 +1356,7 @@ Use it in whichever direction is short. Forwards it predicts a digit sum without
 When a number is added to itself, a column carries exactly when its digit is $5$ or more, so $s(2n) = 2s(n) - 9 \cdot \#\{\text{digits} \ge 5\}$.
 
 ## On contests
-Three problems here, all AIME, none solved by it alone. Typical questions count pairs that add to a given number without carrying, one independent choice per column; find which values $|s(x + 2) - s(x)|$ can take, $2$ and then $9n - 2$; or require a fixed number of carries when a given number is added. The carry count also drives [[kummers-theorem|Kummer's theorem]], where it gives the power of a prime dividing a binomial coefficient.`,
+Three problems here, all AIME, none solved by it alone. Typical questions count pairs that add to a given number without carrying, one independent choice per column; find which values $|s(x + 2) - s(x)|$ can take, $2$ and then $9n - 2$; or require a fixed number of carries when a given number is added. The carry count also drives [[kummers-theorem|Kummer's Theorem]], where it gives the power of a prime dividing a binomial coefficient.`,
 
 
 
